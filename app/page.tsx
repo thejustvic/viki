@@ -1,11 +1,11 @@
-import tw from 'tailwind-styled-components'
-
-const TwHome = tw.h1`
-  text-3xl
-  font-bold
-  underline
-`
+import {TwHome} from '@/app/containers'
+import Login from './login'
 
 export default function Home() {
-  return <TwHome>Hello viki!</TwHome>
+  return (
+    <>
+      <Login />
+      <TwHome>Hello viki!</TwHome>
+    </>
+  )
 }
