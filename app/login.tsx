@@ -12,6 +12,12 @@ export default function Login() {
     })
   }
 
+  async function handleGoogleLogin() {
+    const {data, error} = await supabase.auth.signInWithOAuth({
+      provider: 'google'
+    })
+  }
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
@@ -19,6 +25,7 @@ export default function Login() {
   return (
     <>
       <button onClick={handleGitHubLogin}>GitHub Login</button>
+      <button onClick={handleGoogleLogin}>Google Login</button>
       <button onClick={handleLogout}>Logout</button>
     </>
   )
