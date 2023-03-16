@@ -5,4 +5,3 @@ export const TwHome = tw.h1`
   font-bold
   underline
 `
-TwHome.displayName = 'TwHome'
