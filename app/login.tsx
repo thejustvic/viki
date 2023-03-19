@@ -2,6 +2,7 @@
 
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import Image from 'next/image'
+import {Button} from 'react-daisyui'
 
 // Supabase auth needs to be triggered client-side
 export default function Login() {
@@ -40,8 +41,8 @@ const Anonymous = () => {
   }
   return (
     <>
-      <button onClick={handleGitHubLogin}>GitHub Login</button>
-      <button onClick={handleGoogleLogin}>Google Login</button>
+      <Button onClick={handleGitHubLogin}>GitHub Login</Button>
+      <Button onClick={handleGoogleLogin}>Google Login</Button>
     </>
   )
 }
@@ -62,7 +63,7 @@ const Logged = () => {
         src={session.user.user_metadata?.avatar_url}
         alt="avatar_url"
       />
-      <button onClick={handleLogout}>Logout</button>
+      <Button onClick={handleLogout}>Logout</Button>
     </>
   )
 }
