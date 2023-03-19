@@ -19,13 +19,42 @@ export default function Login() {
     })
   }
 
+  console.log(session)
+
+  return session ? <Logged /> : <Anonymous />
+}
+
+const Anonymous = () => {
+  const {supabase} = useSupabase()
+
+  const handleGitHubLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'github'
+    })
+  }
+
+  async function handleGoogleLogin() {
+    const {data, error} = await supabase.auth.signInWithOAuth({
+      provider: 'google'
+    })
+  }
+  return (
+    <>
+      <button onClick={handleGitHubLogin}>GitHub Login</button>
+      <button onClick={handleGoogleLogin}>Google Login</button>
+    </>
+  )
+}
+
+const Logged = () => {
+  const {supabase, session} = useSupabase()
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
-
-  console.log(session)
-
-  return session ? (
+  if (!session) {
+    return null
+  }
+  return (
     <>
       <Image
         width={100}
@@ -34,11 +63,6 @@ export default function Login() {
         alt="avatar_url"
       />
       <button onClick={handleLogout}>Logout</button>
-    </>
-  ) : (
-    <>
-      <button onClick={handleGitHubLogin}>GitHub Login</button>
-      <button onClick={handleGoogleLogin}>Google Login</button>
     </>
   )
 }
