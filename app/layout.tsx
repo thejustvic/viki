@@ -1,7 +1,7 @@
 import '@/scss/app.scss'
-import SupabaseListener from '@/utils/supabase-listener'
-import SupabaseProvider from '@/utils/supabase-provider'
-import {createClient} from '@/utils/supabase-server'
+import SupabaseListener from '@/utils/supabase-utils/supabase-listener'
+import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
+import {createClient} from '@/utils/supabase-utils/supabase-server'
 
 export const metadata = {
   title: 'viki',
@@ -26,7 +26,7 @@ export default async function RootLayout(props: Props) {
   return (
     <html lang="en">
       <body>
-        <SupabaseProvider>
+        <SupabaseProvider session={session}>
           <SupabaseListener serverAccessToken={session?.access_token} />
           {children}
         </SupabaseProvider>

@@ -9,6 +9,8 @@ specifiers:
   autoprefixer: 10.4.14
   eslint: 8.36.0
   eslint-config-next: 13.2.4
+  mobx: 6.8.0
+  mobx-react-lite: 3.4.3
   next: 13.2.4
   postcss: 8.4.21
   postcss-import: 15.1.0
@@ -22,6 +24,8 @@ specifiers:
   typescript: 4.9.5
 
 dependencies:
+  mobx: 6.8.0
+  mobx-react-lite: 3.4.3_woojb62cqeyk443mbl7msrwu2e
   next: 13.2.4_b7eik3blo2x47smm2jwaxpjfoq
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1913,6 +1917,28 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dev: true
+
+  /mobx-react-lite/3.4.3_woojb62cqeyk443mbl7msrwu2e:
+    resolution: {integrity: sha512-NkJREyFTSUXR772Qaai51BnE1voWx56LOL80xG7qkZr6vo8vEaLF3sz1JNUVh+rxmUzxYaqOhfuxTfqUh0FXUg==}
+    peerDependencies:
+      mobx: ^6.1.0
+      react: ^16.8.0 || ^17 || ^18
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      mobx: 6.8.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /mobx/6.8.0:
+    resolution: {integrity: sha512-+o/DrHa4zykFMSKfS8Z+CPSEg5LW9tSNGTuN8o6MF1GKxlfkSHSeJn5UtgxvPkGgaouplnrLXCF+duAsmm6FHQ==}
+    dev: false
 
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}

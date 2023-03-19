@@ -1,6 +1,6 @@
 'use client'
 
-import {useSupabase} from '@/utils/supabase-provider'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {useRouter} from 'next/navigation'
 import {useEffect} from 'react'
 

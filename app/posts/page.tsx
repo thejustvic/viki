@@ -1,4 +1,4 @@
-import {createClient} from '@/utils/supabase-server'
+import {createClient} from '@/utils/supabase-utils/supabase-server'
 import Posts from './posts'
 
 // do not cache this page
