@@ -1,5 +1,7 @@
+import 'server-only'
+
 import {createClient} from '@/utils/supabase-utils/supabase-server'
-import Posts from './posts'
+import Posts from './utils/posts'
 
 // do not cache this page
 export const revalidate = 0
@@ -10,7 +12,7 @@ const fetchData = async () => {
   return data
 }
 
-export default async function Page() {
+export default async function MyPosts() {
   const data = await fetchData()
 
   return <Posts serverPosts={data || []} />

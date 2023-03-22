@@ -1,12 +1,21 @@
 'use client'
 
+import {PostContainer} from '@/common/post'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useState} from 'react'
-import {TwContainer} from './containers'
+
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import {Post} from './types'
 import {usePostsListener} from './use-posts-listener'
+
+import tw from 'tailwind-styled-components'
+
+const TwContainer = tw.div`
+  flex
+  gap-8
+  m-8
+`
 
 interface Props {
   serverPosts: Post[]
@@ -37,5 +46,5 @@ const Posts = observer(() => {
 })
 
 const Post = observer(({post}: {post: Post}) => {
-  return <div>{post.text}</div>
+  return <PostContainer title={post.text} />
 })

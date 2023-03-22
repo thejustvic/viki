@@ -1,7 +1,7 @@
 import '@/scss/app.scss'
+import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import SupabaseListener from '@/utils/supabase-utils/supabase-listener'
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
-import {createClient} from '@/utils/supabase-utils/supabase-server'
 
 export const metadata = {
   title: 'viki',
@@ -15,14 +15,9 @@ interface Props {
   children: React.ReactNode
 }
 
-export default async function RootLayout(props: Props) {
-  const supabase = createClient()
+export default async function RootLayout({children}: Props) {
+  const session = await getServerSession()
 
-  const {
-    data: {session}
-  } = await supabase.auth.getSession()
-
-  const {children} = props
   return (
     <html lang="en">
       <body>
