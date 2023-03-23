@@ -9,6 +9,9 @@ module.exports = {
     'node_modules/daisyui/dist/**/*.js', 
     'node_modules/react-daisyui/dist/**/*.js'
   ],
+  daisyui: {
+    themes: ['dark', 'garden']
+  },
   theme: {
     extend: {},
   },

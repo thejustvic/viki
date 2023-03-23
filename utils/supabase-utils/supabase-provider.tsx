@@ -1,11 +1,11 @@
 'use client'
 
 import {createBrowserClient} from '@/utils/supabase-utils/supabase-browser'
-import type {Session} from '@supabase/auth-helpers-nextjs'
 import {createContext, useContext, useState} from 'react'
+import {useSupabaseListener} from '../../hooks/use-supabase-listener'
 
 import type {Database} from '@/utils/database.types'
-import type {SupabaseClient} from '@supabase/auth-helpers-nextjs'
+import type {Session, SupabaseClient} from '@supabase/auth-helpers-nextjs'
 
 type MaybeSession = Session | null
 
@@ -23,6 +23,8 @@ interface Props {
 
 export default function SupabaseProvider({children, session}: Props) {
   const [supabase] = useState(() => createBrowserClient())
+
+  useSupabaseListener(supabase, session?.access_token)
 
   return (
     <Context.Provider value={{supabase, session}}>

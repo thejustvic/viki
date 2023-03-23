@@ -1,15 +1,13 @@
 'use client'
 
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {useRouter} from 'next/navigation'
 import {useEffect} from 'react'
 
-interface Props {
-  serverAccessToken?: string
-}
-
-export default function SupabaseListener({serverAccessToken}: Props) {
-  const {supabase} = useSupabase()
+export const useSupabaseListener = (
+  supabase: SupabaseContext['supabase'],
+  serverAccessToken: string | undefined
+) => {
   const router = useRouter()
 
   useEffect(() => {
@@ -25,6 +23,4 @@ export default function SupabaseListener({serverAccessToken}: Props) {
       subscription.unsubscribe()
     }
   }, [serverAccessToken, router, supabase])
-
-  return null
 }

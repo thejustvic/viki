@@ -26,6 +26,23 @@ export interface Database {
           text?: string
         }
       }
+      users: {
+        Row: {
+          email: string | null
+          id: string
+          theme: string
+        }
+        Insert: {
+          email?: string | null
+          id: string
+          theme?: string
+        }
+        Update: {
+          email?: string | null
+          id?: string
+          theme?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

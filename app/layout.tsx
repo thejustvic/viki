@@ -1,7 +1,10 @@
+import GlobalProvider from '@/common/global/global-provider'
 import '@/scss/app.scss'
 import {getServerSession} from '@/utils/supabase-utils/get-server-session'
-import SupabaseListener from '@/utils/supabase-utils/supabase-listener'
+import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
+
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
+import {cookies} from 'next/headers'
 
 export const metadata = {
   title: 'viki',
@@ -17,13 +20,15 @@ interface Props {
 
 export default async function RootLayout({children}: Props) {
   const session = await getServerSession()
+  const serverTheme = await getServerTheme(session)
+  const cookiesTheme = cookies().get('theme')?.value
+  const theme = serverTheme || cookiesTheme || 'dark'
 
   return (
-    <html lang="en">
+    <html data-theme={theme} lang="en">
       <body>
         <SupabaseProvider session={session}>
-          <SupabaseListener serverAccessToken={session?.access_token} />
-          {children}
+          <GlobalProvider serverTheme={theme}>{children}</GlobalProvider>
         </SupabaseProvider>
       </body>
     </html>

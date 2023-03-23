@@ -10,7 +10,9 @@ export const PostContainer = ({title}: Props) => {
       <Card.Body>
         <Card.Title tag="h2">{title}</Card.Title>
         <Card.Actions className="justify-end mt-2">
-          <Button color="primary">Buy Now</Button>
+          <Button responsive color="primary">
+            Buy Now
+          </Button>
         </Card.Actions>
       </Card.Body>
     </Card>

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "cookies-next": "2.1.1",
     "daisyui": "2.51.5",
     "mobx": "6.8.0",
     "mobx-react-lite": "3.4.3",
