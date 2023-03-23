@@ -1,5 +1,6 @@
 'use client'
 
+import {useWindowSize} from '@/hooks/use-window-size'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Button, ButtonGroup, Hero} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
@@ -12,6 +13,7 @@ const TwHome = tw.h1`
 // Supabase auth needs to be triggered client-side
 export const Anonymous = () => {
   const {supabase} = useSupabase()
+  const {width = 0} = useWindowSize()
 
   const handleGitHubLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -27,7 +29,7 @@ export const Anonymous = () => {
   return (
     <Hero>
       <Hero.Content>
-        <ButtonGroup>
+        <ButtonGroup vertical={width < 450}>
           <Button onClick={handleGitHubLogin}>GitHub Login</Button>
           <Button onClick={handleGoogleLogin}>Google Login</Button>
         </ButtonGroup>

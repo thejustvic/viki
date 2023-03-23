@@ -21,7 +21,7 @@ export default function Navbar({toggleMenu}: Props) {
       <Nav className="bg-base-100">
         <Nav.Start>
           <Button color="ghost" onClick={toggleMenu}>
-            <div className="hidden md:block normal-case text-lg">Menu</div>
+            <div className="normal-case text-lg">Menu</div>
           </Button>
         </Nav.Start>
 
