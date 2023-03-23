@@ -38,7 +38,7 @@ export default function Navbar({toggleMenu}: Props) {
                 className="rounded-full"
               />
             </Button>
-            <Dropdown.Menu className="w-52 menu-compact">
+            <Dropdown.Menu className="w-52 menu-compact bg-primary text-primary-content">
               <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
