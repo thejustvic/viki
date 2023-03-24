@@ -1,15 +1,14 @@
 'use client'
 
 import {PostContainer} from '@/common/post'
+import {useRemoveHash} from '@/hooks/use-remove-hash'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useState} from 'react'
-
+import tw from 'tailwind-styled-components'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import {Post} from './types'
 import {usePostsListener} from './use-posts-listener'
-
-import tw from 'tailwind-styled-components'
 
 const TwContainer = tw.div`
   flex
@@ -25,6 +24,7 @@ export default observer(({serverPosts}: Props) => {
   const {supabase} = useSupabase()
   const [store] = useState(() => new PostsStore(serverPosts))
 
+  useRemoveHash()
   usePostsListener(supabase, store)
 
   return (
