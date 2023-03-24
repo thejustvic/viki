@@ -2,9 +2,8 @@
 
 import {GlobalContext, GlobalStore} from '@/common/global/global-store'
 import {Theme} from '@/common/global/types'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {useRouter} from 'next/navigation'
-import {useEffect, useState} from 'react'
+import {useRouterRefresh} from '@/hooks/use-router-refresh'
+import {useState} from 'react'
 
 interface Props {
   children: React.ReactNode
@@ -12,15 +11,8 @@ interface Props {
 }
 
 export default function GlobalProvider({children}: Props) {
-  const router = useRouter()
-  const {session} = useSupabase()
+  useRouterRefresh()
   const [store] = useState(() => new GlobalStore())
-
-  useEffect(() => {
-    if (!session) {
-      router.refresh()
-    }
-  }, [session])
 
   return (
     <GlobalContext.Provider value={store}>
