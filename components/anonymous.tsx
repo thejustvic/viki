@@ -32,7 +32,7 @@ export const Anonymous = () => {
           <Button onClick={handleGitHubLogin}>GitHub Login</Button>
           <Button onClick={handleGoogleLogin}>Google Login</Button>
         </ButtonGroup>
-        <TwHome>Hello viki!</TwHome>
+        <TwHome>Hello Viki!</TwHome>
       </Hero.Content>
     </Hero>
   )
