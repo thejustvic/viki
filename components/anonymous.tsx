@@ -25,6 +25,7 @@ export const Anonymous = () => {
       provider: 'google'
     })
   }
+
   return (
     <Hero>
       <Hero.Content>

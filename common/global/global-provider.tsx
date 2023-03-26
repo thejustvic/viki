@@ -10,9 +10,9 @@ interface Props {
   serverTheme: Theme
 }
 
-export default function GlobalProvider({children}: Props) {
+export default function GlobalProvider({children, serverTheme}: Props) {
   useRouterRefresh()
-  const [store] = useState(() => new GlobalStore())
+  const [store] = useState(() => new GlobalStore(serverTheme))
 
   return (
     <GlobalContext.Provider value={store}>

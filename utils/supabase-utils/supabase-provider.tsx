@@ -7,7 +7,7 @@ import {useSupabaseListener} from '../../hooks/use-supabase-listener'
 import type {Database} from '@/utils/database.types'
 import type {Session, SupabaseClient} from '@supabase/auth-helpers-nextjs'
 
-type MaybeSession = Session | null
+export type MaybeSession = Session | null
 
 export type SupabaseContext = {
   supabase: SupabaseClient<Database>

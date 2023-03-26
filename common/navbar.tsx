@@ -46,7 +46,7 @@ const Avatar = () => {
           className="rounded-full"
         />
       </Button>
-      <Dropdown.Menu className="w-52 menu-compact bg-primary text-primary-content">
+      <Dropdown.Menu className="w-52 shadow-lg">
         <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

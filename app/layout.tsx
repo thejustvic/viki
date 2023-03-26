@@ -1,4 +1,5 @@
 import GlobalProvider from '@/common/global/global-provider'
+import Wrapper from '@/common/wrapper'
 import '@/scss/app.scss'
 import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
@@ -28,7 +29,9 @@ export default async function RootLayout({children}: Props) {
     <html data-theme={theme} lang="en">
       <body>
         <SupabaseProvider session={session}>
-          <GlobalProvider serverTheme={theme}>{children}</GlobalProvider>
+          <GlobalProvider serverTheme={theme}>
+            <Wrapper>{children}</Wrapper>
+          </GlobalProvider>
         </SupabaseProvider>
       </body>
     </html>

@@ -1,15 +1,8 @@
-import {Load} from '@/common/load'
-import Wrapper from '@/common/wrapper'
-import {Suspense} from 'react'
-import Login from '../components/main'
+import {Anonymous} from '@/components/anonymous'
+import {Logged} from '@/components/logged'
+import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 
-export default function Page() {
-  return (
-    <Wrapper>
-      <Suspense fallback={<Load />}>
-        {/* @ts-expect-error Server Component */}
-        <Login />
-      </Suspense>
-    </Wrapper>
-  )
+export default async function Page() {
+  const session = await getServerSession()
+  return session ? <Logged /> : <Anonymous />
 }

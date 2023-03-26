@@ -11,10 +11,11 @@ export class GlobalStore {
     theme: ''
   }
 
-  constructor() {
+  constructor(serverTheme: Theme) {
     makeAutoObservable(this, {
       state: observable.shallow
     })
+    this.setTheme(serverTheme)
   }
 
   setTheme(theme: Theme): void {
