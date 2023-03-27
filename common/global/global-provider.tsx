@@ -2,8 +2,8 @@
 
 import {GlobalContext, GlobalStore} from '@/common/global/global-store'
 import {Theme} from '@/common/global/types'
+import {useMemoOne} from '@/hooks/use-memo-one'
 import {useRouterRefresh} from '@/hooks/use-router-refresh'
-import {useState} from 'react'
 
 interface Props {
   children: React.ReactNode
@@ -12,7 +12,7 @@ interface Props {
 
 export default function GlobalProvider({children, serverTheme}: Props) {
   useRouterRefresh()
-  const [store] = useState(() => new GlobalStore(serverTheme))
+  const store = useMemoOne(() => new GlobalStore(serverTheme), [])
 
   return (
     <GlobalContext.Provider value={store}>

@@ -1,4 +1,5 @@
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
+import {Util} from '@/utils/util'
 import {makeAutoObservable, observable} from 'mobx'
 import {Post} from './types'
 
@@ -18,7 +19,7 @@ export class PostsStore {
     this.setPosts(serverPosts)
   }
 
-  setPosts(posts: Post[]): void {
+  setPosts(posts: Post[]) {
     this.state.posts = posts
   }
 
@@ -28,7 +29,6 @@ export class PostsStore {
         if (post.id === oldPost.id) {
           return newPost
         }
-
         return post
       })
     )
@@ -39,7 +39,8 @@ export class PostsStore {
   }
 
   handleDelete = (oldPost: Post) => {
-    this.setPosts(this.state.posts.filter(post => post.id !== oldPost.id))
+    const posts = Util.clone(this.state.posts)
+    this.setPosts(posts.filter(post => post.id !== oldPost.id))
   }
 }
 

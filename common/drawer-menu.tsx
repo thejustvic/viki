@@ -9,11 +9,12 @@ const TwMenu = tw(Menu)`
   w-80 
   p-2
 `
+
 interface Props {
   toggleDrawer: () => void
 }
 
-export default function Drawer({toggleDrawer}: Props) {
+export const DrawerMenu = ({toggleDrawer}: Props) => {
   return (
     <TwMenu vertical>
       <Link href="/">

@@ -7,7 +7,7 @@ interface Props {
   toggleMenu: () => void
 }
 
-export default function Navbar({toggleMenu}: Props) {
+export const Navbar = ({toggleMenu}: Props) => {
   return (
     <Nav className="bg-base-200">
       <Nav.Start>

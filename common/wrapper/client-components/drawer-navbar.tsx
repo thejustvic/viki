@@ -1,10 +1,18 @@
 'use client'
 
 import {useBoolean} from '@/hooks/use-boolean'
+import {useRemoveHash} from '@/hooks/use-remove-hash'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
-import {default as DrawerContent} from '../../drawer'
-import Navbar from '../../navbar'
+import tw from 'tailwind-styled-components'
+import {DrawerMenu} from '../../drawer-menu'
+import {Navbar} from '../../navbar'
+
+const TwChildren = tw.div`
+  overflow-y-scroll
+  scrollbar-sm
+  md:scrollbar
+`
 
 interface Props {
   children: ReactNode
@@ -12,17 +20,16 @@ interface Props {
 
 export const DrawerNavbar = ({children}: Props) => {
   const drawerOpen = useBoolean(false)
+  useRemoveHash()
 
   return (
     <Drawer
       open={drawerOpen.value}
       onClickOverlay={drawerOpen.turnOff}
-      side={<DrawerContent toggleDrawer={drawerOpen.toggle} />}
+      side={<DrawerMenu toggleDrawer={drawerOpen.toggle} />}
     >
       <Navbar toggleMenu={drawerOpen.toggle} />
-      <div className="overflow-y-scroll scrollbar-sm md:scrollbar">
-        {children}
-      </div>
+      <TwChildren>{children}</TwChildren>
     </Drawer>
   )
 }

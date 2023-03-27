@@ -16,13 +16,15 @@ export const usePostsListener = (
         payload => {
           switch (payload.eventType) {
             case 'DELETE':
-              store.handleDelete(payload.old as Post)
+              return store.handleDelete(payload.old as Post)
             case 'INSERT':
-              store.handleInsert(payload.new as Post)
+              return store.handleInsert(payload.new as Post)
             case 'UPDATE':
-              store.handleUpdate(payload.old as Post, payload.new as Post)
+              return store.handleUpdate(
+                payload.old as Post,
+                payload.new as Post
+              )
           }
-          console.info(payload)
         }
       )
       .subscribe()
