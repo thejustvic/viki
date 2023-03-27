@@ -12,9 +12,11 @@ export const SwitchTheme = observer(() => {
   const [state, store] = useGlobalStore()
 
   const toggleTheme = async () => {
-    const newTheme = state.theme === 'dark' ? 'garden' : 'dark'
-    const themeRes = await updateTheme(newTheme, {supabase, session})
-    implementTheme(store, themeRes)
+    const theme = await updateTheme({
+      theme: state.theme === 'dark' ? 'garden' : 'dark',
+      opts: {supabase, session}
+    })
+    implementTheme(store, theme)
   }
 
   if (!session) {
