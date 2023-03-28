@@ -28,12 +28,7 @@ const update = async (props: Props) => {
 
 export const updateTheme = async (props: Props) => {
   const res: ThemeResponse = await update(props)
-
   const data = res.data as ThemeResponseSuccess[]
 
-  if (data) {
-    return data[0].theme
-  }
-
-  return 'dark'
+  return data?.[0]?.theme || 'dark'
 }
