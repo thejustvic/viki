@@ -29,12 +29,12 @@ export default async function RootLayout({children}: Props) {
   return (
     <html data-theme={theme} lang="en">
       <body>
-        <Analytics />
         <SupabaseProvider session={session}>
           <GlobalProvider serverTheme={theme}>
             <Wrapper>{children}</Wrapper>
           </GlobalProvider>
         </SupabaseProvider>
+        <Analytics />
       </body>
     </html>
   )
