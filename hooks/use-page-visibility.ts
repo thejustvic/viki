@@ -1,6 +1,10 @@
 import {useEffect, useState} from 'react'
 
 export const usePageVisibility = () => {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
   const [isVisible, setVisibility] = useState(!document.hidden)
 
   useEffect(() => {
