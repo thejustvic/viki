@@ -1,4 +1,13 @@
+import {IconTrash} from '@tabler/icons-react'
 import {Button, Card} from 'react-daisyui'
+import tw from 'tailwind-styled-components'
+
+const TwCard = tw(Card)`
+  bg-base-300 
+  shadow-md 
+  w-48 
+  h-36
+`
 
 interface Props {
   title: string
@@ -7,20 +16,20 @@ interface Props {
 
 export const PostContainer = ({title, remove}: Props) => {
   return (
-    <Card bordered compact className="bg-base-300 shadow-md">
+    <TwCard bordered compact>
       <Card.Body>
         <Card.Title tag="h2" className="flex justify-between">
           {title}
           <Button color="ghost" shape="circle" onClick={remove}>
-            X
+            <IconTrash />
           </Button>
         </Card.Title>
-        <Card.Actions className="justify-end mt-2">
-          <Button responsive color="primary">
+        <Card.Actions className="justify-center">
+          <Button color="primary" fullWidth>
             Buy Now
           </Button>
         </Card.Actions>
       </Card.Body>
-    </Card>
+    </TwCard>
   )
 }
