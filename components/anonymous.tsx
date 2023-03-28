@@ -20,7 +20,7 @@ export const Anonymous = () => {
     })
   }
 
-  async function handleGoogleLogin() {
+  const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google'
     })
