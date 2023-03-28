@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "0.1.11",
     "cookies-next": "2.1.1",
     "daisyui": "2.51.5",
     "mobx": "6.8.0",

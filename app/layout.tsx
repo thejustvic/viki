@@ -3,6 +3,7 @@ import Wrapper from '@/common/wrapper'
 import '@/scss/app.scss'
 import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
+import {Analytics} from '@vercel/analytics/react'
 
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
 import {cookies} from 'next/headers'
@@ -28,6 +29,7 @@ export default async function RootLayout({children}: Props) {
   return (
     <html data-theme={theme} lang="en">
       <body>
+        <Analytics />
         <SupabaseProvider session={session}>
           <GlobalProvider serverTheme={theme}>
             <Wrapper>{children}</Wrapper>
