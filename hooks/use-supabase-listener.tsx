@@ -3,12 +3,14 @@
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {useRouter} from 'next/navigation'
 import {useEffect} from 'react'
+import {usePageVisibility} from './use-page-visibility'
 
 export const useSupabaseListener = (
   supabase: SupabaseContext['supabase'],
   serverAccessToken: string | undefined
 ) => {
   const router = useRouter()
+  const isPageVisible = usePageVisibility()
 
   useEffect(() => {
     const {
@@ -22,5 +24,5 @@ export const useSupabaseListener = (
     return () => {
       subscription.unsubscribe()
     }
-  }, [serverAccessToken, router, supabase])
+  }, [serverAccessToken, router, supabase, isPageVisible])
 }
