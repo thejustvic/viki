@@ -1,6 +1,5 @@
 'use client'
 
-import {removeHash} from '@/utils/next-utils/remove-hash'
 import {
   MaybeSession,
   SupabaseContext
@@ -24,7 +23,6 @@ export const useSupabaseListener = (
       }
     }
     getSession()
-    removeHash()
   }, [isPageVisible])
 
   useEffect(() => {

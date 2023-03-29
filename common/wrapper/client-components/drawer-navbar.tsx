@@ -1,7 +1,6 @@
 'use client'
 
 import {useBoolean} from '@/hooks/use-boolean'
-import {useRemoveHash} from '@/hooks/use-remove-hash'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
@@ -20,7 +19,6 @@ interface Props {
 
 export const DrawerNavbar = ({children}: Props) => {
   const drawerOpen = useBoolean(false)
-  useRemoveHash()
 
   return (
     <Drawer
