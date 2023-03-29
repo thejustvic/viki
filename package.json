@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "husky install"
+    "lint": "next lint"
   },
   "dependencies": {
     "@vercel/analytics": "0.1.11",
@@ -31,8 +30,6 @@
     "@types/react-dom": "18.0.11",
     "autoprefixer": "10.4.14",
     "eslint": "8.36.0",
-    "husky": "8.0.3",
-    "lint-staged": "13.2.0",
     "postcss": "8.4.21",
     "postcss-import": "15.1.0",
     "prettier": "2.8.4",
@@ -42,11 +39,5 @@
     "tailwindcss": "3.2.7",
     "ts-essentials": "9.3.1",
     "typescript": "5.0.2"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "eslint --quiet"
-    ]
   }
 }

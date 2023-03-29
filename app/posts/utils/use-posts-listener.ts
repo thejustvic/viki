@@ -13,23 +13,21 @@ export const usePostsListener = (
 ) => {
   useEffect(() => {
     const channel = supabase
-      .channel('*')
+      .channel('posts')
       .on(
         'postgres_changes',
-        {event: '*', schema: 'public', table: 'posts'},
-        payload => {
-          switch (payload.eventType) {
-            case 'DELETE':
-              return store.handleDelete(payload.old as Post)
-            case 'INSERT':
-              return store.handleInsert(payload.new as Post)
-            case 'UPDATE':
-              return store.handleUpdate(
-                payload.old as Post,
-                payload.new as Post
-              )
-          }
-        }
+        {event: 'INSERT', schema: 'public', table: 'posts'},
+        payload => store.handleInsert(payload.new as Post)
+      )
+      .on(
+        'postgres_changes',
+        {event: 'DELETE', schema: 'public', table: 'posts'},
+        payload => store.handleDelete(payload.old as Post)
+      )
+      .on(
+        'postgres_changes',
+        {event: 'UPDATE', schema: 'public', table: 'posts'},
+        payload => store.handleUpdate(payload.old as Post, payload.new as Post)
       )
       .subscribe()
 
