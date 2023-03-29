@@ -2,11 +2,11 @@
 
 import {PostContainer} from '@/common/post'
 import {useMemoOne} from '@/hooks/use-memo-one'
-import {useRemoveHash} from '@/hooks/use-remove-hash'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {AddNew} from '../add-new'
+import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import {Post} from './types'
 import {usePostsListener} from './use-posts-listener'
@@ -36,7 +36,6 @@ const PostsBase = observer(() => {
   const {supabase, session} = useSupabase()
   const [state, store] = usePostsStore()
   usePostsListener(session, supabase, store)
-  useRemoveHash()
 
   return (
     <TwContainer>
@@ -49,9 +48,11 @@ const PostsBase = observer(() => {
 })
 
 const Post = observer(({post}: {post: Post}) => {
-  const {supabase} = useSupabase()
+  const {removePost} = usePostHandlers()
+
   const remove = async () => {
-    await supabase.from('posts').delete().eq('id', post.id)
+    await removePost(post.id)
   }
+
   return <PostContainer title={post.text} remove={remove} />
 })

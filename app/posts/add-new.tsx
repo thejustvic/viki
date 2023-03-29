@@ -1,7 +1,7 @@
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {Button} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
+import {usePostHandlers} from './utils/posts-handlers'
 
 const TwAdd = tw(Button)`
   bg-base-300 
@@ -13,14 +13,10 @@ const TwAdd = tw(Button)`
 `
 
 export const AddNew = () => {
-  const {supabase} = useSupabase()
-  const insert = async () => {
-    await supabase
-      .from('posts')
-      .insert({text: (Math.random() + 1).toString(36).substring(7)})
-  }
+  const {insertPost} = usePostHandlers()
+
   return (
-    <TwAdd onClick={insert}>
+    <TwAdd onClick={insertPost}>
       <IconSquareRoundedPlus size={48} />
     </TwAdd>
   )
