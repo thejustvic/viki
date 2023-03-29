@@ -1,5 +1,6 @@
 import {SwitchTheme} from '@/components/switch-theme'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {IconMenu} from '@tabler/icons-react'
 import Image from 'next/image'
 import {Button, Dropdown, Navbar as Nav} from 'react-daisyui'
 
@@ -12,13 +13,15 @@ export const Navbar = ({toggleMenu}: Props) => {
     <Nav className="bg-base-200">
       <Nav.Start>
         <Button color="ghost" onClick={toggleMenu}>
-          <div className="normal-case text-lg">Menu</div>
+          <div className="normal-case text-lg">
+            <IconMenu />
+          </div>
         </Button>
       </Nav.Start>
 
       <Nav.Center className="text-lg font-mono">viki</Nav.Center>
 
-      <Nav.End>
+      <Nav.End className="gap-2">
         <SwitchTheme />
         <Avatar />
       </Nav.End>

@@ -1,7 +1,9 @@
 'use client'
 
 import {useGlobalStore} from '@/common/global/global-store'
+import {Theme} from '@/common/global/types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {IconMoon, IconSun} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {Button} from 'react-daisyui'
 import {implementTheme} from './utils/implement-theme'
@@ -24,8 +26,24 @@ export const SwitchTheme = observer(() => {
   }
 
   return (
-    <Button color="ghost" onClick={toggleTheme} loading={!Boolean(state.theme)}>
-      {state.theme}
+    <Button
+      color="ghost"
+      shape="circle"
+      onClick={toggleTheme}
+      loading={!Boolean(state.theme)}
+    >
+      {getTheme(state.theme)}
     </Button>
   )
 })
+
+const getTheme = (theme: Theme) => {
+  switch (theme) {
+    case 'dark':
+      return <IconMoon />
+    case 'garden':
+      return <IconSun />
+    default:
+      throw new Error(`unsupported theme: ${theme}`)
+  }
+}
