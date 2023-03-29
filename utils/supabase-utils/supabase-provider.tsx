@@ -24,8 +24,7 @@ interface Props {
 
 export default function SupabaseProvider({children, session}: Props) {
   const supabase = useMemoOne(() => createBrowserClient(), [])
-
-  useSupabaseListener(supabase, session?.access_token)
+  useSupabaseListener(supabase, session)
 
   return (
     <Context.Provider value={{supabase, session}}>

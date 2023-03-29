@@ -1,9 +1,13 @@
-import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
+import {
+  MaybeSession,
+  SupabaseContext
+} from '@/utils/supabase-utils/supabase-provider'
 import {useEffect} from 'react'
 import {PostsStore} from './posts-store'
 import {Post} from './types'
 
 export const usePostsListener = (
+  session: MaybeSession,
   supabase: SupabaseContext['supabase'],
   store: PostsStore
 ) => {
@@ -32,5 +36,5 @@ export const usePostsListener = (
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store])
+  }, [supabase, store, session])
 }

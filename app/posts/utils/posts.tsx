@@ -2,6 +2,7 @@
 
 import {PostContainer} from '@/common/post'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {useRemoveHash} from '@/hooks/use-remove-hash'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
@@ -32,9 +33,10 @@ export const Posts = ({serverPosts}: Props) => {
 }
 
 const PostsBase = observer(() => {
-  const {supabase} = useSupabase()
+  const {supabase, session} = useSupabase()
   const [state, store] = usePostsStore()
-  usePostsListener(supabase, store)
+  usePostsListener(session, supabase, store)
+  useRemoveHash()
 
   return (
     <TwContainer>
