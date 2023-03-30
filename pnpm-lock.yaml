@@ -20,9 +20,9 @@ specifiers:
   postcss-import: 15.1.0
   prettier: 2.8.4
   react: 18.2.0
-  react-3d-hover: 1.1.1
   react-daisyui: 3.0.3
   react-dom: 18.2.0
+  react-parallax-tilt: 1.7.120
   sass: 1.59.2
   server-only: 0.0.1
   supabase: 1.42.7
@@ -39,9 +39,9 @@ dependencies:
   mobx-react-lite: 3.4.3_b39c90fb428130ae736c0afec946d4d1
   next: 13.2.4_0fc8856c2b76afcfc98cd26c0bbd2574
   react: 18.2.0
-  react-3d-hover: 1.1.1_react-dom@18.2.0+react@18.2.0
   react-daisyui: 3.0.3_f51a5b48319f3f5fb21fe0289f49b506
   react-dom: 18.2.0_react@18.2.0
+  react-parallax-tilt: 1.7.120_react-dom@18.2.0+react@18.2.0
   server-only: 0.0.1
 
 devDependencies:
@@ -3249,16 +3249,6 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
-  /react-3d-hover/1.1.1_react-dom@18.2.0+react@18.2.0:
-    resolution: {integrity: sha512-4Y9pr/mtkC/dVAwY+nfG1sQXeunD/0VDf1io75G6t4GhfFes7vQxbzJua2+M9xdYzL+u3RXSPAM8bzVPjOaPDw==}
-    peerDependencies:
-      react: ^17.0.1
-      react-dom: ^17.0.1
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-    dev: false
-
   /react-daisyui/3.0.3_f51a5b48319f3f5fb21fe0289f49b506:
     resolution: {integrity: sha512-H7oxd3W6VmHZvQk6Yenjxxzl9/P75PVON69TMhaVFcJ8e6GV7BdG0lggCOfsxq1bHPr9JFRW85hglStTofJf5w==}
     peerDependencies:
@@ -3286,6 +3276,16 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
+
+  /react-parallax-tilt/1.7.120_react-dom@18.2.0+react@18.2.0:
+    resolution: {integrity: sha512-9j5EjcYIV4HY8O/NaUaY0nfkZky2av/ccAhkHCa4dw+jiBjA/5XiCVBubvsr9u9WzGDeBUPmOaDaRvfkY1xG2A==}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}

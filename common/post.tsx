@@ -1,6 +1,7 @@
 import {IconTrash} from '@tabler/icons-react'
-import Hover from 'react-3d-hover'
+import {CSSProperties} from 'react'
 import {Button, Card} from 'react-daisyui'
+import Hover from 'react-parallax-tilt'
 import tw from 'tailwind-styled-components'
 
 const TwCard = tw(Card)`
@@ -16,14 +17,17 @@ interface Props {
 }
 
 export const PostContainer = ({title, remove}: Props) => {
+  const transformStyle: CSSProperties = {
+    transformStyle: 'preserve-3d'
+  }
   return (
-    <Hover
-      max={14} // Max tilt rotation (degrees)
-      perspective={800} // Transform perspective, the lower the more extreme the tilt gets.
-      scale={1.1}
-    >
-      <TwCard bordered compact>
-        <Card.Body>
+    <Hover perspective={800} scale={1.1} gyroscope style={transformStyle}>
+      <TwCard bordered compact style={transformStyle}>
+        <Card.Body
+          style={{
+            transform: 'translateZ(20px)'
+          }}
+        >
           <Card.Title tag="h2" className="flex justify-between">
             {title}
             <Button color="ghost" shape="circle" onClick={remove}>
