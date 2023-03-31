@@ -1,12 +1,21 @@
 'use client'
 
 import {Load} from '@/common/load'
+import {Modal} from '@/common/modal'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {IconCircleX} from '@tabler/icons-react'
 import {useRouter} from 'next/navigation'
 import {useEffect, useState} from 'react'
-import {Button, Modal} from 'react-daisyui'
+import tw from 'tailwind-styled-components'
+
 import {Post} from './types'
+
+const TwLoad = tw(Load)`
+  h-6 
+  w-6 
+  p-0 
+  flex 
+  items-start
+`
 
 export const PostModal = ({
   postId,
@@ -41,21 +50,11 @@ export const PostModal = ({
   }
 
   return (
-    <Modal open={open} onClickBackdrop={goBack}>
-      <Button
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2"
-        onClick={goBack}
-        color="ghost"
-      >
-        <IconCircleX />
-      </Button>
-      <Modal.Header className="font-bold">Post:</Modal.Header>
-
-      <Modal.Body>
-        {post?.text ?? <Load className="h-6 w-6 p-0 flex items-start" />}
-      </Modal.Body>
-    </Modal>
+    <Modal
+      open={open}
+      goBack={goBack}
+      header={() => <>{'Post:'}</>}
+      body={() => <>{post?.text ?? <TwLoad />}</>}
+    />
   )
 }
