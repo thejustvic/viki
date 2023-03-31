@@ -18,6 +18,8 @@ const TwContainer = tw.div`
   gap-8
   m-8
   flex-wrap
+  justify-center
+  md:justify-start
 `
 
 interface Props {

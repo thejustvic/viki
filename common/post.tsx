@@ -8,9 +8,10 @@ import tw from 'tailwind-styled-components'
 
 const TwCard = tw(Card)`
   bg-base-300 
-  shadow-md 
-  w-48 
+  shadow-md
   h-36
+  w-72
+  md:w-48
 `
 
 interface Props {
@@ -26,12 +27,14 @@ export const PostContainer = ({post, remove}: Props) => {
     transform: 'translateZ(20px)'
   }
 
+  const href = `/?post=${post.id}`
+
   return (
     <Hover perspective={800} scale={1.1} gyroscope style={preserve3D}>
       <TwCard bordered compact style={preserve3D}>
         <Card.Body style={translateZ}>
           <Card.Title tag="h2" className="flex justify-between">
-            <Link href={`/?post=${post.id}`}>{post.text}</Link>
+            <Link href={href}>{post.text}</Link>
             <Button color="ghost" shape="circle" onClick={remove}>
               <IconTrash />
             </Button>
