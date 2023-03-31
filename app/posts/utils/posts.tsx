@@ -4,8 +4,10 @@ import {PostContainer} from '@/common/post'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import {useSearchParams} from 'next/navigation'
 import tw from 'tailwind-styled-components'
 import {AddNew} from '../add-new'
+import {PostModal} from './post-modal'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import {Post} from './types'
@@ -36,9 +38,12 @@ const PostsBase = observer(() => {
   const {supabase, session} = useSupabase()
   const [state, store] = usePostsStore()
   usePostsListener(session, supabase, store)
+  const searchParams = useSearchParams()
+  const postId = searchParams.get('post')
 
   return (
     <TwContainer>
+      <PostModal postId={postId} open={Boolean(postId)} />
       {state.posts.map(post => (
         <Post post={post} key={post.id} />
       ))}
@@ -54,5 +59,9 @@ const Post = observer(({post}: {post: Post}) => {
     await removePost(post.id)
   }
 
-  return <PostContainer title={post.text} remove={remove} />
+  return (
+    <>
+      <PostContainer post={post} remove={remove} />
+    </>
+  )
 })

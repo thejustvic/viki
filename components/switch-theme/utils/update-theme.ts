@@ -24,11 +24,12 @@ const update = async (props: Props) => {
     .update({theme})
     .eq('id', session?.user.id)
     .select()
+    .single()
 }
 
 export const updateTheme = async (props: Props) => {
   const res: ThemeResponse = await update(props)
-  const data = res.data as ThemeResponseSuccess[]
+  const data = res.data as ThemeResponseSuccess
 
-  return data?.[0]?.theme || 'dark'
+  return data?.theme || 'dark'
 }

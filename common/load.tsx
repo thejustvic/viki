@@ -1,18 +1,23 @@
 import tw from 'tailwind-styled-components'
 import {Loader} from './loader'
 
-const TwLoad = tw.div`
+const TwLoad = tw.div<{$center?: boolean}>`
   mt-8
   h-full
   w-full
   flex
-  justify-center
+  ${p => (p.$center ? 'justify-center' : '')}
 `
 
-export const Load = () => {
+interface Props {
+  className?: string
+  center?: boolean
+}
+
+export const Load = ({className, center}: Props) => {
   return (
-    <TwLoad>
-      <Loader />
+    <TwLoad $center={center}>
+      <Loader className={className} />
     </TwLoad>
   )
 }

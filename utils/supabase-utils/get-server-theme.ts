@@ -10,5 +10,7 @@ export const getServerTheme = async (session: Session | null) => {
     .from('users')
     .select('*')
     .eq('id', session.user.id)
-  return data?.[0]?.theme
+    .single()
+
+  return data?.theme
 }
