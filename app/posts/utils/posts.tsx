@@ -35,14 +35,12 @@ export const Posts = ({serverPosts}: Props) => {
   )
 }
 
-const PostsBase = observer(() => {
-  return (
-    <>
-      <PostModal />
-      <PostsList />
-    </>
-  )
-})
+const PostsBase = () => (
+  <>
+    <PostModal />
+    <PostsList />
+  </>
+)
 
 const PostsList = observer(() => {
   const {supabase, session} = useSupabase()

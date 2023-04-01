@@ -41,9 +41,7 @@ export const PostModal = () => {
     return () => set(null)
   }, [postId])
 
-  const goBack = () => {
-    router.push('/')
-  }
+  const goBack = () => router.push('/')
 
   return (
     <Modal
