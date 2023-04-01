@@ -1,6 +1,7 @@
 'use client'
 
 import {useBoolean} from '@/hooks/use-boolean'
+import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
@@ -19,6 +20,10 @@ interface Props {
 
 export const DrawerNavbar = ({children}: Props) => {
   const drawerOpen = useBoolean(false)
+
+  useGlobalKeyDown({
+    escape: () => drawerOpen.value && drawerOpen.turnOff()
+  })
 
   return (
     <Drawer
