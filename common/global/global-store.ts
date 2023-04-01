@@ -22,10 +22,10 @@ export class GlobalStore {
     this.state.theme = theme
   }
 
-  updateTheme = (newTheme: Theme) => {
+  updateTheme = (newTheme: Theme): void => {
     this.setTheme(newTheme)
   }
 }
 
-const [GlobalContext, useGlobalStore] = createUseStore(GlobalStore)
+const [GlobalContext, useGlobalStore] = createUseStore<GlobalStore>()
 export {GlobalContext, useGlobalStore}

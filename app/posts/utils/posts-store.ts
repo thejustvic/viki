@@ -44,5 +44,5 @@ export class PostsStore {
   }
 }
 
-const [PostsContext, usePostsStore] = createUseStore(PostsStore)
+const [PostsContext, usePostsStore] = createUseStore<PostsStore>()
 export {PostsContext, usePostsStore}
