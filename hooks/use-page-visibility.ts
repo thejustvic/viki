@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 
-export const usePageVisibility = () => {
+export const usePageVisibility = (): boolean => {
   if (typeof window === 'undefined') {
     return false
   }
@@ -8,7 +8,7 @@ export const usePageVisibility = () => {
   const [isVisible, setVisibility] = useState(!document.hidden)
 
   useEffect(() => {
-    const updatePageVisibility = () => setVisibility(!document.hidden)
+    const updatePageVisibility = (): void => setVisibility(!document.hidden)
     updatePageVisibility()
 
     document.addEventListener('visibilitychange', updatePageVisibility)

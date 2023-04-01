@@ -1,6 +1,6 @@
-import {DependencyList, useRef, useState} from 'react'
+import {DependencyList, MutableRefObject, useRef, useState} from 'react'
 
-const useLazyRef = <T>(getInitialValue: () => T) => {
+const useLazyRef = <T>(getInitialValue: () => T): MutableRefObject<T> => {
   const [value] = useState(getInitialValue)
   return useRef(value)
 }
@@ -8,7 +8,7 @@ const useLazyRef = <T>(getInitialValue: () => T) => {
 const areInputsEqual = (
   newInputs: DependencyList,
   lastInputs: DependencyList
-) => {
+): boolean => {
   if (newInputs.length !== lastInputs.length) {
     return false
   }

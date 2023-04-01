@@ -19,7 +19,7 @@ export const useSupabaseListener = (
         router.refresh()
       }
     }
-    getSession()
+    void getSession()
   }, [isPageVisible])
 
   useEffect(() => {
