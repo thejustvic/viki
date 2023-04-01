@@ -31,6 +31,7 @@ specifiers:
   react-daisyui: 3.0.3
   react-dom: 18.2.0
   react-parallax-tilt: 1.7.120
+  react-perfect-scrollbar: 1.5.8
   sass: 1.59.2
   server-only: 0.0.1
   supabase: 1.42.7
@@ -53,6 +54,7 @@ dependencies:
   react-daisyui: 3.0.3_f51a5b48319f3f5fb21fe0289f49b506
   react-dom: 18.2.0_react@18.2.0
   react-parallax-tilt: 1.7.120_react-dom@18.2.0+react@18.2.0
+  react-perfect-scrollbar: 1.5.8_react-dom@18.2.0+react@18.2.0
   server-only: 0.0.1
   tailwind-styled-components: 2.2.0_react-dom@18.2.0+react@18.2.0
   tailwindcss: 3.2.7
@@ -3651,6 +3653,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /perfect-scrollbar/1.5.5:
+    resolution: {integrity: sha512-dzalfutyP3e/FOpdlhVryN4AJ5XDVauVWxybSkLZmakFE2sS3y3pc4JnSprw8tGmHvkaG5Edr5T7LBTZ+WWU2g==}
+    dev: false
+
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
@@ -3823,6 +3829,18 @@ packages:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-perfect-scrollbar/1.5.8_react-dom@18.2.0+react@18.2.0:
+    resolution: {integrity: sha512-bQ46m70gp/HJtiBOF3gRzBISSZn8FFGNxznTdmTG8AAwpxG1bJCyn7shrgjEvGSQ5FJEafVEiosY+ccER11OSA==}
+    peerDependencies:
+      react: '>=16.3.3'
+      react-dom: '>=16.3.3'
+    dependencies:
+      perfect-scrollbar: 1.5.5
+      prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false

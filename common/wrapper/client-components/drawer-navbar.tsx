@@ -1,18 +1,12 @@
 'use client'
 
+import {Scrollbar} from '@/common/scrollbar'
 import {useBoolean} from '@/hooks/use-boolean'
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
-import tw from 'tailwind-styled-components'
 import {DrawerMenu} from '../../drawer-menu'
 import {Navbar} from '../../navbar'
-
-const TwChildren = tw.div`
-  overflow-y-scroll
-  scrollbar-sm
-  md:scrollbar
-`
 
 interface Props {
   children: ReactNode
@@ -32,7 +26,7 @@ export const DrawerNavbar = ({children}: Props) => {
       side={<DrawerMenu toggleDrawer={drawerOpen.toggle} />}
     >
       <Navbar toggleMenu={drawerOpen.toggle} />
-      <TwChildren>{children}</TwChildren>
+      <Scrollbar>{children}</Scrollbar>
     </Drawer>
   )
 }
