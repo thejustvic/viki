@@ -1,7 +1,9 @@
 import type {Session} from '@supabase/auth-helpers-nextjs'
 import {createClient} from './supabase-server'
 
-export const getServerTheme = async (session: Session | null) => {
+export const getServerTheme = async (
+  session: Session | null
+): Promise<string | undefined> => {
   if (!session) {
     return undefined
   }
