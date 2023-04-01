@@ -14,7 +14,7 @@ interface Props {
 
 export const Loader = ({className}: Props) => {
   return (
-    <TwLoader className={className || 'text-violet-400'}>
+    <TwLoader className={className ?? 'text-violet-400'}>
       <IconLoader />
     </TwLoader>
   )
