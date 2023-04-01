@@ -30,7 +30,7 @@ export const SwitchTheme = observer(() => {
       color="ghost"
       shape="circle"
       onClick={toggleTheme}
-      loading={!Boolean(state.theme)}
+      loading={!state.theme}
     >
       {getTheme(state.theme)}
     </Button>

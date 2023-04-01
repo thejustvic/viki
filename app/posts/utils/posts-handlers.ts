@@ -9,11 +9,11 @@ interface Handlers {
 export const usePostHandlers = (): Handlers => {
   const {supabase, session} = useSupabase()
 
-  const removePost = async (id: Post['id']) => {
+  const removePost = async (id: Post['id']): Promise<void> => {
     await supabase.from('posts').delete().eq('id', id)
   }
 
-  const insertPost = async () => {
+  const insertPost = async (): Promise<void> => {
     await supabase.from('posts').insert({
       text: (Math.random() + 1).toString(36).substring(7),
       by: session?.user.id

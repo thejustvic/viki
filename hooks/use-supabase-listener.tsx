@@ -1,16 +1,13 @@
 'use client'
 
-import {
-  MaybeSession,
-  SupabaseContext
-} from '@/utils/supabase-utils/supabase-provider'
+import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {useRouter} from 'next/navigation'
 import {useEffect} from 'react'
 import {usePageVisibility} from './use-page-visibility'
 
 export const useSupabaseListener = (
   supabase: SupabaseContext['supabase'],
-  mySession: MaybeSession
+  mySession: SupabaseContext['session']
 ) => {
   const router = useRouter()
   const isPageVisible = usePageVisibility()

@@ -1,16 +1,13 @@
-import {
-  MaybeSession,
-  SupabaseContext
-} from '@/utils/supabase-utils/supabase-provider'
+import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {useEffect} from 'react'
 import {PostsStore} from './posts-store'
 import {Post} from './types'
 
 export const usePostsListener = (
-  session: MaybeSession,
+  session: SupabaseContext['session'],
   supabase: SupabaseContext['supabase'],
   store: PostsStore
-) => {
+): void => {
   useEffect(() => {
     const channel = supabase
       .channel('posts')

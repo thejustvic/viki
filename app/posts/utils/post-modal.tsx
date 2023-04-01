@@ -41,7 +41,7 @@ export const PostModal = ({
 
       set(data)
     }
-    fetch()
+    void fetch()
     return () => set(null)
   }, [postId])
 

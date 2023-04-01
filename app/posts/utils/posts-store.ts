@@ -19,11 +19,11 @@ export class PostsStore {
     this.setPosts(serverPosts)
   }
 
-  setPosts(posts: Post[]) {
+  setPosts(posts: Post[]): void {
     this.state.posts = posts
   }
 
-  handleUpdate = (oldPost: Post, newPost: Post) => {
+  handleUpdate = (oldPost: Post, newPost: Post): void => {
     this.setPosts(
       this.state.posts.map(post => {
         if (post.id === oldPost.id) {
@@ -34,11 +34,11 @@ export class PostsStore {
     )
   }
 
-  handleInsert = (newPost: Post) => {
+  handleInsert = (newPost: Post): void => {
     this.setPosts([...this.state.posts, newPost])
   }
 
-  handleDelete = (oldPost: Post) => {
+  handleDelete = (oldPost: Post): void => {
     const posts = Util.clone(this.state.posts)
     this.setPosts(posts.filter(post => post.id !== oldPost.id))
   }
