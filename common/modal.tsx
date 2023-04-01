@@ -1,11 +1,11 @@
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {IconCircleX} from '@tabler/icons-react'
-import {ReactElement} from 'react'
+import {ReactNode} from 'react'
 import {Button, Modal as ModalComponent} from 'react-daisyui'
 
 interface Props {
-  header: () => ReactElement
-  body: () => ReactElement
+  header: () => ReactNode
+  body: () => ReactNode
   goBack: () => void
   open: boolean
 }
