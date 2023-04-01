@@ -1,3 +1,4 @@
+import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {IconCircleX} from '@tabler/icons-react'
 import {ReactElement} from 'react'
 import {Button, Modal as ModalComponent} from 'react-daisyui'
@@ -10,6 +11,10 @@ interface Props {
 }
 
 export const Modal = ({header, body, goBack, open}: Props) => {
+  useGlobalKeyDown({
+    escape: goBack
+  })
+
   return (
     <ModalComponent open={open} onClickBackdrop={goBack}>
       <Button
