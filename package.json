@@ -37,6 +37,8 @@
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-unused-imports": "2.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "13.2.0",
     "postcss": "8.4.21",
     "postcss-import": "15.1.0",
     "prettier": "2.8.4",
@@ -46,5 +48,11 @@
     "tailwindcss": "3.2.7",
     "ts-essentials": "9.3.1",
     "typescript": "5.0.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --quiet"
+    ]
   }
 }
