@@ -6,10 +6,11 @@ import {usePostHandlers} from './utils/posts-handlers'
 const TwAdd = tw(Button)`
   bg-base-300 
   shadow-md 
-  w-[190px] 
   h-[142px] 
   border-0 
   rounded-2xl
+  w-[288px]
+  md:w-[190px]
 `
 
 export const AddNew = () => {

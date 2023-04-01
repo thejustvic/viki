@@ -3,7 +3,7 @@
 import {Load} from '@/common/load'
 import {Modal} from '@/common/modal'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {useRouter} from 'next/navigation'
+import {useRouter, useSearchParams} from 'next/navigation'
 import {useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
 
@@ -17,16 +17,12 @@ const TwLoad = tw(Load)`
   items-start
 `
 
-export const PostModal = ({
-  postId,
-  open
-}: {
-  postId: string | null
-  open: boolean
-}) => {
+export const PostModal = () => {
   const router = useRouter()
   const {supabase} = useSupabase()
   const [post, set] = useState<Post | null>()
+  const searchParams = useSearchParams()
+  const postId = searchParams.get('post')
 
   useEffect(() => {
     if (!postId) {
@@ -51,7 +47,7 @@ export const PostModal = ({
 
   return (
     <Modal
-      open={open}
+      open={Boolean(postId)}
       goBack={goBack}
       header={() => <>{'Post:'}</>}
       body={() => <>{post?.text ?? <TwLoad />}</>}
