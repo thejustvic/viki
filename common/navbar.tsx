@@ -10,7 +10,7 @@ interface Props {
 
 export const Navbar = ({toggleMenu}: Props) => {
   return (
-    <Nav className="bg-base-200">
+    <Nav className="bg-base-200 sticky top-0 z-10">
       <Nav.Start>
         <Button color="ghost" onClick={toggleMenu}>
           <div className="normal-case text-lg">
