@@ -1,5 +1,6 @@
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoObservable, observable} from 'mobx'
+import {makePersistable} from 'mobx-persist-store'
 import {Theme} from './types'
 
 interface State {
@@ -16,6 +17,12 @@ export class GlobalStore {
       state: observable.shallow
     })
     this.setTheme(serverTheme)
+
+    void makePersistable(this, {
+      name: 'GlobalStore',
+      properties: ['state'],
+      storage: window.localStorage
+    })
   }
 
   setTheme(theme: Theme): void {
