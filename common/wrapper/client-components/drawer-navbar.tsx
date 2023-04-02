@@ -1,6 +1,5 @@
 'use client'
 
-import {Scrollbar} from '@/common/scrollbar'
 import {useBoolean} from '@/hooks/use-boolean'
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {ReactNode} from 'react'
@@ -26,7 +25,7 @@ export const DrawerNavbar = ({children}: Props) => {
       side={<DrawerMenu toggleDrawer={drawerOpen.toggle} />}
     >
       <Navbar toggleMenu={drawerOpen.toggle} />
-      <Scrollbar>{children}</Scrollbar>
+      <div>{children}</div>
     </Drawer>
   )
 }
