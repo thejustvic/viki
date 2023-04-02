@@ -29,6 +29,7 @@ specifiers:
   prettier: 2.8.4
   react: 18.2.0
   react-daisyui: 3.0.3
+  react-device-detect: 2.2.3
   react-dom: 18.2.0
   react-parallax-tilt: 1.7.120
   react-perfect-scrollbar: 1.5.8
@@ -52,6 +53,7 @@ dependencies:
   next: 13.2.4_0fc8856c2b76afcfc98cd26c0bbd2574
   react: 18.2.0
   react-daisyui: 3.0.3_f51a5b48319f3f5fb21fe0289f49b506
+  react-device-detect: 2.2.3_react-dom@18.2.0+react@18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-parallax-tilt: 1.7.120_react-dom@18.2.0+react@18.2.0
   react-perfect-scrollbar: 1.5.8_react-dom@18.2.0+react@18.2.0
@@ -3791,6 +3793,17 @@ packages:
       tailwindcss: 3.2.7
     dev: false
 
+  /react-device-detect/2.2.3_react-dom@18.2.0+react@18.2.0:
+    resolution: {integrity: sha512-buYY3qrCnQVlIFHrC5UcUoAj7iANs/+srdkwsnNjI7anr3Tt7UY6MqNxtMLlr0tMBied0O49UZVK8XKs3ZIiPw==}
+    peerDependencies:
+      react: '>= 0.14.0'
+      react-dom: '>= 0.14.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      ua-parser-js: 1.0.35
+    dev: false
+
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -4289,6 +4302,10 @@ packages:
     engines: {node: '>=12.20'}
     hasBin: true
     dev: true
+
+  /ua-parser-js/1.0.35:
+    resolution: {integrity: sha512-fKnGuqmTBnIE+/KXSzCn4db8RTigUzw1AN0DmdU6hJovUTbYJKyqj+8Mt1c4VfRDnOVJnENmfYkIPZ946UrSAA==}
+    dev: false
 
   /unicode-canonical-property-names-ecmascript/2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
