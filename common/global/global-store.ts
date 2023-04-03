@@ -17,11 +17,13 @@ export class GlobalStore {
       state: observable.shallow
     })
 
-    void makePersistable(this, {
-      name: 'GlobalStore',
-      properties: ['state'],
-      storage: window.localStorage
-    })
+    if (typeof window !== 'undefined') {
+      void makePersistable(this, {
+        name: 'GlobalStore',
+        properties: ['state'],
+        storage: window.localStorage
+      })
+    }
 
     serverTheme && this.setTheme(serverTheme)
   }
