@@ -6,7 +6,7 @@ import {useMemoOne} from '@/hooks/use-memo-one'
 
 interface Props {
   children: React.ReactNode
-  serverTheme: Theme
+  serverTheme: Theme | undefined
 }
 
 export default function GlobalProvider({children, serverTheme}: Props) {

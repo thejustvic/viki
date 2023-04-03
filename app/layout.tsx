@@ -24,10 +24,10 @@ export default async function RootLayout({children}: Props) {
   const session = await getServerSession()
   const serverTheme = await getServerTheme(session)
   const cookiesTheme = cookies().get('theme')?.value
-  const theme = serverTheme || cookiesTheme || 'dark'
+  const theme = serverTheme || cookiesTheme
 
   return (
-    <html data-theme={theme} lang="en">
+    <html data-theme={theme || 'dark'} lang="en">
       <body>
         <SupabaseProvider session={session}>
           <GlobalProvider serverTheme={theme}>
