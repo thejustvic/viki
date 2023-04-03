@@ -15,7 +15,7 @@ export const SwitchTheme = observer(() => {
 
   const toggleTheme = async () => {
     const theme = await updateTheme({
-      theme: state.theme === 'dark' ? 'garden' : 'dark',
+      theme: state.theme === 'dark' ? 'light' : 'dark',
       opts: {supabase, session}
     })
     implementTheme(store, theme)
@@ -41,7 +41,7 @@ const getTheme = (theme: Theme) => {
   switch (theme) {
     case 'dark':
       return <IconMoon />
-    case 'garden':
+    case 'light':
       return <IconSun />
     default:
       throw new Error(`unsupported theme: ${theme}`)
