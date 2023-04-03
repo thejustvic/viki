@@ -1,8 +1,7 @@
-import type {GlobalStore} from '@/common/global/global-store'
+import {Theme} from '@/common/global/types'
 import {setCookie} from 'cookies-next'
 
-export const implementTheme = (store: GlobalStore, themeRes: string): void => {
-  store.updateTheme(themeRes)
-  document.body.setAttribute('data-theme', themeRes)
-  setCookie('theme', themeRes)
+export const implementTheme = (theme: Theme): void => {
+  document.body.setAttribute('data-theme', theme)
+  setCookie('theme', theme)
 }

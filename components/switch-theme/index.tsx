@@ -5,6 +5,7 @@ import {Theme} from '@/common/global/types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMoon, IconSun} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
+import {useEffect} from 'react'
 import {Button} from 'react-daisyui'
 import {implementTheme} from './utils/implement-theme'
 import {updateTheme} from './utils/update-theme'
@@ -13,12 +14,16 @@ export const SwitchTheme = observer(() => {
   const {supabase, session} = useSupabase()
   const [state, store] = useGlobalStore()
 
+  useEffect(() => {
+    implementTheme(state.theme)
+  }, [state.theme])
+
   const toggleTheme = async () => {
     const theme = await updateTheme({
       theme: state.theme === 'dark' ? 'light' : 'dark',
       opts: {supabase, session}
     })
-    implementTheme(store, theme)
+    store.setTheme(theme)
   }
 
   if (!session) {
