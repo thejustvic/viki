@@ -27,6 +27,7 @@ specifiers:
   next: 13.2.4
   overlayscrollbars: 2.1.1
   overlayscrollbars-react: 0.5.0
+  perfect-scrollbar: 1.5.5
   postcss: 8.4.21
   postcss-import: 15.1.0
   prettier: 2.8.4
@@ -57,6 +58,7 @@ dependencies:
   next: 13.2.4_0fc8856c2b76afcfc98cd26c0bbd2574
   overlayscrollbars: 2.1.1
   overlayscrollbars-react: 0.5.0_b9b06534471bba3e612f21e1277cac15
+  perfect-scrollbar: 1.5.5
   react: 18.2.0
   react-daisyui: 3.0.3_f51a5b48319f3f5fb21fe0289f49b506
   react-device-detect: 2.2.3_react-dom@18.2.0+react@18.2.0
@@ -3692,6 +3694,10 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
     dev: true
+
+  /perfect-scrollbar/1.5.5:
+    resolution: {integrity: sha512-dzalfutyP3e/FOpdlhVryN4AJ5XDVauVWxybSkLZmakFE2sS3y3pc4JnSprw8tGmHvkaG5Edr5T7LBTZ+WWU2g==}
+    dev: false
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}

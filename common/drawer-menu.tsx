@@ -21,7 +21,7 @@ export const DrawerMenu = observer(({toggleDrawer}: Props) => {
 
   const checked = state.scrollbar === 'overlayscrollbars'
   const onToggle = () => {
-    const scrollbar = checked ? 'simplebar' : 'overlayscrollbars'
+    const scrollbar = checked ? 'perfectscrollbar' : 'overlayscrollbars'
     store.setScrollbar(scrollbar)
   }
 
@@ -39,7 +39,7 @@ export const DrawerMenu = observer(({toggleDrawer}: Props) => {
         <CodeMockup.Line status="success">Profit!</CodeMockup.Line>
       </CodeMockup>
       <div className="flex p-4 gap-4">
-        simplebar <Toggle checked={checked} onChange={onToggle} />{' '}
+        perfectscrollbar <Toggle checked={checked} onChange={onToggle} />{' '}
         overlayscrollbars
       </div>
     </TwMenu>

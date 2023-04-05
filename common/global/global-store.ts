@@ -5,13 +5,13 @@ import {Theme} from './types'
 
 interface State {
   theme: Theme
-  scrollbar: 'overlayscrollbars' | 'simplebar'
+  scrollbar: 'overlayscrollbars' | 'perfectscrollbar'
 }
 
 export class GlobalStore {
   state: State = {
     theme: 'dark',
-    scrollbar: 'simplebar'
+    scrollbar: 'overlayscrollbars'
   }
 
   constructor(serverTheme: Theme | undefined) {
