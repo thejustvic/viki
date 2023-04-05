@@ -6,5 +6,14 @@ interface Props {
 }
 
 export const PerfectScrollbar = ({children}: Props) => {
-  return <ReactPerfectScrollbar>{children}</ReactPerfectScrollbar>
+  return (
+    <ReactPerfectScrollbar
+      options={{
+        wheelPropagation: false,
+        minScrollbarLength: 30
+      }}
+    >
+      {children}
+    </ReactPerfectScrollbar>
+  )
 }
