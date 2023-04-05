@@ -5,13 +5,11 @@ import {Theme} from './types'
 
 interface State {
   theme: Theme
-  scrollbar: 'overlayscrollbars' | 'perfectscrollbar'
 }
 
 export class GlobalStore {
   state: State = {
-    theme: 'dark',
-    scrollbar: 'overlayscrollbars'
+    theme: 'dark'
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -40,10 +38,6 @@ export class GlobalStore {
 
   updateTheme(newTheme: Theme): void {
     this.setTheme(newTheme)
-  }
-
-  setScrollbar(scrollbar: State['scrollbar']): void {
-    this.state.scrollbar = scrollbar
   }
 }
 

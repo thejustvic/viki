@@ -1,4 +1,5 @@
 import {SwitchTheme} from '@/components/switch-theme'
+import {headerHeight} from '@/utils/consts'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMenu} from '@tabler/icons-react'
 import Image from 'next/image'
@@ -10,16 +11,19 @@ interface Props {
 
 export const Navbar = ({toggleMenu}: Props) => {
   return (
-    <Nav className="bg-base-200 sticky top-0 z-10">
+    <Nav
+      className="sticky top-0 z-10 bg-base-200"
+      style={{height: headerHeight}}
+    >
       <Nav.Start>
         <Button color="ghost" onClick={toggleMenu}>
-          <div className="normal-case text-lg">
+          <div className="text-lg normal-case">
             <IconMenu />
           </div>
         </Button>
       </Nav.Start>
 
-      <Nav.Center className="text-lg font-mono">viki</Nav.Center>
+      <Nav.Center className="font-mono text-lg">viki</Nav.Center>
 
       <Nav.End className="gap-2">
         <SwitchTheme />
@@ -49,7 +53,7 @@ const Avatar = () => {
           className="rounded-full"
         />
       </Button>
-      <Dropdown.Menu className="w-52 shadow-lg">
+      <Dropdown.Menu className="shadow-lg w-52">
         <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

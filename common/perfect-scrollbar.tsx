@@ -10,7 +10,8 @@ export const PerfectScrollbar = ({children}: Props) => {
     <ReactPerfectScrollbar
       options={{
         wheelPropagation: false,
-        minScrollbarLength: 30
+        minScrollbarLength: 30,
+        swipeEasing: true
       }}
     >
       {children}
