@@ -2,13 +2,17 @@ This is a [Next13](https://beta.nextjs.org/docs/getting-started) project.
 
 ## Getting Started
 
-First, run the development server:
+First, configure .env file
+
+Then, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+
+
+npm i -g pnpm@6.3.0
+
+pnpm i
+
 pnpm dev
 ```
 
