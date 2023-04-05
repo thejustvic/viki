@@ -6,6 +6,7 @@ import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {headerHeight} from '@/utils/consts'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
+import {isMobile} from 'react-device-detect'
 import {DrawerMenu} from '../../drawer-menu'
 import {Navbar} from '../../navbar'
 
@@ -22,6 +23,7 @@ export const DrawerNavbar = ({children}: Props) => {
 
   return (
     <Drawer
+      mobile={isMobile}
       open={drawerOpen.value}
       onClickOverlay={drawerOpen.turnOff}
       side={<DrawerMenu toggleDrawer={drawerOpen.toggle} />}
