@@ -29,6 +29,7 @@
     "tailwind-styled-components": "2.2.0"
   },
   "devDependencies": {
+    "@supabase/postgrest-js": "1.5.0",
     "@svgr/webpack": "6.5.1",
     "@types/eslint-config-prettier": "6.11.0",
     "@types/node": "18.15.0",
