@@ -6,7 +6,7 @@ import {useMemoOne} from '@/hooks/use-memo-one'
 import {observer} from 'mobx-react-lite'
 import {useRouter, useSearchParams} from 'next/navigation'
 import tw from 'tailwind-styled-components'
-import {useGetPostById} from './fetch/use-get-post-by-id'
+import {usePostListener} from './fetch/use-get-post-by-id'
 
 import {
   ModalPostStore,
@@ -14,7 +14,7 @@ import {
   useModalPostStore
 } from './modal-post-store'
 
-const TwLoad = tw(Load)`
+const TwLoading = tw(Load)`
   h-6 
   w-6 
   p-0 
@@ -33,13 +33,12 @@ export const ModalPost = () => {
 }
 
 export const ModalPostBase = () => {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
-
-  useGetPostById(postId)
-
+  const router = useRouter()
   const goBack = () => router.push('/')
+
+  usePostListener(postId)
 
   return (
     <Modal
@@ -59,7 +58,7 @@ const ModalBody = observer(() => {
   const [state] = useModalPostStore()
   return (
     <>
-      {state.post.load && <TwLoad />}
+      {state.post.loading && <TwLoading />}
       {state.post.error && <div>{state.post.error.message}</div>}
       {state.post.data && <div>{state.post.data?.text}</div>}
     </>
