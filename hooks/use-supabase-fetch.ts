@@ -11,6 +11,7 @@ export const useSupabaseFetch = <T>(
   postgrestBuilder: null | (() => PostgrestBuilder<T>),
   deps: unknown[]
 ): Query<T> => {
+  const isBuilderExist = typeof postgrestBuilder === 'function'
   const [result, setResult] = useState<Query<T>>({
     loading: false,
     data: null,
@@ -18,13 +19,10 @@ export const useSupabaseFetch = <T>(
   })
 
   useEffect(() => {
+    if (!isBuilderExist) {
+      return
+    }
     const fetch = async (): Promise<void> => {
-      if (!deps) {
-        return
-      }
-      if (typeof postgrestBuilder !== 'function') {
-        return
-      }
       setResult({
         loading: true,
         data: null,
@@ -37,12 +35,13 @@ export const useSupabaseFetch = <T>(
           data: null,
           error
         })
+      } else {
+        setResult({
+          loading: false,
+          data,
+          error: null
+        })
       }
-      setResult({
-        loading: false,
-        data,
-        error: null
-      })
     }
     void fetch()
 
