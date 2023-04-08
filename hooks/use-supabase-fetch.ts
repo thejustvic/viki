@@ -12,7 +12,7 @@ export const useSupabaseFetch = <T>(
   deps: unknown[]
 ): Query<T> => {
   const [result, setResult] = useState<Query<T>>({
-    loading: true,
+    loading: false,
     data: null,
     error: null
   })
