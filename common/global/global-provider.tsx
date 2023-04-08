@@ -3,9 +3,10 @@
 import {GlobalContext, GlobalStore} from '@/common/global/global-store'
 import {Theme} from '@/common/global/types'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {ReactNode} from 'react'
 
 interface Props {
-  children: React.ReactNode
+  children: ReactNode
   serverTheme: Theme | undefined
 }
 
