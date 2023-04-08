@@ -5,8 +5,8 @@ import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
-import {AddNew} from '../add-new'
-import {PostModal} from './post-modal'
+import {AddNewPost} from './add-new-post'
+import {ModalPost} from './modal-post/modal-post'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import {Post} from './types'
@@ -37,7 +37,7 @@ export const Posts = ({serverPosts}: Props) => {
 
 const PostsBase = () => (
   <>
-    <PostModal />
+    <ModalPost />
     <PostsList />
   </>
 )
@@ -52,7 +52,7 @@ const PostsList = observer(() => {
       {state.posts.map(post => (
         <Post post={post} key={post.id} />
       ))}
-      <AddNew />
+      <AddNewPost />
     </TwContainer>
   )
 })

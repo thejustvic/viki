@@ -4,8 +4,8 @@ import {ReactNode} from 'react'
 import {Button, Modal as ModalComponent} from 'react-daisyui'
 
 interface Props {
-  header: () => ReactNode
-  body: () => ReactNode
+  header: ReactNode
+  body: ReactNode
   goBack: () => void
   open: boolean
 }
@@ -27,9 +27,9 @@ export const Modal = ({header, body, goBack, open}: Props) => {
         <IconCircleX />
       </Button>
       <ModalComponent.Header className="font-bold">
-        {header()}
+        {header}
       </ModalComponent.Header>
-      <ModalComponent.Body>{body()}</ModalComponent.Body>
+      <ModalComponent.Body>{body}</ModalComponent.Body>
     </ModalComponent>
   )
 }

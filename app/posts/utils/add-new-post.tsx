@@ -1,7 +1,7 @@
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {Button} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
-import {usePostHandlers} from './utils/posts-handlers'
+import {usePostHandlers} from './posts-handlers'
 
 const TwAdd = tw(Button)`
   bg-base-300 
@@ -13,7 +13,7 @@ const TwAdd = tw(Button)`
   md:w-[190px]
 `
 
-export const AddNew = () => {
+export const AddNewPost = () => {
   const {insertPost} = usePostHandlers()
 
   return (
