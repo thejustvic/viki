@@ -2,6 +2,7 @@
 
 import {PostContainer} from '@/common/post'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {useTest} from '@/hooks/use-test'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
@@ -27,6 +28,8 @@ interface Props {
 
 export const Posts = ({serverPosts}: Props) => {
   const store = useMemoOne(() => new PostsStore(serverPosts), [])
+
+  useTest()
 
   return (
     <PostsContext.Provider value={store}>
