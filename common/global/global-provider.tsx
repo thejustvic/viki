@@ -3,7 +3,8 @@
 import {GlobalContext, GlobalStore} from '@/common/global/global-store'
 import {Theme} from '@/common/global/types'
 import {useMemoOne} from '@/hooks/use-memo-one'
-import {ReactNode} from 'react'
+import {makePersistable} from 'mobx-persist-store'
+import {ReactNode, useEffect} from 'react'
 
 interface Props {
   children: ReactNode
@@ -12,6 +13,14 @@ interface Props {
 
 export default function GlobalProvider({children, serverTheme}: Props) {
   const store = useMemoOne(() => new GlobalStore(serverTheme), [])
+
+  useEffect(() => {
+    void makePersistable(store, {
+      name: 'GlobalStore',
+      properties: ['state'],
+      storage: window.localStorage
+    })
+  }, [])
 
   return (
     <GlobalContext.Provider value={store}>
