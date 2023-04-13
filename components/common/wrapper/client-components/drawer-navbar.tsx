@@ -1,7 +1,7 @@
 'use client'
 
-import {useGlobalStore} from '@/common/global/global-store'
-import {PerfectScrollbar} from '@/common/perfect-scrollbar'
+import {useGlobalStore} from '@/components/common/global/global-store'
+import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {useMousePosition} from '@/hooks/use-mouse-position'
 import {headerHeight} from '@/utils/const'

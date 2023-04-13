@@ -1,7 +1,7 @@
 'use client'
 
-import {Load} from '@/common/load'
-import {Modal} from '@/common/modal'
+import {Load} from '@/components/common/load'
+import {Modal} from '@/components/common/modal'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {observer} from 'mobx-react-lite'
 import {useRouter, useSearchParams} from 'next/navigation'

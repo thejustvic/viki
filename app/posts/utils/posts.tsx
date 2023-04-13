@@ -1,6 +1,6 @@
 'use client'
 
-import {PostContainer} from '@/common/post'
+import {PostContainer} from '@/components/common/post'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'

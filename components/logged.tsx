@@ -1,6 +1,6 @@
 import 'server-only'
 
-import {Load} from '@/common/load'
+import {Load} from '@/components/common/load'
 import {Suspense} from 'react'
 import MyPosts from '../app/posts/page'
 

@@ -1,7 +1,7 @@
 'use client'
 
-import {useGlobalStore} from '@/common/global/global-store'
-import {Theme} from '@/common/global/types'
+import {useGlobalStore} from '@/components/common/global/global-store'
+import {Theme} from '@/components/common/global/types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMoon, IconSun} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
