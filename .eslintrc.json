@@ -34,7 +34,7 @@
         ]
       }
     ],
-    "no-console": ["error", {"allow": ["table", "time", "timeEnd"]}],
+    "no-console": ["error", {"allow": ["table", "error", "time", "timeEnd"]}],
     "func-style": ["error", "declaration", {"allowArrowFunctions": true}],
     "func-names": ["error", "always"],
     "curly": ["error", "all"],
