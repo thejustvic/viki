@@ -10,9 +10,9 @@ import tw from 'tailwind-styled-components'
 const TwCard = tw(Card)`
   bg-base-300 
   shadow-md
-  h-36
-  w-72
-  md:w-48
+  w-[288px]
+  h-[142px]
+  md:w-[190px]
 `
 
 interface Props {
