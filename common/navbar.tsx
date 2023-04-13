@@ -1,22 +1,26 @@
 import {SwitchTheme} from '@/components/switch-theme'
-import {headerHeight} from '@/utils/consts'
+import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMenu} from '@tabler/icons-react'
+import {observer} from 'mobx-react-lite'
 import Image from 'next/image'
 import {Button, Dropdown, Navbar as Nav} from 'react-daisyui'
+import {useGlobalStore} from './global/global-store'
 
-interface Props {
-  toggleMenu: () => void
-}
+export const Navbar = observer(() => {
+  const [, store] = useGlobalStore()
 
-export const Navbar = ({toggleMenu}: Props) => {
+  const drawerOpen = () => {
+    store.setDrawerOpen()
+  }
+
   return (
     <Nav
       className="sticky top-0 z-10 bg-base-200"
       style={{height: headerHeight}}
     >
       <Nav.Start>
-        <Button color="ghost" onClick={toggleMenu}>
+        <Button color="ghost" onClick={drawerOpen}>
           <div className="text-lg normal-case">
             <IconMenu />
           </div>
@@ -31,7 +35,7 @@ export const Navbar = ({toggleMenu}: Props) => {
       </Nav.End>
     </Nav>
   )
-}
+})
 
 const Avatar = () => {
   const {supabase, session} = useSupabase()
@@ -43,7 +47,7 @@ const Avatar = () => {
   }
 
   return (
-    <Dropdown vertical="end">
+    <Dropdown vertical="end" hover>
       <Button color="ghost" className="avatar" shape="circle">
         <Image
           width={46}

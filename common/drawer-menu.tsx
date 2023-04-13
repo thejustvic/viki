@@ -1,6 +1,8 @@
+import {observer} from 'mobx-react-lite'
 import Link from 'next/link'
 import {Button, CodeMockup, Divider, Menu} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
+import {useGlobalStore} from './global/global-store'
 
 const TwMenu = tw(Menu)`
   bg-base-100 
@@ -10,15 +12,17 @@ const TwMenu = tw(Menu)`
   p-2
 `
 
-interface Props {
-  toggleDrawer: () => void
-}
+export const DrawerMenu = observer(() => {
+  const [, store] = useGlobalStore()
 
-export const DrawerMenu = ({toggleDrawer}: Props) => {
+  const closeDrawer = () => {
+    store.setDrawerClosed()
+  }
+
   return (
     <TwMenu vertical>
       <Link href="/">
-        <Button color="ghost" className="w-full text-xl" onClick={toggleDrawer}>
+        <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
           viki
         </Button>
       </Link>
@@ -30,4 +34,4 @@ export const DrawerMenu = ({toggleDrawer}: Props) => {
       </CodeMockup>
     </TwMenu>
   )
-}
+})

@@ -5,11 +5,15 @@ import {Theme} from './types'
 
 interface State {
   theme: Theme
+  drawerOpen: boolean
+  drawerOpenByHover: boolean
 }
 
 export class GlobalStore {
   state: State = {
-    theme: 'dark'
+    theme: 'dark',
+    drawerOpen: false,
+    drawerOpenByHover: false
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -28,16 +32,26 @@ export class GlobalStore {
     serverTheme && this.setTheme(serverTheme)
   }
 
-  async getStoredData(): Promise<this | null> {
+  getStoredData = async (): Promise<this | null> => {
     return getPersistedStore(this)
   }
 
-  setTheme(theme: Theme): void {
+  setTheme = (theme: Theme): void => {
     this.state.theme = theme
   }
 
-  updateTheme(newTheme: Theme): void {
+  updateTheme = (newTheme: Theme): void => {
     this.setTheme(newTheme)
+  }
+
+  setDrawerOpen = (byHoverValue = false): void => {
+    this.state.drawerOpen = true
+    this.state.drawerOpenByHover = byHoverValue
+  }
+
+  setDrawerClosed = (byHoverValue = false): void => {
+    this.state.drawerOpen = false
+    this.state.drawerOpenByHover = byHoverValue
   }
 }
 

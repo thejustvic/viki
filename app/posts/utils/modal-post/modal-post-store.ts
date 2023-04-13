@@ -22,7 +22,7 @@ export class ModalPostStore {
     })
   }
 
-  setPost(post: State['post']): void {
+  setPost = (post: State['post']): void => {
     this.state.post = post
   }
 }
