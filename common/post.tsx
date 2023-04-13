@@ -50,7 +50,9 @@ const CardComp = ({post, remove, disableTranslateZ}: Props) => {
     <TwCard bordered compact style={preserve3D}>
       <Card.Body style={translateZ}>
         <Card.Title tag="h2" className="flex justify-between">
-          <Link href={href}>{post.text}</Link>
+          <Link href={href}>
+            <Button color="ghost">{post.text}</Button>
+          </Link>
           <Button color="ghost" shape="circle" onClick={remove}>
             <IconTrash />
           </Button>
