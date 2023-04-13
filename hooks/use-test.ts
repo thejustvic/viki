@@ -27,8 +27,8 @@ export const useTest = (): void => {
     //   {id: 1, text: 'hello', userId: 1, userName: 'Viktor'}
     // ]
 
-    const usersCount = 100_000
-    const messagesCount = 100_000
+    const usersCount = 1_000
+    const messagesCount = 1_000
 
     benchmarkMergeNaive(usersCount, messagesCount)
     benchmarkMergeOptimized(usersCount, messagesCount)
