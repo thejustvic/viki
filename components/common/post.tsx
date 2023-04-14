@@ -18,12 +18,12 @@ const TwCard = tw(Card)`
 interface Props {
   post: Post
   remove: () => void
-  disableTranslateZ?: boolean
+  disableTransform?: boolean
 }
 
 export const PostContainer = (props: Props) => {
   if (isSafari || isMobile) {
-    return <CardComp {...props} disableTranslateZ />
+    return <CardComp {...props} disableTransform />
   }
   const preserve3D: CSSProperties = {
     transformStyle: 'preserve-3d'
@@ -35,14 +35,14 @@ export const PostContainer = (props: Props) => {
   )
 }
 
-const CardComp = ({post, remove, disableTranslateZ}: Props) => {
+const CardComp = ({post, remove, disableTransform}: Props) => {
   const preserve3D: CSSProperties = {
     transformStyle: 'preserve-3d'
   }
   const transform: CSSProperties = {
     transform: 'translateZ(20px)'
   }
-  const translateZ: CSSProperties = !disableTranslateZ ? transform : {}
+  const translateZ: CSSProperties = !disableTransform ? transform : {}
   const href = `/?post=${post.id}`
 
   return (
