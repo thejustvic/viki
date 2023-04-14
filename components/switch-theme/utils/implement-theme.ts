@@ -1,4 +1,4 @@
-import {Theme} from '@/components/common/global/types'
+import {Theme} from '@/components/global/types'
 import {setCookie} from 'cookies-next'
 
 export const implementTheme = (theme: Theme): void => {

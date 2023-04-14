@@ -5,7 +5,7 @@ import {IconMenu} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import Image from 'next/image'
 import {Button, Dropdown, Navbar as Nav} from 'react-daisyui'
-import {useGlobalStore} from './global/global-store'
+import {useGlobalStore} from '../global/global-store'
 
 export const Navbar = observer(() => {
   const [, store] = useGlobalStore()

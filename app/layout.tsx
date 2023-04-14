@@ -1,7 +1,7 @@
 import '@/scss/app.scss'
 
-import GlobalProvider from '@/components/common/global/global-provider'
 import Wrapper from '@/components/common/wrapper'
+import GlobalProvider from '@/components/global/global-provider'
 import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'

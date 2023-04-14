@@ -2,7 +2,7 @@ import {observer} from 'mobx-react-lite'
 import Link from 'next/link'
 import {Button, CodeMockup, Divider, Menu} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
-import {useGlobalStore} from './global/global-store'
+import {useGlobalStore} from '../global/global-store'
 
 const TwMenu = tw(Menu)`
   bg-base-100 
