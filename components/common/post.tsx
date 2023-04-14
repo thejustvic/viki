@@ -39,11 +39,10 @@ const CardComp = ({post, remove, disableTranslateZ}: Props) => {
   const preserve3D: CSSProperties = {
     transformStyle: 'preserve-3d'
   }
-  const translateZ: CSSProperties = disableTranslateZ
-    ? {}
-    : {
-        transform: 'translateZ(20px)'
-      }
+  const transform: CSSProperties = {
+    transform: 'translateZ(20px)'
+  }
+  const translateZ: CSSProperties = !disableTranslateZ ? transform : {}
   const href = `/?post=${post.id}`
 
   return (
