@@ -5,6 +5,8 @@ import tw from 'tailwind-styled-components'
 import {useGlobalStore} from '../global/global-store'
 
 const TwMenu = tw(Menu)<{$margin: boolean}>`
+  border
+  border-base-300
   bg-base-100 
   text-base-content 
   overflow-y-auto 

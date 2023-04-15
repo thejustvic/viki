@@ -41,6 +41,11 @@ export class GlobalStore {
     this.state.drawerOpenByHover = byHoverValue
   }
 
+  setDrawerToggle = (): void => {
+    this.state.drawerOpen = !this.state.drawerOpen
+    this.state.drawerOpenByHover = false
+  }
+
   setDrawerClosed = (byHoverValue = false): void => {
     this.state.drawerOpen = false
     this.state.drawerOpenByHover = byHoverValue

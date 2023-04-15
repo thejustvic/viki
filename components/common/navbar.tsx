@@ -10,17 +10,13 @@ import {useGlobalStore} from '../global/global-store'
 export const Navbar = observer(() => {
   const [, store] = useGlobalStore()
 
-  const drawerOpen = () => {
-    store.setDrawerOpen()
-  }
-
   return (
     <Nav
       className="sticky top-0 z-10 bg-base-200"
       style={{height: headerHeight}}
     >
       <Nav.Start>
-        <Button color="ghost" onClick={drawerOpen}>
+        <Button color="ghost" onClick={store.setDrawerToggle}>
           <div className="text-lg normal-case">
             <IconMenu />
           </div>

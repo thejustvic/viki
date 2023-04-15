@@ -15,7 +15,7 @@ import {usePostsListener} from './use-posts-listener'
 const TwContainer = tw.div`
   flex
   gap-8
-  m-8
+  m-4
   flex-wrap
   justify-center
   md:justify-start

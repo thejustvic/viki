@@ -3,7 +3,6 @@
 import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {useGlobalStore} from '@/components/global/global-store'
 import {useDrawerOpenState} from '@/hooks/use-drawer-open-state'
-import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {headerHeight} from '@/utils/const'
 import {observer} from 'mobx-react-lite'
 import {ReactNode, useEffect, useRef} from 'react'
@@ -20,6 +19,8 @@ export const DrawerNavbar = observer(({children}: Props) => {
   const [state, store] = useGlobalStore()
   const ref = useRef<HTMLDivElement>(null)
 
+  useDrawerOpenState()
+
   useEffect(() => {
     const height = `
       height: calc(100vh - ${headerHeight}); /* fallback for Firefox, IE and etc. */
@@ -32,15 +33,12 @@ export const DrawerNavbar = observer(({children}: Props) => {
     store.setDrawerClosed()
   }
 
-  useDrawerOpenState()
-  useGlobalKeyDown({
-    escape: () => state.drawerOpen && closeDrawer()
-  })
+  const mobileDrawerOpen = !state.drawerOpenByHover && state.drawerOpen
 
   return (
     <Drawer
-      mobile={isMobile}
-      open={state.drawerOpen}
+      open={isMobile ? state.drawerOpen : state.drawerOpenByHover}
+      mobile={isMobile || mobileDrawerOpen}
       onClickOverlay={closeDrawer}
       side={<DrawerMenu />}
     >
