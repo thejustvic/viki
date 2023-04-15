@@ -12,7 +12,13 @@ module.exports = {
     themes: ['dark', 'light']
   },
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        screen: ['100vh /* fallback for Firefox, IE and etc. */', '100dvh'],
+        "screen-small": ['100vh /* fallback for Firefox, IE and etc. */', '100svh'],
+        "screen-large": ['100vh /* fallback for Firefox, IE and etc. */', '100lvh'],
+      }
+    },
   },
   plugins: [require('daisyui')]
 }
