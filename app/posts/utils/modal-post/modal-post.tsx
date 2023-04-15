@@ -71,7 +71,7 @@ const Text = observer(() => {
       loading={modalState.post.loading}
       error={modalState.post.error?.message}
       text={modalState.post.data?.text}
-      prefix={'text:'}
+      prefix={'content:'}
     />
   )
 })
