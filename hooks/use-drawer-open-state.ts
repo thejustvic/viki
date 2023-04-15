@@ -7,6 +7,9 @@ export const useDrawerOpenState = (): void => {
   const [state, store] = useGlobalStore()
 
   useEffect(() => {
+    if (x === null) {
+      return
+    }
     if (!state.drawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
       store.setDrawerOpen(true)
     }
