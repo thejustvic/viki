@@ -22,7 +22,7 @@ export const useSupabaseFetch = <T>(
     if (!isBuilderExist) {
       return
     }
-    const fetch = async (): Promise<void> => {
+    void (async (): Promise<void> => {
       setResult({
         loading: true,
         data: null,
@@ -42,8 +42,7 @@ export const useSupabaseFetch = <T>(
           error: null
         })
       }
-    }
-    void fetch()
+    })()
 
     return () =>
       setResult({
