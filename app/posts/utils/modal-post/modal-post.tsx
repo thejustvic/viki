@@ -101,7 +101,7 @@ const ShowData = ({
 }) => {
   return (
     <div className="flex">
-      <span className="pr-2">{prefix}</span>
+      <div className="w-20 truncate">{prefix}</div>
       {loading && <TwLoading />}
       {error && <div>{error}</div>}
       {text && <div>{text}</div>}
