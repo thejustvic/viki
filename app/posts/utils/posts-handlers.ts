@@ -14,9 +14,12 @@ export const usePostHandlers = (): Handlers => {
   }
 
   const insertPost = async (): Promise<void> => {
+    if (!session) {
+      throw Error('You must provide a session object!')
+    }
     await supabase.from('posts').insert({
       text: (Math.random() + 1).toString(36).substring(7),
-      by: session?.user.id
+      by: session.user.id
     })
   }
 
