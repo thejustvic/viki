@@ -7,13 +7,15 @@ interface State {
   theme: Theme
   drawerOpen: boolean
   drawerOpenByHover: boolean
+  showLeftMenuOnHover: boolean
 }
 
 export class GlobalStore {
   state: State = {
     theme: 'dark',
     drawerOpen: false,
-    drawerOpenByHover: false
+    drawerOpenByHover: false,
+    showLeftMenuOnHover: true
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -49,6 +51,10 @@ export class GlobalStore {
   setDrawerClosed = (byHoverValue = false): void => {
     this.state.drawerOpen = false
     this.state.drawerOpenByHover = byHoverValue
+  }
+
+  setShowLeftMenuOnHoverToggle = (): void => {
+    this.state.showLeftMenuOnHover = !this.state.showLeftMenuOnHover
   }
 }
 

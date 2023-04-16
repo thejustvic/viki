@@ -1,10 +1,11 @@
 import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {Util} from '@/utils/util'
 import {IconMenu} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import Image from 'next/image'
-import {Button, Dropdown, Navbar as Nav} from 'react-daisyui'
+import {Button, Dropdown, Navbar as Nav, Toggle} from 'react-daisyui'
 import {useGlobalStore} from '../global/global-store'
 
 export const Navbar = observer(() => {
@@ -33,7 +34,8 @@ export const Navbar = observer(() => {
   )
 })
 
-const Avatar = () => {
+const Avatar = observer(() => {
+  const [state, store] = useGlobalStore()
   const {supabase, session} = useSupabase()
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -53,9 +55,13 @@ const Avatar = () => {
           className="rounded-full"
         />
       </Button>
-      <Dropdown.Menu className="shadow-lg w-52">
+      <Dropdown.Menu className="shadow-lg">
+        <Dropdown.Item onClick={store.setShowLeftMenuOnHoverToggle}>
+          <Toggle checked={state.showLeftMenuOnHover} onChange={Util.noop} />
+          <span className="truncate">show left menu on hover</span>
+        </Dropdown.Item>
         <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   )
-}
+})

@@ -10,6 +10,9 @@ export const useDrawerOpenState = (): void => {
     if (x === null) {
       return
     }
+    if (!state.showLeftMenuOnHover) {
+      return
+    }
     if (!state.drawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
       store.setDrawerOpen(true)
     }
