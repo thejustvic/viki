@@ -13,13 +13,10 @@ export const useSupabaseListener = (
   const isPageVisible = usePageVisibility()
 
   useEffect(() => {
-    const getSession = async () => {
+    void (async () => {
       const {data} = await supabase.auth.getSession()
-      if (!data.session) {
-        router.refresh()
-      }
-    }
-    void getSession()
+      !data.session && router.refresh()
+    })()
   }, [isPageVisible])
 
   useEffect(() => {
