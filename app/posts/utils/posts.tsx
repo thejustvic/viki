@@ -1,6 +1,7 @@
 'use client'
 
 import {PostContainer} from '@/components/common/post'
+import {useClearHref} from '@/hooks/use-clear-href'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
@@ -27,6 +28,8 @@ interface Props {
 
 export const Posts = ({serverPosts}: Props) => {
   const store = useMemoOne(() => new PostsStore(serverPosts), [])
+
+  useClearHref()
 
   return (
     <PostsContext.Provider value={store}>
