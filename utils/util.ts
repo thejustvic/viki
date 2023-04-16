@@ -1,6 +1,10 @@
 import {Writable} from 'ts-essentials'
 
 export class Util {
+  static noop(..._: unknown[]): void {
+    // do nothing
+  }
+
   static clone<T>(obj: T): Writable<T> {
     if (typeof obj !== 'object' || !obj) {
       return obj
