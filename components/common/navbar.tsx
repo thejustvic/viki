@@ -4,9 +4,9 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
 import {IconMenu} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import Image from 'next/image'
 import {Button, Dropdown, Navbar as Nav, Toggle} from 'react-daisyui'
 import {useGlobalStore} from '../global/global-store'
+import {UserImage} from './user-image'
 
 export const Navbar = observer(() => {
   const [, store] = useGlobalStore()
@@ -28,13 +28,13 @@ export const Navbar = observer(() => {
 
       <Nav.End className="gap-2">
         <SwitchTheme />
-        <Avatar />
+        <AvatarDropdown />
       </Nav.End>
     </Nav>
   )
 })
 
-const Avatar = observer(() => {
+const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase, session} = useSupabase()
   const handleLogout = async () => {
@@ -46,14 +46,8 @@ const Avatar = observer(() => {
 
   return (
     <Dropdown vertical="end" hover>
-      <Button color="ghost" className="avatar" shape="circle">
-        <Image
-          width={46}
-          height={46}
-          src={session.user.user_metadata?.avatar_url}
-          alt="avatar-url"
-          className="rounded-full"
-        />
+      <Button color="ghost" shape="square">
+        <UserImage src={session.user.user_metadata?.avatar_url} />
       </Button>
       <Dropdown.Menu className="shadow-lg">
         <Dropdown.Item onClick={store.setShowLeftMenuOnHoverToggle}>
