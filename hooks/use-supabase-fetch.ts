@@ -1,7 +1,7 @@
 import type {PostgrestBuilder, PostgrestError} from '@supabase/postgrest-js'
 import {useEffect, useState} from 'react'
 
-export interface Query<T> {
+export interface SupabaseQuery<T> {
   loading: boolean
   data: T | null
   error: PostgrestError | null
@@ -10,9 +10,9 @@ export interface Query<T> {
 export const useSupabaseFetch = <T>(
   postgrestBuilder: null | (() => PostgrestBuilder<T>),
   deps: unknown[]
-): Query<T> => {
+): SupabaseQuery<T> => {
   const isBuilderExist = typeof postgrestBuilder === 'function'
-  const [result, setResult] = useState<Query<T>>({
+  const [result, setResult] = useState<SupabaseQuery<T>>({
     loading: false,
     data: null,
     error: null
