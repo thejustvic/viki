@@ -8,6 +8,8 @@ import tw from 'tailwind-styled-components'
 import {usePostListener} from './fetch/use-get-post-by-id'
 
 import {Loader} from '@/components/common/loader'
+import {UserImage} from '@/components/common/user-image'
+import {ReactNode} from 'react'
 import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
 import {
   ModalPostStore,
@@ -70,9 +72,26 @@ const Text = observer(() => {
     <ShowData
       loading={modalState.post.loading}
       error={modalState.post.error?.message}
-      text={modalState.post.data?.text}
+      data={modalState.post.data?.text}
       prefix={'content:'}
     />
+  )
+})
+
+const CreatorData = observer(() => {
+  const [modalState] = useModalPostStore()
+
+  if (!modalState.postCreator.data) {
+    return null
+  }
+
+  const src = modalState.postCreator.data.user_metadata?.avatar_url
+
+  return (
+    <div className="flex gap-2">
+      <UserImage src={src} size={24} />
+      {modalState.postCreator.data.email}
+    </div>
   )
 })
 
@@ -82,7 +101,7 @@ const Creator = observer(() => {
     <ShowData
       loading={modalState.postCreator.loading}
       error={modalState.postCreator.error?.message}
-      text={modalState.postCreator.data?.email}
+      data={<CreatorData />}
       prefix={'creator:'}
     />
   )
@@ -91,12 +110,12 @@ const Creator = observer(() => {
 const ShowData = ({
   loading,
   error,
-  text,
+  data,
   prefix
 }: {
   loading: boolean
   error: string | undefined
-  text: string | undefined | null
+  data: ReactNode
   prefix: string
 }) => {
   return (
@@ -104,7 +123,7 @@ const ShowData = ({
       <span className="w-20 pr-2 truncate shrink-0">{prefix}</span>
       {loading && <TwLoading />}
       {error && <p>{error}</p>}
-      {text && <p>{text}</p>}
+      {data}
     </div>
   )
 }

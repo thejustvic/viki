@@ -1,11 +1,13 @@
-import {Query} from '@/hooks/use-supabase-fetch'
+import {FetchQuery} from '@/hooks/use-fetch'
+import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
+import {User} from '@supabase/auth-helpers-nextjs'
 import {makeAutoObservable, observable} from 'mobx'
-import {Post, User} from '../types'
+import {Post} from '../types'
 
 interface State {
-  post: Query<Post>
-  postCreator: Query<User>
+  post: SupabaseQuery<Post>
+  postCreator: FetchQuery<User>
 }
 
 export class ModalPostStore {

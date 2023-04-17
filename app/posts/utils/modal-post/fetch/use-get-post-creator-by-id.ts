@@ -1,18 +1,18 @@
-import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {useFetch} from '@/hooks/use-fetch'
+import {User} from '@supabase/auth-helpers-nextjs'
 import {useEffect} from 'react'
 import {Post} from '../../types'
 import {useModalPostStore} from '../modal-post-store'
-import {getPostCreatorById} from './get-post-creator-by-id'
 
 export const usePostCreatorListener = (
   userId: Post['by'] | undefined
 ): void => {
   const [, store] = useModalPostStore()
-  const {supabase} = useSupabase()
 
-  const {data, error, loading} = useSupabaseFetch(
-    userId ? () => getPostCreatorById(userId, supabase) : null,
+  const {data, error, loading} = useFetch<User>(
+    userId
+      ? () => fetch(`${window.location.origin}/api/retrieve-user?id=${userId}`)
+      : null,
     [userId]
   )
 
