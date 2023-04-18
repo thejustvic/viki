@@ -4,6 +4,7 @@ import {Post} from './types'
 interface Handlers {
   removePost: (id: Post['id']) => Promise<void>
   insertPost: () => Promise<void>
+  updatePost: (text: string, postId: string) => Promise<void>
 }
 
 export const usePostHandlers = (): Handlers => {
@@ -23,8 +24,21 @@ export const usePostHandlers = (): Handlers => {
     })
   }
 
+  const updatePost = async (text: string, postId: string): Promise<void> => {
+    if (!session) {
+      throw Error('You must provide a session object!')
+    }
+    await supabase
+      .from('posts')
+      .update({
+        text
+      })
+      .eq('id', postId)
+  }
+
   return {
     removePost,
-    insertPost
+    insertPost,
+    updatePost
   }
 }

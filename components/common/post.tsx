@@ -50,7 +50,9 @@ const CardComp = ({post, remove, disableTransform}: Props) => {
       <Card.Body style={translateZ}>
         <Card.Title tag="h2" className="flex justify-between">
           <Link href={href}>
-            <Button color="ghost">{post.text}</Button>
+            <Button color="ghost">
+              <span className="w-16 truncate">{post.text}</span>
+            </Button>
           </Link>
           <Button color="ghost" shape="circle" onClick={remove}>
             <IconTrash />

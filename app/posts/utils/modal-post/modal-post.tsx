@@ -9,7 +9,11 @@ import {usePostListener} from './fetch/use-get-post-by-id'
 
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
-import {ReactNode} from 'react'
+import {useDebouncedValue} from '@/hooks/use-debounced-value'
+import {useInput} from '@/hooks/use-input'
+import {ReactNode, useEffect} from 'react'
+import {Input} from 'react-daisyui'
+import {usePostHandlers} from '../posts-handlers'
 import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
 import {
   ModalPostStore,
@@ -60,10 +64,10 @@ const ModalHeader = () => {
 }
 
 const ModalBody = () => (
-  <>
+  <div className="flex flex-col gap-1">
     <Text />
     <Creator />
-  </>
+  </div>
 )
 
 const Text = observer(() => {
@@ -72,8 +76,32 @@ const Text = observer(() => {
     <ShowData
       loading={modalState.post.loading}
       error={modalState.post.error?.message}
-      data={modalState.post.data?.text}
+      data={<TextData />}
       prefix={'content:'}
+    />
+  )
+})
+
+const TextData = observer(() => {
+  const {updatePost} = usePostHandlers()
+  const [modalState] = useModalPostStore()
+  const [text, onChange] = useInput(modalState.post.data?.text ?? '')
+  const debounced = useDebouncedValue(text, 500)
+
+  useEffect(() => {
+    const text = modalState.post.data?.text
+    const id = modalState.post.data?.id
+    if (id && text !== debounced && debounced.length > 0) {
+      void updatePost(debounced, id)
+    }
+  }, [debounced])
+
+  return (
+    <Input
+      className="h-6 p-0 cursor-pointer"
+      bordered={false}
+      value={text}
+      onChange={onChange}
     />
   )
 })
@@ -97,6 +125,7 @@ const CreatorData = observer(() => {
 
 const Creator = observer(() => {
   const [modalState] = useModalPostStore()
+
   return (
     <ShowData
       loading={modalState.postCreator.loading}
