@@ -3,6 +3,7 @@
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Button, ButtonGroup, Hero} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
+import {TechStackCarousel} from './tech-stack-carousel/tech-stack-carousel'
 
 const TwHome = tw.h1`
   text-3xl
@@ -27,14 +28,17 @@ export const Anonymous = () => {
   }
 
   return (
-    <Hero>
-      <Hero.Content>
-        <ButtonGroup vertical>
-          <Button onClick={handleGitHubLogin}>GitHub Login</Button>
-          <Button onClick={handleGoogleLogin}>Google Login</Button>
-        </ButtonGroup>
-        <TwHome>Hello Viki!</TwHome>
-      </Hero.Content>
-    </Hero>
+    <div className="flex flex-col justify-around h-full">
+      <Hero>
+        <Hero.Content>
+          <ButtonGroup vertical>
+            <Button onClick={handleGitHubLogin}>GitHub Login</Button>
+            <Button onClick={handleGoogleLogin}>Google Login</Button>
+          </ButtonGroup>
+          <TwHome>Hello Viki!</TwHome>
+        </Hero.Content>
+      </Hero>
+      <TechStackCarousel />
+    </div>
   )
 }
