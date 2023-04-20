@@ -1,5 +1,6 @@
 'use client'
 
+import {useBoolean} from '@/hooks/use-boolean'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
 import {CSSProperties} from 'react'
@@ -33,13 +34,33 @@ const carousel: KeenSliderPlugin = slider => {
   slider.on('detailsChanged', rotate)
 }
 
+const animation = {duration: 8000, easing: (t: number) => t}
+
 export const TechStackCarousel = () => {
+  const mouseOver = useBoolean(false)
   const [sliderRef] = useKeenSlider<HTMLDivElement>(
     {
       loop: true,
       selector: '.carousel__cell',
       renderMode: 'custom',
-      mode: 'free-snap'
+      mode: 'free-snap',
+      created(s) {
+        s.container.addEventListener('mouseover', () => {
+          mouseOver.setValue(true)
+        })
+        s.container.addEventListener('mouseout', () => {
+          mouseOver.setValue(false)
+        })
+        s.moveToIdx(5, true, animation)
+      },
+      updated(s) {
+        !mouseOver.value &&
+          s.moveToIdx(s.track.details.abs + 5, true, animation)
+      },
+      animationEnded(s) {
+        !mouseOver.value &&
+          s.moveToIdx(s.track.details.abs + 5, true, animation)
+      }
     },
     [carousel]
   )
