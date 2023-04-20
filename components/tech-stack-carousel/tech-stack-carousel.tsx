@@ -161,7 +161,7 @@ interface CardProps {
 
 const stack: CardProps[] = [
   {
-    name: 'Next',
+    name: 'Next13',
     logo: 'https://cdn.cdnlogo.com/logos/n/80/next-js.svg',
     href: 'https://beta.nextjs.org/docs/getting-started'
   },
@@ -186,7 +186,7 @@ const stack: CardProps[] = [
     href: 'https://www.typescriptlang.org/'
   },
   {
-    name: 'React',
+    name: 'React18',
     logo: 'https://static.cdnlogo.com/logos/r/63/react.svg',
     href: 'https://react.dev'
   }
