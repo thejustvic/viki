@@ -8,14 +8,30 @@ import {Button, Link} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import './style.scss'
 
-const TwCard = tw.div`
-  p-4
-  bg-base-300 
-  shadow-2xl
-  rounded-2xl
-  h-[142px]
-  w-[190px]
-  carousel__cell
+const TwCarousel = tw.div`
+  flex 
+  items-center 
+  justify-center 
+  flex-1
+`
+
+const TwScene = tw.div`
+  scene
+`
+
+const TwKeenSlider = tw.div`
+  carousel 
+  keen-slider
+`
+
+const TwTechStack = tw.h1`
+  flex 
+  justify-center 
+  mb-8 
+  font-mono 
+  text-2xl 
+  pointer-events-none 
+  drop-shadow-2xl
 `
 
 const carousel: KeenSliderPlugin = slider => {
@@ -34,7 +50,10 @@ const carousel: KeenSliderPlugin = slider => {
   slider.on('detailsChanged', rotate)
 }
 
-const animation = {duration: 8000, easing: (t: number) => t}
+const animation = {
+  duration: 8000,
+  easing: (t: number) => t
+}
 
 export const TechStackCarousel = () => {
   const mouseOver = useBoolean(false)
@@ -65,6 +84,50 @@ export const TechStackCarousel = () => {
     [carousel]
   )
 
+  return (
+    <TwCarousel>
+      <TwScene>
+        <TwTechStack>Tech Stack</TwTechStack>
+        <TwKeenSlider ref={sliderRef}>
+          {stack.map(card => (
+            <Card card={card} key={card.href} />
+          ))}
+        </TwKeenSlider>
+      </TwScene>
+    </TwCarousel>
+  )
+}
+
+const TwCard = tw.div`
+  p-4
+  bg-base-300 
+  shadow-2xl
+  rounded-2xl
+  h-[142px]
+  w-[190px]
+  carousel__cell
+`
+
+const TwCardInner = tw.div`
+  flex 
+  flex-col 
+  h-full
+`
+
+const TwImage = tw.div`
+  flex 
+  items-center 
+  justify-center 
+  flex-1
+`
+
+const TwLink = tw.div`
+  flex 
+  items-center 
+  justify-center
+`
+
+const Card = ({card}: {card: CardProps}) => {
   const preserve3D: CSSProperties = {
     transformStyle: 'preserve-3d'
   }
@@ -73,35 +136,30 @@ export const TechStackCarousel = () => {
   }
 
   return (
-    <div className="flex items-center justify-center flex-1">
-      <div className="scene">
-        <h1 className="flex justify-center mb-8 font-mono text-2xl pointer-events-none drop-shadow-2xl">
-          Tech Stack
-        </h1>
-        <div className="carousel keen-slider" ref={sliderRef}>
-          {stack.map(e => (
-            <TwCard style={preserve3D}>
-              <div style={transform} className="flex flex-col h-full">
-                <div className="flex items-center justify-center flex-1">
-                  <Image height={58} width={58} src={e.logo} alt="logo" />
-                </div>
-                <div className="flex items-center justify-center">
-                  <Link href={e.href} rel="noopener noreferrer" target="_blank">
-                    <Button color="primary" variant="outline" size="xs">
-                      {e.name}
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </TwCard>
-          ))}
-        </div>
-      </div>
-    </div>
+    <TwCard style={preserve3D}>
+      <TwCardInner style={transform}>
+        <TwImage>
+          <Image height={58} width={58} src={card.logo} alt="logo" />
+        </TwImage>
+        <TwLink>
+          <Link href={card.href} rel="noopener noreferrer" target="_blank">
+            <Button color="primary" variant="outline" size="xs">
+              {card.name}
+            </Button>
+          </Link>
+        </TwLink>
+      </TwCardInner>
+    </TwCard>
   )
 }
 
-const stack = [
+interface CardProps {
+  name: string
+  logo: string
+  href: string
+}
+
+const stack: CardProps[] = [
   {
     name: 'Next',
     logo: 'https://cdn.cdnlogo.com/logos/n/80/next-js.svg',
