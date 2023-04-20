@@ -54,7 +54,7 @@ export const TechStackCarousel = () => {
   return (
     <div className="flex items-center justify-center flex-1">
       <div className="scene">
-        <h1 className="flex justify-center mb-8 font-mono text-2xl drop-shadow-2xl">
+        <h1 className="flex justify-center mb-8 font-mono text-2xl pointer-events-none drop-shadow-2xl">
           Tech Stack
         </h1>
         <div className="carousel keen-slider" ref={sliderRef}>
