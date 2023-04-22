@@ -25,7 +25,7 @@ const getView = (): State['view'] => {
   return 'register'
 }
 
-export class LoginStore {
+export class EmailLoginStore {
   state: State = {
     view: getView(),
     captchaToken: ''
@@ -56,5 +56,6 @@ export class LoginStore {
   }
 }
 
-const [LoginContext, useLoginStore] = createUseStore<LoginStore>()
-export {LoginContext, useLoginStore}
+const [EmailLoginContext, useEmailLoginStore] =
+  createUseStore<EmailLoginStore>()
+export {EmailLoginContext, useEmailLoginStore}

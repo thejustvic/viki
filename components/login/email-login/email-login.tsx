@@ -1,32 +1,21 @@
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {Button, Card, Form, Hero, Input, Link} from 'react-daisyui'
+import {Button, Card, Form, Input, Link} from 'react-daisyui'
 import {SubmitHandler, useForm} from 'react-hook-form'
-import {ProviderLogin} from './anonymous'
-import {LoginContext, LoginStore, useLoginStore} from './login-store'
+import {
+  EmailLoginContext,
+  EmailLoginStore,
+  useEmailLoginStore
+} from './email-login-store'
 
 export const EmailLogin = () => {
-  const store = useMemoOne(() => new LoginStore(), [])
+  const store = useMemoOne(() => new EmailLoginStore(), [])
 
   return (
-    <LoginContext.Provider value={store}>
-      <LoginBase />
-    </LoginContext.Provider>
-  )
-}
-
-const LoginBase = () => {
-  return (
-    <Hero>
-      <Hero.Content className="flex-col gap-8 lg:flex-row">
-        <LoginCard />
-        <div className="flex flex-col gap-8 lg:flex-row">
-          <p className="flex items-center justify-center">OR</p>
-          <ProviderLogin />
-        </div>
-      </Hero.Content>
-    </Hero>
+    <EmailLoginContext.Provider value={store}>
+      <LoginCard />
+    </EmailLoginContext.Provider>
   )
 }
 
@@ -36,7 +25,7 @@ interface FormValues {
 }
 
 const Login = observer(() => {
-  const [, store] = useLoginStore()
+  const [, store] = useEmailLoginStore()
   const {supabase} = useSupabase()
   const {register, handleSubmit} = useForm<FormValues>()
 
@@ -82,7 +71,7 @@ const Login = observer(() => {
 })
 
 const Register = observer(() => {
-  const [, store] = useLoginStore()
+  const [, store] = useEmailLoginStore()
   const {supabase} = useSupabase()
   const {register, handleSubmit} = useForm<FormValues>()
 
@@ -129,7 +118,7 @@ const Register = observer(() => {
 })
 
 const LoginCard = observer(() => {
-  const [state] = useLoginStore()
+  const [state] = useEmailLoginStore()
 
   return (
     <div className="w-[300px] h-[358px] perspective">
