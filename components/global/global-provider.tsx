@@ -3,6 +3,7 @@
 import {GlobalContext, GlobalStore} from '@/components/global/global-store'
 import {Theme} from '@/components/global/types'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {ReactNode} from 'react'
 
 interface Props {
@@ -11,7 +12,8 @@ interface Props {
 }
 
 export default function GlobalProvider({children, serverTheme}: Props) {
-  const store = useMemoOne(() => new GlobalStore(serverTheme), [])
+  const {session} = useSupabase()
+  const store = useMemoOne(() => new GlobalStore(serverTheme), [session])
 
   return (
     <GlobalContext.Provider value={store}>
