@@ -32,6 +32,7 @@ const TwTechStack = tw.h1`
   text-2xl 
   pointer-events-none 
   drop-shadow-2xl
+  truncate
 `
 
 const carousel: KeenSliderPlugin = slider => {
@@ -85,16 +86,18 @@ export const TechStackCarousel = () => {
   )
 
   return (
-    <TwCarousel>
-      <TwScene>
-        <TwTechStack>Tech Stack</TwTechStack>
-        <TwKeenSlider ref={sliderRef}>
-          {stack.map(card => (
-            <Card card={card} key={card.href} />
-          ))}
-        </TwKeenSlider>
-      </TwScene>
-    </TwCarousel>
+    <div>
+      <TwTechStack>Project Tech Stack</TwTechStack>
+      <TwCarousel>
+        <TwScene>
+          <TwKeenSlider ref={sliderRef}>
+            {stack.map(card => (
+              <Card card={card} key={card.href} />
+            ))}
+          </TwKeenSlider>
+        </TwScene>
+      </TwCarousel>
+    </div>
   )
 }
 
