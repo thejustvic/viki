@@ -23,7 +23,7 @@ export class GlobalStore {
       state: observable.shallow
     })
     serverTheme && this.setTheme(serverTheme)
-    makeAutoPersist(this, 'GlobalStore')
+    makeAutoPersist(this, 'global-store')
   }
 
   setTheme = (theme: Theme): void => {

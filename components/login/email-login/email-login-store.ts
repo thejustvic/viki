@@ -15,7 +15,7 @@ export class EmailLoginStore {
     makeAutoObservable(this, {
       state: observable.shallow
     })
-    makeAutoPersist(this, 'LoginStore')
+    makeAutoPersist(this, 'login-store')
   }
 
   setRegisterView = (): void => {
