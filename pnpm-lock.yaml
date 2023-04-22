@@ -34,6 +34,7 @@ specifiers:
   react-daisyui: 3.0.3
   react-device-detect: 2.2.3
   react-dom: 18.2.0
+  react-hook-form: 7.43.9
   react-parallax-tilt: 1.7.120
   react-perfect-scrollbar: 1.5.8
   sass: 1.59.2
@@ -60,6 +61,7 @@ dependencies:
   react-daisyui: 3.0.3_f51a5b48319f3f5fb21fe0289f49b506
   react-device-detect: 2.2.3_react-dom@18.2.0+react@18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-hook-form: 7.43.9_react@18.2.0
   react-parallax-tilt: 1.7.120_react-dom@18.2.0+react@18.2.0
   react-perfect-scrollbar: 1.5.8_react-dom@18.2.0+react@18.2.0
   server-only: 0.0.1
@@ -3827,6 +3829,15 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-hook-form/7.43.9_react@18.2.0:
+    resolution: {integrity: sha512-AUDN3Pz2NSeoxQ7Hs6OhQhDr6gtF9YRuutGDwPQqhSUAHJSgGl2VeY3qN19MG0SucpjgDiuMJ4iC5T5uB+eaNQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:
