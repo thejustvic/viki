@@ -1,18 +1,21 @@
 'use client'
 
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Button, ButtonGroup, Hero} from 'react-daisyui'
-import tw from 'tailwind-styled-components'
+import {Button, ButtonGroup} from 'react-daisyui'
+import {EmailLogin} from './login'
 import {TechStackCarousel} from './tech-stack-carousel/tech-stack-carousel'
 
-const TwHome = tw.h1`
-  text-3xl
-  font-bold
-  w-32
-`
+export const Anonymous = () => {
+  return (
+    <div className="flex flex-col gap-2">
+      <EmailLogin />
+      <TechStackCarousel />
+    </div>
+  )
+}
 
 // Supabase auth needs to be triggered client-side
-export const Anonymous = () => {
+export const ProviderLogin = () => {
   const {supabase} = useSupabase()
 
   const handleGitHubLogin = async () => {
@@ -28,17 +31,9 @@ export const Anonymous = () => {
   }
 
   return (
-    <div className="flex flex-col justify-around h-full">
-      <Hero>
-        <Hero.Content>
-          <ButtonGroup vertical>
-            <Button onClick={handleGitHubLogin}>GitHub Login</Button>
-            <Button onClick={handleGoogleLogin}>Google Login</Button>
-          </ButtonGroup>
-          <TwHome>Hello Viki!</TwHome>
-        </Hero.Content>
-      </Hero>
-      <TechStackCarousel />
-    </div>
+    <ButtonGroup vertical>
+      <Button onClick={handleGitHubLogin}>GitHub</Button>
+      <Button onClick={handleGoogleLogin}>Google</Button>
+    </ButtonGroup>
   )
 }
