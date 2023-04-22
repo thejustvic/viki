@@ -1,1 +1,3 @@
-export type Theme = 'light' | 'dark'
+import type {Database} from '@/utils/database.types'
+
+export type Theme = Database['public']['Tables']['users']['Row']['theme']
