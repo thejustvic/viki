@@ -17,7 +17,6 @@
     "daisyui": "2.51.5",
     "keen-slider": "6.8.5",
     "mobx": "6.8.0",
-    "mobx-persist-store": "1.1.3",
     "mobx-react-lite": "3.4.3",
     "next": "13.2.4",
     "react": "18.2.0",

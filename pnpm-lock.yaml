@@ -24,7 +24,6 @@ specifiers:
   keen-slider: 6.8.5
   lint-staged: 13.2.0
   mobx: 6.8.0
-  mobx-persist-store: 1.1.3
   mobx-react-lite: 3.4.3
   next: 13.2.4
   postcss: 8.4.21
@@ -54,7 +53,6 @@ dependencies:
   daisyui: 2.51.5_4ff13da47bd0ac46a600ac626073f88f
   keen-slider: 6.8.5
   mobx: 6.8.0
-  mobx-persist-store: 1.1.3_mobx@6.8.0
   mobx-react-lite: 3.4.3_b39c90fb428130ae736c0afec946d4d1
   next: 13.2.4_0fc8856c2b76afcfc98cd26c0bbd2574
   react: 18.2.0
@@ -3384,14 +3382,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dev: true
-
-  /mobx-persist-store/1.1.3_mobx@6.8.0:
-    resolution: {integrity: sha512-P5B4CNCgAlKZ5dLqwcKYx9qmSc2b53iQTBKkH//7bXzgbsg0+bG4LJ0rPeIx/8/J5lduzqC7/oT+kuNaeHMMqQ==}
-    peerDependencies:
-      mobx: '*'
-    dependencies:
-      mobx: 6.8.0
-    dev: false
 
   /mobx-react-lite/3.4.3_b39c90fb428130ae736c0afec946d4d1:
     resolution: {integrity: sha512-NkJREyFTSUXR772Qaai51BnE1voWx56LOL80xG7qkZr6vo8vEaLF3sz1JNUVh+rxmUzxYaqOhfuxTfqUh0FXUg==}
