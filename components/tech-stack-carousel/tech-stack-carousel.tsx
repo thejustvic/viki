@@ -164,16 +164,6 @@ interface CardProps {
 
 const stack: CardProps[] = [
   {
-    name: 'Next13',
-    logo: 'https://cdn.cdnlogo.com/logos/n/80/next-js.svg',
-    href: 'https://beta.nextjs.org/docs/getting-started'
-  },
-  {
-    name: 'MobX',
-    logo: 'https://static.cdnlogo.com/logos/m/14/mobx.svg',
-    href: 'https://mobx.js.org/README.html'
-  },
-  {
     name: 'Supabase',
     logo: 'https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg',
     href: 'https://supabase.com/docs'
@@ -192,5 +182,15 @@ const stack: CardProps[] = [
     name: 'React18',
     logo: 'https://static.cdnlogo.com/logos/r/63/react.svg',
     href: 'https://react.dev'
+  },
+  {
+    name: 'Next13',
+    logo: 'https://creazilla-store.fra1.digitaloceanspaces.com/icons/3219990/nextjs-icon-md.png',
+    href: 'https://beta.nextjs.org/docs/getting-started'
+  },
+  {
+    name: 'MobX',
+    logo: 'https://static.cdnlogo.com/logos/m/14/mobx.svg',
+    href: 'https://mobx.js.org/README.html'
   }
 ]

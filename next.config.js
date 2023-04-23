@@ -10,12 +10,16 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com'
-      
-      },{
+      },
+      {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com'
       },
-    ],
+      {
+        protocol: 'https',
+        hostname: 'creazilla-store.fra1.digitaloceanspaces.com'
+      }
+    ]
   },
   webpack(config) {
     config.module.rules.push({
