@@ -31,7 +31,7 @@ export const DrawerMenu = observer(() => {
       </Link>
       <Divider />
       <CodeMockup>
-        <CodeMockup.Line>installing...</CodeMockup.Line>
+        <CodeMockup.Line>loading...</CodeMockup.Line>
         <CodeMockup.Line status="success">Profit!</CodeMockup.Line>
       </CodeMockup>
     </TwMenu>
