@@ -31,7 +31,6 @@ export const DrawerMenu = observer(() => {
       </Link>
       <Divider />
       <CodeMockup>
-        <CodeMockup.Line>pnpm i viki@0.0.1</CodeMockup.Line>
         <CodeMockup.Line>installing...</CodeMockup.Line>
         <CodeMockup.Line status="success">Profit!</CodeMockup.Line>
       </CodeMockup>
