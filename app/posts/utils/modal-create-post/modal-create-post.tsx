@@ -2,6 +2,7 @@
 
 import {Modal} from '@/components/common/modal'
 import {useRouter, useSearchParams} from 'next/navigation'
+import {useEffect} from 'react'
 import {Button, Form, Textarea} from 'react-daisyui'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
@@ -38,9 +39,15 @@ interface FormInputs {
 }
 
 const Text = () => {
+  const searchParams = useSearchParams()
+  const value = searchParams.get('create-post')
   const router = useRouter()
   const {insertPost} = usePostHandlers()
-  const {register, handleSubmit} = useForm<FormInputs>()
+  const {register, handleSubmit, setFocus} = useForm<FormInputs>()
+
+  useEffect(() => {
+    Boolean(value) && setTimeout(() => setFocus('text'), 20)
+  }, [setFocus, value])
 
   const onSubmit = async (data: FormInputs) => {
     await insertPost(data.text)
@@ -51,7 +58,6 @@ const Text = () => {
     <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
       <Textarea
         size="md"
-        autoFocus
         {...register('text', {
           required: true
         })}
