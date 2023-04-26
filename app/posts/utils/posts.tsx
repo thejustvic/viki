@@ -1,12 +1,12 @@
 'use client'
 
 import {PostContainer} from '@/components/common/post'
-import {useClearHref} from '@/hooks/use-clear-href'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
+import {ModalCreatePost} from './modal-create-post/modal-create-post'
 import {ModalPost} from './modal-post/modal-post'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
@@ -29,8 +29,6 @@ interface Props {
 export const Posts = ({serverPosts}: Props) => {
   const store = useMemoOne(() => new PostsStore(serverPosts), [])
 
-  useClearHref()
-
   return (
     <PostsContext.Provider value={store}>
       <PostsBase />
@@ -40,6 +38,7 @@ export const Posts = ({serverPosts}: Props) => {
 
 const PostsBase = () => (
   <>
+    <ModalCreatePost />
     <ModalPost />
     <PostsList />
   </>

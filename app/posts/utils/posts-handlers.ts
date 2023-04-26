@@ -3,7 +3,7 @@ import {Post} from './types'
 
 interface Handlers {
   removePost: (id: Post['id']) => Promise<void>
-  insertPost: () => Promise<void>
+  insertPost: (text: string) => Promise<void>
   updatePost: (text: string, postId: string) => Promise<void>
 }
 
@@ -14,12 +14,12 @@ export const usePostHandlers = (): Handlers => {
     await supabase.from('posts').delete().eq('id', id)
   }
 
-  const insertPost = async (): Promise<void> => {
+  const insertPost = async (text: string): Promise<void> => {
     if (!session) {
       throw Error('You must provide a session object!')
     }
     await supabase.from('posts').insert({
-      text: (Math.random() + 1).toString(36).substring(7),
+      text,
       by: session.user.id
     })
   }

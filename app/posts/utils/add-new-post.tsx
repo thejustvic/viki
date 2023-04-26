@@ -1,7 +1,7 @@
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
+import Link from 'next/link'
 import {Button} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
-import {usePostHandlers} from './posts-handlers'
 
 const TwAdd = tw(Button)`
   bg-base-300 
@@ -14,11 +14,13 @@ const TwAdd = tw(Button)`
 `
 
 export const AddNewPost = () => {
-  const {insertPost} = usePostHandlers()
+  const href = `/?create-post=true`
 
   return (
-    <TwAdd onClick={insertPost}>
-      <IconSquareRoundedPlus size={48} />
-    </TwAdd>
+    <Link href={href}>
+      <TwAdd>
+        <IconSquareRoundedPlus size={48} />
+      </TwAdd>
+    </Link>
   )
 }

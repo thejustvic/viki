@@ -12,7 +12,7 @@ import {UserImage} from '@/components/common/user-image'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {ReactNode, useEffect} from 'react'
-import {Input} from 'react-daisyui'
+import {Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
 import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
 import {
@@ -64,9 +64,9 @@ const ModalHeader = () => {
 }
 
 const ModalBody = () => (
-  <div className="flex flex-col gap-1">
-    <Text />
+  <div className="flex flex-col gap-2">
     <Creator />
+    <Text />
   </div>
 )
 
@@ -97,11 +97,12 @@ const TextData = observer(() => {
   }, [debounced])
 
   return (
-    <Input
-      className="h-6 p-0 cursor-pointer"
-      bordered={false}
+    <Textarea
+      size="md"
+      autoFocus
       value={text}
       onChange={onChange}
+      className="w-full"
     />
   )
 })
