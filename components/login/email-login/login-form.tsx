@@ -94,8 +94,12 @@ export const LoginForm = ({
             })}
           />
           <TwSubmit type="submit">Submit</TwSubmit>
-          {errors.email && <TwError>{errors.email.message}</TwError>}
-          {errors.password && <TwError>{errors.password.message}</TwError>}
+          {errors.email?.message && errors.email?.message?.length > 0 && (
+            <TwError>{errors.email.message}</TwError>
+          )}
+          {errors.password?.message && errors.password?.message?.length > 0 && (
+            <TwError>{errors.password.message}</TwError>
+          )}
         </Form>
         <TwLink onClick={handleLink}>{linkTitle}</TwLink>
       </TwBody>
