@@ -109,6 +109,7 @@ const TwCard = tw.div`
   h-[142px]
   w-[190px]
   carousel__cell
+  preserve-3d
 `
 
 const TwCardInner = tw.div`
@@ -131,15 +132,12 @@ const TwLink = tw.div`
 `
 
 const Card = ({card}: {card: CardProps}) => {
-  const preserve3D: CSSProperties = {
-    transformStyle: 'preserve-3d'
-  }
   const transform: CSSProperties = {
     transform: 'translateZ(20px)'
   }
 
   return (
-    <TwCard style={preserve3D}>
+    <TwCard>
       <TwCardInner style={transform}>
         <TwImage>
           <Image height={58} width={58} src={card.logo} alt="logo" />

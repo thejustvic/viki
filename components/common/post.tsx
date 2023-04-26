@@ -25,20 +25,14 @@ export const PostContainer = (props: Props) => {
   if (isSafari || isMobile) {
     return <CardComp {...props} disableTransform />
   }
-  const preserve3D: CSSProperties = {
-    transformStyle: 'preserve-3d'
-  }
   return (
-    <Hover perspective={800} scale={1.1} style={preserve3D}>
+    <Hover perspective={800} scale={1.1} className="preserve-3d">
       <CardComp {...props} />
     </Hover>
   )
 }
 
 const CardComp = ({post, remove, disableTransform}: Props) => {
-  const preserve3D: CSSProperties = {
-    transformStyle: 'preserve-3d'
-  }
   const transform: CSSProperties = {
     transform: 'translateZ(20px)'
   }
@@ -46,7 +40,7 @@ const CardComp = ({post, remove, disableTransform}: Props) => {
   const href = `/?post=${post.id}`
 
   return (
-    <TwCard bordered compact style={preserve3D}>
+    <TwCard bordered compact className="preserve-3d">
       <Card.Body style={translateZ}>
         <Card.Title tag="h2" className="flex justify-between">
           <Link href={href}>
