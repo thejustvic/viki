@@ -1,29 +1,55 @@
 'use client'
 
 import {Hero} from 'react-daisyui'
+import tw from 'tailwind-styled-components'
 import {EmailLogin} from './login/email-login/email-login'
 import {ProviderLogin} from './login/provider-login'
 import {TechStackCarousel} from './tech-stack-carousel/tech-stack-carousel'
 
+const TwAnonymous = tw.div`
+  flex
+  flex-col
+  gap-2
+`
+
 export const Anonymous = () => {
   return (
-    <div className="flex flex-col gap-2">
+    <TwAnonymous>
       <HeroLogin />
       <TechStackCarousel />
-    </div>
+    </TwAnonymous>
   )
 }
+
+const TwHeroContent = tw(Hero.Content)`
+  flex-col 
+  gap-8 
+  lg:flex-row
+`
+
+const TwProviderLogin = tw.div`
+  flex
+  flex-col
+  gap-8
+  lg:flex-row
+`
+
+const TwOr = tw.p`
+  flex 
+  items-center 
+  justify-center
+`
 
 const HeroLogin = () => {
   return (
     <Hero>
-      <Hero.Content className="flex-col gap-8 lg:flex-row">
+      <TwHeroContent>
         <EmailLogin />
-        <div className="flex flex-col gap-8 lg:flex-row">
-          <p className="flex items-center justify-center">OR</p>
+        <TwProviderLogin>
+          <TwOr>OR</TwOr>
           <ProviderLogin />
-        </div>
-      </Hero.Content>
+        </TwProviderLogin>
+      </TwHeroContent>
     </Hero>
   )
 }
