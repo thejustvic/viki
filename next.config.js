@@ -18,6 +18,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'creazilla-store.fra1.digitaloceanspaces.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'seeklogo.com'
       }
     ]
   },

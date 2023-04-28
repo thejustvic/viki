@@ -183,7 +183,7 @@ const stack: CardProps[] = [
   },
   {
     name: 'Next13',
-    logo: 'https://creazilla-store.fra1.digitaloceanspaces.com/icons/3219990/nextjs-icon-md.png',
+    logo: 'https://seeklogo.com/images/N/next-js-icon-logo-EE302D5DBD-seeklogo.com.png',
     href: 'https://beta.nextjs.org/docs/getting-started'
   },
   {
