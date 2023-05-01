@@ -4,9 +4,15 @@ import ReactPerfectScrollbar from 'react-perfect-scrollbar'
 
 interface Props {
   children: ReactNode
+  className?: string
+  containerRef?: (ref: HTMLElement) => void
 }
 
-export const PerfectScrollbar = ({children}: Props) => {
+export const PerfectScrollbar = ({
+  children,
+  className,
+  containerRef
+}: Props) => {
   if (isMobile) {
     return <>{children}</>
   }
@@ -15,6 +21,10 @@ export const PerfectScrollbar = ({children}: Props) => {
       options={{
         wheelPropagation: false,
         minScrollbarLength: 30
+      }}
+      className={className}
+      containerRef={ref => {
+        containerRef?.(ref)
       }}
     >
       {children}

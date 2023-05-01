@@ -1,10 +1,12 @@
 import {observer} from 'mobx-react-lite'
 import Link from 'next/link'
-import {Button, CodeMockup, Divider, Menu} from 'react-daisyui'
+import {Button, Divider, Menu} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
+import {Chat} from '../chat/chat'
+import {ChatInput} from '../chat/chat-input'
 import {useGlobalStore} from '../global/global-store'
 
-const TwMenu = tw(Menu)<{$margin: boolean}>`
+const TwMenu = tw(Menu)`
   border
   border-base-300
   bg-base-100 
@@ -12,28 +14,34 @@ const TwMenu = tw(Menu)<{$margin: boolean}>`
   overflow-y-auto 
   w-80 
   p-2
-  ${p => (p.$margin ? 'my-8 ml-2 rounded-lg' : '')}
+  flex-nowrap
 `
 
 export const DrawerMenu = observer(() => {
-  const [state, store] = useGlobalStore()
+  const [, store] = useGlobalStore()
 
   const closeDrawer = () => {
     store.setDrawerClosed()
   }
 
   return (
-    <TwMenu vertical $margin={state.drawerOpenByHover}>
-      <Link href="/">
-        <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
-          viki
-        </Button>
-      </Link>
-      <Divider />
-      <CodeMockup>
-        <CodeMockup.Line>loading...</CodeMockup.Line>
-        <CodeMockup.Line status="success">Profit!</CodeMockup.Line>
-      </CodeMockup>
+    <TwMenu vertical>
+      <div>
+        <Link href="/">
+          <Button
+            color="ghost"
+            className="w-full text-xl"
+            onClick={closeDrawer}
+          >
+            viki
+          </Button>
+        </Link>
+        <Divider />
+      </div>
+      <div className="flex flex-col justify-between flex-1 gap-3">
+        <Chat />
+        <ChatInput />
+      </div>
     </TwMenu>
   )
 })

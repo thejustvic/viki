@@ -9,6 +9,29 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      chat: {
+        Row: {
+          author_email: string
+          author_image: string
+          created_at: string
+          id: string
+          text: string
+        }
+        Insert: {
+          author_email: string
+          author_image: string
+          created_at?: string
+          id?: string
+          text: string
+        }
+        Update: {
+          author_email?: string
+          author_image?: string
+          created_at?: string
+          id?: string
+          text?: string
+        }
+      }
       posts: {
         Row: {
           by: string
