@@ -19,8 +19,14 @@ export class PostsStore {
     this.setPosts(serverPosts)
   }
 
+  sortPosts(posts: Post[]): Post[] {
+    return posts.sort((a, b) => {
+      return new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
+    })
+  }
+
   setPosts(posts: Post[]): void {
-    this.state.posts = posts
+    this.state.posts = this.sortPosts(posts)
   }
 
   handleUpdate = (oldPost: Post, newPost: Post): void => {
