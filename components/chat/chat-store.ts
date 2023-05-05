@@ -19,14 +19,8 @@ export class ChatStore {
     this.setChat(serverChat)
   }
 
-  sortChat(messages: Message[]): Message[] {
-    return messages.sort((a, b) => {
-      return new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
-    })
-  }
-
   setChat(messages: Message[]): void {
-    this.state.messages = this.sortChat(messages)
+    this.state.messages = Util.sortByDate(messages)
   }
 
   handleUpdate = (oldMessage: Message, newMessage: Message): void => {

@@ -26,4 +26,14 @@ export class Util {
     }
     return newObj
   }
+
+  static sortByDate<T>(arr: WithRequiredCreatedAt<T>[]): T[] {
+    return arr.sort((a, b) => {
+      return new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
+    })
+  }
+}
+
+type WithRequiredCreatedAt<T> = T & {
+  created_at: string
 }
