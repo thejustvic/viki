@@ -1,9 +1,8 @@
 'use client'
 
-import {Modal} from '@/components/common/modal'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {observer} from 'mobx-react-lite'
-import {useRouter, useSearchParams} from 'next/navigation'
+import {useSearchParams} from 'next/navigation'
 import tw from 'tailwind-styled-components'
 import {usePostListener} from './fetch/use-get-post-by-id'
 
@@ -12,7 +11,7 @@ import {UserImage} from '@/components/common/user-image'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {ReactNode, useEffect} from 'react'
-import {Textarea} from 'react-daisyui'
+import {Menu, Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
 import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
 import {
@@ -29,6 +28,17 @@ const TwLoading = tw(Loader)`
   h-6
 `
 
+const TwMenu = tw(Menu)`
+  border
+  border-base-300
+  bg-base-100 
+  text-base-content 
+  overflow-y-auto 
+  w-80 
+  p-2
+  flex-nowrap
+`
+
 export const ModalPost = () => {
   const store = useMemoOne(() => new ModalPostStore(), [])
 
@@ -43,19 +53,15 @@ export const ModalPostBase = observer(() => {
   const [state] = useModalPostStore()
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
-  const router = useRouter()
-  const goBack = () => router.push('/')
 
   usePostListener(postId)
   usePostCreatorListener(state.post.data?.by)
 
   return (
-    <Modal
-      open={Boolean(postId)}
-      goBack={goBack}
-      header={<ModalHeader />}
-      body={<ModalBody />}
-    />
+    <TwMenu>
+      <ModalHeader />
+      <ModalBody />
+    </TwMenu>
   )
 })
 

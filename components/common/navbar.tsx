@@ -2,24 +2,39 @@ import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
-import {IconMenu} from '@tabler/icons-react'
+import {IconArrowBarLeft, IconArrowBarRight} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
+import {useRouter, useSearchParams} from 'next/navigation'
 import {Button, Dropdown, Navbar as Nav, Toggle} from 'react-daisyui'
 import {useGlobalStore} from '../global/global-store'
 import {UserImage} from './user-image'
 
 export const Navbar = observer(() => {
-  const [, store] = useGlobalStore()
+  const [state, store] = useGlobalStore()
+
+  const searchParams = useSearchParams()
+  const postId = searchParams.get('post')
+
+  const router = useRouter()
+  const goBack = () => {
+    const queryString = Util.deleteQueryParam(searchParams, 'post')
+    router.push(`/${queryString ? `?${queryString}` : ''}`)
+  }
 
   return (
     <Nav
-      className="sticky top-0 z-10 bg-base-200"
+      className="sticky top-0 z-10 px-0 bg-base-200"
       style={{height: headerHeight}}
     >
       <Nav.Start>
-        <Button color="ghost" onClick={store.setDrawerToggle}>
+        <Button
+          className="rounded-none rounded-r-md"
+          color="ghost"
+          size="sm"
+          onClick={store.setDrawerToggle}
+        >
           <div className="text-lg normal-case">
-            <IconMenu />
+            {state.drawerOpen ? <IconArrowBarLeft /> : <IconArrowBarRight />}
           </div>
         </Button>
       </Nav.Start>
@@ -27,8 +42,22 @@ export const Navbar = observer(() => {
       <Nav.Center className="font-mono text-lg">viki</Nav.Center>
 
       <Nav.End className="gap-2">
-        <SwitchTheme />
-        <AvatarDropdown />
+        <div className="flex items-center gap-6">
+          <div className="flex">
+            <SwitchTheme />
+            <AvatarDropdown />
+          </div>
+          <Button
+            className="rounded-none rounded-l-md"
+            color="ghost"
+            size="sm"
+            onClick={goBack}
+          >
+            <div className="text-lg normal-case">
+              {postId ? <IconArrowBarRight /> : <IconArrowBarLeft />}
+            </div>
+          </Button>
+        </div>
       </Nav.End>
     </Nav>
   )
