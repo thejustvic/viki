@@ -1,6 +1,7 @@
 'use client'
 
 import {Modal} from '@/components/common/modal'
+import {Util} from '@/utils/util'
 import {useRouter, useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
 import {Button, Form, Textarea} from 'react-daisyui'
@@ -12,7 +13,10 @@ export const ModalCreatePost = () => {
   const value = searchParams.get('create-post')
   const router = useRouter()
 
-  const goBack = () => router.push('/')
+  const goBack = () => {
+    const queryString = Util.deleteQueryParam(searchParams, 'create-post')
+    router.push(`/${queryString ? `?${queryString}` : ''}`)
+  }
 
   return (
     <Modal

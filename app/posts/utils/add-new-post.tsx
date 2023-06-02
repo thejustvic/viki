@@ -1,5 +1,6 @@
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import Link from 'next/link'
+import {useSearchParams} from 'next/navigation'
 import {Button} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 
@@ -14,7 +15,12 @@ const TwAdd = tw(Button)`
 `
 
 export const AddNewPost = () => {
-  const href = `/?create-post=true`
+  const searchParams = useSearchParams()
+  const value = searchParams.toString()
+
+  const href = value.length
+    ? `/?${value}&create-post=true`
+    : `/?create-post=true`
 
   return (
     <Link href={href}>
