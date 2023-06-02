@@ -7,18 +7,21 @@ import {isMobile, isSafari} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
 import tw from 'tailwind-styled-components'
 
-const TwCard = tw(Card)`
+const TwCard = tw(Card)<{$active: boolean}>`
   bg-base-300 
   shadow-md
   w-[288px]
   h-[142px]
   md:w-[190px]
+  preserve-3d
+  ${p => (p.$active ? 'border-solid border-red-300' : '')}
 `
 
 interface Props {
   post: Post
   remove: () => void
   disableTransform?: boolean
+  active: boolean
 }
 
 export const PostContainer = (props: Props) => {
@@ -32,7 +35,7 @@ export const PostContainer = (props: Props) => {
   )
 }
 
-const CardComp = ({post, remove, disableTransform}: Props) => {
+const CardComp = ({post, remove, disableTransform, active}: Props) => {
   const transform: CSSProperties = {
     transform: 'translateZ(20px)'
   }
@@ -40,7 +43,7 @@ const CardComp = ({post, remove, disableTransform}: Props) => {
   const href = `/?post=${post.id}`
 
   return (
-    <TwCard bordered compact className="preserve-3d">
+    <TwCard $active={active} bordered compact>
       <Card.Body style={translateZ}>
         <Card.Title tag="h2" className="flex justify-between">
           <Link href={href}>
