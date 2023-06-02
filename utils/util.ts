@@ -1,3 +1,4 @@
+import {ReadonlyURLSearchParams} from 'next/navigation'
 import {Writable} from 'ts-essentials'
 
 export class Util {
@@ -31,6 +32,15 @@ export class Util {
     return arr.sort((a, b) => {
       return new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
     })
+  }
+
+  static deleteQueryParam(
+    readonlyURLSearchParams: ReadonlyURLSearchParams,
+    queryName: string
+  ): string {
+    const params = new URLSearchParams(readonlyURLSearchParams.toString())
+    params.delete(queryName)
+    return params.toString()
   }
 }
 
