@@ -6,4 +6,5 @@
     "postgrest",
     "tabler"
   ],
+  "eslint.problems.shortenToSingleLine": true,
 }
