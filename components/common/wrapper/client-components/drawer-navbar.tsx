@@ -8,7 +8,9 @@ import {
   useRightDrawerOpenState
 } from '@/hooks/use-drawer-open-state'
 import {headerHeight} from '@/utils/const'
+import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
+import {useRouter, useSearchParams} from 'next/navigation'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
 import {isMobile} from 'react-device-detect'
@@ -20,7 +22,9 @@ interface Props {
 }
 
 export const DrawerNavbar = observer(({children}: Props) => {
-  const [state] = useGlobalStore()
+  const [state, store] = useGlobalStore()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
@@ -28,11 +32,26 @@ export const DrawerNavbar = observer(({children}: Props) => {
   const mobileLeftDrawerOpen = !state.drawerOpenByHover && state.leftDrawerOpen
   const mobileRightDrawerOpen = state.rightDrawerOpen
 
+  const onLeftDrawerClickOverlay = () => {
+    store.setLeftDrawerClosed()
+  }
+
+  const onRightDrawerClickOverlay = () => {
+    store.setRightDrawerClosed()
+    const postId = searchParams.get('post')
+    if (postId) {
+      store.setLastPostId(postId)
+      const queryString = Util.deleteQueryParam(searchParams, 'post')
+      router.push(`/${queryString ? `?${queryString}` : ''}`)
+    }
+  }
+
   return (
     <Drawer
       open={isMobile ? state.leftDrawerOpen : state.drawerOpenByHover}
       mobile={isMobile || mobileLeftDrawerOpen}
       side={<DrawerMenu />}
+      onClickOverlay={onLeftDrawerClickOverlay}
     >
       <Drawer
         end
@@ -40,6 +59,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
         mobile={isMobile || mobileRightDrawerOpen}
         side={<ModalPost />}
         contentClassName="overflow-x-hidden"
+        onClickOverlay={onRightDrawerClickOverlay}
       >
         <Navbar />
         <div style={{height: `calc(100% - ${headerHeight})`}}>
