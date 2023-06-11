@@ -1,5 +1,4 @@
 import {observer} from 'mobx-react-lite'
-import Link from 'next/link'
 import {Button, Divider, Menu} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import {Chat} from '../chat/chat'
@@ -21,21 +20,15 @@ export const DrawerMenu = observer(() => {
   const [, store] = useGlobalStore()
 
   const closeDrawer = () => {
-    store.setDrawerClosed()
+    store.setLeftDrawerClosed()
   }
 
   return (
     <TwMenu vertical>
       <div>
-        <Link href="/">
-          <Button
-            color="ghost"
-            className="w-full text-xl"
-            onClick={closeDrawer}
-          >
-            viki
-          </Button>
-        </Link>
+        <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
+          viki
+        </Button>
         <Divider />
       </div>
       <div className="flex flex-col justify-between flex-1 gap-3">

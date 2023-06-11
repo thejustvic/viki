@@ -103,13 +103,7 @@ const TextData = observer(() => {
   }, [debounced])
 
   return (
-    <Textarea
-      size="md"
-      autoFocus
-      value={text}
-      onChange={onChange}
-      className="w-full"
-    />
+    <Textarea size="md" value={text} onChange={onChange} className="w-full" />
   )
 })
 

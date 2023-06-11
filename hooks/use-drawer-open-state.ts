@@ -1,8 +1,9 @@
 import {useGlobalStore} from '@/components/global/global-store'
+import {useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
 
-export const useDrawerOpenState = (): void => {
+export const useLeftDrawerOpenState = (): void => {
   const {x} = useMousePosition()
   const [state, store] = useGlobalStore()
 
@@ -13,11 +14,26 @@ export const useDrawerOpenState = (): void => {
     if (!state.showLeftMenuOnHover) {
       return
     }
-    if (!state.drawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
-      store.setDrawerOpen(true)
+    if (!state.leftDrawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
+      store.setLeftDrawerOpen(true)
     }
-    if (state.drawerOpen && state.drawerOpenByHover && Number(x) > 400) {
-      store.setDrawerClosed(false)
+    if (state.leftDrawerOpen && state.drawerOpenByHover && Number(x) > 400) {
+      store.setLeftDrawerClosed(false)
     }
   }, [x])
+}
+
+export const useRightDrawerOpenState = (): void => {
+  const [, store] = useGlobalStore()
+  const searchParams = useSearchParams()
+  const postId = searchParams.get('post')
+
+  useEffect(() => {
+    if (postId) {
+      store.setLastPostId(postId)
+      store.setRightDrawerOpen()
+    } else {
+      store.setRightDrawerClosed()
+    }
+  }, [postId])
 }

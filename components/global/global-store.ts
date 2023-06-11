@@ -5,17 +5,21 @@ import {Theme} from './types'
 
 interface State {
   theme: Theme
-  drawerOpen: boolean
+  leftDrawerOpen: boolean
+  rightDrawerOpen: boolean
   drawerOpenByHover: boolean
   showLeftMenuOnHover: boolean
+  lastPostId: string | undefined
 }
 
 export class GlobalStore {
   state: State = {
     theme: 'dark',
-    drawerOpen: true,
+    leftDrawerOpen: true,
+    rightDrawerOpen: false,
     drawerOpenByHover: false,
-    showLeftMenuOnHover: true
+    showLeftMenuOnHover: true,
+    lastPostId: undefined
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -34,18 +38,34 @@ export class GlobalStore {
     this.setTheme(newTheme)
   }
 
-  setDrawerOpen = (byHoverValue = false): void => {
-    this.state.drawerOpen = true
+  setLastPostId = (postId: State['lastPostId']): void => {
+    this.state.lastPostId = postId
+  }
+
+  setRightDrawerToggle = (): void => {
+    this.state.rightDrawerOpen = !this.state.rightDrawerOpen
+  }
+
+  setRightDrawerOpen = (): void => {
+    this.state.rightDrawerOpen = true
+  }
+
+  setRightDrawerClosed = (): void => {
+    this.state.rightDrawerOpen = false
+  }
+
+  setLeftDrawerOpen = (byHoverValue = false): void => {
+    this.state.leftDrawerOpen = true
     this.state.drawerOpenByHover = byHoverValue
   }
 
-  setDrawerToggle = (): void => {
-    this.state.drawerOpen = !this.state.drawerOpen
+  setLeftDrawerToggle = (): void => {
+    this.state.leftDrawerOpen = !this.state.leftDrawerOpen
     this.state.drawerOpenByHover = false
   }
 
-  setDrawerClosed = (byHoverValue = false): void => {
-    this.state.drawerOpen = false
+  setLeftDrawerClosed = (byHoverValue = false): void => {
+    this.state.leftDrawerOpen = false
     this.state.drawerOpenByHover = byHoverValue
   }
 

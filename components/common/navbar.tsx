@@ -10,56 +10,88 @@ import {useGlobalStore} from '../global/global-store'
 import {UserImage} from './user-image'
 
 export const Navbar = observer(() => {
+  return (
+    <Nav
+      className="sticky top-0 z-10 px-0 bg-base-200"
+      style={{height: headerHeight}}
+    >
+      <NavStart />
+      <NavCenter />
+      <NavEnd />
+    </Nav>
+  )
+})
+
+const NavStart = observer(() => {
+  const [state, store] = useGlobalStore()
+
+  return (
+    <Nav.Start>
+      <Button
+        className="rounded-none rounded-r-md"
+        color="ghost"
+        size="sm"
+        onClick={store.setLeftDrawerToggle}
+      >
+        <div className="text-lg normal-case">
+          {state.leftDrawerOpen ? <IconArrowBarLeft /> : <IconArrowBarRight />}
+        </div>
+      </Button>
+    </Nav.Start>
+  )
+})
+
+const NavCenter = () => {
+  return <Nav.Center className="font-mono text-lg">viki</Nav.Center>
+}
+
+const NavEnd = observer(() => {
   const [state, store] = useGlobalStore()
 
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
 
   const router = useRouter()
-  const goBack = () => {
-    const queryString = Util.deleteQueryParam(searchParams, 'post')
-    router.push(`/${queryString ? `?${queryString}` : ''}`)
+
+  const toggleRightDrawer = () => {
+    store.setRightDrawerToggle()
+    if (postId) {
+      store.setLastPostId(postId)
+      const queryString = Util.deleteQueryParam(searchParams, 'post')
+      router.push(`/${queryString ? `?${queryString}` : ''}`)
+    } else if (state.lastPostId) {
+      const queryString = Util.addQueryParam(
+        searchParams,
+        'post',
+        state.lastPostId
+      )
+      router.push(`/${queryString ? `?${queryString}` : ''}`)
+    }
   }
 
   return (
-    <Nav
-      className="sticky top-0 z-10 px-0 bg-base-200"
-      style={{height: headerHeight}}
-    >
-      <Nav.Start>
+    <Nav.End className="gap-2">
+      <div className="flex items-center gap-6">
+        <div className="flex">
+          <SwitchTheme />
+          <AvatarDropdown />
+        </div>
         <Button
-          className="rounded-none rounded-r-md"
+          className="rounded-none rounded-l-md"
           color="ghost"
           size="sm"
-          onClick={store.setDrawerToggle}
+          onClick={toggleRightDrawer}
         >
           <div className="text-lg normal-case">
-            {state.drawerOpen ? <IconArrowBarLeft /> : <IconArrowBarRight />}
+            {state.rightDrawerOpen ? (
+              <IconArrowBarRight />
+            ) : (
+              <IconArrowBarLeft />
+            )}
           </div>
         </Button>
-      </Nav.Start>
-
-      <Nav.Center className="font-mono text-lg">viki</Nav.Center>
-
-      <Nav.End className="gap-2">
-        <div className="flex items-center gap-6">
-          <div className="flex">
-            <SwitchTheme />
-            <AvatarDropdown />
-          </div>
-          <Button
-            className="rounded-none rounded-l-md"
-            color="ghost"
-            size="sm"
-            onClick={goBack}
-          >
-            <div className="text-lg normal-case">
-              {postId ? <IconArrowBarRight /> : <IconArrowBarLeft />}
-            </div>
-          </Button>
-        </div>
-      </Nav.End>
-    </Nav>
+      </div>
+    </Nav.End>
   )
 })
 
