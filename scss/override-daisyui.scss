@@ -5,3 +5,7 @@
 .drawer.drawer-end > .drawer-toggle:checked ~ .drawer-content {
   transform: translate(0);
 }
+
+.drawer.drawer-end > .drawer-toggle:checked ~ .drawer-side > .drawer-overlay {
+  opacity: 0;
+}
