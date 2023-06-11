@@ -33,11 +33,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
       mobile={isMobile || mobileDrawerOpen}
       side={<DrawerMenu />}
     >
-      <Drawer
-        mobile={Boolean(postId)}
-        side={Boolean(postId) && <ModalPost />}
-        end
-      >
+      <Drawer mobile={Boolean(postId)} side={<ModalPost />} end>
         <Navbar />
         <div style={{height: `calc(100% - ${headerHeight})`}}>
           <PerfectScrollbar>{children}</PerfectScrollbar>
