@@ -42,6 +42,16 @@ export class Util {
     params.delete(queryName)
     return params.toString()
   }
+
+  static addQueryParam(
+    readonlyURLSearchParams: ReadonlyURLSearchParams,
+    queryName: string,
+    value: string
+  ): string {
+    const params = new URLSearchParams(readonlyURLSearchParams.toString())
+    params.append(queryName, value)
+    return params.toString()
+  }
 }
 
 type WithRequiredCreatedAt<T> = T & {
