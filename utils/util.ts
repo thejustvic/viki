@@ -1,3 +1,4 @@
+import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context'
 import {ReadonlyURLSearchParams} from 'next/navigation'
 import {Writable} from 'ts-essentials'
 
@@ -51,6 +52,10 @@ export class Util {
     const params = new URLSearchParams(readonlyURLSearchParams.toString())
     params.append(queryName, value)
     return params.toString()
+  }
+
+  static routerPushQuery(router: AppRouterInstance, queryString: string): void {
+    router.push(`/${queryString ? `?${queryString}` : ''}`)
   }
 }
 

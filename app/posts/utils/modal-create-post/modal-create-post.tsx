@@ -15,7 +15,7 @@ export const ModalCreatePost = () => {
 
   const goBack = () => {
     const queryString = Util.deleteQueryParam(searchParams, 'create-post')
-    router.push(`/${queryString ? `?${queryString}` : ''}`)
+    Util.routerPushQuery(router, queryString)
   }
 
   return (

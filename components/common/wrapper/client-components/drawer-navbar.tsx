@@ -42,7 +42,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
     if (postId) {
       store.setLastPostId(postId)
       const queryString = Util.deleteQueryParam(searchParams, 'post')
-      router.push(`/${queryString ? `?${queryString}` : ''}`)
+      Util.routerPushQuery(router, queryString)
     }
   }
 

@@ -58,14 +58,14 @@ const NavEnd = observer(() => {
     if (postId) {
       store.setLastPostId(postId)
       const queryString = Util.deleteQueryParam(searchParams, 'post')
-      router.push(`/${queryString ? `?${queryString}` : ''}`)
+      Util.routerPushQuery(router, queryString)
     } else if (state.lastPostId) {
       const queryString = Util.addQueryParam(
         searchParams,
         'post',
         state.lastPostId
       )
-      router.push(`/${queryString ? `?${queryString}` : ''}`)
+      Util.routerPushQuery(router, queryString)
     }
   }
 
