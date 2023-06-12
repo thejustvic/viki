@@ -2,7 +2,7 @@
 
 import {Modal} from '@/components/common/modal'
 import {Util} from '@/utils/util'
-import {useRouter, useSearchParams} from 'next/navigation'
+import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
 import {Button, Form, Textarea} from 'react-daisyui'
 import {useForm} from 'react-hook-form'
@@ -12,10 +12,11 @@ export const ModalCreatePost = () => {
   const searchParams = useSearchParams()
   const value = searchParams.get('create-post')
   const router = useRouter()
+  const pathname = usePathname()
 
   const goBack = () => {
     const queryString = Util.deleteQueryParam(searchParams, 'create-post')
-    Util.routerPushQuery(router, queryString)
+    Util.routerPushQuery(router, queryString, pathname)
   }
 
   return (

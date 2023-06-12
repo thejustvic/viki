@@ -10,7 +10,7 @@ import {
 import {headerHeight} from '@/utils/const'
 import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
-import {useRouter, useSearchParams} from 'next/navigation'
+import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {ReactNode} from 'react'
 import {Drawer} from 'react-daisyui'
 import {isMobile} from 'react-device-detect'
@@ -25,6 +25,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
   const [state, store] = useGlobalStore()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
@@ -42,7 +43,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
     if (postId) {
       store.setLastPostId(postId)
       const queryString = Util.deleteQueryParam(searchParams, 'post')
-      Util.routerPushQuery(router, queryString)
+      Util.routerPushQuery(router, queryString, pathname)
     }
   }
 

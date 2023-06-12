@@ -54,8 +54,12 @@ export class Util {
     return params.toString()
   }
 
-  static routerPushQuery(router: AppRouterInstance, queryString: string): void {
-    router.push(`/${queryString ? `?${queryString}` : ''}`)
+  static routerPushQuery(
+    router: AppRouterInstance,
+    queryString: string,
+    pathname: string
+  ): void {
+    router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
   }
 }
 
