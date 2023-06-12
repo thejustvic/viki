@@ -8,9 +8,11 @@ import {usePostListener} from './fetch/use-get-post-by-id'
 
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
+import {useGlobalStore} from '@/components/global/global-store'
+import {useBoolean} from '@/hooks/use-boolean'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
-import {ReactNode, useEffect} from 'react'
+import {ReactNode, useCallback, useEffect, useState} from 'react'
 import {Menu, Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
 import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
@@ -31,12 +33,27 @@ const TwLoading = tw(Loader)`
 const TwMenu = tw(Menu)`
   border
   border-base-300
-  bg-base-100 
-  text-base-content 
-  overflow-y-auto 
-  w-80 
+  bg-base-100
+  text-base-content
+  overflow-y-auto
   p-2
   flex-nowrap
+  relative
+`
+
+const TwDrag = tw.div`
+  absolute
+  -left-2
+  top-1/2
+  p-2
+  cursor-col-resize
+`
+
+const TwDragRow = tw.div`
+  w-1
+  h-6
+  bg-slate-300
+  rounded-2xl
 `
 
 export const ModalPost = () => {
@@ -50,6 +67,7 @@ export const ModalPost = () => {
 }
 
 export const ModalPostBase = observer(() => {
+  const [globalStore] = useGlobalStore()
   const [state] = useModalPostStore()
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
@@ -58,10 +76,79 @@ export const ModalPostBase = observer(() => {
   usePostCreatorListener(state.post.data?.by)
 
   return (
-    <TwMenu>
+    <TwMenu style={{width: globalStore.rightDrawerWidth}}>
+      <Drag />
       <ModalHeader />
       <ModalBody />
     </TwMenu>
+  )
+})
+
+const Drag = observer(() => {
+  const [state, store] = useGlobalStore()
+  const mouseDown = useBoolean(false)
+  const [mouseX, setMouseX] = useState({
+    start: 0,
+    move: 0,
+    startWidth: state.rightDrawerWidth
+  })
+
+  useEffect(() => {
+    if (!mouseDown.value) {
+      return
+    }
+    const width = mouseX.startWidth + mouseX.move
+    store.setRightDrawerWidth(width)
+  }, [mouseX.move])
+
+  const handleMouseDown = (event: React.MouseEvent) => {
+    mouseDown.turnOn()
+    setMouseX({
+      start: event.screenX,
+      move: 0,
+      startWidth: state.rightDrawerWidth
+    })
+
+    const body = document.getElementsByTagName('body')[0]
+    body.style.userSelect = 'none'
+    body.style.cursor = 'col-resize'
+  }
+
+  const handleMouseUp = () => {
+    if (!mouseDown.value) {
+      return
+    }
+    mouseDown.turnOff()
+    setMouseX({start: 0, move: 0, startWidth: state.rightDrawerWidth})
+
+    const body = document.getElementsByTagName('body')[0]
+    body.style.userSelect = 'auto'
+    body.style.cursor = 'auto'
+  }
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!mouseDown.value) {
+        return
+      }
+      setMouseX(prev => ({...prev, move: mouseX.start - event.screenX}))
+    },
+    [mouseDown.value]
+  )
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [handleMouseMove, handleMouseUp])
+
+  return (
+    <TwDrag onMouseDown={handleMouseDown}>
+      <TwDragRow />
+    </TwDrag>
   )
 })
 

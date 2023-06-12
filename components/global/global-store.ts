@@ -10,6 +10,7 @@ interface State {
   drawerOpenByHover: boolean
   showLeftMenuOnHover: boolean
   lastPostId: string | undefined
+  rightDrawerWidth: number
 }
 
 export class GlobalStore {
@@ -19,7 +20,8 @@ export class GlobalStore {
     rightDrawerOpen: false,
     drawerOpenByHover: false,
     showLeftMenuOnHover: true,
-    lastPostId: undefined
+    lastPostId: undefined,
+    rightDrawerWidth: 320
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -28,6 +30,10 @@ export class GlobalStore {
     })
     makeAutoPersist(this, 'global-store')
     serverTheme && this.setTheme(serverTheme)
+  }
+
+  setRightDrawerWidth = (rightDrawerWidth: State['rightDrawerWidth']): void => {
+    this.state.rightDrawerWidth = rightDrawerWidth
   }
 
   setTheme = (theme: Theme): void => {
