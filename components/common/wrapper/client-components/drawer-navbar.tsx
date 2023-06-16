@@ -165,23 +165,30 @@ const Drag = observer(() => {
   }, [handleMouseMove, handleMouseUp])
 
   return (
-    <TwDrag onMouseDown={handleMouseDown}>
-      <TwDragRow />
-    </TwDrag>
+    <TwDragWrap onMouseDown={handleMouseDown}>
+      <TwDrag />
+    </TwDragWrap>
   )
 })
 
-const TwDrag = tw.div`
+const TwDragWrap = tw.div`
   absolute
-  -left-2
-  top-1/2
-  p-2
+  left-0
+  h-full
+  p-0
+  pr-3
+  w-1
+  z-10
+  group
   cursor-col-resize
 `
 
-const TwDragRow = tw.div`
+const TwDrag = tw.div`
+  absolute
+  h-full
   w-1
-  h-6
-  bg-slate-300
-  rounded-2xl
+  z-10
+  hidden
+  group-hover:block
+  bg-sky-400
 `
