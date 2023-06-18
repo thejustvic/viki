@@ -166,7 +166,7 @@ const Drag = observer(() => {
 
   return (
     <TwDragWrap onMouseDown={handleMouseDown}>
-      <TwDrag />
+      <TwDrag $show={mouseDown.value} />
     </TwDragWrap>
   )
 })
@@ -183,12 +183,13 @@ const TwDragWrap = tw.div`
   cursor-col-resize
 `
 
-const TwDrag = tw.div`
+const TwDrag = tw.div<{$show: boolean}>`
   absolute
   h-full
   w-1
   z-10
+  bg-sky-400
   hidden
   group-hover:block
-  bg-sky-400
+  ${p => p.$show && 'block'}
 `
