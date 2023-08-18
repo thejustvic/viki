@@ -74,24 +74,24 @@ export const DrawerNavbar = observer(({children}: Props) => {
 })
 
 const TabsComponent = observer(() => {
-  const [tabValue, setTabValue] = useState(0)
-  const [globalStore] = useGlobalStore()
+  const [state, store] = useGlobalStore()
+
   return (
     <div className="border border-base-300">
       <Drag />
       <Tabs
-        value={tabValue}
-        onChange={setTabValue}
+        value={state.tab}
+        onChange={store.setTab}
         variant="lifted"
         size="lg"
-        style={{width: globalStore.rightDrawerWidth}}
+        style={{width: state.rightDrawerWidth}}
         className="flex justify-between"
       >
-        <TwTab value={0}>Tab 1</TwTab>
-        <TwTab value={1}>Tab 2</TwTab>
-        <TwTab value={2}>Tab 3</TwTab>
+        <TwTab value={'info'}>Tab 1</TwTab>
+        <TwTab value={'chat'}>Tab 2</TwTab>
+        <TwTab value={'empty'}>Tab 3</TwTab>
       </Tabs>
-      {tabValue === 0 && <ModalPost />}
+      {state.tab === 'info' && <ModalPost />}
     </div>
   )
 })

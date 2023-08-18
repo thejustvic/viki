@@ -1,7 +1,7 @@
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {makeAutoObservable, observable} from 'mobx'
-import {Theme} from './types'
+import {Tab, Theme} from './types'
 
 interface State {
   theme: Theme
@@ -11,6 +11,7 @@ interface State {
   showLeftMenuOnHover: boolean
   lastPostId: string | undefined
   rightDrawerWidth: number
+  tab: Tab
 }
 
 export class GlobalStore {
@@ -21,7 +22,8 @@ export class GlobalStore {
     drawerOpenByHover: false,
     showLeftMenuOnHover: true,
     lastPostId: undefined,
-    rightDrawerWidth: 320
+    rightDrawerWidth: 320,
+    tab: 'info'
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -77,6 +79,10 @@ export class GlobalStore {
 
   setShowLeftMenuOnHoverToggle = (): void => {
     this.state.showLeftMenuOnHover = !this.state.showLeftMenuOnHover
+  }
+
+  setTab = (tab: Tab): void => {
+    this.state.tab = tab
   }
 }
 
