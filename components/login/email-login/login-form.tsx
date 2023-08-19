@@ -1,4 +1,5 @@
 import {AuthResponse} from '@supabase/supabase-js'
+import {CSSProperties} from 'react'
 import {Button, Card, Form, Input, Link} from 'react-daisyui'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
@@ -43,6 +44,10 @@ interface FormValues {
   password: string
 }
 
+const transform: CSSProperties = {
+  transform: 'translateZ(20px)'
+}
+
 export const LoginForm = ({
   handleLink,
   handleAuth,
@@ -69,8 +74,8 @@ export const LoginForm = ({
 
   return (
     <>
-      <TwTitle>{title}</TwTitle>
-      <TwBody>
+      <TwTitle style={transform}>{title}</TwTitle>
+      <TwBody style={transform}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Label title="Email" />
           <Input

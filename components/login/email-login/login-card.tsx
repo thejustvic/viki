@@ -6,41 +6,45 @@ import {useEmailLoginStore} from './email-login-store'
 import {LoginForm} from './login-form'
 
 const TwLoginCard = tw.div`
-  w-[300px] 
-  h-[358px] 
+  w-[300px]
+  h-[358px]
   perspective
+  preserve-3d
 `
 
 const TwLoginCardInner = tw.div<{$rotate: boolean}>`
-  relative 
-  w-full 
-  h-full 
-  duration-700 
+  relative
+  w-full
+  h-full
+  duration-700
   preserve-3d
   ${p => (p.$rotate ? 'my-rotate-y-180' : '')}
 `
 
 const TwCardLogin = tw.div`
-  absolute 
-  w-full 
-  h-full 
+  absolute
+  w-full
+  h-full
   backface-hidden
+  preserve-3d
 `
 
 const TwCardRegister = tw.div`
-  absolute 
-  w-full 
-  h-full 
-  my-rotate-y-180 
+  absolute
+  w-full
+  h-full
+  my-rotate-y-180
   backface-hidden
+  preserve-3d
 `
 
 const TwCard = tw(Card)`
-  flex-shrink-0 
-  w-full 
-  max-w-sm 
+  flex-shrink-0
+  w-full
+  max-w-sm
   shadow-2xl 
   bg-base-100
+  preserve-3d
 `
 
 export const LoginCard = observer(() => {
