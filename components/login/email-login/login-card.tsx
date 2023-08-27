@@ -42,7 +42,7 @@ const TwCard = tw(Card)`
   flex-shrink-0
   w-full
   max-w-sm
-  shadow-2xl 
+  shadow-lg
   bg-base-100
   preserve-3d
 `
