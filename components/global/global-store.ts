@@ -17,10 +17,10 @@ interface State {
 export class GlobalStore {
   state: State = {
     theme: 'dark',
-    leftDrawerOpen: true,
+    leftDrawerOpen: false,
     rightDrawerOpen: false,
     drawerOpenByHover: false,
-    showLeftMenuOnHover: true,
+    showLeftMenuOnHover: false,
     lastPostId: undefined,
     rightDrawerWidth: 320,
     tab: 'info'
