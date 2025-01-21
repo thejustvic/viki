@@ -51,9 +51,17 @@ export const DrawerNavbar = observer(({children}: Props) => {
     }
   }
 
+  const leftDrawerOpen = () => {
+    if (session) {
+      return isMobile ? state.leftDrawerOpen : state.drawerOpenByHover
+    } else {
+      return false
+    }
+  }
+
   return (
     <Drawer
-      open={isMobile ? state.leftDrawerOpen : state.drawerOpenByHover}
+      open={leftDrawerOpen()}
       mobile={isMobile || mobileLeftDrawerOpen}
       side={session ? <DrawerMenu /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
