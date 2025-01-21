@@ -7,7 +7,7 @@ First, configure .env file
 Then, run the development server:
 
 ```bash
-npm i -g pnpm@6.3.0
+npm i -g pnpm@9.15.4
 
 pnpm i
 
