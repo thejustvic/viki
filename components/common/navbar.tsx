@@ -11,18 +11,15 @@ import {UserImage} from './user-image'
 
 export const Navbar = observer(() => {
   const {session} = useSupabase()
-  const checkOnUser = () => {
-    return !!session?.user?.user_metadata
-  }
 
   return (
     <Nav
       className="sticky top-0 z-10 px-0 bg-base-200"
       style={{height: headerHeight}}
     >
-      {checkOnUser() ? <NavStart /> : null}
+      {session ? <NavStart /> : null}
       <NavCenter />
-      {checkOnUser() ? <NavEnd /> : null}
+      {session ? <NavEnd /> : null}
     </Nav>
   )
 })

@@ -9,6 +9,7 @@ import {
   useRightDrawerOpenState
 } from '@/hooks/use-drawer-open-state'
 import {headerHeight} from '@/utils/const'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
@@ -25,6 +26,7 @@ interface Props {
 
 export const DrawerNavbar = observer(({children}: Props) => {
   const [state, store] = useGlobalStore()
+  const {session} = useSupabase()
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -53,14 +55,14 @@ export const DrawerNavbar = observer(({children}: Props) => {
     <Drawer
       open={isMobile ? state.leftDrawerOpen : state.drawerOpenByHover}
       mobile={isMobile || mobileLeftDrawerOpen}
-      side={<DrawerMenu />}
+      side={session ? <DrawerMenu /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
     >
       <Drawer
         end
         open={state.rightDrawerOpen}
         mobile={isMobile || mobileRightDrawerOpen}
-        side={<TabsComponent />}
+        side={session ? <TabsComponent /> : null}
         contentClassName="overflow-x-hidden"
         onClickOverlay={onRightDrawerClickOverlay}
       >
