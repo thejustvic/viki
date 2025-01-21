@@ -45,7 +45,7 @@ const NavStart = observer(() => {
 
 const NavCenter = () => {
   return (
-    <Nav.Center className="flex justify-center w-full font-mono text-lg">
+    <Nav.Center className="flex justify-center flex-1 font-mono text-lg">
       viki
     </Nav.Center>
   )
