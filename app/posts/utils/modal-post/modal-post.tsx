@@ -53,7 +53,7 @@ export const ModalPostBase = observer(() => {
   const postId = searchParams.get('post')
 
   usePostListener(postId)
-  usePostCreatorListener(state.post.data?.by)
+  usePostCreatorListener(state.post.data?.user_id)
 
   return (
     <TwMenu>

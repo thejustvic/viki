@@ -5,7 +5,7 @@ import {Post} from '../../types'
 import {useModalPostStore} from '../modal-post-store'
 
 export const usePostCreatorListener = (
-  userId: Post['by'] | undefined
+  userId: Post['user_id'] | undefined
 ): void => {
   const [, store] = useModalPostStore()
 

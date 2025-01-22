@@ -34,22 +34,25 @@ export interface Database {
       }
       posts: {
         Row: {
-          by: string
           created_at: string
           id: string
           text: string
+          user_id?: string
+          email?: string
         }
         Insert: {
-          by: string
           created_at?: string
           id?: string
           text: string
+          user_id: string
+          email: string
         }
         Update: {
-          by?: string
           created_at?: string
           id?: string
           text?: string
+          user_id?: string
+          email?: string
         }
       }
       users: {
