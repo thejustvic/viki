@@ -55,19 +55,25 @@ export interface Database {
           email?: string
         }
       }
-      users: {
+      profiles: {
         Row: {
-          email: string | null
+          fullname: string
+          email: string
+          avatar_url: string | null
           id: string
           theme: string
         }
         Insert: {
-          email?: string | null
+          fullname: string
+          email: string
+          avatar_url?: string | null
           id: string
           theme?: string
         }
         Update: {
-          email?: string | null
+          fullname?: string
+          email?: string
+          avatar_url?: string | null
           id?: string
           theme?: string
         }

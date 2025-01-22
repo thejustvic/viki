@@ -13,7 +13,7 @@ export const updateTheme = async (props: Props): Promise<string> => {
   const {theme} = props
   const {supabase, session} = props.opts
   const {data} = await supabase
-    .from('users')
+    .from('profiles')
     .update({theme})
     .eq('id', session?.user.id)
     .select()

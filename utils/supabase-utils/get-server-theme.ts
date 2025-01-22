@@ -9,7 +9,7 @@ export const getServerTheme = async (
   }
   const supabase = createClient()
   const {data} = await supabase
-    .from('users')
+    .from('profiles')
     .select('*')
     .eq('id', session.user.id)
     .single()
