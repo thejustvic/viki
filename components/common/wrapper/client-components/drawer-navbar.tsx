@@ -175,31 +175,45 @@ const Drag = observer(() => {
   }, [handleMouseMove, handleMouseUp])
 
   return (
-    <TwDragWrap onMouseDown={handleMouseDown}>
-      <TwDrag $show={mouseDown.value} />
+    <TwDragWrap onMouseDown={handleMouseDown} $show={mouseDown.value}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        className={`h-2.5 w-2.5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}
+      >
+        <circle cx="9" cy="12" r="1"></circle>
+        <circle cx="9" cy="5" r="1"></circle>
+        <circle cx="9" cy="19" r="1"></circle>
+        <circle cx="15" cy="12" r="1"></circle>
+        <circle cx="15" cy="5" r="1"></circle>
+        <circle cx="15" cy="19" r="1"></circle>
+      </svg>
     </TwDragWrap>
   )
 })
 
-const TwDragWrap = tw.div`
+const TwDragWrap = tw.div<{$show: boolean}>`
   absolute
   left-0
   h-full
   p-0
-  pr-3
+  pr-2
   w-1
   z-10
   group
   cursor-col-resize
-`
-
-const TwDrag = tw.div<{$show: boolean}>`
-  absolute
-  h-full
-  w-1
-  z-10
-  bg-sky-400
-  hidden
-  group-hover:block
-  ${p => p.$show && 'block'}
+  opacity-0
+  hover:opacity-100
+  transition-opacity
+  ease-in-out
+  delay-150
+  duration-200
+  ${p => p.$show && 'opacity-100'}
 `
