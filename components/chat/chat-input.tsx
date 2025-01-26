@@ -7,8 +7,8 @@ import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`
   flex-1 
-  bg-slate-800 
-  text-slate-200
+  flex-shrink
+
 `
 
 interface FormInputs {
