@@ -29,7 +29,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
 
-  const mobileLeftDrawerOpen = state.leftDrawerOpen
+  const mobileLeftDrawerOpen = !state.drawerOpenByHover && state.leftDrawerOpen
   const mobileRightDrawerOpen = state.rightDrawerOpen
 
   const onLeftDrawerClickOverlay = () => {
@@ -42,7 +42,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
 
   const leftDrawerOpen = () => {
     if (session) {
-      return isMobile ? mobileLeftDrawerOpen : state.drawerOpenByHover
+      return isMobile ? state.leftDrawerOpen : state.drawerOpenByHover
     } else {
       return false
     }
