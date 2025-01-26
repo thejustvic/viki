@@ -1,5 +1,4 @@
 import {ReactNode} from 'react'
-import {isMobile} from 'react-device-detect'
 import ReactPerfectScrollbar from 'react-perfect-scrollbar'
 
 interface Props {
@@ -13,9 +12,6 @@ export const PerfectScrollbar = ({
   className,
   containerRef
 }: Props) => {
-  if (isMobile) {
-    return <>{children}</>
-  }
   return (
     <ReactPerfectScrollbar
       options={{
