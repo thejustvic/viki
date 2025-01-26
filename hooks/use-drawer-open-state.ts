@@ -1,5 +1,6 @@
 import {useGlobalStore} from '@/components/global/global-store'
-import {useSearchParams} from 'next/navigation'
+import {Util} from '@/utils/util'
+import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
 
@@ -24,8 +25,10 @@ export const useLeftDrawerOpenState = (): void => {
 }
 
 export const useRightDrawerOpenState = (): void => {
-  const [, store] = useGlobalStore()
+  const [state, store] = useGlobalStore()
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
   const postId = searchParams.get('post')
 
   useEffect(() => {
@@ -36,4 +39,12 @@ export const useRightDrawerOpenState = (): void => {
       store.setRightDrawerClosed()
     }
   }, [postId])
+
+  useEffect(() => {
+    if (!state.rightDrawerOpen && postId) {
+      store.setLastPostId(postId)
+      const queryString = Util.deleteQueryParam(searchParams, 'post')
+      Util.routerPushQuery(router, queryString, pathname)
+    }
+  }, [state.rightDrawerOpen])
 }

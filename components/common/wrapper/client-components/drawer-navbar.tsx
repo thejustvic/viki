@@ -10,9 +10,7 @@ import {
 } from '@/hooks/use-drawer-open-state'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {ReactNode, useCallback, useEffect, useState} from 'react'
 import {Button, Drawer, Tabs} from 'react-daisyui'
 import {isMobile} from 'react-device-detect'
@@ -27,9 +25,6 @@ interface Props {
 export const DrawerNavbar = observer(({children}: Props) => {
   const [state, store] = useGlobalStore()
   const {session} = useSupabase()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
 
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
@@ -43,12 +38,6 @@ export const DrawerNavbar = observer(({children}: Props) => {
 
   const onRightDrawerClickOverlay = () => {
     store.setRightDrawerClosed()
-    const postId = searchParams.get('post')
-    if (postId) {
-      store.setLastPostId(postId)
-      const queryString = Util.deleteQueryParam(searchParams, 'post')
-      Util.routerPushQuery(router, queryString, pathname)
-    }
   }
 
   const leftDrawerOpen = () => {
