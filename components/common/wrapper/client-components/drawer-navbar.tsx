@@ -14,7 +14,7 @@ import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {ReactNode, useCallback, useEffect, useState} from 'react'
-import {Drawer, Tabs} from 'react-daisyui'
+import {Button, Drawer, Tabs} from 'react-daisyui'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 import {DrawerMenu} from '../../drawer-menu'
@@ -34,7 +34,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
 
-  const mobileLeftDrawerOpen = !state.drawerOpenByHover && state.leftDrawerOpen
+  const mobileLeftDrawerOpen = state.leftDrawerOpen
   const mobileRightDrawerOpen = state.rightDrawerOpen
 
   const onLeftDrawerClickOverlay = () => {
@@ -53,7 +53,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
 
   const leftDrawerOpen = () => {
     if (session) {
-      return isMobile ? state.leftDrawerOpen : state.drawerOpenByHover
+      return isMobile ? mobileLeftDrawerOpen : state.drawerOpenByHover
     } else {
       return false
     }
@@ -86,9 +86,18 @@ export const DrawerNavbar = observer(({children}: Props) => {
 const TabsComponent = observer(() => {
   const [state, store] = useGlobalStore()
 
+  const closeDrawer = () => {
+    store.setRightDrawerClosed()
+  }
+
   return (
-    <div className="border border-base-300">
+    <div className="border border-base-300 bg-base-200">
       <Drag />
+      <div>
+        <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
+          hobby
+        </Button>
+      </div>
       <Tabs
         value={state.tab}
         onChange={store.setTab}
