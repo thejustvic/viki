@@ -11,7 +11,7 @@ import {UserImage} from '@/components/common/user-image'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {ReactNode, useEffect} from 'react'
-import {Menu, Textarea} from 'react-daisyui'
+import {Divider, Menu, Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
 import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
 import {
@@ -64,7 +64,7 @@ export const ModalPostBase = observer(() => {
 })
 
 const ModalHeader = () => {
-  return <div>Card</div>
+  return <Divider />
 }
 
 const ModalBody = () => (
