@@ -45,6 +45,13 @@ export const useRightDrawerOpenState = (): void => {
       store.setLastPostId(postId)
       const queryString = Util.deleteQueryParam(searchParams, 'post')
       Util.routerPushQuery(router, queryString, pathname)
+    } else if (state.rightDrawerOpen && state.lastPostId && !postId) {
+      const queryString = Util.addQueryParam(
+        searchParams,
+        'post',
+        state.lastPostId
+      )
+      Util.routerPushQuery(router, queryString, pathname)
     }
   }, [state.rightDrawerOpen])
 }

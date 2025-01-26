@@ -4,7 +4,6 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
 import {IconArrowBarLeft, IconArrowBarRight} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {Button, Dropdown, Navbar as Nav, Toggle} from 'react-daisyui'
 import {useGlobalStore} from '../global/global-store'
 import {UserImage} from './user-image'
@@ -54,26 +53,8 @@ const NavCenter = () => {
 const NavEnd = observer(() => {
   const [state, store] = useGlobalStore()
 
-  const searchParams = useSearchParams()
-  const postId = searchParams.get('post')
-
-  const router = useRouter()
-  const pathname = usePathname()
-
   const toggleRightDrawer = () => {
     store.setRightDrawerToggle()
-    if (postId) {
-      store.setLastPostId(postId)
-      const queryString = Util.deleteQueryParam(searchParams, 'post')
-      Util.routerPushQuery(router, queryString, pathname)
-    } else if (state.lastPostId) {
-      const queryString = Util.addQueryParam(
-        searchParams,
-        'post',
-        state.lastPostId
-      )
-      Util.routerPushQuery(router, queryString, pathname)
-    }
   }
 
   return (
