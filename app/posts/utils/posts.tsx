@@ -1,10 +1,13 @@
 'use client'
 
-import {PostContainer} from '@/components/common/post'
+import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
+import Link from 'next/link'
 import {useSearchParams} from 'next/navigation'
+import {Button, Card} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
 import {ModalCreatePost} from './modal-create-post/modal-create-post'
@@ -67,5 +70,40 @@ const Post = observer(({post, active}: {post: Post; active: boolean}) => {
     await removePost(post.id)
   }
 
-  return <PostContainer post={post} remove={remove} active={active} />
+  return (
+    <ParallaxCardContainer
+      active={active}
+      cardNodeBody={<CardBody post={post} remove={remove} />}
+    />
+  )
 })
+
+interface PostProps {
+  post: Post
+  remove: () => void
+}
+
+const CardBody = ({post, remove}: PostProps) => {
+  const href = `/?post=${post.id}`
+  return (
+    <>
+      <Card.Title tag="h2" className="flex justify-between">
+        <Link href={href}>
+          <Button color="ghost">
+            <span className="w-16 truncate">{post.text}</span>
+          </Button>
+        </Link>
+        <Button color="ghost" shape="circle" onClick={remove}>
+          <IconTrash />
+        </Button>
+      </Card.Title>
+      <Card.Actions className="justify-center">
+        <Link href={href} className="w-full">
+          <Button color="primary" fullWidth>
+            Buy Now
+          </Button>
+        </Link>
+      </Card.Actions>
+    </>
+  )
+}

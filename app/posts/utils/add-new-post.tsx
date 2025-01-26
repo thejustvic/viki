@@ -1,3 +1,4 @@
+import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import Link from 'next/link'
 import {useSearchParams} from 'next/navigation'
@@ -15,13 +16,16 @@ const TwAdd = tw(Button)`
 `
 
 export const AddNewPost = () => {
+  return <ParallaxCardContainer cardNodeBody={<CardBody />} />
+}
+
+const CardBody = () => {
   const searchParams = useSearchParams()
   const value = searchParams.toString()
 
   const href = value.length
     ? `/?${value}&create-post=true`
     : `/?create-post=true`
-
   return (
     <Link href={href}>
       <TwAdd>
