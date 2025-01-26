@@ -56,9 +56,11 @@ const CardComp = ({post, remove, disableTransform, active}: Props) => {
           </Button>
         </Card.Title>
         <Card.Actions className="justify-center">
-          <Button color="primary" fullWidth>
-            Buy Now
-          </Button>
+          <Link href={href} className="w-full">
+            <Button color="primary" fullWidth>
+              Buy Now
+            </Button>
+          </Link>
         </Card.Actions>
       </Card.Body>
     </TwCard>
