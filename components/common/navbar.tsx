@@ -46,7 +46,7 @@ const NavStart = observer(() => {
 const NavCenter = () => {
   return (
     <Nav.Center className="flex justify-center flex-1 font-mono text-lg">
-      viki
+      hobby
     </Nav.Center>
   )
 }

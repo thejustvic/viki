@@ -11,8 +11,8 @@ import {Analytics} from '@vercel/analytics/react'
 import {cookies} from 'next/headers'
 
 export const metadata = {
-  title: 'viki',
-  description: 'viki app'
+  title: 'hobby',
+  description: 'hobby app'
 }
 
 // do not cache this layout

@@ -27,7 +27,7 @@ export const DrawerMenu = observer(() => {
     <TwMenu vertical>
       <div>
         <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
-          viki
+          hobby
         </Button>
         <Divider />
       </div>
