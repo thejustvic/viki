@@ -37,7 +37,7 @@ export const ChatInput = observer(() => {
             required: true
           })}
         />
-        <Button type="submit">
+        <Button type="submit" className="flex-1">
           <IconSend />
         </Button>
       </div>
