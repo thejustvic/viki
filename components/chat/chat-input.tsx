@@ -6,8 +6,7 @@ import tw from 'tailwind-styled-components'
 import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`
-  flex-1 
-  flex-shrink
+  flex-1
 `
 
 interface FormInputs {
