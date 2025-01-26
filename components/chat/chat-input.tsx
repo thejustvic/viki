@@ -28,18 +28,14 @@ export const ChatInput = observer(() => {
   }
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex w-full gap-4"
-      style={{flexDirection: 'row'}}
-    >
+    <Form onSubmit={handleSubmit(onSubmit)} style={{flexDirection: 'row'}}>
       <TwInput
         color="primary"
         {...register('text', {
           required: true
         })}
       />
-      <Button type="submit" className="h-full btn-md">
+      <Button type="submit" variant="link" className="p-0 pl-2">
         <IconSend />
       </Button>
     </Form>
