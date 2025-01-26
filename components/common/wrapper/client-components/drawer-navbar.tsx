@@ -54,6 +54,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
       mobile={isMobile || mobileLeftDrawerOpen}
       side={session ? <DrawerMenu /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
+      sideClassName="w-80"
     >
       <Drawer
         end
