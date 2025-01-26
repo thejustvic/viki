@@ -8,7 +8,6 @@ import {useChatHandlers} from './chat-handlers'
 const TwInput = tw(Input)`
   flex-1 
   flex-shrink
-
 `
 
 interface FormInputs {
@@ -29,18 +28,20 @@ export const ChatInput = observer(() => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-4">
-        <TwInput
-          color="primary"
-          {...register('text', {
-            required: true
-          })}
-        />
-        <Button type="submit" className="flex-1">
-          <IconSend />
-        </Button>
-      </div>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex w-full gap-4"
+      style={{flexDirection: 'row'}}
+    >
+      <TwInput
+        color="primary"
+        {...register('text', {
+          required: true
+        })}
+      />
+      <Button type="submit" className="flex-1">
+        <IconSend />
+      </Button>
     </Form>
   )
 })

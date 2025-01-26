@@ -13,6 +13,7 @@ const TwMenu = tw(Menu)`
   overflow-y-auto
   p-2
   flex-nowrap
+  w-80
 `
 
 export const DrawerMenu = observer(() => {
