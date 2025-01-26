@@ -66,7 +66,7 @@ const Message = (props: BubbleProps) => {
   const {my, children} = props
 
   return (
-    <ChatBubble end={my}>
+    <ChatBubble end={my} className="grid-flow-col">
       <ChatBubble.Message
         color={my ? 'primary' : undefined}
         className="break-words"
