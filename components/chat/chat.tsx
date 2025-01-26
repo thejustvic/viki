@@ -1,8 +1,9 @@
+import {useBoolean} from '@/hooks/use-boolean'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {MouseEvent, ReactNode, useEffect, useState} from 'react'
-import {ChatBubble, Dropdown} from 'react-daisyui'
+import {Button, ChatBubble, Dropdown} from 'react-daisyui'
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
 import {UserImage} from '../common/user-image'
 import {useChatHandlers} from './chat-handlers'
@@ -33,7 +34,7 @@ const Messages = observer(() => {
   const {session} = useSupabase()
 
   return (
-    <div className="grid gap-2 h-[54px]">
+    <div className="flex flex-col gap-2 h-[54px]">
       {state.messages.map(message => {
         return (
           <Message
@@ -61,8 +62,25 @@ interface BubbleProps {
   my?: boolean
 }
 
-const Message = ({children, author, time, avatar, my, id}: BubbleProps) => {
+const Message = (props: BubbleProps) => {
+  const {my, children} = props
+
+  return (
+    <ChatBubble end={my}>
+      <ChatBubble.Message
+        color={my ? 'primary' : undefined}
+        className="break-words"
+      >
+        {children}
+      </ChatBubble.Message>
+      <MessageDropdown {...props} />
+    </ChatBubble>
+  )
+}
+
+const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
   const {removeMessage} = useChatHandlers()
+  const show = useBoolean(false)
 
   const remove = async (e: MouseEvent) => {
     e.stopPropagation()
@@ -72,28 +90,35 @@ const Message = ({children, author, time, avatar, my, id}: BubbleProps) => {
     addSuffix: true
   })
   return (
-    <ChatBubble end={my}>
-      <Dropdown hover className="chat-image" horizontal={my ? 'left' : 'right'}>
+    <Dropdown
+      hover
+      horizontal={my ? 'left' : 'right'}
+      item={
+        show.value && (
+          <Dropdown.Menu
+            className="gap-1 shadow-lg"
+            onMouseEnter={show.turnOn}
+            onMouseLeave={show.turnOff}
+            style={{top: -17}}
+          >
+            {author}
+            <div className="flex items-start gap-1">
+              <ChatBubble.Time className="text-xs">
+                {timeDistance}
+              </ChatBubble.Time>
+              {my && (
+                <Button size="xs" className="text-xs" onClick={remove}>
+                  delete
+                </Button>
+              )}
+            </div>
+          </Dropdown.Menu>
+        )
+      }
+    >
+      <div onMouseEnter={show.turnOn} onMouseLeave={show.turnOff}>
         <UserImage src={avatar} shape="circle" />
-        <Dropdown.Menu className="gap-1">
-          {author}
-          <ChatBubble.Time>{timeDistance}</ChatBubble.Time>
-          {my && (
-            <Dropdown.Item onClick={remove}>
-              <p className="flex justify-center w-full text-sm">
-                Delete message
-              </p>
-            </Dropdown.Item>
-          )}
-        </Dropdown.Menu>
-      </Dropdown>
-
-      <ChatBubble.Message
-        color={my ? 'primary' : undefined}
-        className="break-words"
-      >
-        {children}
-      </ChatBubble.Message>
-    </ChatBubble>
+      </div>
+    </Dropdown>
   )
 }
