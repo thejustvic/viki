@@ -6,7 +6,8 @@ import tw from 'tailwind-styled-components'
 import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`
-  flex-1
+  flex-1 
+  flex-shrink
 `
 
 interface FormInputs {
@@ -38,7 +39,7 @@ export const ChatInput = observer(() => {
           required: true
         })}
       />
-      <Button type="submit" className="flex-1">
+      <Button type="submit" className="h-full btn-md">
         <IconSend />
       </Button>
     </Form>
