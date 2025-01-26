@@ -16,7 +16,8 @@ export const PerfectScrollbar = ({
     <ReactPerfectScrollbar
       options={{
         wheelPropagation: false,
-        minScrollbarLength: 30
+        minScrollbarLength: 30,
+        suppressScrollX: true
       }}
       className={className}
       containerRef={ref => {
