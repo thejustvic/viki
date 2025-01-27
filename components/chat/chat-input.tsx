@@ -35,7 +35,7 @@ export const ChatInput = observer(() => {
           required: true
         })}
       />
-      <Button type="submit" variant="link" className="p-0 pl-2">
+      <Button type="submit" variant="link" className="p-0 px-2">
         <IconSend />
       </Button>
     </Form>
