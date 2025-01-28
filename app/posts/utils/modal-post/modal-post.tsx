@@ -4,7 +4,7 @@ import {useMemoOne} from '@/hooks/use-memo-one'
 import {observer} from 'mobx-react-lite'
 import {useSearchParams} from 'next/navigation'
 import tw from 'tailwind-styled-components'
-import {usePostListener} from './fetch/use-get-post-by-id'
+import {usePostListener} from './fetch/use-post-listener'
 
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
@@ -13,7 +13,6 @@ import {useInput} from '@/hooks/use-input'
 import {ReactNode, useEffect} from 'react'
 import {Divider, Menu, Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
-import {usePostCreatorListener} from './fetch/use-get-post-creator-by-id'
 import {
   ModalPostStore,
   ModalPostStoreContext,
@@ -52,8 +51,7 @@ export const ModalPostBase = observer(() => {
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
 
-  usePostListener(postId)
-  usePostCreatorListener(state.post.data?.user_id)
+  usePostListener({postId, userId: state.post.data?.user_id})
 
   return (
     <TwMenu>
@@ -82,6 +80,7 @@ const Text = observer(() => {
       error={modalState.post.error?.message}
       data={<TextData />}
       prefix={'content:'}
+      stopSpinner
     />
   )
 })
@@ -100,8 +99,19 @@ const TextData = observer(() => {
     }
   }, [debounced])
 
+  if (!modalState.post.data) {
+    return (
+      <div className="relative w-full">
+        <Textarea size="md" value={''} className="w-full" />
+        <TwLoading className="absolute transform -translate-x-1/2 -translate-y-2/3 top-1/2 left-1/2" />
+      </div>
+    )
+  }
+
   return (
-    <Textarea size="md" value={text} onChange={onChange} className="w-full" />
+    <div className="w-full">
+      <Textarea size="md" value={text} onChange={onChange} className="w-full" />
+    </div>
   )
 })
 
@@ -139,17 +149,23 @@ const ShowData = ({
   loading,
   error,
   data,
-  prefix
+  prefix,
+  stopSpinner = false
 }: {
   loading: boolean
   error: string | undefined
   data: ReactNode
   prefix: string
+  stopSpinner?: boolean
 }) => {
   return (
     <div className="flex">
       <span className="w-20 pr-2 truncate shrink-0">{prefix}</span>
-      {loading && <TwLoading />}
+      {loading && !stopSpinner && (
+        <div className="flex justify-center w-full">
+          <TwLoading />
+        </div>
+      )}
       {error && <p>{error}</p>}
       {data}
     </div>

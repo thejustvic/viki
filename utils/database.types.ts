@@ -57,6 +57,8 @@ export interface Database {
       }
       profiles: {
         Row: {
+          username: string
+          updated_at: string
           fullname: string
           email: string
           avatar_url: string | null
@@ -64,6 +66,8 @@ export interface Database {
           theme: string
         }
         Insert: {
+          username?: string
+          updated_at?: string
           fullname: string
           email: string
           avatar_url?: string | null
@@ -71,6 +75,8 @@ export interface Database {
           theme?: string
         }
         Update: {
+          username?: string
+          updated_at?: string
           fullname?: string
           email?: string
           avatar_url?: string | null
