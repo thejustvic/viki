@@ -54,9 +54,9 @@ export const DrawerNavbar = observer(({children}: Props) => {
       mobile={isMobile || mobileLeftDrawerOpen}
       side={
         session ? (
-          <LeftDrawerWrapper>
+          <DrawerWrapper>
             <DrawerMenu />
-          </LeftDrawerWrapper>
+          </DrawerWrapper>
         ) : null
       }
       contentClassName="overflow-x-hidden"
@@ -66,7 +66,13 @@ export const DrawerNavbar = observer(({children}: Props) => {
         end
         open={state.rightDrawerOpen}
         mobile={isMobile || mobileRightDrawerOpen}
-        side={session ? <TabsComponent /> : null}
+        side={
+          session ? (
+            <DrawerWrapper>
+              <TabsComponent />
+            </DrawerWrapper>
+          ) : null
+        }
         contentClassName="overflow-x-hidden"
         onClickOverlay={onRightDrawerClickOverlay}
       >
@@ -80,7 +86,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
 })
 
 // needed for fast width style change in inner component
-const LeftDrawerWrapper = ({children}: React.PropsWithChildren) => {
+const DrawerWrapper = ({children}: React.PropsWithChildren) => {
   return <div className="flex flex-col">{children}</div>
 }
 
@@ -92,7 +98,10 @@ const TabsComponent = observer(() => {
   }
 
   return (
-    <div className="border border-base-300 bg-base-100">
+    <div
+      className="h-full border border-base-300 bg-base-100"
+      style={{width: state.rightDrawerWidth}}
+    >
       <Drag drawer="right" />
       <div>
         <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
@@ -104,7 +113,6 @@ const TabsComponent = observer(() => {
         onChange={store.setTab}
         variant="lifted"
         size="lg"
-        style={{width: state.rightDrawerWidth}}
         className="flex justify-between"
       >
         <TwTab value={'info'}>Tab 1</TwTab>
