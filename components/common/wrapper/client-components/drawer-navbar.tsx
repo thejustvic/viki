@@ -52,7 +52,13 @@ export const DrawerNavbar = observer(({children}: Props) => {
     <Drawer
       open={leftDrawerOpen()}
       mobile={isMobile || mobileLeftDrawerOpen}
-      side={session ? <DrawerMenu /> : null}
+      side={
+        session ? (
+          <LeftDrawerWrapper>
+            <DrawerMenu />
+          </LeftDrawerWrapper>
+        ) : null
+      }
       contentClassName="overflow-x-hidden"
       onClickOverlay={onLeftDrawerClickOverlay}
     >
@@ -72,6 +78,11 @@ export const DrawerNavbar = observer(({children}: Props) => {
     </Drawer>
   )
 })
+
+// needed for fast width style change in inner component
+const LeftDrawerWrapper = ({children}: React.PropsWithChildren) => {
+  return <div className="flex flex-col">{children}</div>
+}
 
 const TabsComponent = observer(() => {
   const [state, store] = useGlobalStore()

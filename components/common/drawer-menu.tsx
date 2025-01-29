@@ -16,6 +16,7 @@ const TwMenu = tw.div`
   flex
   flex-col
   flex-nowrap
+  h-full
 `
 
 export const DrawerMenu = observer(() => {
@@ -26,7 +27,7 @@ export const DrawerMenu = observer(() => {
   }
 
   return (
-    <TwMenu>
+    <TwMenu style={{width: state.leftDrawerWidth}}>
       <Drag drawer="left" />
       <div>
         <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
@@ -34,10 +35,7 @@ export const DrawerMenu = observer(() => {
         </Button>
         <Divider />
       </div>
-      <div
-        className="flex flex-col justify-between flex-1 gap-3"
-        style={{width: state.leftDrawerWidth}}
-      >
+      <div className="flex flex-col justify-between flex-1 gap-3">
         <Chat />
         <ChatInput />
       </div>
