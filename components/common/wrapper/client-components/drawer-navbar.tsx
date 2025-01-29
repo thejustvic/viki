@@ -3,7 +3,6 @@
 import {ModalPost} from '@/app/posts/utils/modal-post/modal-post'
 import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {useGlobalStore} from '@/components/global/global-store'
-import {useBoolean} from '@/hooks/use-boolean'
 import {
   useLeftDrawerOpenState,
   useRightDrawerOpenState
@@ -11,10 +10,11 @@ import {
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {ReactNode, useCallback, useEffect, useState} from 'react'
+import {ReactNode} from 'react'
 import {Button, Drawer, Tabs} from 'react-daisyui'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
+import {Drag} from '../../drag'
 import {DrawerMenu} from '../../drawer-menu'
 import {Navbar} from '../../navbar'
 
@@ -53,6 +53,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
       open={leftDrawerOpen()}
       mobile={isMobile || mobileLeftDrawerOpen}
       side={session ? <DrawerMenu /> : null}
+      contentClassName="overflow-x-hidden"
       onClickOverlay={onLeftDrawerClickOverlay}
     >
       <Drawer
@@ -80,8 +81,8 @@ const TabsComponent = observer(() => {
   }
 
   return (
-    <div className="border border-base-300 bg-base-200">
-      <Drag />
+    <div className="border border-base-300 bg-base-100">
+      <Drag drawer="right" />
       <div>
         <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
           hobby
@@ -108,116 +109,3 @@ const TwTab = tw(Tabs.Tab)`
   flex
   flex-1
 `
-
-const Drag = observer(() => {
-  const mouseDown = useBoolean(false)
-  const [state, store] = useGlobalStore()
-  const [mouseX, setMouseX] = useState({
-    start: 0,
-    move: 0,
-    startWidth: state.rightDrawerWidth
-  })
-
-  useEffect(() => {
-    if (!mouseDown.value) {
-      return
-    }
-    const width = mouseX.startWidth + mouseX.move
-    if (width > 320 && width < 700) {
-      store.setRightDrawerWidth(width)
-    }
-  }, [mouseX.move])
-
-  const handleMouseDown = (event: React.MouseEvent) => {
-    mouseDown.turnOn()
-    setMouseX({
-      start: event.screenX,
-      move: 0,
-      startWidth: state.rightDrawerWidth
-    })
-
-    const body = document.getElementsByTagName('body')[0]
-    body.style.userSelect = 'none'
-    body.style.cursor = 'col-resize'
-  }
-
-  const handleMouseUp = () => {
-    if (!mouseDown.value) {
-      return
-    }
-    mouseDown.turnOff()
-    setMouseX({start: 0, move: 0, startWidth: state.rightDrawerWidth})
-
-    const body = document.getElementsByTagName('body')[0]
-    body.style.userSelect = 'auto'
-    body.style.cursor = 'auto'
-  }
-
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (!mouseDown.value) {
-        return
-      }
-      setMouseX(prev => ({...prev, move: mouseX.start - event.screenX}))
-    },
-    [mouseDown.value]
-  )
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [handleMouseMove, handleMouseUp])
-
-  return (
-    <TwDragWrap onMouseDown={handleMouseDown} $show={mouseDown.value}>
-      <DragSvg />
-    </TwDragWrap>
-  )
-})
-
-const TwDragWrap = tw.div<{$show: boolean}>`
-  absolute
-  left-0
-  h-full
-  p-0
-  pr-2
-  w-1
-  z-10
-  group
-  cursor-col-resize
-  opacity-0
-  hover:opacity-100
-  transition-opacity
-  ease-in-out
-  delay-150
-  duration-200
-  ${p => p.$show && 'opacity-100'}
-`
-
-const DragSvg = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      className={`h-2.5 w-2.5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}
-    >
-      <circle cx="9" cy="12" r="1"></circle>
-      <circle cx="9" cy="5" r="1"></circle>
-      <circle cx="9" cy="19" r="1"></circle>
-      <circle cx="15" cy="12" r="1"></circle>
-      <circle cx="15" cy="5" r="1"></circle>
-      <circle cx="15" cy="19" r="1"></circle>
-    </svg>
-  )
-}

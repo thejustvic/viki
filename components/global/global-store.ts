@@ -11,6 +11,7 @@ interface State {
   showLeftMenuOnHover: boolean
   lastPostId: string | undefined
   rightDrawerWidth: number
+  leftDrawerWidth: number
   tab: Tab
 }
 
@@ -23,6 +24,7 @@ export class GlobalStore {
     showLeftMenuOnHover: false,
     lastPostId: undefined,
     rightDrawerWidth: 320,
+    leftDrawerWidth: 320,
     tab: 'info'
   }
 
@@ -36,6 +38,10 @@ export class GlobalStore {
 
   setRightDrawerWidth = (rightDrawerWidth: State['rightDrawerWidth']): void => {
     this.state.rightDrawerWidth = rightDrawerWidth
+  }
+
+  setLeftDrawerWidth = (leftDrawerWidth: State['leftDrawerWidth']): void => {
+    this.state.leftDrawerWidth = leftDrawerWidth
   }
 
   setTheme = (theme: Theme): void => {
