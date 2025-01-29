@@ -18,7 +18,11 @@ export const useLeftDrawerOpenState = (): void => {
     if (!state.leftDrawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
       store.setLeftDrawerOpen(true)
     }
-    if (state.leftDrawerOpen && state.drawerOpenByHover && Number(x) > 400) {
+    if (
+      state.leftDrawerOpen &&
+      state.drawerOpenByHover &&
+      Number(x) > state.leftDrawerWidth + 40
+    ) {
       store.setLeftDrawerClosed(false)
     }
   }, [x])
