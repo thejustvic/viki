@@ -11,7 +11,7 @@ import {UserImage} from '@/components/common/user-image'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {ReactNode, useEffect} from 'react'
-import {Divider, Menu, Textarea} from 'react-daisyui'
+import {Menu, Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
 import {
   ModalPostStore,
@@ -55,15 +55,10 @@ export const ModalPostBase = observer(() => {
 
   return (
     <TwMenu>
-      <ModalHeader />
       <ModalBody />
     </TwMenu>
   )
 })
-
-const ModalHeader = () => {
-  return <Divider />
-}
 
 const ModalBody = () => (
   <div className="flex flex-col gap-2">
