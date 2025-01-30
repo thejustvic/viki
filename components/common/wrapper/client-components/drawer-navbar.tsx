@@ -85,9 +85,14 @@ export const DrawerNavbar = observer(({children}: Props) => {
   )
 })
 
+const TwDrawerWrapper = tw.div`
+  flex
+  flex-col
+`
+
 // needed for fast width style change in inner component
 const DrawerWrapper = ({children}: React.PropsWithChildren) => {
-  return <div className="flex flex-col">{children}</div>
+  return <TwDrawerWrapper>{children}</TwDrawerWrapper>
 }
 
 const TabsComponent = observer(() => {
@@ -99,7 +104,7 @@ const TabsComponent = observer(() => {
 
   return (
     <div
-      className="h-full border border-base-300 bg-base-100"
+      className="h-full border border-y-0 border-base-300 bg-base-100"
       style={{width: state.rightDrawerWidth}}
     >
       <Drag drawer="right" />

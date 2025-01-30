@@ -8,11 +8,11 @@ import {Drag} from './drag'
 
 const TwMenu = tw.div`
   border
+  border-y-0
   border-base-300
   bg-base-100
   text-base-content
   overflow-y-auto
-  p-2
   flex
   flex-col
   flex-nowrap
