@@ -12,7 +12,6 @@ const TwMenu = tw.div`
   border-base-300
   bg-base-100
   text-base-content
-  overflow-y-auto
   flex
   flex-col
   flex-nowrap
