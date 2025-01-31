@@ -7,7 +7,6 @@ import MyPosts from '../app/posts/page'
 export const Logged = () => {
   return (
     <Suspense fallback={<Load center />}>
-      {/* @ts-expect-error Server Component */}
       <MyPosts />
     </Suspense>
   )
