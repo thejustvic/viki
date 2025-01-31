@@ -97,7 +97,7 @@ const TextData = observer(() => {
   if (!modalState.post.data) {
     return (
       <div className="relative w-full">
-        <Textarea size="md" value={''} className="w-full" />
+        <Textarea size="md" value={''} className="w-full" onChange={() => {}} />
         <TwLoading className="absolute transform -translate-x-1/2 -translate-y-2/3 top-1/2 left-1/2" />
       </div>
     )
