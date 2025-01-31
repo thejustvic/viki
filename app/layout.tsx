@@ -26,7 +26,8 @@ export default async function RootLayout({children}: Props) {
   const session = await getServerSession()
   const serverChat = await getServerChat()
   const serverTheme = await getServerTheme(session)
-  const cookiesTheme = cookies().get('theme')?.value
+  const cookieStore = await cookies()
+  const cookiesTheme = cookieStore.get('theme')?.value
   const theme = serverTheme || cookiesTheme
 
   return (
