@@ -13,7 +13,7 @@ import {AddNewPost} from './add-new-post'
 import {ModalCreatePost} from './modal-create-post/modal-create-post'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
-import {Post} from './types'
+import type {Post} from './types'
 import {usePostsListener} from './use-posts-listener'
 
 const TwContainer = tw.div`

@@ -1,7 +1,7 @@
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {Util} from '@/utils/util'
 import {makeAutoObservable, observable} from 'mobx'
-import {Post} from './types'
+import type {Post} from './types'
 
 interface State {
   posts: Post[]

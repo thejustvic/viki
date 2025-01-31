@@ -1,7 +1,7 @@
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {useEffect} from 'react'
 import {PostsStore} from './posts-store'
-import {Post} from './types'
+import type {Post} from './types'
 
 export const usePostsListener = (
   session: SupabaseContext['session'],

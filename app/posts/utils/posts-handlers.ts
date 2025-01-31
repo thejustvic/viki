@@ -1,5 +1,5 @@
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Post} from './types'
+import type {Post} from './types'
 
 interface Handlers {
   removePost: (id: Post['id']) => Promise<void>
