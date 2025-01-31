@@ -10,7 +10,6 @@ interface Props {
   drawer: 'left' | 'right'
 }
 
-// eslint-disable-next-line max-lines-per-function
 export const Drag = observer(({drawer}: Props) => {
   const mouseDown = useBoolean(false)
   const [state, store] = useGlobalStore()
