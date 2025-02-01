@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@supabase/auth-helpers-nextjs':
-        specifier: 0.6.0
-        version: 0.6.0(@supabase/supabase-js@2.48.1)
       '@supabase/ssr':
         specifier: 0.5.2
         version: 0.5.2(@supabase/supabase-js@2.48.1)
@@ -1030,18 +1027,6 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@supabase/auth-helpers-nextjs@0.6.0':
-    resolution: {integrity: sha512-f1e5blmpt9F/Bnb2hKreWHqf3zEhl29P357d5fnXzQ3Ph7DuW2Wha7uwQVTgE2QH3niqVpJpY0Pg0zBT5NmNWQ==}
-    deprecated: This package is now deprecated - please use the @supabase/ssr package instead.
-    peerDependencies:
-      '@supabase/supabase-js': ^2.0.4
-
-  '@supabase/auth-helpers-shared@0.3.3':
-    resolution: {integrity: sha512-ZwZGffApfyz9MiT3knnZoF1DMWE56H/Q0Mrsn22J9ubhss7/+e7TP3dChxxwlUYqtDmjmLV6OV8W0BANENfUew==}
-    deprecated: This package is now deprecated - please use the @supabase/ssr package instead.
-    peerDependencies:
-      '@supabase/supabase-js': ^2.0.4
-
   '@supabase/auth-js@2.67.3':
     resolution: {integrity: sha512-NJDaW8yXs49xMvWVOkSIr8j46jf+tYHV0wHhrwOaLLMZSFO4g6kKAf+MfzQ2RaD06OCUkUHIzctLAxjTgEVpzw==}
 
@@ -1881,9 +1866,6 @@ packages:
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
-
-  js-base64@3.7.7:
-    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -3655,16 +3637,6 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@supabase/auth-helpers-nextjs@0.6.0(@supabase/supabase-js@2.48.1)':
-    dependencies:
-      '@supabase/auth-helpers-shared': 0.3.3(@supabase/supabase-js@2.48.1)
-      '@supabase/supabase-js': 2.48.1
-
-  '@supabase/auth-helpers-shared@0.3.3(@supabase/supabase-js@2.48.1)':
-    dependencies:
-      '@supabase/supabase-js': 2.48.1
-      js-base64: 3.7.7
-
   '@supabase/auth-js@2.67.3':
     dependencies:
       '@supabase/node-fetch': 2.6.15
@@ -4526,8 +4498,6 @@ snapshots:
 
   jiti@1.21.7:
     optional: true
-
-  js-base64@3.7.7: {}
 
   js-tokens@4.0.0: {}
 
