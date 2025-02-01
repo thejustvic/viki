@@ -51,7 +51,9 @@ const Text = () => {
   const {register, handleSubmit, setFocus} = useForm<FormInputs>()
 
   useEffect(() => {
-    Boolean(value) && setTimeout(() => setFocus('text'), 20)
+    if (value) {
+      setTimeout(() => setFocus('text'), 20)
+    }
   }, [setFocus, value])
 
   const onSubmit = async (data: FormInputs) => {

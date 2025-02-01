@@ -1,5 +1,4 @@
 import {AuthResponse} from '@supabase/supabase-js'
-import {useRouter} from 'next/navigation'
 import {CSSProperties} from 'react'
 import {Button, Card, Form, Input, Link} from 'react-daisyui'
 import {SubmitHandler, useForm} from 'react-hook-form'
@@ -55,7 +54,6 @@ export const LoginForm = ({
   title,
   linkTitle
 }: LoginFormProps) => {
-  const router = useRouter()
   const {
     register,
     setError,
@@ -71,8 +69,6 @@ export const LoginForm = ({
         {type: 'focus', message: error.message},
         {shouldFocus: true}
       )
-    } else {
-      // router.push('/posts')
     }
   }
 

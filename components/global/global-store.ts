@@ -35,7 +35,9 @@ export class GlobalStore {
       state: observable.shallow
     })
     makeAutoPersist(this, 'global-store')
-    serverTheme && this.setTheme(serverTheme)
+    if (serverTheme) {
+      this.setTheme(serverTheme)
+    }
   }
 
   setRightDrawerWidth = (rightDrawerWidth: State['rightDrawerWidth']): void => {

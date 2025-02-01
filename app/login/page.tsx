@@ -13,7 +13,9 @@ export default async function Page() {
 
   const {data} = await supabase.auth.getUser()
 
-  if (data.user) redirect(`/posts`)
+  if (data.user) {
+    redirect(`/posts`)
+  }
 
   return (
     <TwAnonymous>

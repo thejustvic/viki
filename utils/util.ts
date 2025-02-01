@@ -3,6 +3,7 @@ import {ReadonlyURLSearchParams} from 'next/navigation'
 import {Writable} from 'ts-essentials'
 
 export class Util {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static noop(..._: unknown[]): void {
     // do nothing
   }
@@ -20,6 +21,7 @@ export class Util {
       return newArr as unknown as T
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newObj: any = {}
     for (const k in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, k)) {

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {createServerClient} from '@supabase/ssr'
 import {cookies} from 'next/headers'
 

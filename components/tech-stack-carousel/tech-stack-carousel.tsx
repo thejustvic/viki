@@ -74,12 +74,14 @@ export const TechStackCarousel = () => {
         s.moveToIdx(5, true, animation)
       },
       updated(s) {
-        !mouseOver.value &&
+        if (!mouseOver.value) {
           s.moveToIdx(s.track.details.abs + 5, true, animation)
+        }
       },
       animationEnded(s) {
-        !mouseOver.value &&
+        if (!mouseOver.value) {
           s.moveToIdx(s.track.details.abs + 5, true, animation)
+        }
       }
     },
     [carousel]

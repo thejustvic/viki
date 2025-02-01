@@ -18,7 +18,9 @@ export const useSupabaseListener = (
 
   useEffect(() => {
     void (async () => {
-      !user && router.refresh()
+      if (!user) {
+        router.refresh()
+      }
     })()
   }, [isPageVisible])
 
