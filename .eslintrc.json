@@ -81,7 +81,7 @@
       "error",
       {"checksVoidReturn": false}
     ],
-    "@typescript-eslint/no-floating-promises": ["warn"],
+    "@typescript-eslint/no-floating-promises": "warn",
     "@typescript-eslint/await-thenable": "error",
     "max-depth": ["warn", 3]
   },
