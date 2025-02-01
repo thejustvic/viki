@@ -3,6 +3,9 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "cSpell.words": [
     "autorun",
+    "creazilla",
+    "digitaloceanspaces",
+    "googleusercontent",
     "postgrest",
     "tabler"
   ],
