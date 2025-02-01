@@ -1,28 +1,19 @@
 'use client'
 
-import {useGlobalStore} from '@/components/global/global-store'
-import {useBoolean} from '@/hooks/use-boolean'
 import {observer} from 'mobx-react-lite'
-import {useCallback, useEffect, useState} from 'react'
+import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
+import {useGlobalStore} from '../global/global-store'
+import {useDragHandlers} from './drag-handlers'
 
-interface Props {
+export interface DragProps {
   drawer: 'left' | 'right'
 }
 
-export const Drag = observer(({drawer}: Props) => {
-  const t = null
-  const mouseDown = useBoolean(false)
-  const [state, store] = useGlobalStore()
-  const [mouseX, setMouseX] = useState({
-    start: 0,
-    move: 0,
-    startWidth: state.rightDrawerWidth
-  })
-
-  const getDrawerWidth = () => {
-    return drawer === 'left' ? state.leftDrawerWidth : state.rightDrawerWidth
-  }
+export const Drag = observer(({drawer}: DragProps) => {
+  const [, store] = useGlobalStore()
+  const {handleMouseDown, handleMouseUp, handleMouseMove, mouseDown, mouseX} =
+    useDragHandlers({drawer})
 
   useEffect(() => {
     if (!mouseDown.value) {
@@ -47,54 +38,6 @@ export const Drag = observer(({drawer}: Props) => {
         break
     }
   }, [mouseX.move])
-
-  const handleMouseDown = (event: React.MouseEvent) => {
-    mouseDown.turnOn()
-    setMouseX({
-      start: event.screenX,
-      move: 0,
-      startWidth: getDrawerWidth()
-    })
-
-    const body = document.getElementsByTagName('body')[0]
-    body.style.userSelect = 'none'
-    body.style.cursor = 'col-resize'
-  }
-
-  const handleMouseUp = () => {
-    if (!mouseDown.value) {
-      return
-    }
-    mouseDown.turnOff()
-    setMouseX({start: 0, move: 0, startWidth: getDrawerWidth()})
-
-    const body = document.getElementsByTagName('body')[0]
-    body.style.userSelect = 'auto'
-    body.style.cursor = 'auto'
-  }
-
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (!mouseDown.value) {
-        return
-      }
-      switch (drawer) {
-        case 'left':
-          return setMouseX(prev => ({
-            ...prev,
-            move: mouseX.start - event.screenX
-          }))
-        case 'right':
-          return setMouseX(prev => ({
-            ...prev,
-            move: mouseX.start - event.screenX
-          }))
-        default:
-          return
-      }
-    },
-    [mouseDown.value]
-  )
 
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove)

@@ -1,6 +1,6 @@
 import {useState} from 'react'
 
-interface BooleanHookState {
+export interface BooleanHookState {
   value: boolean
   turnOn(): void
   turnOff(): void
