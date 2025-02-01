@@ -5,17 +5,17 @@ interface Props {
   theme: GlobalStore['state']['theme']
   opts: {
     supabase: SupabaseContext['supabase']
-    session: SupabaseContext['session']
+    user: SupabaseContext['user']
   }
 }
 
 export const updateTheme = async (props: Props): Promise<string> => {
   const {theme} = props
-  const {supabase, session} = props.opts
+  const {supabase, user} = props.opts
   const {data} = await supabase
     .from('profiles')
     .update({theme})
-    .eq('id', session?.user.id)
+    .eq('id', user?.id)
     .select()
     .single()
 

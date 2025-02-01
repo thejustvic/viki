@@ -31,7 +31,7 @@ export const Chat = observer(() => {
 
 const Messages = observer(() => {
   const [state] = useChatStore()
-  const {session} = useSupabase()
+  const {user} = useSupabase()
 
   return (
     <div className="flex flex-col gap-2 h-[54px]">
@@ -43,7 +43,7 @@ const Messages = observer(() => {
             author={message.author_email}
             time={message.created_at}
             avatar={message.author_image}
-            my={message.author_email === session?.user.email}
+            my={message.author_email === user?.email}
           >
             {message.text}
           </Message>

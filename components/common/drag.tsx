@@ -11,6 +11,7 @@ interface Props {
 }
 
 export const Drag = observer(({drawer}: Props) => {
+  const t = null
   const mouseDown = useBoolean(false)
   const [state, store] = useGlobalStore()
   const [mouseX, setMouseX] = useState({

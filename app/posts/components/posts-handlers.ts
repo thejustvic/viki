@@ -8,26 +8,26 @@ interface Handlers {
 }
 
 export const usePostHandlers = (): Handlers => {
-  const {supabase, session} = useSupabase()
+  const {supabase, user} = useSupabase()
 
   const removePost = async (id: Post['id']): Promise<void> => {
     await supabase.from('posts').delete().eq('id', id)
   }
 
   const insertPost = async (text: string): Promise<void> => {
-    if (!session) {
-      throw Error('You must provide a session object!')
+    if (!user) {
+      throw Error('You must provide a user object!')
     }
     await supabase.from('posts').insert({
       text,
-      user_id: session.user.id,
-      email: session.user.email || ''
+      user_id: user.id,
+      email: user.email || ''
     })
   }
 
   const updatePost = async (text: string, postId: string): Promise<void> => {
-    if (!session) {
-      throw Error('You must provide a session object!')
+    if (!user) {
+      throw Error('You must provide a user object!')
     }
     await supabase
       .from('posts')

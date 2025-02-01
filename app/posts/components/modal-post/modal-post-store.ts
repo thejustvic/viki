@@ -1,7 +1,7 @@
 import {FetchQuery} from '@/hooks/use-fetch'
 import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
-import {User} from '@supabase/auth-helpers-nextjs'
+import type {User} from '@supabase/supabase-js'
 import {makeAutoObservable, observable} from 'mobx'
 import {Post} from '../types'
 
@@ -41,4 +41,5 @@ export class ModalPostStore {
 
 const [ModalPostStoreContext, useModalPostStore] =
   createUseStore<ModalPostStore>()
+
 export {ModalPostStoreContext, useModalPostStore}

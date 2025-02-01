@@ -1,7 +1,7 @@
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
+import {Util} from '@/utils/util'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
-import Link from 'next/link'
-import {useSearchParams} from 'next/navigation'
+import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {Button} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 
@@ -21,16 +21,17 @@ export const AddNewPost = () => {
 
 const CardBody = () => {
   const searchParams = useSearchParams()
-  const value = searchParams.toString()
+  const router = useRouter()
+  const pathname = usePathname()
 
-  const href = value.length
-    ? `/?${value}&create-post=true`
-    : `/?create-post=true`
+  const onClickHandler = () => {
+    const queryString = Util.addQueryParam(searchParams, 'create-post', 'true')
+    Util.routerPushQuery(router, queryString, pathname)
+  }
+
   return (
-    <Link href={href}>
-      <TwAdd>
-        <IconSquareRoundedPlus size={48} />
-      </TwAdd>
-    </Link>
+    <TwAdd onClick={onClickHandler}>
+      <IconSquareRoundedPlus size={48} />
+    </TwAdd>
   )
 }

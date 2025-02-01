@@ -9,16 +9,16 @@ import {useGlobalStore} from '../global/global-store'
 import {UserImage} from './user-image'
 
 export const Navbar = observer(() => {
-  const {session} = useSupabase()
+  const {user} = useSupabase()
 
   return (
     <Nav
       className="sticky top-0 z-10 px-0 bg-base-200"
       style={{height: headerHeight}}
     >
-      {session ? <NavStart /> : null}
+      {user ? <NavStart /> : null}
       <NavCenter />
-      {session ? <NavEnd /> : null}
+      {user ? <NavEnd /> : null}
     </Nav>
   )
 })
@@ -85,18 +85,18 @@ const NavEnd = observer(() => {
 
 const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
-  const {supabase, session} = useSupabase()
+  const {supabase, user} = useSupabase()
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
-  if (!session) {
+  if (!user) {
     return null
   }
 
   return (
     <Dropdown vertical="end" hover>
       <Button color="ghost" shape="square">
-        <UserImage src={session.user.user_metadata?.avatar_url} />
+        <UserImage src={user.user_metadata?.avatar_url} />
       </Button>
       <Dropdown.Menu className="shadow-lg">
         <Dropdown.Item onClick={store.setShowLeftMenuOnHoverToggle}>

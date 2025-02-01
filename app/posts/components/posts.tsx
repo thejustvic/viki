@@ -3,10 +3,10 @@
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {Util} from '@/utils/util'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import Link from 'next/link'
-import {useSearchParams} from 'next/navigation'
+import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {Button, Card} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
@@ -47,9 +47,9 @@ const PostsBase = () => (
 )
 
 const PostsList = observer(() => {
-  const {supabase, session} = useSupabase()
+  const {supabase, user} = useSupabase()
   const [state, store] = usePostsStore()
-  usePostsListener(session, supabase, store)
+  usePostsListener(user, supabase, store)
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
 
@@ -84,25 +84,30 @@ interface PostProps {
 }
 
 const CardBody = ({post, remove}: PostProps) => {
-  const href = `/?post=${post.id}`
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const onClickHandler = () => {
+    const queryString = new URLSearchParams(searchParams)
+    queryString.set('post', post.id)
+    Util.routerPushQuery(router, queryString, pathname)
+  }
+
   return (
     <>
       <Card.Title tag="h2" className="flex justify-between">
-        <Link href={href}>
-          <Button color="ghost">
-            <span className="w-16 truncate">{post.text}</span>
-          </Button>
-        </Link>
+        <Button color="ghost" onClick={onClickHandler}>
+          <span className="w-16 truncate">{post.text}</span>
+        </Button>
         <Button color="ghost" shape="circle" onClick={remove}>
           <IconTrash />
         </Button>
       </Card.Title>
       <Card.Actions className="justify-center">
-        <Link href={href} className="w-full">
-          <Button color="primary" fullWidth>
-            Buy Now
-          </Button>
-        </Link>
+        <Button color="primary" fullWidth onClick={onClickHandler}>
+          Buy Now
+        </Button>
       </Card.Actions>
     </>
   )

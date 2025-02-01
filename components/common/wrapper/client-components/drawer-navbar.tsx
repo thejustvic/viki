@@ -1,6 +1,6 @@
 'use client'
 
-import {ModalPost} from '@/app/posts/utils/modal-post/modal-post'
+import {ModalPost} from '@/app/posts/components/modal-post/modal-post'
 import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {useGlobalStore} from '@/components/global/global-store'
 import {
@@ -24,7 +24,7 @@ interface Props {
 
 export const DrawerNavbar = observer(({children}: Props) => {
   const [state, store] = useGlobalStore()
-  const {session} = useSupabase()
+  const {user} = useSupabase()
 
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
@@ -41,7 +41,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
   }
 
   const leftDrawerOpen = () => {
-    if (session) {
+    if (user) {
       return isMobile ? state.leftDrawerOpen : state.drawerOpenByHover
     } else {
       return false
@@ -53,7 +53,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
       open={leftDrawerOpen()}
       mobile={isMobile || mobileLeftDrawerOpen}
       side={
-        session ? (
+        user ? (
           <DrawerWrapper>
             <DrawerMenu />
           </DrawerWrapper>
@@ -67,7 +67,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
         open={state.rightDrawerOpen}
         mobile={isMobile || mobileRightDrawerOpen}
         side={
-          session ? (
+          user ? (
             <DrawerWrapper>
               <TabsComponent />
             </DrawerWrapper>

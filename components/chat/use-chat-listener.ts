@@ -4,7 +4,7 @@ import {ChatStore} from './chat-store'
 import {Message} from './types'
 
 export const useChatListener = (
-  session: SupabaseContext['session'],
+  user: SupabaseContext['user'],
   supabase: SupabaseContext['supabase'],
   store: ChatStore
 ): void => {
@@ -32,5 +32,5 @@ export const useChatListener = (
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, session])
+  }, [supabase, store, user])
 }

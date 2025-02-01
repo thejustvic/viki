@@ -1,7 +1,7 @@
 import {useFetch} from '@/hooks/use-fetch'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {User} from '@supabase/auth-helpers-nextjs'
+import type {User} from '@supabase/supabase-js'
 import {useEffect} from 'react'
 import {Post} from '../../types'
 import {useModalPostStore} from '../modal-post-store'

@@ -2,18 +2,28 @@
 
 import {GlobalContext, GlobalStore} from '@/components/global/global-store'
 import {Theme} from '@/components/global/types'
-import {useMemoOne} from '@/hooks/use-memo-one'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {ReactNode} from 'react'
+import {Session} from '@supabase/supabase-js'
+import {ReactNode, useEffect, useState} from 'react'
 
 interface Props {
   children: ReactNode
   serverTheme: Theme | undefined
+  session: Session | null
 }
 
-export default function GlobalProvider({children, serverTheme}: Props) {
-  const {session} = useSupabase()
-  const store = useMemoOne(() => new GlobalStore(serverTheme), [session])
+export default function GlobalProvider({
+  children,
+  serverTheme,
+  session
+}: Props) {
+  const [store, setStore] = useState<GlobalStore>()
+  useEffect(() => {
+    setStore(new GlobalStore(serverTheme))
+  }, [session])
+
+  if (!store) {
+    return
+  }
 
   return (
     <GlobalContext.Provider value={store}>

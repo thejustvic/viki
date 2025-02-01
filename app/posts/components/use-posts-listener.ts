@@ -4,7 +4,7 @@ import {PostsStore} from './posts-store'
 import type {Post} from './types'
 
 export const usePostsListener = (
-  session: SupabaseContext['session'],
+  user: SupabaseContext['user'],
   supabase: SupabaseContext['supabase'],
   store: PostsStore
 ): void => {
@@ -31,5 +31,5 @@ export const usePostsListener = (
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, session])
+  }, [supabase, store, user])
 }

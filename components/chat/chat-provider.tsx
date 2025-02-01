@@ -13,10 +13,10 @@ interface Props {
 }
 
 export default function ChatProvider({children, serverChat}: Props) {
-  const {session, supabase} = useSupabase()
-  const store = useMemoOne(() => new ChatStore(serverChat), [session])
+  const {user, supabase} = useSupabase()
+  const store = useMemoOne(() => new ChatStore(serverChat), [user])
 
-  useChatListener(session, supabase, store)
+  useChatListener(user, supabase, store)
 
   return (
     <ChatContext.Provider value={store}>

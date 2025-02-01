@@ -11,7 +11,7 @@ import {implementTheme} from './utils/implement-theme'
 import {updateTheme} from './utils/update-theme'
 
 export const SwitchTheme = observer(() => {
-  const {supabase, session} = useSupabase()
+  const {supabase, user} = useSupabase()
   const [state, store] = useGlobalStore()
 
   useEffect(() => {
@@ -21,12 +21,12 @@ export const SwitchTheme = observer(() => {
   const toggleTheme = async () => {
     const theme = await updateTheme({
       theme: state.theme === 'dark' ? 'light' : 'dark',
-      opts: {supabase, session}
+      opts: {supabase, user}
     })
     store.setTheme(theme)
   }
 
-  if (!session) {
+  if (!user) {
     return null
   }
 

@@ -38,25 +38,25 @@ export class Util {
   static deleteQueryParam(
     readonlyURLSearchParams: ReadonlyURLSearchParams,
     queryName: string
-  ): string {
-    const params = new URLSearchParams(readonlyURLSearchParams.toString())
+  ): URLSearchParams {
+    const params = new URLSearchParams(readonlyURLSearchParams)
     params.delete(queryName)
-    return params.toString()
+    return params
   }
 
   static addQueryParam(
     readonlyURLSearchParams: ReadonlyURLSearchParams,
     queryName: string,
     value: string
-  ): string {
-    const params = new URLSearchParams(readonlyURLSearchParams.toString())
-    params.append(queryName, value)
-    return params.toString()
+  ): URLSearchParams {
+    const params = new URLSearchParams(readonlyURLSearchParams)
+    params.set(queryName, value)
+    return params
   }
 
   static routerPushQuery(
     router: AppRouterInstance,
-    queryString: string,
+    queryString: URLSearchParams,
     pathname: string
   ): void {
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)

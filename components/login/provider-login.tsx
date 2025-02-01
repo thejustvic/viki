@@ -4,17 +4,22 @@ import {Button, ButtonGroup} from 'react-daisyui'
 // Supabase auth needs to be triggered client-side
 export const ProviderLogin = () => {
   const {supabase} = useSupabase()
+  // const router = useRouter()
 
   const handleGitHubLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'github'
     })
+    // router.push('/posts')
+    // router.refresh()
   }
 
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google'
     })
+    // router.push('/posts')
+    // router.refresh()
   }
 
   return (

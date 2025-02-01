@@ -1,17 +1,17 @@
-import type {Session} from '@supabase/auth-helpers-nextjs'
+import type {User} from '@supabase/supabase-js'
 import {createClient} from './supabase-server'
 
 export const getServerTheme = async (
-  session: Session | null
+  user: User | null
 ): Promise<string | undefined> => {
-  if (!session) {
+  if (!user) {
     return undefined
   }
-  const supabase = createClient()
+  const supabase = await createClient()
   const {data} = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   return data?.theme
