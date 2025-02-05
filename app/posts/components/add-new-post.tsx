@@ -1,14 +1,15 @@
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
+import {Button} from '@/components/daisyui/button'
 import {Util} from '@/utils/util'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
-import {Button} from 'react-daisyui'
+
 import tw from 'tailwind-styled-components'
 
 const TwAdd = tw(Button)`
   bg-base-300 
   shadow-md 
-  border-0 
+  border-0
   rounded-2xl
   w-[288px]
   h-[142px]

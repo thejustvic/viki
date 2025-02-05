@@ -1,8 +1,10 @@
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {Button, Form, Input} from 'react-daisyui'
 import {useForm} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
+import {Button} from '../daisyui/button'
+import {Form} from '../daisyui/form'
+import {Input} from '../daisyui/input'
 import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`
@@ -29,9 +31,13 @@ export const ChatInput = observer(() => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} style={{flexDirection: 'row'}}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex justify-between p-2"
+    >
       <TwInput
         color="primary"
+        inputClassName="w-full"
         {...register('text', {
           required: true
         })}

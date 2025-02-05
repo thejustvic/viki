@@ -1,11 +1,13 @@
-import {useBoolean} from '@/hooks/use-boolean'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {MouseEvent, ReactNode, useEffect, useState} from 'react'
-import {Button, ChatBubble, Dropdown} from 'react-daisyui'
+
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
 import {UserImage} from '../common/user-image'
+import {Button} from '../daisyui/button'
+import {ChatBubble} from '../daisyui/chat-bubble'
+import {Dropdown} from '../daisyui/dropdown'
 import {useChatHandlers} from './chat-handlers'
 import {useChatStore} from './chat-store'
 
@@ -80,7 +82,6 @@ const Message = (props: BubbleProps) => {
 
 const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
   const {removeMessage} = useChatHandlers()
-  const show = useBoolean(false)
 
   const remove = async (e: MouseEvent) => {
     e.stopPropagation()
@@ -90,35 +91,19 @@ const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
     addSuffix: true
   })
   return (
-    <Dropdown
-      hover
-      horizontal={my ? 'left' : 'right'}
-      item={
-        show.value && (
-          <Dropdown.Menu
-            className="gap-1 shadow-lg"
-            onMouseEnter={show.turnOn}
-            onMouseLeave={show.turnOff}
-            style={{top: -17}}
-          >
-            {author}
-            <div className="flex items-start gap-1">
-              <ChatBubble.Time className="text-xs">
-                {timeDistance}
-              </ChatBubble.Time>
-              {my && (
-                <Button size="xs" className="text-xs" onClick={remove}>
-                  delete
-                </Button>
-              )}
-            </div>
-          </Dropdown.Menu>
-        )
-      }
-    >
-      <div onMouseEnter={show.turnOn} onMouseLeave={show.turnOff}>
-        <UserImage src={avatar} shape="circle" />
-      </div>
+    <Dropdown placements={my ? ['left'] : ['right']} hover>
+      <UserImage src={avatar} shape="circle" />
+      <Dropdown.Menu className="shadow-lg bg-base-200 px-2 py-0">
+        {author}
+        <div className="flex items-start gap-1">
+          <time className="text-xs opacity-50">{timeDistance}</time>
+          {my && (
+            <Button size="xs" className="text-xs" onClick={remove}>
+              delete
+            </Button>
+          )}
+        </div>
+      </Dropdown.Menu>
     </Dropdown>
   )
 }

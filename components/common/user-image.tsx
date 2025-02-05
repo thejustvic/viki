@@ -1,19 +1,18 @@
 import {IconUserCircle} from '@tabler/icons-react'
-import {Avatar, AvatarProps} from 'react-daisyui'
+import {Avatar, AvatarProps} from '../daisyui/avatar'
 
 interface Props {
   src: AvatarProps['src']
-  size?: AvatarProps['size']
   shape?: AvatarProps['shape']
 }
 
-export const UserImage = ({src, size = 'xs', shape = 'square'}: Props) => {
+export const UserImage = ({src, shape = 'square'}: Props) => {
   if (!src) {
     return (
-      <Avatar size={size} shape={shape}>
-        <IconUserCircle stroke={1} />
+      <Avatar shape={shape}>
+        <IconUserCircle stroke={1} className="w-full h-full" />
       </Avatar>
     )
   }
-  return <Avatar size={size} src={src} shape={shape} />
+  return <Avatar src={src} shape={shape} />
 }

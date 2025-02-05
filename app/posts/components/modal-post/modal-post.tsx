@@ -8,10 +8,11 @@ import {usePostListener} from './fetch/use-post-listener'
 
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
+import {Menu} from '@/components/daisyui/menu'
+import {Textarea} from '@/components/daisyui/textarea'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {ReactNode, useEffect} from 'react'
-import {Menu, Textarea} from 'react-daisyui'
 import {usePostHandlers} from '../posts-handlers'
 import {
   ModalPostStore,
@@ -120,8 +121,8 @@ const CreatorData = observer(() => {
   const src = modalState.postCreator.data.user_metadata?.avatar_url
 
   return (
-    <div className="flex gap-2">
-      <UserImage src={src} size={24} />
+    <div className="flex gap-2 items-center">
+      <UserImage src={src} />
       {modalState.postCreator.data.email}
     </div>
   )

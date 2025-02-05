@@ -1,6 +1,6 @@
+import {Card} from '@/components/daisyui/card'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {Card} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import {useEmailLoginStore} from './email-login-store'
 import {LoginForm} from './login-form'
@@ -8,8 +8,8 @@ import {LoginForm} from './login-form'
 const TwLoginCard = tw.div`
   w-[300px]
   h-[358px]
-  perspective
-  preserve-3d
+  perspective-distant
+  transform-3d
 `
 
 const TwLoginCardInner = tw.div<{$rotate: boolean}>`
@@ -17,8 +17,8 @@ const TwLoginCardInner = tw.div<{$rotate: boolean}>`
   w-full
   h-full
   duration-700
-  preserve-3d
-  ${p => (p.$rotate ? 'my-rotate-y-180' : '')}
+  transform-3d
+  ${p => (p.$rotate ? 'rotate-y-180' : '')}
 `
 
 const TwCardLogin = tw.div`
@@ -26,16 +26,16 @@ const TwCardLogin = tw.div`
   w-full
   h-full
   backface-hidden
-  preserve-3d
+  transform-3d
 `
 
 const TwCardRegister = tw.div`
   absolute
   w-full
   h-full
-  my-rotate-y-180
+  rotate-y-180
   backface-hidden
-  preserve-3d
+  transform-3d
 `
 
 const TwCard = tw(Card)`
@@ -44,7 +44,7 @@ const TwCard = tw(Card)`
   max-w-sm
   shadow-lg
   bg-base-100
-  preserve-3d
+  transform-3d
 `
 
 export const LoginCard = observer(() => {

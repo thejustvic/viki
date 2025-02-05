@@ -1,7 +1,6 @@
+import {Modal as ModalComponent} from '@/components/daisyui/modal'
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
-import {IconCircleX} from '@tabler/icons-react'
 import {ReactNode} from 'react'
-import {Button, Modal as ModalComponent} from 'react-daisyui'
 
 interface Props {
   header: ReactNode
@@ -16,16 +15,12 @@ export const Modal = ({header, body, goBack, open}: Props) => {
   })
 
   return (
-    <ModalComponent open={open} onClickBackdrop={goBack}>
-      <Button
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2"
-        onClick={goBack}
-        color="ghost"
-      >
-        <IconCircleX />
-      </Button>
+    <ModalComponent
+      open={open}
+      backdrop
+      close={goBack}
+      onClickBackdrop={goBack}
+    >
       <ModalComponent.Header className="font-bold">
         {header}
       </ModalComponent.Header>

@@ -1,8 +1,8 @@
 import {observer} from 'mobx-react-lite'
-import {Button, Divider} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import {Chat} from '../chat/chat'
 import {ChatInput} from '../chat/chat-input'
+import {Button} from '../daisyui/button'
 import {useGlobalStore} from '../global/global-store'
 import {Drag} from './drag'
 
@@ -32,7 +32,7 @@ export const DrawerMenu = observer(() => {
         <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
           hobby
         </Button>
-        <Divider />
+        <div className="divider" />
       </div>
       <div className="flex flex-col justify-between flex-1 gap-3">
         <Chat />

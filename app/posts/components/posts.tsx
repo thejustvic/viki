@@ -1,13 +1,14 @@
 'use client'
 
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
+import {Button} from '@/components/daisyui/button'
+import {Card} from '@/components/daisyui/card'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
-import {Button, Card} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
 import {ModalCreatePost} from './modal-create-post/modal-create-post'
@@ -49,9 +50,10 @@ const PostsBase = () => (
 const PostsList = observer(() => {
   const {supabase, user} = useSupabase()
   const [state, store] = usePostsStore()
-  usePostsListener(user, supabase, store)
   const searchParams = useSearchParams()
   const postId = searchParams.get('post')
+
+  usePostsListener(user, supabase, store)
 
   return (
     <TwContainer>
@@ -97,7 +99,7 @@ const CardBody = ({post, remove}: PostProps) => {
   return (
     <>
       <Card.Title tag="h2" className="flex justify-between">
-        <Button color="ghost" onClick={onClickHandler}>
+        <Button color="ghost" className="p-0" onClick={onClickHandler}>
           <span className="w-16 truncate">{post.text}</span>
         </Button>
         <Button color="ghost" shape="circle" onClick={remove}>
@@ -105,7 +107,7 @@ const CardBody = ({post, remove}: PostProps) => {
         </Button>
       </Card.Title>
       <Card.Actions className="justify-center">
-        <Button color="primary" fullWidth onClick={onClickHandler}>
+        <Button color="primary" className="w-full" onClick={onClickHandler}>
           Buy Now
         </Button>
       </Card.Actions>

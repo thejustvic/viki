@@ -1,10 +1,12 @@
 import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Util} from '@/utils/util'
 import {IconArrowBarLeft, IconArrowBarRight} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {Button, Dropdown, Navbar as Nav, Toggle} from 'react-daisyui'
+import {Button} from '../daisyui/button'
+import {Dropdown} from '../daisyui/dropdown'
+import {Navbar as Nav} from '../daisyui/navbar'
+import {Toggle} from '../daisyui/toggle'
 import {useGlobalStore} from '../global/global-store'
 import {UserImage} from './user-image'
 
@@ -34,9 +36,9 @@ const NavStart = observer(() => {
         size="sm"
         onClick={store.setLeftDrawerToggle}
       >
-        <div className="text-lg normal-case">
-          {state.leftDrawerOpen ? <IconArrowBarLeft /> : <IconArrowBarRight />}
-        </div>
+        {/* <div className="text-lg normal-case"> */}
+        {state.leftDrawerOpen ? <IconArrowBarLeft /> : <IconArrowBarRight />}
+        {/* </div> */}
       </Button>
     </Nav.Start>
   )
@@ -94,14 +96,19 @@ const AvatarDropdown = observer(() => {
   }
 
   return (
-    <Dropdown vertical="end" hover>
+    <Dropdown placements={['end']} hover>
       <Button color="ghost" shape="square">
         <UserImage src={user.user_metadata?.avatar_url} />
       </Button>
-      <Dropdown.Menu className="shadow-lg">
-        <Dropdown.Item onClick={store.setShowLeftMenuOnHoverToggle}>
-          <Toggle checked={state.showLeftMenuOnHover} onChange={Util.noop} />
-          <span className="truncate">show left menu on hover</span>
+      <Dropdown.Menu className="shadow-lg bg-base-200">
+        <Dropdown.Item className="flex">
+          <label className="fieldset-label">
+            <span className="truncate">show left menu on hover</span>
+            <Toggle
+              checked={state.showLeftMenuOnHover}
+              onChange={store.setShowLeftMenuOnHoverToggle}
+            />
+          </label>
         </Dropdown.Item>
         <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
       </Dropdown.Menu>

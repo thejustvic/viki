@@ -4,8 +4,9 @@ import {useBoolean} from '@/hooks/use-boolean'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
 import {CSSProperties} from 'react'
-import {Button, Link} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
+import {Button} from '../daisyui/button'
+import {Link} from '../daisyui/link'
 import './style.scss'
 
 const TwCarousel = tw.div`
@@ -111,7 +112,7 @@ const TwCard = tw.div`
   h-[142px]
   w-[190px]
   carousel__cell
-  preserve-3d
+  transform-3d
 `
 
 const TwCardInner = tw.div`

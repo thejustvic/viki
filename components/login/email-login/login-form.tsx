@@ -1,13 +1,17 @@
+import {Button} from '@/components/daisyui/button'
+import {Card} from '@/components/daisyui/card'
+import {Form} from '@/components/daisyui/form'
+import {Input} from '@/components/daisyui/input'
+import {Link} from '@/components/daisyui/link'
 import {AuthResponse} from '@supabase/supabase-js'
 import {CSSProperties} from 'react'
-import {Button, Card, Form, Input, Link} from 'react-daisyui'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
 
 const TwTitle = tw(Card.Title)`
   flex 
   justify-center 
-  pt-4
+  py-4
 `
 
 const TwBody = tw(Card.Body)`
@@ -76,9 +80,9 @@ export const LoginForm = ({
     <>
       <TwTitle style={transform}>{title}</TwTitle>
       <TwBody style={transform}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Label title="Email" />
+        <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
           <Input
+            label="Email"
             type="text"
             placeholder="email"
             {...register('email', {
@@ -86,8 +90,8 @@ export const LoginForm = ({
               pattern: /^\S+@\S+$/i
             })}
           />
-          <Form.Label title="Password" />
           <Input
+            label="Password"
             type="password"
             placeholder="password"
             {...register('password', {

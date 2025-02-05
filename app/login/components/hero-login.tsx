@@ -1,8 +1,8 @@
 'use client'
 
+import {Hero} from '@/components/daisyui/hero'
 import {EmailLogin} from '@/components/login/email-login/email-login'
 import {ProviderLogin} from '@/components/login/provider-login'
-import {Hero} from 'react-daisyui'
 import tw from 'tailwind-styled-components'
 
 export const TwAnonymous = tw.div`

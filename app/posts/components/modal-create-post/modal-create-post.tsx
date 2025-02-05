@@ -1,10 +1,12 @@
 'use client'
 
 import {Modal} from '@/components/common/modal'
+import {Button} from '@/components/daisyui/button'
+import {Form} from '@/components/daisyui/form'
+import {Textarea} from '@/components/daisyui/textarea'
 import {Util} from '@/utils/util'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
-import {Button, Form, Textarea} from 'react-daisyui'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
 
@@ -62,9 +64,10 @@ const Text = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
+    <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 flex-col">
       <Textarea
         size="md"
+        className="w-full"
         {...register('text', {
           required: true
         })}

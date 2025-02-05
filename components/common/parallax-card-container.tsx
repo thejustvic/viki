@@ -1,8 +1,8 @@
 import {CSSProperties, ReactElement} from 'react'
-import {Card} from 'react-daisyui'
 import {isMobile, isSafari} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
 import tw from 'tailwind-styled-components'
+import {Card} from '../daisyui/card'
 
 const TwCard = tw(Card)<{$active?: boolean}>`
   bg-base-300 
@@ -10,7 +10,7 @@ const TwCard = tw(Card)<{$active?: boolean}>`
   w-[288px]
   h-[142px]
   md:w-[190px]
-  preserve-3d
+  transform-3d
   ${p => (p.$active ? 'border-solid border-red-300' : '')}
 `
 
@@ -25,7 +25,7 @@ export const ParallaxCardContainer = (props: Props) => {
     return <CardComp {...props} disableTransform />
   }
   return (
-    <Hover perspective={800} scale={1.1} className="preserve-3d">
+    <Hover perspective={800} scale={1.1} className="transform-3d">
       <CardComp {...props} />
     </Hover>
   )
@@ -41,7 +41,7 @@ const CardComp = (props: Props) => {
   const translateZ: CSSProperties = !disableTransform ? transform : {}
 
   return (
-    <TwCard $active={active} bordered compact>
+    <TwCard $active={active} bordered size="sm">
       <Card.Body style={translateZ}>{cardNodeBody}</Card.Body>
     </TwCard>
   )

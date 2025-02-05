@@ -6,7 +6,7 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMoon, IconSun} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
-import {Button} from 'react-daisyui'
+import {Button} from '../daisyui/button'
 import {implementTheme} from './utils/implement-theme'
 import {updateTheme} from './utils/update-theme'
 
@@ -35,7 +35,7 @@ export const SwitchTheme = observer(() => {
       color="ghost"
       shape="circle"
       onClick={toggleTheme}
-      loading={!state.theme}
+      disabled={!state.theme}
     >
       {getTheme(state.theme)}
     </Button>

@@ -1,17 +1,18 @@
 'use client'
 
 import {ModalPost} from '@/app/posts/components/modal-post/modal-post'
-import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
+import {Button} from '@/components/daisyui/button'
+import {Drawer} from '@/components/daisyui/drawer'
+import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global/global-store'
+import {Tab} from '@/components/global/types'
 import {
   useLeftDrawerOpenState,
   useRightDrawerOpenState
 } from '@/hooks/use-drawer-open-state'
-import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {ReactNode} from 'react'
-import {Button, Drawer, Tabs} from 'react-daisyui'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
@@ -29,9 +30,6 @@ export const DrawerNavbar = observer(({children}: Props) => {
   useLeftDrawerOpenState()
   useRightDrawerOpenState()
 
-  const mobileLeftDrawerOpen = !state.drawerOpenByHover && state.leftDrawerOpen
-  const mobileRightDrawerOpen = state.rightDrawerOpen
-
   const onLeftDrawerClickOverlay = () => {
     store.setLeftDrawerClosed()
   }
@@ -42,7 +40,14 @@ export const DrawerNavbar = observer(({children}: Props) => {
 
   const leftDrawerOpen = () => {
     if (user) {
-      return isMobile ? state.leftDrawerOpen : state.drawerOpenByHover
+      if (state.drawerOpenByHover) {
+        return true
+      }
+      if (!state.drawerOpenByHover) {
+        return state.leftDrawerOpen
+      } else {
+        return false
+      }
     } else {
       return false
     }
@@ -50,8 +55,9 @@ export const DrawerNavbar = observer(({children}: Props) => {
 
   return (
     <Drawer
+      id="left-drawer"
       open={leftDrawerOpen()}
-      mobile={isMobile || mobileLeftDrawerOpen}
+      mobile={isMobile || state.drawerOpenByHover}
       side={
         user ? (
           <DrawerWrapper>
@@ -59,13 +65,13 @@ export const DrawerNavbar = observer(({children}: Props) => {
           </DrawerWrapper>
         ) : null
       }
-      contentClassName="overflow-x-hidden"
       onClickOverlay={onLeftDrawerClickOverlay}
     >
       <Drawer
+        id="right-drawer"
         end
         open={state.rightDrawerOpen}
-        mobile={isMobile || mobileRightDrawerOpen}
+        mobile={isMobile}
         side={
           user ? (
             <DrawerWrapper>
@@ -73,13 +79,10 @@ export const DrawerNavbar = observer(({children}: Props) => {
             </DrawerWrapper>
           ) : null
         }
-        contentClassName="overflow-x-hidden"
         onClickOverlay={onRightDrawerClickOverlay}
       >
         <Navbar />
-        <div style={{height: `calc(100% - ${headerHeight})`}}>
-          <PerfectScrollbar>{children}</PerfectScrollbar>
-        </div>
+        {children}
       </Drawer>
     </Drawer>
   )
@@ -88,6 +91,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
 const TwDrawerWrapper = tw.div`
   flex
   flex-col
+  h-full
 `
 
 // needed for fast width style change in inner component
@@ -113,18 +117,33 @@ const TabsComponent = observer(() => {
           hobby
         </Button>
       </div>
-      <Tabs
-        value={state.tab}
-        onChange={store.setTab}
-        variant="lifted"
-        size="lg"
-        className="flex justify-between"
-      >
-        <TwTab value={'info'}>Tab 1</TwTab>
-        <TwTab value={'chat'}>Tab 2</TwTab>
-        <TwTab value={'empty'}>Tab 3</TwTab>
+      <Tabs className="flex justify-between">
+        <TwTab
+          value="info"
+          onChange={e => store.setTab(e.target.value as Tab)}
+          label="Tab 1"
+          groupName="right_drawer"
+          active={state.tab === 'info'}
+        />
+        <Tabs.TabContent>
+          <ModalPost />
+        </Tabs.TabContent>
+
+        <TwTab
+          value="chat"
+          onChange={e => store.setTab(e.target.value as Tab)}
+          label="Tab 2"
+          groupName="right_drawer"
+          active={state.tab === 'chat'}
+        />
+        <TwTab
+          value="empty"
+          onChange={e => store.setTab(e.target.value as Tab)}
+          label="Tab 3"
+          groupName="right_drawer"
+          active={state.tab === 'empty'}
+        />
       </Tabs>
-      {state.tab === 'info' && <ModalPost />}
     </div>
   )
 })
