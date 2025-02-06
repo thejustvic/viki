@@ -10,6 +10,7 @@ import {
   useLeftDrawerOpenState,
   useRightDrawerOpenState
 } from '@/hooks/use-drawer-open-state'
+import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {ReactNode} from 'react'
@@ -18,6 +19,7 @@ import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
 import {DrawerMenu} from '../../drawer-menu'
 import {Navbar} from '../../navbar'
+import {PerfectScrollbar} from '../../perfect-scrollbar'
 
 interface Props {
   children: ReactNode
@@ -66,6 +68,7 @@ export const DrawerNavbar = observer(({children}: Props) => {
         ) : null
       }
       onClickOverlay={onLeftDrawerClickOverlay}
+      contentClassName="h-screen"
     >
       <Drawer
         id="right-drawer"
@@ -80,9 +83,12 @@ export const DrawerNavbar = observer(({children}: Props) => {
           ) : null
         }
         onClickOverlay={onRightDrawerClickOverlay}
+        contentClassName="h-screen"
       >
         <Navbar />
-        {children}
+        <div style={{height: `calc(100% - ${headerHeight})`}}>
+          <PerfectScrollbar>{children}</PerfectScrollbar>
+        </div>
       </Drawer>
     </Drawer>
   )
