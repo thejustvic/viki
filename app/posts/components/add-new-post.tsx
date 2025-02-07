@@ -14,6 +14,7 @@ const TwAdd = tw(Button)`
   w-[288px]
   h-[142px]
   md:w-[190px]
+  text-primary
 `
 
 export const AddNewPost = () => {

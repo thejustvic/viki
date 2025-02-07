@@ -20,7 +20,7 @@ export const Textarea = ({
   return (
     <textarea
       className={twJoin(
-        'textarea',
+        'textarea border-primary focus:outline-primary',
         className,
         size === 'xs' && 'textarea-xs',
         size === 'sm' && 'textarea-sm',
