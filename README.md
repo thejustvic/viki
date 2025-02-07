@@ -1,4 +1,4 @@
-This is a [Next13](https://beta.nextjs.org/docs/getting-started) project.
+This is a [Next15](https://beta.nextjs.org/docs/getting-started) project.
 
 ## Getting Started
 
