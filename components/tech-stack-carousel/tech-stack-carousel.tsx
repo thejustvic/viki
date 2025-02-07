@@ -170,9 +170,9 @@ const stack: CardProps[] = [
     href: 'https://supabase.com/docs'
   },
   {
-    name: 'Tailwind',
+    name: 'Tailwind4',
     logo: 'https://static.cdnlogo.com/logos/t/58/tailwind-css.svg',
-    href: 'https://tailwindui.com/documentation'
+    href: 'https://tailwindcss.com/blog/tailwindcss-v4'
   },
   {
     name: 'TypeScript',
@@ -180,14 +180,14 @@ const stack: CardProps[] = [
     href: 'https://www.typescriptlang.org/'
   },
   {
-    name: 'React18',
+    name: 'React19',
     logo: 'https://static.cdnlogo.com/logos/r/63/react.svg',
     href: 'https://react.dev'
   },
   {
-    name: 'Next13',
+    name: 'Next15',
     logo: 'https://static.cdnlogo.com/logos/n/80/next-js.svg',
-    href: 'https://beta.nextjs.org/docs/getting-started'
+    href: 'https://nextjs.org/docs/app/getting-started'
   },
   {
     name: 'MobX',
