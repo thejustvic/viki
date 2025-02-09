@@ -3,19 +3,21 @@ import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {ReactNode} from 'react'
 
 interface Props {
+  id: string
   header: ReactNode
   body: ReactNode
   goBack: () => void
   open: boolean
 }
 
-export const Modal = ({header, body, goBack, open}: Props) => {
+export const Modal = ({id, header, body, goBack, open}: Props) => {
   useGlobalKeyDown({
     escape: goBack
   })
 
   return (
     <ModalComponent
+      id={id}
       open={open}
       backdrop
       close={goBack}

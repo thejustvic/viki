@@ -1,8 +1,8 @@
 import {getSearchPost} from '@/app/posts/components/get-search-post'
-import {usePostHandlers} from '@/app/posts/components/posts-handlers'
 import {useGlobalStore} from '@/components/global/global-store'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
+import {useUpdateSearchParams} from './use-update-search-params'
 
 export const useLeftDrawerOpenState = (): void => {
   const {x} = useMousePosition()
@@ -10,8 +10,10 @@ export const useLeftDrawerOpenState = (): void => {
   const postId = getSearchPost()
 
   useEffect(() => {
-    if (!postId) {
-      return store.setLeftDrawerClosed()
+    if (postId) {
+      store.setLeftDrawerOpen()
+    } else {
+      store.setLeftDrawerClosed()
     }
   }, [postId])
 
@@ -42,7 +44,7 @@ export const useLeftDrawerOpenState = (): void => {
 
 export const useRightDrawerOpenState = (): void => {
   const [state, store] = useGlobalStore()
-  const {addPostQueryParam, deletePostQueryParam} = usePostHandlers()
+  const updateSearchParams = useUpdateSearchParams()
   const postId = getSearchPost()
 
   useEffect(() => {
@@ -57,9 +59,9 @@ export const useRightDrawerOpenState = (): void => {
   useEffect(() => {
     if (!state.rightDrawerOpen && postId) {
       store.setLastPostId(postId)
-      deletePostQueryParam()
+      updateSearchParams('post')
     } else if (state.rightDrawerOpen && state.lastPostId && !postId) {
-      addPostQueryParam(state.lastPostId)
+      updateSearchParams('post', state.lastPostId)
     }
   }, [state.rightDrawerOpen])
 }

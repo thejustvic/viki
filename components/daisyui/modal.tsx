@@ -3,13 +3,12 @@ import {HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 import {Button} from './button'
 
-interface Props
-  extends PropsWithChildren,
-    React.DialogHTMLAttributes<HTMLDialogElement> {
+interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
 }
 
 interface PropsModal extends Props {
+  id: string
   open: boolean
   backdrop?: boolean
   onClickBackdrop?: () => void
@@ -17,52 +16,58 @@ interface PropsModal extends Props {
 }
 
 export const Modal = ({
+  id,
   open,
   backdrop,
   onClickBackdrop,
   close,
   className,
-  children,
-  ...props
+  children
 }: PropsModal) => {
   return (
-    <dialog
-      className={twJoin('modal', className, open && 'modal-open')}
-      {...props}
-    >
-      <div className="modal-box">
-        {close && <Close close={close} />}
-        {children}
+    <>
+      <input
+        type="checkbox"
+        id={id}
+        className="modal-toggle"
+        checked={open}
+        readOnly
+      />
+      <div
+        role="dialog"
+        className={twJoin('modal', className, open && 'modal-open')}
+      >
+        <div className="modal-box">
+          {children}
+          <div className="modal-action">
+            <label htmlFor={id} onClick={close}>
+              <Close />
+            </label>
+          </div>
+        </div>
+        {backdrop && (
+          <label
+            className="modal-backdrop"
+            htmlFor={id}
+            onClick={onClickBackdrop}
+          />
+        )}
       </div>
-      {backdrop && <Backdrop onClickBackdrop={onClickBackdrop} />}
-    </dialog>
+    </>
   )
 }
 
-interface PropsClose {
-  close: PropsModal['close']
-}
-
-const Close = ({close}: PropsClose) => {
+const Close = () => {
   return (
     <Button
       size="sm"
       shape="circle"
       className="absolute right-2 top-2"
-      onClick={close}
       color="ghost"
     >
       <IconCircleX />
     </Button>
   )
-}
-
-interface PropsBackdrop {
-  onClickBackdrop: PropsModal['onClickBackdrop']
-}
-
-const Backdrop = ({onClickBackdrop}: PropsBackdrop) => {
-  return <div className="modal-backdrop" onClick={onClickBackdrop} />
 }
 
 interface PropsBox extends PropsWithChildren {

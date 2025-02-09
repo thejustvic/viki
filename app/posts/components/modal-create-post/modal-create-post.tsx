@@ -4,40 +4,27 @@ import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
-import {Util} from '@/utils/util'
-import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-runtime'
-import {
-  ReadonlyURLSearchParams,
-  usePathname,
-  useRouter,
-  useSearchParams
-} from 'next/navigation'
+import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
+import {useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
 
-const closeCreatePostModal = (
-  searchParams: ReadonlyURLSearchParams,
-  router: AppRouterInstance,
-  pathname: string
-) => {
-  const queryString = Util.deleteQueryParam(searchParams, 'create-post')
-  Util.routerPushQuery(router, queryString, pathname)
-}
-
 export const ModalCreatePost = () => {
-  const router = useRouter()
-  const pathname = usePathname()
+  const updateSearchParams = useUpdateSearchParams()
   const searchParams = useSearchParams()
   const value = searchParams.get('create-post')
 
   const goBack = () => {
-    closeCreatePostModal(searchParams, router, pathname)
+    updateSearchParams('create-post')
   }
+
+  const open = Boolean(value)
 
   return (
     <Modal
-      open={Boolean(value)}
+      id="modal-create-post"
+      open={open}
       goBack={goBack}
       header={<ModalHeader />}
       body={<ModalBody />}
@@ -60,9 +47,7 @@ interface FormInputs {
 }
 
 const Text = () => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const updateSearchParams = useUpdateSearchParams()
 
   const {insertPost} = usePostHandlers()
   const {register, handleSubmit, setFocus} = useForm<FormInputs>()
@@ -73,7 +58,7 @@ const Text = () => {
 
   const onSubmit = async (data: FormInputs) => {
     await insertPost(data.text)
-    closeCreatePostModal(searchParams, router, pathname)
+    updateSearchParams('create-post')
   }
 
   return (

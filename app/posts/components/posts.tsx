@@ -4,11 +4,10 @@ import {ParallaxCardContainer} from '@/components/common/parallax-card-container
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Util} from '@/utils/util'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {PropsWithChildren} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
@@ -63,11 +62,12 @@ const PostsList = observer(() => {
 })
 
 const Post = observer(({post, active}: {post: Post; active: boolean}) => {
-  const {removePost, deletePostQueryParam} = usePostHandlers()
+  const updateSearchParams = useUpdateSearchParams()
+  const {removePost} = usePostHandlers()
 
   const remove = async () => {
     await removePost(post.id)
-    deletePostQueryParam()
+    updateSearchParams('post')
   }
 
   return (
@@ -84,14 +84,10 @@ interface PostProps {
 }
 
 const CardBody = ({post, remove}: PostProps) => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  const updateSearchParams = useUpdateSearchParams()
 
   const onClickHandler = () => {
-    const queryString = new URLSearchParams(searchParams)
-    queryString.set('post', post.id)
-    Util.routerPushQuery(router, queryString, pathname)
+    updateSearchParams('post', post.id)
   }
 
   return (
