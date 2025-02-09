@@ -1,7 +1,6 @@
 import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {usePostHandlers} from '@/app/posts/components/posts-handlers'
 import {useGlobalStore} from '@/components/global/global-store'
-import {Util} from '@/utils/util'
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
 
@@ -43,9 +42,7 @@ export const useLeftDrawerOpenState = (): void => {
 
 export const useRightDrawerOpenState = (): void => {
   const [state, store] = useGlobalStore()
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  const {addPostQueryParam, deletePostQueryParam} = usePostHandlers()
   const postId = getSearchPost()
 
   useEffect(() => {
@@ -60,15 +57,9 @@ export const useRightDrawerOpenState = (): void => {
   useEffect(() => {
     if (!state.rightDrawerOpen && postId) {
       store.setLastPostId(postId)
-      const queryString = Util.deleteQueryParam(searchParams, 'post')
-      Util.routerPushQuery(router, queryString, pathname)
+      deletePostQueryParam()
     } else if (state.rightDrawerOpen && state.lastPostId && !postId) {
-      const queryString = Util.addQueryParam(
-        searchParams,
-        'post',
-        state.lastPostId
-      )
-      Util.routerPushQuery(router, queryString, pathname)
+      addPostQueryParam(state.lastPostId)
     }
   }, [state.rightDrawerOpen])
 }

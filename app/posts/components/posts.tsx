@@ -63,10 +63,11 @@ const PostsList = observer(() => {
 })
 
 const Post = observer(({post, active}: {post: Post; active: boolean}) => {
-  const {removePost} = usePostHandlers()
+  const {removePost, deletePostQueryParam} = usePostHandlers()
 
   const remove = async () => {
     await removePost(post.id)
+    deletePostQueryParam()
   }
 
   return (
