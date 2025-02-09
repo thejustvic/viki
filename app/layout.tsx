@@ -8,6 +8,7 @@ import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
 import {Analytics} from '@vercel/analytics/react'
 import {cookies} from 'next/headers'
 import {PropsWithChildren} from 'react'
+import {ModalCreatePost} from './posts/components/modal-create-post/modal-create-post'
 
 export const metadata = {
   title: 'hobby',
@@ -31,6 +32,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
       <body>
         <SupabaseProvider user={user} session={session}>
           <GlobalProvider serverTheme={theme} session={session}>
+            <ModalCreatePost />
             {children}
           </GlobalProvider>
         </SupabaseProvider>

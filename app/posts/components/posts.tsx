@@ -12,7 +12,6 @@ import {PropsWithChildren} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
 import {getSearchPost} from './get-search-post'
-import {ModalCreatePost} from './modal-create-post/modal-create-post'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import type {Post} from './types'
@@ -37,12 +36,7 @@ export const PostsProvider = ({serverPosts, children}: Props) => {
   return <PostsContext.Provider value={store}>{children}</PostsContext.Provider>
 }
 
-export const PostsBase = () => (
-  <>
-    <ModalCreatePost />
-    <PostsList />
-  </>
-)
+export const PostsBase = () => <PostsList />
 
 const PostsList = observer(() => {
   const {supabase, user} = useSupabase()
