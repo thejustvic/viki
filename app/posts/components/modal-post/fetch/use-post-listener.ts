@@ -34,15 +34,18 @@ export const usePostListener = ({postId, authorId}: PostProps): void => {
   )
 
   useEffect(() => {
-    store.setPostCreator({
-      loading: userLoading,
-      data: userData,
-      error: userError
-    })
     store.setPost({
       loading,
       data,
       error
     })
-  }, [userData, userError, userLoading, data, loading, error])
+  }, [data, loading, error])
+
+  useEffect(() => {
+    store.setPostCreator({
+      loading: userLoading,
+      data: userData,
+      error: userError
+    })
+  }, [userData, userError, userLoading])
 }
