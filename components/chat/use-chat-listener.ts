@@ -26,14 +26,18 @@ export const useChatListener = (
 ): void => {
   const postId = getSearchPost()
 
-  const {data} = useSupabaseFetch(
+  const {data, loading, error} = useSupabaseFetch(
     postId ? () => getMessages(postId, supabase) : null,
     [postId]
   )
 
   useEffect(() => {
-    store.setChat(data ?? [])
-  }, [data])
+    store.setChat({
+      loading,
+      data,
+      error
+    })
+  }, [data, loading, error])
 
   useEffect(() => {
     const channel = supabase

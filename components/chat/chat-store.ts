@@ -1,46 +1,65 @@
+import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {Util} from '@/utils/util'
 import {makeAutoObservable, observable} from 'mobx'
 import {Message} from './types'
 
 interface State {
-  messages: Message[]
+  chat: SupabaseQuery<Message[]>
 }
 
 export class ChatStore {
   state: State = {
-    messages: []
+    chat: {
+      loading: false,
+      data: null,
+      error: null
+    }
   }
 
   constructor(serverChat: Message[]) {
     makeAutoObservable(this, {
       state: observable.shallow
     })
-    this.setChat(serverChat)
+    this.setChat({loading: false, data: serverChat, error: null})
   }
 
-  setChat(messages: Message[]): void {
-    this.state.messages = messages
+  setChat(chat: State['chat']): void {
+    this.state.chat = chat
   }
 
   handleUpdate = (oldMessage: Message, newMessage: Message): void => {
-    this.setChat(
-      this.state.messages.map(message => {
-        if (message.id === oldMessage.id) {
-          return newMessage
-        }
-        return message
+    const messages = this.state.chat.data?.map(message => {
+      if (message.id === oldMessage.id) {
+        return newMessage
+      }
+      return message
+    })
+    if (messages) {
+      this.setChat({
+        ...this.state.chat,
+        data: messages
       })
-    )
+    }
   }
 
   handleInsert = (newMessage: Message): void => {
-    this.setChat([...this.state.messages, newMessage])
+    if (this.state.chat.data) {
+      this.setChat({
+        ...this.state.chat,
+        data: [...this.state.chat.data, newMessage]
+      })
+    }
   }
 
   handleDelete = (oldMessage: Message): void => {
-    const messages = Util.clone(this.state.messages)
-    this.setChat(messages.filter(message => message.id !== oldMessage.id))
+    const messages = Util.clone(this.state.chat.data)
+    if (messages) {
+      this.setChat({
+        ...this.state.chat,
+        data: messages.filter(message => message.id !== oldMessage.id)
+      })
+    }
   }
 }
 

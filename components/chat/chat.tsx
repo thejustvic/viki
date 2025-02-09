@@ -2,7 +2,8 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {MouseEvent, ReactNode, useEffect, useState} from 'react'
-
+import tw from 'tailwind-styled-components'
+import {Loader} from '../common/loader'
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
 import {UserImage} from '../common/user-image'
 import {Button} from '../daisyui/button'
@@ -19,7 +20,7 @@ export const Chat = observer(() => {
     if (scrollEl) {
       scrollEl.scrollTop = scrollEl.scrollHeight
     }
-  }, [state.messages, scrollEl])
+  }, [state.chat, scrollEl])
 
   return (
     <PerfectScrollbar
@@ -31,13 +32,32 @@ export const Chat = observer(() => {
   )
 })
 
+const TwState = tw.div`
+  flex
+  h-full
+  w-full
+  justify-center
+  items-center
+`
+
 const Messages = observer(() => {
   const [state] = useChatStore()
   const {user} = useSupabase()
 
+  if (state.chat.error) {
+    return <TwState>{state.chat.error.message}</TwState>
+  }
+  if (state.chat.loading) {
+    return (
+      <TwState>
+        <Loader />
+      </TwState>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-2 h-[54px]">
-      {state.messages.map(message => {
+      {state.chat.data?.map(message => {
         return (
           <Message
             key={message.id}
