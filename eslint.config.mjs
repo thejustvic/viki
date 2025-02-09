@@ -39,7 +39,6 @@ export default [{
             ecmaFeatures: {
                 tsx: true,
             },
-
             project: ["./tsconfig.eslint.json"],
         },
     },

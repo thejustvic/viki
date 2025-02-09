@@ -1,3 +1,3 @@
-import {Database} from '@/utils/database.types'
+import {Tables} from '@/utils/database.types'
 
-export type Message = Database['public']['Tables']['chat']['Row']
+export type Message = Tables<'messages'>

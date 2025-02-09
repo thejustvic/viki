@@ -9,8 +9,10 @@ import {Util} from '@/utils/util'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
+import {PropsWithChildren} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewPost} from './add-new-post'
+import {getSearchPost} from './get-search-post'
 import {ModalCreatePost} from './modal-create-post/modal-create-post'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
@@ -26,21 +28,17 @@ const TwContainer = tw.div`
   md:justify-start
 `
 
-interface Props {
+interface Props extends PropsWithChildren {
   serverPosts: Post[]
 }
 
-export const Posts = ({serverPosts}: Props) => {
+export const PostsProvider = ({serverPosts, children}: Props) => {
   const store = useMemoOne(() => new PostsStore(serverPosts), [])
 
-  return (
-    <PostsContext.Provider value={store}>
-      <PostsBase />
-    </PostsContext.Provider>
-  )
+  return <PostsContext.Provider value={store}>{children}</PostsContext.Provider>
 }
 
-const PostsBase = () => (
+export const PostsBase = () => (
   <>
     <ModalCreatePost />
     <PostsList />
@@ -50,8 +48,7 @@ const PostsBase = () => (
 const PostsList = observer(() => {
   const {supabase, user} = useSupabase()
   const [state, store] = usePostsStore()
-  const searchParams = useSearchParams()
-  const postId = searchParams.get('post')
+  const postId = getSearchPost()
 
   usePostsListener(user, supabase, store)
 

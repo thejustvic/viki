@@ -5,20 +5,34 @@ import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
 import {Util} from '@/utils/util'
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'
+import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+  useSearchParams
+} from 'next/navigation'
 import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
 
+const closeCreatePostModal = (
+  searchParams: ReadonlyURLSearchParams,
+  router: AppRouterInstance,
+  pathname: string
+) => {
+  const queryString = Util.deleteQueryParam(searchParams, 'create-post')
+  Util.routerPushQuery(router, queryString, pathname)
+}
+
 export const ModalCreatePost = () => {
-  const searchParams = useSearchParams()
-  const value = searchParams.get('create-post')
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const value = searchParams.get('create-post')
 
   const goBack = () => {
-    const queryString = Util.deleteQueryParam(searchParams, 'create-post')
-    Util.routerPushQuery(router, queryString, pathname)
+    closeCreatePostModal(searchParams, router, pathname)
   }
 
   return (
@@ -46,21 +60,20 @@ interface FormInputs {
 }
 
 const Text = () => {
-  const searchParams = useSearchParams()
-  const value = searchParams.get('create-post')
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
   const {insertPost} = usePostHandlers()
   const {register, handleSubmit, setFocus} = useForm<FormInputs>()
 
   useEffect(() => {
-    if (value) {
-      setTimeout(() => setFocus('text'), 20)
-    }
-  }, [setFocus, value])
+    setFocus('text')
+  }, [setFocus])
 
   const onSubmit = async (data: FormInputs) => {
     await insertPost(data.text)
-    router.push('/')
+    closeCreatePostModal(searchParams, router, pathname)
   }
 
   return (

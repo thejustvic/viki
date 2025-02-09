@@ -1,3 +1,4 @@
+import {getSearchPost} from '@/app/posts/components/get-search-post'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {Chat} from '../chat/chat'
@@ -20,6 +21,7 @@ const TwMenu = tw.div`
 
 export const DrawerMenu = observer(() => {
   const [state, store] = useGlobalStore()
+  const postId = getSearchPost()
 
   const closeDrawer = () => {
     store.setLeftDrawerClosed()
@@ -36,7 +38,7 @@ export const DrawerMenu = observer(() => {
       </div>
       <div className="flex flex-col justify-between flex-1 gap-3">
         <Chat />
-        <ChatInput />
+        {postId && <ChatInput />}
       </div>
     </TwMenu>
   )

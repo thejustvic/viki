@@ -20,7 +20,7 @@ export class ChatStore {
   }
 
   setChat(messages: Message[]): void {
-    this.state.messages = Util.sortByDate(messages)
+    this.state.messages = messages
   }
 
   handleUpdate = (oldMessage: Message, newMessage: Message): void => {

@@ -9,10 +9,10 @@ import {getPostById} from './get-post-by-id'
 
 interface PostProps {
   postId: Post['id'] | null
-  userId: Post['user_id'] | undefined
+  authorId: Post['author_id'] | undefined
 }
 
-export const usePostListener = ({postId, userId}: PostProps): void => {
+export const usePostListener = ({postId, authorId}: PostProps): void => {
   const [, store] = useModalPostStore()
   const {supabase} = useSupabase()
 
@@ -26,10 +26,11 @@ export const usePostListener = ({postId, userId}: PostProps): void => {
     error: userError,
     loading: userLoading
   } = useFetch<User>(
-    userId
-      ? () => fetch(`${window.location.origin}/api/retrieve-user?id=${userId}`)
+    authorId
+      ? () =>
+          fetch(`${window.location.origin}/api/retrieve-user?id=${authorId}`)
       : null,
-    [userId]
+    [authorId]
   )
 
   useEffect(() => {
@@ -44,6 +45,4 @@ export const usePostListener = ({postId, userId}: PostProps): void => {
       error
     })
   }, [userData, userError, userLoading, data, loading, error])
-
-  // useEffect(() => {}, [])
 }

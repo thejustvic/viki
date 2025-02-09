@@ -1,3 +1,4 @@
+import {getSearchPost} from '@/app/posts/components/get-search-post'
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
@@ -20,10 +21,14 @@ interface FormInputs {
 export const ChatInput = observer(() => {
   const {insertMessage} = useChatHandlers()
   const {register, handleSubmit, setValue} = useForm<FormInputs>()
+  const postId = getSearchPost()
 
   const onSubmit = async (data: FormInputs) => {
+    if (!postId) {
+      return
+    }
     try {
-      await insertMessage(data.text)
+      await insertMessage({text: data.text, postId})
       setValue('text', '')
     } catch (e) {
       setValue('text', (e as Error).message)

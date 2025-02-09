@@ -18,14 +18,14 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
 import {DrawerMenu} from '../../drawer-menu'
-import {Navbar} from '../../navbar'
+import {Navbar} from '../../navbar/client-components/navbar'
 import {PerfectScrollbar} from '../../perfect-scrollbar'
 
 interface Props {
   children: ReactNode
 }
 
-export const DrawerNavbar = observer(({children}: Props) => {
+export const DrawerWrapper = observer(({children}: Props) => {
   const [state, store] = useGlobalStore()
   const {user} = useSupabase()
 
@@ -62,9 +62,9 @@ export const DrawerNavbar = observer(({children}: Props) => {
       mobile={isMobile || state.drawerOpenByHover}
       side={
         user ? (
-          <DrawerWrapper>
+          <DrawerContentWrapper>
             <DrawerMenu />
-          </DrawerWrapper>
+          </DrawerContentWrapper>
         ) : null
       }
       onClickOverlay={onLeftDrawerClickOverlay}
@@ -77,16 +77,16 @@ export const DrawerNavbar = observer(({children}: Props) => {
         mobile={isMobile}
         side={
           user ? (
-            <DrawerWrapper>
+            <DrawerContentWrapper>
               <TabsComponent />
-            </DrawerWrapper>
+            </DrawerContentWrapper>
           ) : null
         }
         onClickOverlay={onRightDrawerClickOverlay}
         contentClassName="h-screen"
       >
-        <Navbar />
         <div style={{height: `calc(100% - ${headerHeight})`}}>
+          <Navbar />
           <PerfectScrollbar>{children}</PerfectScrollbar>
         </div>
       </Drawer>
@@ -101,7 +101,7 @@ const TwDrawerWrapper = tw.div`
 `
 
 // needed for fast width style change in inner component
-const DrawerWrapper = ({children}: React.PropsWithChildren) => {
+const DrawerContentWrapper = ({children}: React.PropsWithChildren) => {
   return <TwDrawerWrapper>{children}</TwDrawerWrapper>
 }
 

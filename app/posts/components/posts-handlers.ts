@@ -20,8 +20,8 @@ export const usePostHandlers = (): Handlers => {
     }
     await supabase.from('posts').insert({
       text,
-      user_id: user.id,
-      email: user.email || ''
+      author_id: user.id,
+      author_email: user.email || ''
     })
   }
 

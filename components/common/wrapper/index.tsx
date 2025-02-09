@@ -1,12 +1,12 @@
 import 'server-only'
 
 import {ReactNode} from 'react'
-import {DrawerNavbar} from './client-components/drawer-navbar'
+import {DrawerWrapper} from './client-components/drawer-wrapper'
 
 interface Props {
   children: ReactNode
 }
 
 export default function Wrapper({children}: Props) {
-  return <DrawerNavbar>{children}</DrawerNavbar>
+  return <DrawerWrapper>{children}</DrawerWrapper>
 }

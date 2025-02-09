@@ -3,7 +3,13 @@ import {Message} from './types'
 
 interface Handlers {
   removeMessage: (id: Message['id']) => Promise<void>
-  insertMessage: (text: string) => Promise<void>
+  insertMessage: ({
+    postId,
+    text
+  }: {
+    postId: Message['post_id']
+    text: string
+  }) => Promise<void>
   updateMessage: (text: string, messageId: string) => Promise<void>
 }
 
@@ -11,14 +17,16 @@ export const useChatHandlers = (): Handlers => {
   const {supabase, user} = useSupabase()
 
   const removeMessage: Handlers['removeMessage'] = async id => {
-    await supabase.from('chat').delete().eq('id', id)
+    await supabase.from('messages').delete().eq('id', id)
   }
 
-  const insertMessage: Handlers['insertMessage'] = async text => {
+  const insertMessage: Handlers['insertMessage'] = async ({postId, text}) => {
     if (!user) {
       throw Error('You must log in first!')
     }
-    await supabase.from('chat').insert({
+    await supabase.from('messages').insert({
+      author_id: user.id,
+      post_id: postId,
       author_email: user.email ?? '',
       author_image: user.user_metadata?.avatar_url ?? '',
       text
@@ -30,7 +38,7 @@ export const useChatHandlers = (): Handlers => {
       throw Error('You must provide a user object!')
     }
     await supabase
-      .from('chat')
+      .from('messages')
       .update({
         text
       })

@@ -1,19 +1,18 @@
 'use client'
 
-import {useMemoOne} from '@/hooks/use-memo-one'
-import {observer} from 'mobx-react-lite'
-import {useSearchParams} from 'next/navigation'
-import tw from 'tailwind-styled-components'
-import {usePostListener} from './fetch/use-post-listener'
-
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
 import {Menu} from '@/components/daisyui/menu'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
+import {useMemoOne} from '@/hooks/use-memo-one'
+import {observer} from 'mobx-react-lite'
 import {ReactNode, useEffect} from 'react'
+import tw from 'tailwind-styled-components'
+import {getSearchPost} from '../get-search-post'
 import {usePostHandlers} from '../posts-handlers'
+import {usePostListener} from './fetch/use-post-listener'
 import {
   ModalPostStore,
   ModalPostStoreContext,
@@ -49,10 +48,9 @@ export const ModalPost = () => {
 
 export const ModalPostBase = observer(() => {
   const [state] = useModalPostStore()
-  const searchParams = useSearchParams()
-  const postId = searchParams.get('post')
+  const postId = getSearchPost()
 
-  usePostListener({postId, userId: state.post.data?.user_id})
+  usePostListener({postId, authorId: state.post.data?.author_id})
 
   return (
     <TwMenu>

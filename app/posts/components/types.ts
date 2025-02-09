@@ -1,4 +1,5 @@
-import type {Database} from '@/utils/database.types'
+import type {Tables} from '@/utils/database.types'
 
-export type Post = Database['public']['Tables']['posts']['Row']
-export type User = Database['public']['Tables']['profiles']['Row']
+export type Post = Tables<'posts'>
+export type Profile = Tables<'profiles'>
+export type Message = Tables<'messages'>

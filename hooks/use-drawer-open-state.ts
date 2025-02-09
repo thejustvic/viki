@@ -1,3 +1,4 @@
+import {getSearchPost} from '@/app/posts/components/get-search-post'
 import {useGlobalStore} from '@/components/global/global-store'
 import {Util} from '@/utils/util'
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
@@ -7,6 +8,13 @@ import {useMousePosition} from './use-mouse-position'
 export const useLeftDrawerOpenState = (): void => {
   const {x} = useMousePosition()
   const [state, store] = useGlobalStore()
+  const postId = getSearchPost()
+
+  useEffect(() => {
+    if (!postId) {
+      return store.setLeftDrawerClosed()
+    }
+  }, [postId])
 
   useEffect(() => {
     if (x === null) {
@@ -15,7 +23,12 @@ export const useLeftDrawerOpenState = (): void => {
     if (!state.showLeftMenuOnHover) {
       return
     }
-    if (!state.leftDrawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
+    if (
+      !state.leftDrawerOpen &&
+      !state.drawerOpenByHover &&
+      postId &&
+      Number(x) < 10
+    ) {
       store.setLeftDrawerOpen(true)
     }
     if (
@@ -33,7 +46,7 @@ export const useRightDrawerOpenState = (): void => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-  const postId = searchParams.get('post')
+  const postId = getSearchPost()
 
   useEffect(() => {
     if (postId) {
