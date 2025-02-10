@@ -50,11 +50,20 @@ const Text = () => {
   const updateSearchParams = useUpdateSearchParams()
 
   const {insertPost} = usePostHandlers()
-  const {register, handleSubmit, setFocus} = useForm<FormInputs>()
+  const {register, handleSubmit, setFocus, resetField} = useForm<FormInputs>()
+
+  const searchParams = useSearchParams()
+  const createPostSearch = searchParams.get('create-post')
 
   useEffect(() => {
-    setFocus('text')
-  }, [setFocus])
+    if (createPostSearch) {
+      setTimeout(() => {
+        setFocus('text')
+      }, 500)
+    } else {
+      resetField('text')
+    }
+  }, [createPostSearch])
 
   const onSubmit = async (data: FormInputs) => {
     await insertPost(data.text)
