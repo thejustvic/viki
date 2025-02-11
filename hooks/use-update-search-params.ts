@@ -1,11 +1,10 @@
 'use client'
 
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'
+import {usePathname, useSearchParams} from 'next/navigation'
 
 type UpdateSearchParamsFunc = (key: string, value?: string) => void
 
 export const useUpdateSearchParams = (): UpdateSearchParamsFunc => {
-  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -17,9 +16,7 @@ export const useUpdateSearchParams = (): UpdateSearchParamsFunc => {
     } else {
       params.delete(key) // Removes the key if value is empty
     }
-
-    // @ts-expect-error 'shallow' does not exist in type 'NavigateOptions'
-    router.push(`${pathname}?${params.toString()}`, {shallow: true})
+    history.pushState(null, '', `${pathname}?${params.toString()}`)
   }
 
   return updateSearchParams
