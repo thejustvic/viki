@@ -100,9 +100,7 @@ const AvatarDropdown = observer(() => {
         <UserImage src={user.user_metadata?.avatar_url} />
       </Button>
       <Dropdown.Menu className="shadow-lg bg-base-200">
-        <Dropdown.Item className="flex">
-          {postId && <LabelShowLeftMenu />}
-        </Dropdown.Item>
+        {postId && <LabelShowLeftMenu />}
         <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
@@ -112,12 +110,14 @@ const AvatarDropdown = observer(() => {
 const LabelShowLeftMenu = observer(() => {
   const [state, store] = useGlobalStore()
   return (
-    <label className="fieldset-label">
-      <span className="truncate">show left menu on hover</span>
-      <Toggle
-        checked={state.showLeftMenuOnHover}
-        onChange={store.setShowLeftMenuOnHoverToggle}
-      />
-    </label>
+    <Dropdown.Item className="flex">
+      <label className="fieldset-label">
+        <span className="truncate">show left menu on hover</span>
+        <Toggle
+          checked={state.showLeftMenuOnHover}
+          onChange={store.setShowLeftMenuOnHoverToggle}
+        />
+      </label>
+    </Dropdown.Item>
   )
 })
