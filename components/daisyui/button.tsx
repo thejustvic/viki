@@ -8,6 +8,7 @@ interface Props
   size?: 'xs' | 'xl' | 'sm'
   variant?: 'outline' | 'link'
   shape?: 'circle' | 'square'
+  loading?: boolean
 }
 
 export const Button = ({
@@ -15,6 +16,7 @@ export const Button = ({
   size,
   variant,
   shape,
+  loading,
   children,
   className,
   ...props
@@ -36,6 +38,7 @@ export const Button = ({
       )}
       {...props}
     >
+      {loading && <span className="loading loading-spinner"></span>}
       {children}
     </button>
   )
