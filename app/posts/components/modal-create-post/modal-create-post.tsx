@@ -57,9 +57,13 @@ const Text = () => {
 
   useEffect(() => {
     if (createPostSearch) {
-      setTimeout(() => {
-        setFocus('text')
-      }, 500)
+      document
+        .getElementById('dialog-modal-create-post')
+        ?.addEventListener('transitionend', e => {
+          if (e.propertyName === 'opacity') {
+            setFocus('text')
+          }
+        })
     } else {
       resetField('text')
     }

@@ -34,6 +34,7 @@ export const Modal = ({
         readOnly
       />
       <div
+        id={`dialog-${id}`}
         role="dialog"
         className={twJoin('modal', className, open && 'modal-open')}
       >
