@@ -3,6 +3,7 @@
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
+import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
@@ -43,6 +44,7 @@ const PostsList = observer(() => {
   const [state, store] = usePostsStore()
   const postId = getSearchPost()
 
+  useLoggingOff()
   usePostsListener(user, supabase, store)
 
   return (
