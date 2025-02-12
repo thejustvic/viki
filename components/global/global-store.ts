@@ -15,6 +15,11 @@ interface State {
   rightDrawerWidth: number
   leftDrawerWidth: number
   tab: Tab
+  logging: {
+    email: boolean
+    github: boolean
+    google: boolean
+  }
 }
 
 export class GlobalStore {
@@ -27,7 +32,12 @@ export class GlobalStore {
     lastPostId: undefined,
     rightDrawerWidth: 320,
     leftDrawerWidth: 320,
-    tab: 'info'
+    tab: 'info',
+    logging: {
+      email: false,
+      github: false,
+      google: false
+    }
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -93,6 +103,18 @@ export class GlobalStore {
 
   setTab = (tab: Tab): void => {
     this.state.tab = tab
+  }
+
+  setLoggingOff = (): void => {
+    this.state.logging = {
+      email: false,
+      github: false,
+      google: false
+    }
+  }
+
+  setLogging = (value: keyof State['logging']): void => {
+    this.state.logging = {...this.state.logging, [value]: true}
   }
 }
 
