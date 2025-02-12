@@ -2,7 +2,6 @@
 
 import {createClient} from '@/utils/supabase-utils/supabase-browser'
 import {createContext, useContext} from 'react'
-import {useSupabaseListener} from '../../hooks/use-supabase-listener'
 
 import {useMemoOne} from '@/hooks/use-memo-one'
 import type {Database} from '@/utils/database.types'
@@ -13,6 +12,7 @@ export type MaybeSession = Session | null
 export type SupabaseContext = {
   supabase: SupabaseClient<Database>
   user: User | null
+  session: MaybeSession
 }
 
 const Context = createContext<SupabaseContext>({} as SupabaseContext)
@@ -25,11 +25,10 @@ interface Props {
 
 export default function SupabaseProvider({children, user, session}: Props) {
   const supabase = useMemoOne(() => createClient(), [])
-  useSupabaseListener(supabase, user, session)
 
   return (
-    <Context.Provider value={{supabase, user}}>
-      <>{children}</>
+    <Context.Provider value={{supabase, user, session}}>
+      {children}
     </Context.Provider>
   )
 }

@@ -8,9 +8,6 @@ import {createClient} from '@/utils/supabase-utils/supabase-server'
 import {Suspense} from 'react'
 import {PostsBase, PostsProvider} from './components/posts'
 
-// do not cache this page
-export const revalidate = 0
-
 interface Props {
   searchParams: Promise<{[key: string]: string | string[] | undefined}>
 }

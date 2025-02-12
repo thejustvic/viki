@@ -15,9 +15,6 @@ export const metadata = {
   description: 'hobby app'
 }
 
-// do not cache this layout
-export const revalidate = 0
-
 export default async function RootLayout({children}: PropsWithChildren) {
   const user = await getServerUser()
   const session = await getServerSession()
@@ -31,7 +28,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
     <html data-theme={theme || 'dark'} lang="en">
       <body>
         <SupabaseProvider user={user} session={session}>
-          <GlobalProvider serverTheme={theme} session={session}>
+          <GlobalProvider serverTheme={theme}>
             <ModalCreatePost />
             {children}
           </GlobalProvider>

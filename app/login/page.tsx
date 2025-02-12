@@ -1,26 +1,37 @@
 import 'server-only'
 
+import {Load} from '@/components/common/load'
 import {TechStackCarousel} from '@/components/tech-stack-carousel/tech-stack-carousel'
+import {ClientRedirect} from '@/hooks/use-client-redirect'
 import {createClient} from '@/utils/supabase-utils/supabase-server'
-import {redirect} from 'next/navigation'
+import {headers} from 'next/headers'
+import {Suspense} from 'react'
 import {HeroLogin, TwAnonymous} from './components/hero-login'
 
-// do not cache this page
-export const revalidate = 0
+const getUser = async () => {
+  const supabase = await createClient()
+  const {
+    data: {user}
+  } = await supabase.auth.getUser()
+  return user
+}
 
 export default async function Page() {
-  const supabase = await createClient()
+  const heads = await headers()
+  const pathname = heads.get('x-invoke-path') || ''
 
-  const {data} = await supabase.auth.getUser()
+  const user = await getUser()
 
-  if (data.user) {
-    redirect(`/posts`)
+  if (user && pathname !== '/posts') {
+    return <ClientRedirect href="/posts" />
+  } else {
+    return (
+      <Suspense fallback={<Load center />}>
+        <TwAnonymous>
+          <HeroLogin />
+          <TechStackCarousel />
+        </TwAnonymous>
+      </Suspense>
+    )
   }
-
-  return (
-    <TwAnonymous>
-      <HeroLogin />
-      <TechStackCarousel />
-    </TwAnonymous>
-  )
 }

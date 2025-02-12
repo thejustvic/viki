@@ -1,40 +1,29 @@
 'use client'
 
-import {
-  MaybeSession,
-  SupabaseContext
-} from '@/utils/supabase-utils/supabase-provider'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {useRouter} from 'next/navigation'
 import {useEffect} from 'react'
 import {usePageVisibility} from './use-page-visibility'
 
-export const useSupabaseListener = (
-  supabase: SupabaseContext['supabase'],
-  user: SupabaseContext['user'],
-  mySession: MaybeSession
-) => {
+export const usePageRefresh = () => {
   const router = useRouter()
   const isPageVisible = usePageVisibility()
+  const {session: mySession, supabase} = useSupabase()
 
   useEffect(() => {
-    void (async () => {
-      if (!user) {
-        router.refresh()
-      }
-    })()
+    router.refresh()
   }, [isPageVisible])
 
   useEffect(() => {
     const {
       data: {subscription}
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_e, session) => {
       if (session?.access_token !== mySession?.access_token) {
         router.refresh()
       }
     })
-
     return () => {
       subscription.unsubscribe()
     }
-  }, [router, supabase, user])
+  }, [router, supabase, mySession])
 }

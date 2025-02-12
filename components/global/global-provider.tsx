@@ -2,24 +2,23 @@
 
 import {GlobalContext, GlobalStore} from '@/components/global/global-store'
 import {Theme} from '@/components/global/types'
-import {Session} from '@supabase/supabase-js'
+import {usePageRefresh} from '@/hooks/use-page-refresh'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {ReactNode, useEffect, useState} from 'react'
 
 interface Props {
   children: ReactNode
   serverTheme: Theme | undefined
-  session: Session | null
 }
 
-export default function GlobalProvider({
-  children,
-  serverTheme,
-  session
-}: Props) {
+export default function GlobalProvider({children, serverTheme}: Props) {
+  usePageRefresh()
   const [store, setStore] = useState<GlobalStore>()
+  const {user} = useSupabase()
+
   useEffect(() => {
     setStore(new GlobalStore(serverTheme))
-  }, [session])
+  }, [user])
 
   if (!store) {
     return
