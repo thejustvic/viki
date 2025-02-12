@@ -41,20 +41,26 @@ export const PostsBase = () => <PostsList />
 
 const PostsList = observer(() => {
   const {supabase, user} = useSupabase()
-  const [state, store] = usePostsStore()
-  const postId = getSearchPost()
+  const [, store] = usePostsStore()
 
   useLoggingOff()
   usePostsListener(user, supabase, store)
 
   return (
     <TwContainer>
-      {state.posts.map(post => (
-        <Post post={post} key={post.id} active={postId === post.id} />
-      ))}
+      <Posts />
       <AddNewPost />
     </TwContainer>
   )
+})
+
+const Posts = observer(() => {
+  const [state] = usePostsStore()
+  const postId = getSearchPost()
+
+  return state.posts.map(post => (
+    <Post post={post} key={post.id} active={postId === post.id} />
+  ))
 })
 
 const Post = observer(({post, active}: {post: Post; active: boolean}) => {
