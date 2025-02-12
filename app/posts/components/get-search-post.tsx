@@ -1,6 +1,5 @@
-import {useSearchParams} from 'next/navigation'
+import {Util} from '@/utils/util'
 
 export const getSearchPost = (): string | null => {
-  const searchParams = useSearchParams()
-  return searchParams.get('post')
+  return Util.getSearchParam('post')
 }

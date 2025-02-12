@@ -1,3 +1,4 @@
+import {useSearchParams} from 'next/navigation'
 import {Writable} from 'ts-essentials'
 
 export class Util {
@@ -33,6 +34,10 @@ export class Util {
     return arr.sort((a, b) => {
       return new Date(a.created_at) > new Date(b.created_at) ? 1 : -1
     })
+  }
+
+  static getSearchParam(value: string): string | null {
+    return useSearchParams().get(value)
   }
 }
 

@@ -5,26 +5,23 @@ import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
-import {useSearchParams} from 'next/navigation'
+import {Util} from '@/utils/util'
 import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
 
 export const ModalCreatePost = () => {
   const updateSearchParams = useUpdateSearchParams()
-  const searchParams = useSearchParams()
-  const value = searchParams.get('create-post')
+  const createPost = Util.getSearchParam('create-post')
 
   const goBack = () => {
     updateSearchParams('create-post')
   }
 
-  const open = Boolean(value)
-
   return (
     <Modal
       id="modal-create-post"
-      open={open}
+      open={Boolean(createPost)}
       goBack={goBack}
       header={<ModalHeader />}
       body={<ModalBody />}
@@ -52,8 +49,7 @@ const Text = () => {
   const {insertPost} = usePostHandlers()
   const {register, handleSubmit, setFocus, resetField} = useForm<FormInputs>()
 
-  const searchParams = useSearchParams()
-  const createPostSearch = searchParams.get('create-post')
+  const createPostSearch = Util.getSearchParam('create-post')
 
   useEffect(() => {
     if (createPostSearch) {
