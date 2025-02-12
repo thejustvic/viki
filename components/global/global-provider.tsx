@@ -33,7 +33,7 @@ export default function GlobalProvider({children, serverTheme}: Props) {
     if (user && logging) {
       store.setLoggingOff()
     }
-  }, [user])
+  }, [user, store?.state.logging])
 
   if (!store) {
     return
