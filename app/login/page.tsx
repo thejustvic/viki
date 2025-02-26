@@ -3,24 +3,16 @@ import 'server-only'
 import {Load} from '@/components/common/load'
 import {TechStackCarousel} from '@/components/tech-stack-carousel/tech-stack-carousel'
 import {ClientRedirect} from '@/hooks/use-client-redirect'
-import {createClient} from '@/utils/supabase-utils/supabase-server'
+import {getServerUser} from '@/utils/supabase-utils/get-server-user'
 import {headers} from 'next/headers'
 import {Suspense} from 'react'
 import {HeroLogin, TwAnonymous} from './components/hero-login'
-
-const getUser = async () => {
-  const supabase = await createClient()
-  const {
-    data: {user}
-  } = await supabase.auth.getUser()
-  return user
-}
 
 export default async function Page() {
   const heads = await headers()
   const pathname = heads.get('x-invoke-path') || ''
 
-  const user = await getUser()
+  const user = await getServerUser()
 
   if (user && pathname !== '/posts') {
     return <ClientRedirect href="/posts" />
