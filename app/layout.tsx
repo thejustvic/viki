@@ -5,7 +5,8 @@ import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
 import {getServerUser} from '@/utils/supabase-utils/get-server-user'
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
-import {Analytics} from '@vercel/analytics/react'
+import {Analytics} from '@vercel/analytics/next'
+import {SpeedInsights} from '@vercel/speed-insights/next'
 import {cookies} from 'next/headers'
 import {PropsWithChildren} from 'react'
 import {ModalCreatePost} from './posts/components/modal-create-post/modal-create-post'
@@ -33,7 +34,8 @@ export default async function RootLayout({children}: PropsWithChildren) {
             {children}
           </GlobalProvider>
         </SupabaseProvider>
-        <Analytics />
+        <Analytics mode="production" />
+        <SpeedInsights />
       </body>
     </html>
   )
