@@ -34,12 +34,19 @@ export const Button = ({
         variant === 'link' && 'btn-link',
         variant === 'outline' && 'btn-outline',
         shape === 'circle' && 'btn-circle',
-        shape === 'square' && 'btn-square'
+        shape === 'square' && 'btn-square',
+        loading && 'pointer-events-none'
       )}
       {...props}
     >
-      {loading && <span className="loading loading-spinner"></span>}
-      {children}
+      {loading ? (
+        <>
+          <span className="loading loading-dots loading-sm absolute" />
+          <span className="opacity-25">{children}</span>
+        </>
+      ) : (
+        children
+      )}
     </button>
   )
 }
