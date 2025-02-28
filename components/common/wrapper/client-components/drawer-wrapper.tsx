@@ -7,6 +7,7 @@ import {CheckboxInput} from '@/components/checklist/checkbox/checkbox-input'
 import {Checklist} from '@/components/checklist/checklist'
 import {ChecklistProgress} from '@/components/checklist/checklist-progress'
 import ChecklistProvider from '@/components/checklist/checklist-provider'
+import {useChecklistStore} from '@/components/checklist/checklist-store'
 import {Button} from '@/components/daisyui/button'
 import {Drawer} from '@/components/daisyui/drawer'
 import {Tabs} from '@/components/daisyui/tabs'
@@ -114,6 +115,7 @@ const DrawerContentWrapper = ({children}: React.PropsWithChildren) => {
 }
 
 const TabsComponent = observer(() => {
+  const [checklistState] = useChecklistStore()
   const [state, store] = useGlobalStore()
 
   const closeDrawer = () => {
@@ -151,7 +153,9 @@ const TabsComponent = observer(() => {
         />
         <Tabs.TabContent>
           <div className="px-4 my-2 flex gap-1">
-            <CheckAllCheckboxes />
+            {checklistState.checklist.data?.length ? (
+              <CheckAllCheckboxes />
+            ) : null}
             <ChecklistProgress />
           </div>
           <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-123px)]">
