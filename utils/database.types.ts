@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      checklist: {
+        Row: {
+          author_id: string
+          created_at: string
+          id: string
+          is_completed: boolean
+          post_id: string
+          title: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          post_id: string
+          title: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          post_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'checklist_author_id_fkey'
+            columns: ['author_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'checklist_post_id_fkey'
+            columns: ['post_id']
+            isOneToOne: false
+            referencedRelation: 'posts'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       messages: {
         Row: {
           author_email: string

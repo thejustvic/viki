@@ -1,6 +1,11 @@
 'use client'
 
-import {ModalPost} from '@/app/posts/components/modal-post/modal-post'
+import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {PostInfo} from '@/app/posts/components/post-info/post-info'
+import {CheckboxInput} from '@/components/checklist/checkbox/checkbox-input'
+import {Checklist} from '@/components/checklist/checklist'
+import {ChecklistProgress} from '@/components/checklist/checklist-progress'
+import ChecklistProvider from '@/components/checklist/checklist-provider'
 import {Button} from '@/components/daisyui/button'
 import {Drawer} from '@/components/daisyui/drawer'
 import {Tabs} from '@/components/daisyui/tabs'
@@ -78,7 +83,9 @@ export const DrawerWrapper = observer(({children}: Props) => {
         side={
           user ? (
             <DrawerContentWrapper>
-              <TabsComponent />
+              <ChecklistProvider id={getSearchPost() || ''}>
+                <TabsComponent />
+              </ChecklistProvider>
             </DrawerContentWrapper>
           ) : null
         }
@@ -127,28 +134,29 @@ const TabsComponent = observer(() => {
         <TwTab
           value="info"
           onChange={e => store.setTab(e.target.value as Tab)}
-          label="Tab 1"
+          label="Info"
           groupName="right_drawer"
           active={state.tab === 'info'}
         />
         <Tabs.TabContent>
-          <ModalPost />
+          <PostInfo />
         </Tabs.TabContent>
-
         <TwTab
-          value="chat"
+          value="checklist"
           onChange={e => store.setTab(e.target.value as Tab)}
-          label="Tab 2"
+          label="Checklist"
           groupName="right_drawer"
-          active={state.tab === 'chat'}
+          active={state.tab === 'checklist'}
         />
-        <TwTab
-          value="empty"
-          onChange={e => store.setTab(e.target.value as Tab)}
-          label="Tab 3"
-          groupName="right_drawer"
-          active={state.tab === 'empty'}
-        />
+        <Tabs.TabContent>
+          <div className="px-4 mb-2">
+            <ChecklistProgress />
+          </div>
+          <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-111px)]">
+            <Checklist />
+            <CheckboxInput />
+          </div>
+        </Tabs.TabContent>
       </Tabs>
     </div>
   )

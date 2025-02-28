@@ -11,7 +11,7 @@ const TwCard = tw(Card)<{$active?: boolean}>`
   h-[142px]
   md:w-[190px]
   transform-3d
-  ${p => (p.$active ? 'border-solid border-red-300' : '')}
+  ${p => (p.$active ? 'border-solid border-accent' : '')}
 `
 
 interface Props {

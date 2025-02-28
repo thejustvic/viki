@@ -1,5 +1,7 @@
 'use client'
 
+import {ChecklistProgress} from '@/components/checklist/checklist-progress'
+import ChecklistProvider from '@/components/checklist/checklist-provider'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
@@ -33,6 +35,9 @@ interface Props extends PropsWithChildren {
 
 export const PostsProvider = ({serverPosts, children}: Props) => {
   const store = useMemoOne(() => new PostsStore(serverPosts), [])
+  const {supabase, user} = useSupabase()
+
+  usePostsListener(user, supabase, store)
 
   return <PostsContext.Provider value={store}>{children}</PostsContext.Provider>
 }
@@ -40,11 +45,7 @@ export const PostsProvider = ({serverPosts, children}: Props) => {
 export const PostsBase = () => <PostsList />
 
 const PostsList = observer(() => {
-  const {supabase, user} = useSupabase()
-  const [, store] = usePostsStore()
-
   useLoggingOff()
-  usePostsListener(user, supabase, store)
 
   return (
     <TwContainer>
@@ -85,7 +86,7 @@ interface PostProps {
   remove: () => void
 }
 
-const CardBody = ({post, remove}: PostProps) => {
+const CardBody = observer(({post, remove}: PostProps) => {
   const updateSearchParams = useUpdateSearchParams()
 
   const onClickHandler = () => {
@@ -104,9 +105,11 @@ const CardBody = ({post, remove}: PostProps) => {
       </Card.Title>
       <Card.Actions className="justify-center">
         <Button color="primary" className="w-full" onClick={onClickHandler}>
-          Buy Now
+          <ChecklistProvider id={post.id}>
+            <ChecklistProgress />
+          </ChecklistProvider>
         </Button>
       </Card.Actions>
     </>
   )
-}
+})

@@ -9,3 +9,14 @@
 .drawer.drawer-end > .drawer-toggle:checked ~ .drawer-side > .drawer-overlay {
   opacity: 0;
 }
+
+.tabs-lift {
+  &:has(.tab-content) {
+    & > .tab:first-child {
+      &:not(.tab-active, [aria-selected='true']) {
+        --tab-border-colors: var(--tab-border-color) var(--tab-border-color)
+          var(--tab-border-color);
+      }
+    }
+  }
+}
