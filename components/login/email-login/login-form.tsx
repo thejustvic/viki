@@ -19,23 +19,30 @@ const TwTitle = tw(Card.Title)`
 const TwBody = tw(Card.Body)`
   pt-0 
   pb-4
+  justify-between
+  backface-hidden
 `
 
 const TwSubmit = tw(Button)`
-  mt-6
+  mt-1
 `
 
 const TwError = tw.p`
   w-full 
-  mt-2 
   text-xs 
   text-center 
   text-error
+  backface-hidden
 `
 
 const TwLink = tw(Link)`
   flex 
   justify-center
+`
+const TwErrorWrapper = tw.div`
+  py-2
+  bg-info-content
+  rounded-xl
 `
 
 interface LoginFormProps {
@@ -108,15 +115,20 @@ export const LoginForm = observer(
             <TwSubmit type="submit" loading={state.logging.email}>
               Submit
             </TwSubmit>
-            {errors.email?.message && errors.email?.message?.length > 0 && (
-              <TwError>{errors.email.message}</TwError>
-            )}
-            {errors.password?.message &&
-              errors.password?.message?.length > 0 && (
-                <TwError>{errors.password.message}</TwError>
-              )}
           </Form>
+
           <TwLink onClick={handleLink}>{linkTitle}</TwLink>
+
+          {errors.email?.message && errors.email?.message?.length > 0 && (
+            <TwErrorWrapper>
+              <TwError>{errors.email.message}</TwError>
+            </TwErrorWrapper>
+          )}
+          {errors.password?.message && errors.password?.message?.length > 0 && (
+            <TwErrorWrapper>
+              <TwError>{errors.password.message}</TwError>
+            </TwErrorWrapper>
+          )}
         </TwBody>
       </>
     )

@@ -8,7 +8,7 @@ import tw from 'tailwind-styled-components'
 export const TwAnonymous = tw.div`
   flex
   flex-col
-  gap-2
+  gap-4
 `
 
 const TwHeroContent = tw(Hero.Content)`

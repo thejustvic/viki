@@ -7,7 +7,7 @@ import {LoginForm} from './login-form'
 
 const TwLoginCard = tw.div`
   w-[300px]
-  h-[358px]
+  h-[320px]
   perspective-distant
   transform-3d
 `
@@ -45,6 +45,7 @@ const TwCard = tw(Card)`
   shadow-lg
   bg-base-100
   transform-3d
+  h-full
 `
 
 export const LoginCard = observer(() => {
