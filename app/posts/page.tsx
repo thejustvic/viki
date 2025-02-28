@@ -19,14 +19,15 @@ const fetchData = async () => {
 }
 
 export default async function PostsPage({searchParams}: Props) {
-  const data = await fetchData()
+  const serverPosts = await fetchData()
   const params = await searchParams
-  const serverChat = await getServerChat((params?.post as string) || '')
+  const postId = (params?.post as string) || ''
+  const serverChat = await getServerChat(postId)
 
   return (
     <Suspense fallback={<Load center />}>
       <ChatProvider serverChat={serverChat || []}>
-        <PostsProvider serverPosts={data || []}>
+        <PostsProvider serverPosts={serverPosts || []}>
           <DrawerWrapper>
             <PostsBase />
           </DrawerWrapper>
