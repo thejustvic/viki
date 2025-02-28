@@ -30,7 +30,7 @@ export const ModalCreatePost = () => {
 }
 
 const ModalHeader = () => {
-  return <div>Create card</div>
+  return <div className="flex justify-center mb-2">Create card</div>
 }
 
 const ModalBody = () => (
