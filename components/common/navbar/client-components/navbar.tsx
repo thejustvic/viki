@@ -63,7 +63,7 @@ const Search = observer(() => {
   const [state, store] = usePostsStore()
 
   return (
-    <label className="input">
+    <label className="input input-info border-none">
       <IconSearch />
       <input
         type="search"
