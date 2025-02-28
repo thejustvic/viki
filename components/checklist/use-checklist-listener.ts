@@ -18,12 +18,17 @@ const getChecklist = (
     .throwOnError()
 }
 
-export const useChecklistListener = (
-  postId: Post['id'],
-  user: SupabaseContext['user'],
-  supabase: SupabaseContext['supabase'],
+export const useChecklistListener = ({
+  postId,
+  user,
+  supabase,
+  store
+}: {
+  postId: Post['id']
+  user: SupabaseContext['user']
+  supabase: SupabaseContext['supabase']
   store: ChecklistStore
-): void => {
+}): void => {
   const {data, loading, error} = useSupabaseFetch(
     postId ? () => getChecklist(postId, supabase) : null,
     [postId]

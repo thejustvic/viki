@@ -116,9 +116,7 @@ export const LoginForm = observer(
               Submit
             </TwSubmit>
           </Form>
-
           <TwLink onClick={handleLink}>{linkTitle}</TwLink>
-
           {errors.email?.message && errors.email?.message?.length > 0 && (
             <TwErrorWrapper>
               <TwError>{errors.email.message}</TwError>

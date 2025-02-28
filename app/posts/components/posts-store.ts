@@ -45,11 +45,11 @@ export class PostsStore {
     this.setPosts(posts.filter(post => post.id !== oldPost.id))
   }
 
-  setSearchValue = (value: string) => {
+  setSearchValue = (value: string): void => {
     this.state.searchValue = value
   }
 
-  searchedPosts = () => {
+  searchedPosts = (): Post[] => {
     const posts = Util.clone(this.state.posts)
     return posts.filter(post => post.text.includes(this.state.searchValue))
   }

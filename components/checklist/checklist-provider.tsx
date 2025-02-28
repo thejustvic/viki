@@ -15,7 +15,7 @@ export default function ChecklistProvider({id, children}: Props) {
   const {user, supabase} = useSupabase()
   const store = useMemoOne(() => new ChecklistStore(), [user])
 
-  useChecklistListener(id, user, supabase, store)
+  useChecklistListener({postId: id, user, supabase, store})
 
   return (
     <ChecklistContext.Provider value={store}>

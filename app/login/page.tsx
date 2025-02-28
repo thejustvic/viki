@@ -10,7 +10,7 @@ import {HeroLogin, TwAnonymous} from './components/hero-login'
 
 export default async function Page() {
   const heads = await headers()
-  const pathname = heads.get('x-invoke-path') || ''
+  const pathname = heads.get('x-invoke-path') ?? ''
 
   const user = await getServerUser()
 
