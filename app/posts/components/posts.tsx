@@ -100,7 +100,6 @@ const CardBody = observer(({post, remove}: PostProps) => {
   return (
     <>
       <Card.Title tag="h2" className="flex justify-between">
-        <CheckAll />
         <Button color="ghost" className="p-0" onClick={onClickHandler}>
           <span className="w-16 truncate">{post.text}</span>
         </Button>
@@ -117,19 +116,21 @@ const CardBody = observer(({post, remove}: PostProps) => {
   )
 })
 
-const CheckAll = observer(() => {
+export const CheckAllCheckboxes = observer(() => {
   const [state] = useChecklistStore()
   const {updateAllCheckboxIsCompleted} = useCheckboxHandlers()
-  const allCompleted = Boolean(state.progress === 100)
+  const isAllCompleted = state.progress === 100
 
   return (
-    <input
-      type="checkbox"
-      checked={allCompleted}
-      className="checkbox text-success"
-      onChange={() =>
-        updateAllCheckboxIsCompleted(!allCompleted, state.checklist.data)
-      }
-    />
+    <div className="tooltip tooltip-info" data-tip="all">
+      <input
+        type="checkbox"
+        checked={isAllCompleted}
+        className="checkbox text-success"
+        onChange={() =>
+          updateAllCheckboxIsCompleted(!isAllCompleted, state.checklist.data)
+        }
+      />
+    </div>
   )
 })
