@@ -40,7 +40,7 @@ const TwLink = tw(Link)`
   justify-center
 `
 const TwErrorWrapper = tw.div`
-  py-2
+  p-2
   bg-info-content
   rounded-xl
 `
@@ -72,7 +72,13 @@ export const LoginForm = observer(
     const [state, store] = useGlobalStore()
     const onSubmit: SubmitHandler<FormValues> = async data => {
       store.setLogging('email')
-      const {error} = await handleAuth(data)
+      const {
+        data: {user},
+        error
+      } = await handleAuth(data)
+      if (user) {
+        store.setLoggingOff()
+      }
       if (error) {
         store.setLoggingOff()
         setError(
@@ -120,11 +126,6 @@ export const LoginForm = observer(
           {errors.email?.message && errors.email?.message?.length > 0 && (
             <TwErrorWrapper>
               <TwError>{errors.email.message}</TwError>
-            </TwErrorWrapper>
-          )}
-          {errors.password?.message && errors.password?.message?.length > 0 && (
-            <TwErrorWrapper>
-              <TwError>{errors.password.message}</TwError>
             </TwErrorWrapper>
           )}
         </TwBody>
