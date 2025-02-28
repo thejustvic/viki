@@ -1,7 +1,9 @@
 'use client'
 
+import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {ChecklistProgress} from '@/components/checklist/checklist-progress'
 import ChecklistProvider from '@/components/checklist/checklist-provider'
+import {useChecklistStore} from '@/components/checklist/checklist-store'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
@@ -74,10 +76,12 @@ const Post = observer(({post, active}: {post: Post; active: boolean}) => {
   }
 
   return (
-    <ParallaxCardContainer
-      active={active}
-      cardNodeBody={<CardBody post={post} remove={remove} />}
-    />
+    <ChecklistProvider id={post.id}>
+      <ParallaxCardContainer
+        active={active}
+        cardNodeBody={<CardBody post={post} remove={remove} />}
+      />
+    </ChecklistProvider>
   )
 })
 
@@ -96,6 +100,7 @@ const CardBody = observer(({post, remove}: PostProps) => {
   return (
     <>
       <Card.Title tag="h2" className="flex justify-between">
+        <CheckAll />
         <Button color="ghost" className="p-0" onClick={onClickHandler}>
           <span className="w-16 truncate">{post.text}</span>
         </Button>
@@ -105,11 +110,26 @@ const CardBody = observer(({post, remove}: PostProps) => {
       </Card.Title>
       <Card.Actions className="justify-center">
         <Button color="primary" className="w-full" onClick={onClickHandler}>
-          <ChecklistProvider id={post.id}>
-            <ChecklistProgress />
-          </ChecklistProvider>
+          <ChecklistProgress />
         </Button>
       </Card.Actions>
     </>
+  )
+})
+
+const CheckAll = observer(() => {
+  const [state] = useChecklistStore()
+  const {updateAllCheckboxIsCompleted} = useCheckboxHandlers()
+  const allCompleted = Boolean(state.progress === 100)
+
+  return (
+    <input
+      type="checkbox"
+      checked={allCompleted}
+      className="checkbox text-success"
+      onChange={() =>
+        updateAllCheckboxIsCompleted(!allCompleted, state.checklist.data)
+      }
+    />
   )
 })

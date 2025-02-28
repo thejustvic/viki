@@ -1,4 +1,5 @@
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {ChecklistStore} from '../checklist-store'
 import {Checkbox} from '../types'
 
 interface Handlers {
@@ -17,6 +18,10 @@ interface Handlers {
   updateCheckboxIsCompleted: (
     is_completed: Checkbox['is_completed'],
     CheckboxId: Checkbox['id']
+  ) => Promise<void>
+  updateAllCheckboxIsCompleted: (
+    is_completed: Checkbox['is_completed'],
+    checklist: ChecklistStore['state']['checklist']['data']
   ) => Promise<void>
 }
 
@@ -69,10 +74,33 @@ export const useCheckboxHandlers = (): Handlers => {
         .eq('id', CheckboxId)
     }
 
+  const updateAllCheckboxIsCompleted: Handlers['updateAllCheckboxIsCompleted'] =
+    async (is_completed, checklist) => {
+      if (!user) {
+        throw Error('You must provide a user object!')
+      }
+
+      if (!checklist) {
+        return
+      }
+
+      await Promise.all(
+        checklist.map(async checklist => {
+          await supabase
+            .from('checklist')
+            .update({
+              is_completed
+            })
+            .eq('id', checklist.id)
+        })
+      )
+    }
+
   return {
     removeCheckbox,
     insertCheckbox,
     updateCheckboxTitle,
-    updateCheckboxIsCompleted
+    updateCheckboxIsCompleted,
+    updateAllCheckboxIsCompleted
   }
 }
