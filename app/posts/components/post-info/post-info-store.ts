@@ -10,7 +10,7 @@ interface State {
   postCreator: FetchQuery<User>
 }
 
-export class ModalPostStore {
+export class PostInfoStore {
   state: State = {
     post: {
       loading: false,
@@ -39,7 +39,6 @@ export class ModalPostStore {
   }
 }
 
-const [ModalPostStoreContext, useModalPostStore] =
-  createUseStore<ModalPostStore>()
+const [PostInfoStoreContext, usePostInfoStore] = createUseStore<PostInfoStore>()
 
-export {ModalPostStoreContext, useModalPostStore}
+export {PostInfoStoreContext, usePostInfoStore}

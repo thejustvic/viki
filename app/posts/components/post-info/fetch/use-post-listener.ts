@@ -4,7 +4,7 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import type {User} from '@supabase/supabase-js'
 import {useEffect} from 'react'
 import {Post} from '../../types'
-import {useModalPostStore} from '../modal-post-store'
+import {usePostInfoStore} from '../post-info-store'
 import {getPostById} from './get-post-by-id'
 
 interface PostProps {
@@ -13,7 +13,7 @@ interface PostProps {
 }
 
 export const usePostListener = ({postId, authorId}: PostProps): void => {
-  const [, store] = useModalPostStore()
+  const [, store] = usePostInfoStore()
   const {supabase} = useSupabase()
 
   const {data, error, loading} = useSupabaseFetch(

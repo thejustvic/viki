@@ -14,10 +14,10 @@ import {getSearchPost} from '../get-search-post'
 import {usePostHandlers} from '../posts-handlers'
 import {usePostListener} from './fetch/use-post-listener'
 import {
-  ModalPostStore,
-  ModalPostStoreContext,
-  useModalPostStore
-} from './modal-post-store'
+  PostInfoStore,
+  PostInfoStoreContext,
+  usePostInfoStore
+} from './post-info-store'
 
 const TwLoading = tw(Loader)`
   p-0
@@ -36,18 +36,18 @@ const TwMenu = tw(Menu)`
   relative
 `
 
-export const ModalPost = () => {
-  const store = useMemoOne(() => new ModalPostStore(), [])
+export const PostInfo = () => {
+  const store = useMemoOne(() => new PostInfoStore(), [])
 
   return (
-    <ModalPostStoreContext.Provider value={store}>
-      <ModalPostBase />
-    </ModalPostStoreContext.Provider>
+    <PostInfoStoreContext.Provider value={store}>
+      <PostInfoBase />
+    </PostInfoStoreContext.Provider>
   )
 }
 
-export const ModalPostBase = observer(() => {
-  const [state] = useModalPostStore()
+export const PostInfoBase = observer(() => {
+  const [state] = usePostInfoStore()
   const postId = getSearchPost()
 
   usePostListener({postId, authorId: state.post.data?.author_id})
@@ -67,7 +67,7 @@ const ModalBody = () => (
 )
 
 const Text = observer(() => {
-  const [modalState] = useModalPostStore()
+  const [modalState] = usePostInfoStore()
   return (
     <ShowData
       loading={modalState.post.loading}
@@ -81,7 +81,7 @@ const Text = observer(() => {
 
 const TextData = observer(() => {
   const {updatePost} = usePostHandlers()
-  const [modalState] = useModalPostStore()
+  const [modalState] = usePostInfoStore()
   const [text, onChange] = useInput(modalState.post.data?.text ?? '')
   const debounced = useDebouncedValue(text, 500)
 
@@ -110,7 +110,7 @@ const TextData = observer(() => {
 })
 
 const CreatorData = observer(() => {
-  const [modalState] = useModalPostStore()
+  const [modalState] = usePostInfoStore()
 
   if (!modalState.postCreator.data) {
     return null
@@ -127,7 +127,7 @@ const CreatorData = observer(() => {
 })
 
 const Creator = observer(() => {
-  const [modalState] = useModalPostStore()
+  const [modalState] = usePostInfoStore()
 
   return (
     <ShowData
