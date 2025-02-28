@@ -58,12 +58,12 @@ const PostsList = observer(() => {
 })
 
 const Posts = observer(() => {
-  const [state] = usePostsStore()
+  const [, store] = usePostsStore()
   const postId = getSearchPost()
 
-  return state.posts.map(post => (
-    <Post post={post} key={post.id} active={postId === post.id} />
-  ))
+  return store
+    .searchedPosts()
+    .map(post => <Post post={post} key={post.id} active={postId === post.id} />)
 })
 
 const Post = observer(({post, active}: {post: Post; active: boolean}) => {

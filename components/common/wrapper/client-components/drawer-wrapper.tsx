@@ -154,7 +154,7 @@ const TabsComponent = observer(() => {
             <CheckAllCheckboxes />
             <ChecklistProgress />
           </div>
-          <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-121px)]">
+          <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-123px)]">
             <Checklist />
             <CheckboxInput />
           </div>

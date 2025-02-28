@@ -1,10 +1,15 @@
 'use client'
 
 import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {usePostsStore} from '@/app/posts/components/posts-store'
 import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {IconArrowBarLeft, IconArrowBarRight} from '@tabler/icons-react'
+import {
+  IconArrowBarLeft,
+  IconArrowBarRight,
+  IconSearch
+} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {Button} from '../../../daisyui/button'
 import {Dropdown} from '../../../daisyui/dropdown'
@@ -47,8 +52,28 @@ const NavStart = observer(() => {
 })
 
 const NavCenter = () => {
-  return <Nav.Center className="font-mono text-lg">hobby</Nav.Center>
+  return (
+    <Nav.Center className="font-mono text-lg">
+      <Search />
+    </Nav.Center>
+  )
 }
+
+const Search = observer(() => {
+  const [state, store] = usePostsStore()
+
+  return (
+    <label className="input">
+      <IconSearch />
+      <input
+        type="search"
+        placeholder="Search"
+        onChange={e => store.setSearchValue(e.target.value)}
+        value={state.searchValue}
+      />
+    </label>
+  )
+})
 
 const NavEnd = observer(() => {
   const [state, store] = useGlobalStore()
@@ -60,7 +85,7 @@ const NavEnd = observer(() => {
   return (
     <Nav.End className="gap-2">
       <div className="flex items-center gap-6">
-        <div className="flex">
+        <div className="flex gap-2">
           <SwitchTheme />
           <AvatarDropdown />
         </div>

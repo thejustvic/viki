@@ -5,11 +5,13 @@ import type {Post} from './types'
 
 interface State {
   posts: Post[]
+  searchValue: string
 }
 
 export class PostsStore {
   state: State = {
-    posts: []
+    posts: [],
+    searchValue: ''
   }
 
   constructor(serverPosts: Post[]) {
@@ -41,6 +43,15 @@ export class PostsStore {
   handleDelete = (oldPost: Post): void => {
     const posts = Util.clone(this.state.posts)
     this.setPosts(posts.filter(post => post.id !== oldPost.id))
+  }
+
+  setSearchValue = (value: string) => {
+    this.state.searchValue = value
+  }
+
+  searchedPosts = () => {
+    const posts = Util.clone(this.state.posts)
+    return posts.filter(post => post.text.includes(this.state.searchValue))
   }
 }
 
