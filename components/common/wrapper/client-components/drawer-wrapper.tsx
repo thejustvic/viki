@@ -8,7 +8,6 @@ import {Checklist} from '@/components/checklist/checklist'
 import {ChecklistProgress} from '@/components/checklist/checklist-progress'
 import ChecklistProvider from '@/components/checklist/checklist-provider'
 import {useChecklistStore} from '@/components/checklist/checklist-store'
-import {Button} from '@/components/daisyui/button'
 import {Drawer} from '@/components/daisyui/drawer'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global/global-store'
@@ -118,21 +117,12 @@ const TabsComponent = observer(() => {
   const [checklistState] = useChecklistStore()
   const [state, store] = useGlobalStore()
 
-  const closeDrawer = () => {
-    store.setRightDrawerClosed()
-  }
-
   return (
     <div
       className="h-full border border-y-0 border-base-300 bg-base-100"
       style={{width: state.rightDrawerWidth}}
     >
       <Drag drawer="right" />
-      <div>
-        <Button color="ghost" className="w-full text-xl" onClick={closeDrawer}>
-          hobby
-        </Button>
-      </div>
       <Tabs className="flex justify-between">
         <TwTab
           value="info"
@@ -152,7 +142,7 @@ const TabsComponent = observer(() => {
           active={state.tab === 'checklist'}
         />
         <Tabs.TabContent>
-          <div className="px-4 my-2 flex gap-1">
+          <div className="px-4 my-2 flex gap-1 h-[24px]">
             {checklistState.checklist.data?.length ? (
               <CheckAllCheckboxes />
             ) : null}

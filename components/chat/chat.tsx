@@ -23,10 +23,7 @@ export const Chat = observer(() => {
   }, [state.chat, scrollEl])
 
   return (
-    <PerfectScrollbar
-      className="px-4 -mx-1"
-      containerRef={ref => setScrollEl(ref)}
-    >
+    <PerfectScrollbar className="px-4" containerRef={ref => setScrollEl(ref)}>
       <Messages />
     </PerfectScrollbar>
   )
@@ -47,12 +44,17 @@ const Messages = observer(() => {
   if (state.chat.error) {
     return <TwState>{state.chat.error.message}</TwState>
   }
+
   if (state.chat.loading) {
     return (
       <TwState>
         <Loader />
       </TwState>
     )
+  }
+
+  if (state.chat.data?.length === 0) {
+    return <TwState className="text-info">type some message</TwState>
   }
 
   return (

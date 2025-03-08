@@ -17,7 +17,7 @@ export const Checklist = observer(() => {
   }, [state.checklist, scrollEl])
 
   return (
-    <PerfectScrollbar className="px-4" containerRef={setScrollEl}>
+    <PerfectScrollbar className="py-3 px-4" containerRef={setScrollEl}>
       <div className="flex flex-col gap-2 h-[24px]">
         <Checkboxes />
       </div>
