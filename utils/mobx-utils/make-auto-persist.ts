@@ -1,10 +1,20 @@
 import {autorun, set, toJS} from 'mobx'
+import {ArrUtil} from '../arr-util'
+import {ObjUtil} from '../obj-util'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const makeAutoPersist = (_this: any, name: string): void => {
+export const makeAutoPersist = <T extends {state: unknown}>(
+  _this: T,
+  name: string
+): void => {
   const storedJson = window?.localStorage?.getItem(name)
+
   if (storedJson) {
-    set(_this, JSON.parse(storedJson))
+    const thisStateKeys = ObjUtil.keys(_this.state)
+    const storedStateKeys = ObjUtil.keys(JSON.parse(storedJson)?.state)
+
+    if (ArrUtil.areListsEqual(thisStateKeys, storedStateKeys)) {
+      set(_this, JSON.parse(storedJson))
+    }
   }
   autorun(() => {
     const value = toJS(_this)
