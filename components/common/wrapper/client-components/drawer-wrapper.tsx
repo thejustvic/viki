@@ -200,7 +200,7 @@ const ChecklistTab = observer(() => {
           ) : null}
           <ChecklistProgress />
         </div>
-        <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-81px)]">
+        <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100dvh-81px)]">
           <Checklist />
           <CheckboxInput />
         </div>
@@ -222,7 +222,7 @@ const ChatTab = observer(() => {
         active={state.tab === 'chat'}
       />
       <Tabs.TabContent>
-        <div className="flex h-[calc(100vh-41px)]">
+        <div className="flex h-[calc(100dvh-41px)]">
           <ChatWrapper />
         </div>
       </Tabs.TabContent>
