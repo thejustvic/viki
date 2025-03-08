@@ -110,7 +110,8 @@ const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
     await removeMessage(id)
   }
   const timeDistance = formatDistance(new Date(time), new Date(), {
-    addSuffix: true
+    addSuffix: true,
+    includeSeconds: true
   })
   return (
     <Dropdown

@@ -7,6 +7,7 @@ import {Textarea} from '@/components/daisyui/textarea'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {ReactNode, useEffect} from 'react'
 import tw from 'tailwind-styled-components'
@@ -62,17 +63,45 @@ export const PostInfoBase = observer(() => {
 
 const ModalBody = () => (
   <div className="flex flex-col gap-2">
+    <Time />
     <Creator />
     <Text />
   </div>
 )
 
-const Text = observer(() => {
-  const [modalState] = usePostInfoStore()
+const Time = () => {
+  const [state] = usePostInfoStore()
+
   return (
     <ShowData
-      loading={modalState.post.loading}
-      error={modalState.post.error?.message}
+      loading={state.post.loading}
+      error={state.post.error?.message}
+      data={<TimeData />}
+      prefix={'time:'}
+    />
+  )
+}
+
+const TimeData = observer(() => {
+  const [state] = usePostInfoStore()
+
+  if (!state.post.data) {
+    return null
+  }
+
+  const time = state.post.data.created_at
+
+  const timeDistance = format(new Date(time), 'hh:mm:ss, PPPP')
+
+  return <div>{timeDistance}</div>
+})
+
+const Text = observer(() => {
+  const [state] = usePostInfoStore()
+  return (
+    <ShowData
+      loading={state.post.loading}
+      error={state.post.error?.message}
       data={<TextData />}
       prefix={'content:'}
       stopSpinner
@@ -82,19 +111,19 @@ const Text = observer(() => {
 
 const TextData = observer(() => {
   const {updatePost} = usePostHandlers()
-  const [modalState] = usePostInfoStore()
-  const [text, onChange] = useInput(modalState.post.data?.text ?? '')
+  const [state] = usePostInfoStore()
+  const [text, onChange] = useInput(state.post.data?.text ?? '')
   const debounced = useDebouncedValue(text, 500)
 
   useEffect(() => {
-    const text = modalState.post.data?.text
-    const id = modalState.post.data?.id
+    const text = state.post.data?.text
+    const id = state.post.data?.id
     if (id && text !== debounced && debounced.length > 0) {
       void updatePost(debounced, id)
     }
   }, [debounced])
 
-  if (!modalState.post.data) {
+  if (!state.post.data) {
     return (
       <div className="relative w-full">
         <Textarea size="md" value={''} className="w-full" onChange={() => {}} />
@@ -111,18 +140,18 @@ const TextData = observer(() => {
 })
 
 const CreatorData = observer(() => {
-  const [modalState] = usePostInfoStore()
+  const [state] = usePostInfoStore()
 
-  if (!modalState.postCreator.data) {
+  if (!state.postCreator.data) {
     return null
   }
 
-  const src = modalState.postCreator.data.user_metadata?.avatar_url
+  const src = state.postCreator.data.user_metadata?.avatar_url
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center truncate">
       <UserImage src={src} />
-      {modalState.postCreator.data.email}
+      <div className="truncate">{state.postCreator.data.email}</div>
     </div>
   )
 })
