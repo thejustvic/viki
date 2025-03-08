@@ -21,16 +21,17 @@ export const Tabs = ({children, className, ...props}: Props) => {
 interface PropsTab extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
   groupName: string
-  active: boolean
+  checked: boolean
 }
 
-Tabs.Tab = ({label, groupName, className, active, ...props}: PropsTab) => {
+Tabs.Tab = ({label, groupName, className, checked, ...props}: PropsTab) => {
   return (
     <input
       type="radio"
       name={groupName}
+      checked={checked}
       role="tab"
-      className={twJoin('tab', className, active && 'tab-active')}
+      className={twJoin('tab', className)}
       aria-label={label}
       {...props}
     />

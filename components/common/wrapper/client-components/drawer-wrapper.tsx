@@ -208,7 +208,7 @@ const InfoTab = observer(() => {
         onChange={e => store.setTab(e.target.value as Tab)}
         label="Info"
         groupName="right_drawer"
-        active={active}
+        checked={active}
       />
       <InfoTabContent />
     </>
@@ -233,7 +233,7 @@ const ChecklistTab = observer(() => {
         onChange={e => store.setTab(e.target.value as Tab)}
         label="Checklist"
         groupName="right_drawer"
-        active={active}
+        checked={active}
       />
       <ChecklistTabContent />
     </>
@@ -267,7 +267,7 @@ const ChatTab = observer(() => {
         onChange={e => store.setTab(e.target.value as Tab)}
         label="Chat"
         groupName="right_drawer"
-        active={active}
+        checked={active}
       />
       <ChatTabContent />
     </>
