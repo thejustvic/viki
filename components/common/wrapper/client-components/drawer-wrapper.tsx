@@ -126,9 +126,7 @@ const DrawerContentWrapper = ({children}: React.PropsWithChildren) => {
 }
 
 const TabsComponent = observer(() => {
-  const [checklistState] = useChecklistStore()
-  const [state, store] = useGlobalStore()
-
+  const [state] = useGlobalStore()
   return (
     <div
       className="h-full border border-y-0 border-base-300 bg-base-100"
@@ -136,35 +134,8 @@ const TabsComponent = observer(() => {
     >
       <Drag drawer="right" />
       <Tabs className="flex justify-between">
-        <TwTab
-          value="info"
-          onChange={e => store.setTab(e.target.value as Tab)}
-          label="Info"
-          groupName="right_drawer"
-          active={state.tab === 'info'}
-        />
-        <Tabs.TabContent>
-          <PostInfo />
-        </Tabs.TabContent>
-        <TwTab
-          value="checklist"
-          onChange={e => store.setTab(e.target.value as Tab)}
-          label="Checklist"
-          groupName="right_drawer"
-          active={state.tab === 'checklist'}
-        />
-        <Tabs.TabContent>
-          <div className="px-4 my-2 flex gap-1 h-[24px]">
-            {checklistState.checklist.data?.length ? (
-              <CheckAllCheckboxes />
-            ) : null}
-            <ChecklistProgress />
-          </div>
-          <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-81px)]">
-            <Checklist />
-            <CheckboxInput />
-          </div>
-        </Tabs.TabContent>
+        <InfoTab />
+        <ChecklistTab />
         {isMobile && <ChatTab />}
       </Tabs>
     </div>
@@ -175,6 +146,52 @@ const TwTab = tw(Tabs.Tab)`
   flex
   flex-1
 `
+
+const InfoTab = observer(() => {
+  const [state, store] = useGlobalStore()
+  return (
+    <>
+      <TwTab
+        value="info"
+        onChange={e => store.setTab(e.target.value as Tab)}
+        label="Info"
+        groupName="right_drawer"
+        active={state.tab === 'info'}
+      />
+      <Tabs.TabContent>
+        <PostInfo />
+      </Tabs.TabContent>
+    </>
+  )
+})
+
+const ChecklistTab = observer(() => {
+  const [checklistState] = useChecklistStore()
+  const [state, store] = useGlobalStore()
+  return (
+    <>
+      <TwTab
+        value="checklist"
+        onChange={e => store.setTab(e.target.value as Tab)}
+        label="Checklist"
+        groupName="right_drawer"
+        active={state.tab === 'checklist'}
+      />
+      <Tabs.TabContent>
+        <div className="px-4 my-2 flex gap-1 h-[24px]">
+          {checklistState.checklist.data?.length ? (
+            <CheckAllCheckboxes />
+          ) : null}
+          <ChecklistProgress />
+        </div>
+        <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-81px)]">
+          <Checklist />
+          <CheckboxInput />
+        </div>
+      </Tabs.TabContent>
+    </>
+  )
+})
 
 const ChatTab = observer(() => {
   const [state, store] = useGlobalStore()
