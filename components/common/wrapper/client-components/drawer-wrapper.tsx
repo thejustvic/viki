@@ -104,8 +104,34 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
     store.setRightDrawerClosed()
   }
 
+  const handleRightSwipe = () => {
+    switch (state.tab) {
+      case 'info': {
+        return store.setRightDrawerClosed()
+      }
+      case 'checklist': {
+        return store.setTab('info')
+      }
+      case 'chat': {
+        return store.setTab('checklist')
+      }
+    }
+  }
+
+  const handleLeftSwipe = () => {
+    switch (state.tab) {
+      case 'info': {
+        return store.setTab('checklist')
+      }
+      case 'checklist': {
+        return store.setTab('chat')
+      }
+    }
+  }
+
   const rightSwipeHandlers = useSwipeable({
-    onSwipedRight: () => store.setRightDrawerClosed()
+    onSwipedRight: handleRightSwipe,
+    onSwipedLeft: handleLeftSwipe
   })
 
   return (
