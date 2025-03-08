@@ -20,6 +20,7 @@ interface State {
     github: boolean
     google: boolean
     anonymously: boolean
+    logout: boolean
   }
 }
 
@@ -38,7 +39,8 @@ export class GlobalStore {
       email: false,
       github: false,
       google: false,
-      anonymously: false
+      anonymously: false,
+      logout: false
     }
   }
 
@@ -112,7 +114,8 @@ export class GlobalStore {
       email: false,
       github: false,
       google: false,
-      anonymously: false
+      anonymously: false,
+      logout: false
     }
   }
 

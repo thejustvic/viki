@@ -109,11 +109,14 @@ const NavEnd = observer(() => {
 })
 
 const AvatarDropdown = observer(() => {
+  const [state, store] = useGlobalStore()
   const {supabase, user} = useSupabase()
   const postId = getSearchPost()
 
   const handleLogout = async () => {
+    store.setLogging('logout')
     await supabase.auth.signOut()
+    store.setLoggingOff()
   }
   if (!user) {
     return null
@@ -126,7 +129,9 @@ const AvatarDropdown = observer(() => {
       </Button>
       <Dropdown.Menu className="shadow-lg bg-base-200">
         {postId && <LabelShowLeftMenu />}
-        <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+        <Button onClick={handleLogout} loading={state.logging.logout}>
+          Logout
+        </Button>
       </Dropdown.Menu>
     </Dropdown>
   )
