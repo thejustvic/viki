@@ -21,7 +21,7 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren, ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
-import {SwipeEventData, useSwipeable} from 'react-swipeable'
+import {useSwipeable} from 'react-swipeable'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
@@ -106,7 +106,7 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
     store.setRightDrawerClosed()
   }
 
-  const handleRightSwipe = (_eventData: SwipeEventData) => {
+  const handleRightSwipe = () => {
     switch (state.tab) {
       case 'info': {
         store.setRightDrawerClosed()
@@ -123,7 +123,7 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
     }
   }
 
-  const handleLeftSwipe = (_eventData: SwipeEventData) => {
+  const handleLeftSwipe = () => {
     switch (state.tab) {
       case 'info': {
         store.setTab('checklist')
