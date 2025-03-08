@@ -1,8 +1,8 @@
 import {Util} from './util'
 
 export class ObjUtil {
-  public static isDefined<T>(obj: T | undefined): obj is T {
-    return !(!obj && obj !== 0 && obj !== false && obj !== '')
+  public static isObject(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value)
   }
 
   public static keys<T>(obj: T): Array<Extract<keyof T, string>> {
