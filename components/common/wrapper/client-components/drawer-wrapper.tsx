@@ -22,6 +22,7 @@ import {observer} from 'mobx-react-lite'
 import {PropsWithChildren, ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useSwipeable} from 'react-swipeable'
+import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
 import {ChatWrapper, DrawerMenu} from '../../drawer-menu'
@@ -32,7 +33,7 @@ interface Props {
   children: ReactNode
 }
 
-export const DrawerWrapper = ({children}: Props) => {
+export const DrawerWrapper = observer(({children}: Props) => {
   return (
     <LeftDrawer>
       <RightDrawer>
@@ -43,7 +44,7 @@ export const DrawerWrapper = ({children}: Props) => {
       </RightDrawer>
     </LeftDrawer>
   )
-}
+})
 
 const LeftDrawer = observer(({children}: PropsWithChildren) => {
   useLeftDrawerOpenState()
@@ -131,16 +132,13 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
   )
 })
 
-const TwDrawerWrapper = tw.div`
-  flex
-  flex-col
-  h-full
-  w-full
-`
-
 // needed for fast width style change in inner component
 const DrawerContentWrapper = ({children}: React.PropsWithChildren) => {
-  return <TwDrawerWrapper>{children}</TwDrawerWrapper>
+  return (
+    <div className={twJoin('flex flex-col h-full', isMobile && 'w-full')}>
+      {children}
+    </div>
+  )
 }
 
 const TabsComponent = observer(() => {

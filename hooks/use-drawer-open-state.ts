@@ -7,6 +7,7 @@ import {useUpdateSearchParams} from './use-update-search-params'
 export const useLeftDrawerOpenState = (): void => {
   const {x} = useMousePosition()
   const [state, store] = useGlobalStore()
+  const postId = getSearchPost()
 
   useEffect(() => {
     if (x === null) {
@@ -15,7 +16,12 @@ export const useLeftDrawerOpenState = (): void => {
     if (!state.showLeftMenuOnHover) {
       return
     }
-    if (!state.leftDrawerOpen && !state.drawerOpenByHover && Number(x) < 10) {
+    if (
+      !state.leftDrawerOpen &&
+      !state.drawerOpenByHover &&
+      postId &&
+      Number(x) < 10
+    ) {
       store.setLeftDrawerOpen(true)
     }
     if (
