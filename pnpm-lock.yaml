@@ -59,6 +59,9 @@ importers:
       react-perfect-scrollbar:
         specifier: 1.5.8
         version: 1.5.8(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react-swipeable:
+        specifier: 7.0.2
+        version: 7.0.2(react@19.0.0)
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -2362,6 +2365,11 @@ packages:
     peerDependencies:
       react: '>=16.3.3'
       react-dom: '>=16.3.3'
+
+  react-swipeable@7.0.2:
+    resolution: {integrity: sha512-v1Qx1l+aC2fdxKa9aKJiaU/ZxmJ5o98RMoFwUqAAzVWUcxgfHFXDDruCKXhw6zIYXm6V64JiHgP9f6mlME5l8w==}
+    peerDependencies:
+      react: ^16.8.3 || ^17 || ^18 || ^19.0.0 || ^19.0.0-rc
 
   react@19.0.0:
     resolution: {integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==}
@@ -4956,6 +4964,10 @@ snapshots:
       prop-types: 15.8.1
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+
+  react-swipeable@7.0.2(react@19.0.0):
+    dependencies:
+      react: 19.0.0
 
   react@19.0.0: {}
 
