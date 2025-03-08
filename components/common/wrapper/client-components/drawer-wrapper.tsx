@@ -19,7 +19,7 @@ import {
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {ReactNode} from 'react'
+import {PropsWithChildren, ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useSwipeable} from 'react-swipeable'
 import tw from 'tailwind-styled-components'
@@ -32,20 +32,31 @@ interface Props {
   children: ReactNode
 }
 
-export const DrawerWrapper = observer(({children}: Props) => {
+export const DrawerWrapper = ({children}: Props) => {
+  return (
+    <LeftDrawer>
+      <RightDrawer>
+        <div style={{height: `calc(100% - ${headerHeight})`}}>
+          <Navbar />
+          <PerfectScrollbar>{children}</PerfectScrollbar>
+        </div>
+      </RightDrawer>
+    </LeftDrawer>
+  )
+}
+
+const LeftDrawer = observer(({children}: PropsWithChildren) => {
+  useLeftDrawerOpenState()
   const [state, store] = useGlobalStore()
   const {user} = useSupabase()
-
-  useLeftDrawerOpenState()
-  useRightDrawerOpenState()
 
   const onLeftDrawerClickOverlay = () => {
     store.setLeftDrawerClosed()
   }
 
-  const onRightDrawerClickOverlay = () => {
-    store.setRightDrawerClosed()
-  }
+  const leftSwipeHandlers = useSwipeable({
+    onSwipedLeft: () => store.setLeftDrawerClosed()
+  })
 
   const leftDrawerOpen = () => {
     if (user) {
@@ -61,14 +72,6 @@ export const DrawerWrapper = observer(({children}: Props) => {
       return false
     }
   }
-
-  const leftSwipeHandlers = useSwipeable({
-    onSwipedLeft: () => store.setLeftDrawerClosed()
-  })
-
-  const rightSwipeHandlers = useSwipeable({
-    onSwipedRight: () => store.setRightDrawerClosed()
-  })
 
   return (
     <Drawer
@@ -86,29 +89,44 @@ export const DrawerWrapper = observer(({children}: Props) => {
       contentClassName="h-screen"
       {...leftSwipeHandlers}
     >
-      <Drawer
-        id="right-drawer"
-        end
-        open={state.rightDrawerOpen}
-        mobile={isMobile}
-        side={
-          user ? (
-            <DrawerContentWrapper>
-              <ChecklistProvider id={getSearchPost() || ''}>
-                <TabsComponent />
-              </ChecklistProvider>
-            </DrawerContentWrapper>
-          ) : null
-        }
-        onClickOverlay={onRightDrawerClickOverlay}
-        contentClassName="h-screen"
-        {...rightSwipeHandlers}
-      >
-        <div style={{height: `calc(100% - ${headerHeight})`}}>
-          <Navbar />
-          <PerfectScrollbar>{children}</PerfectScrollbar>
-        </div>
-      </Drawer>
+      {children}
+    </Drawer>
+  )
+})
+
+const RightDrawer = observer(({children}: PropsWithChildren) => {
+  useRightDrawerOpenState()
+  const [state, store] = useGlobalStore()
+  const {user} = useSupabase()
+
+  const onRightDrawerClickOverlay = () => {
+    store.setRightDrawerClosed()
+  }
+
+  const rightSwipeHandlers = useSwipeable({
+    onSwipedRight: () => store.setRightDrawerClosed()
+  })
+
+  return (
+    <Drawer
+      id="right-drawer"
+      end
+      open={state.rightDrawerOpen}
+      mobile={isMobile}
+      side={
+        user ? (
+          <DrawerContentWrapper>
+            <ChecklistProvider id={getSearchPost() || ''}>
+              <TabsComponent />
+            </ChecklistProvider>
+          </DrawerContentWrapper>
+        ) : null
+      }
+      onClickOverlay={onRightDrawerClickOverlay}
+      contentClassName="h-screen"
+      {...rightSwipeHandlers}
+    >
+      {children}
     </Drawer>
   )
 })
