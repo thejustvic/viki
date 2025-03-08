@@ -1,5 +1,6 @@
 import {getSearchPost} from '@/app/posts/components/get-search-post'
 import {observer} from 'mobx-react-lite'
+import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 import {Chat} from '../chat/chat'
 import {ChatInput} from '../chat/chat-input'
@@ -20,15 +21,21 @@ const TwMenu = tw.div`
 
 export const DrawerMenu = observer(() => {
   const [state] = useGlobalStore()
-  const postId = getSearchPost()
 
   return (
-    <TwMenu style={{width: state.leftDrawerWidth}}>
+    <TwMenu style={isMobile ? {} : {width: state.leftDrawerWidth}}>
       <Drag drawer="left" />
-      <div className="flex flex-col justify-between flex-1 gap-3 pt-6">
-        <Chat />
-        {postId && <ChatInput />}
-      </div>
+      <ChatWrapper />
     </TwMenu>
   )
 })
+
+export const ChatWrapper = () => {
+  const postId = getSearchPost()
+  return (
+    <div className="flex flex-col justify-between flex-1 gap-3 pt-6">
+      <Chat />
+      {postId && <ChatInput />}
+    </div>
+  )
+}

@@ -8,7 +8,7 @@ interface Props extends PropsWithChildren {
 
 export const Navbar = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar', className)} {...props}>
+    <div className={twJoin('navbar flex-shrink', className)} {...props}>
       {children}
     </div>
   )
@@ -16,7 +16,7 @@ export const Navbar = ({children, className, ...props}: Props) => {
 
 Navbar.Start = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar-start', className)} {...props}>
+    <div className={twJoin('navbar-start flex-shrink', className)} {...props}>
       {children}
     </div>
   )
@@ -24,7 +24,7 @@ Navbar.Start = ({children, className, ...props}: Props) => {
 
 Navbar.Center = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar-center', className)} {...props}>
+    <div className={twJoin('navbar-center flex-shrink', className)} {...props}>
       {children}
     </div>
   )
@@ -32,7 +32,7 @@ Navbar.Center = ({children, className, ...props}: Props) => {
 
 Navbar.End = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar-end', className)} {...props}>
+    <div className={twJoin('navbar-end flex-shrink', className)} {...props}>
       {children}
     </div>
   )

@@ -34,6 +34,7 @@ const TwMenu = tw(Menu)`
   p-2
   flex-nowrap
   relative
+  w-full
 `
 
 export const PostInfo = () => {

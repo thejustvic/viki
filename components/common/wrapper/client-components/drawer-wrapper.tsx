@@ -21,9 +21,10 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
+import {useSwipeable} from 'react-swipeable'
 import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
-import {DrawerMenu} from '../../drawer-menu'
+import {ChatWrapper, DrawerMenu} from '../../drawer-menu'
 import {Navbar} from '../../navbar/client-components/navbar'
 import {PerfectScrollbar} from '../../perfect-scrollbar'
 
@@ -61,6 +62,14 @@ export const DrawerWrapper = observer(({children}: Props) => {
     }
   }
 
+  const leftSwipeHandlers = useSwipeable({
+    onSwipedLeft: () => store.setLeftDrawerClosed()
+  })
+
+  const rightSwipeHandlers = useSwipeable({
+    onSwipedRight: () => store.setRightDrawerClosed()
+  })
+
   return (
     <Drawer
       id="left-drawer"
@@ -75,6 +84,7 @@ export const DrawerWrapper = observer(({children}: Props) => {
       }
       onClickOverlay={onLeftDrawerClickOverlay}
       contentClassName="h-screen"
+      {...leftSwipeHandlers}
     >
       <Drawer
         id="right-drawer"
@@ -92,6 +102,7 @@ export const DrawerWrapper = observer(({children}: Props) => {
         }
         onClickOverlay={onRightDrawerClickOverlay}
         contentClassName="h-screen"
+        {...rightSwipeHandlers}
       >
         <div style={{height: `calc(100% - ${headerHeight})`}}>
           <Navbar />
@@ -106,6 +117,7 @@ const TwDrawerWrapper = tw.div`
   flex
   flex-col
   h-full
+  w-full
 `
 
 // needed for fast width style change in inner component
@@ -120,7 +132,7 @@ const TabsComponent = observer(() => {
   return (
     <div
       className="h-full border border-y-0 border-base-300 bg-base-100"
-      style={{width: state.rightDrawerWidth}}
+      style={isMobile ? {} : {width: state.rightDrawerWidth}}
     >
       <Drag drawer="right" />
       <Tabs className="flex justify-between">
@@ -148,11 +160,12 @@ const TabsComponent = observer(() => {
             ) : null}
             <ChecklistProgress />
           </div>
-          <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-123px)]">
+          <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100vh-81px)]">
             <Checklist />
             <CheckboxInput />
           </div>
         </Tabs.TabContent>
+        {isMobile && <ChatTab />}
       </Tabs>
     </div>
   )
@@ -162,3 +175,24 @@ const TwTab = tw(Tabs.Tab)`
   flex
   flex-1
 `
+
+const ChatTab = observer(() => {
+  const [state, store] = useGlobalStore()
+
+  return (
+    <>
+      <TwTab
+        value="chat"
+        onChange={e => store.setTab(e.target.value as Tab)}
+        label="Chat"
+        groupName="right_drawer"
+        active={state.tab === 'chat'}
+      />
+      <Tabs.TabContent>
+        <div className="flex h-[calc(100vh-41px)]">
+          <ChatWrapper />
+        </div>
+      </Tabs.TabContent>
+    </>
+  )
+})
