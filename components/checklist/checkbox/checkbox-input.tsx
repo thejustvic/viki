@@ -1,20 +1,11 @@
 import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {Input} from '@/components/daisyui/input'
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
-import tw from 'tailwind-styled-components'
 import {Button} from '../../daisyui/button'
 import {Form} from '../../daisyui/form'
-import {Textarea} from '../../daisyui/textarea'
 import {useCheckboxHandlers} from './checkbox-handlers'
-
-const TwInput = tw(Textarea)`
-  flex-1 
-  flex-shrink
-  w-full
-  min-h-10
-  h-10
-`
 
 interface FormInputs {
   text: string
@@ -42,7 +33,8 @@ export const CheckboxInput = observer(() => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex justify-between p-2"
     >
-      <TwInput
+      <Input
+        inputClassName="flex-1 flex-shrink w-full min-h-10 h-10"
         color="primary"
         {...register('text', {
           required: true
