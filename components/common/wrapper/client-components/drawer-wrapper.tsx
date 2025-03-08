@@ -21,7 +21,7 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren, ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
-import {useSwipeable} from 'react-swipeable'
+import {SwipeEventData, useSwipeable} from 'react-swipeable'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {Drag} from '../../drag'
@@ -79,13 +79,7 @@ const LeftDrawer = observer(({children}: PropsWithChildren) => {
       id="left-drawer"
       open={leftDrawerOpen()}
       mobile={isMobile || state.drawerOpenByHover}
-      side={
-        user ? (
-          <DrawerContentWrapper>
-            <DrawerMenu />
-          </DrawerContentWrapper>
-        ) : null
-      }
+      side={user ? <LeftDrawerSide /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
       contentClassName="h-screen"
       {...leftSwipeHandlers}
@@ -94,6 +88,14 @@ const LeftDrawer = observer(({children}: PropsWithChildren) => {
     </Drawer>
   )
 })
+
+const LeftDrawerSide = () => {
+  return (
+    <DrawerContentWrapper>
+      <DrawerMenu />
+    </DrawerContentWrapper>
+  )
+}
 
 const RightDrawer = observer(({children}: PropsWithChildren) => {
   useRightDrawerOpenState()
@@ -104,27 +106,32 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
     store.setRightDrawerClosed()
   }
 
-  const handleRightSwipe = () => {
+  const handleRightSwipe = (_eventData: SwipeEventData) => {
     switch (state.tab) {
       case 'info': {
-        return store.setRightDrawerClosed()
+        store.setRightDrawerClosed()
+        return
       }
       case 'checklist': {
-        return store.setTab('info')
+        store.setTab('info')
+        return
       }
       case 'chat': {
-        return store.setTab('checklist')
+        store.setTab('checklist')
+        return
       }
     }
   }
 
-  const handleLeftSwipe = () => {
+  const handleLeftSwipe = (_eventData: SwipeEventData) => {
     switch (state.tab) {
       case 'info': {
-        return store.setTab('checklist')
+        store.setTab('checklist')
+        return
       }
       case 'checklist': {
-        return store.setTab('chat')
+        store.setTab('chat')
+        return
       }
     }
   }
@@ -140,15 +147,7 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
       end
       open={state.rightDrawerOpen}
       mobile={isMobile}
-      side={
-        user ? (
-          <DrawerContentWrapper>
-            <ChecklistProvider id={getSearchPost() || ''}>
-              <TabsComponent />
-            </ChecklistProvider>
-          </DrawerContentWrapper>
-        ) : null
-      }
+      side={user ? <RightDrawerSide /> : null}
       onClickOverlay={onRightDrawerClickOverlay}
       contentClassName="h-screen"
       {...rightSwipeHandlers}
@@ -157,6 +156,16 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
     </Drawer>
   )
 })
+
+const RightDrawerSide = () => {
+  return (
+    <DrawerContentWrapper>
+      <ChecklistProvider id={getSearchPost() || ''}>
+        <TabsComponent />
+      </ChecklistProvider>
+    </DrawerContentWrapper>
+  )
+}
 
 // needed for fast width style change in inner component
 const DrawerContentWrapper = ({children}: React.PropsWithChildren) => {
@@ -191,6 +200,7 @@ const TwTab = tw(Tabs.Tab)`
 
 const InfoTab = observer(() => {
   const [state, store] = useGlobalStore()
+  const active = state.tab === 'info'
   return (
     <>
       <TwTab
@@ -198,18 +208,24 @@ const InfoTab = observer(() => {
         onChange={e => store.setTab(e.target.value as Tab)}
         label="Info"
         groupName="right_drawer"
-        active={state.tab === 'info'}
+        active={active}
       />
-      <Tabs.TabContent>
-        <PostInfo />
-      </Tabs.TabContent>
+      <InfoTabContent />
     </>
   )
 })
 
+const InfoTabContent = () => {
+  return (
+    <Tabs.TabContent>
+      <PostInfo />
+    </Tabs.TabContent>
+  )
+}
+
 const ChecklistTab = observer(() => {
-  const [checklistState] = useChecklistStore()
   const [state, store] = useGlobalStore()
+  const active = state.tab === 'checklist'
   return (
     <>
       <TwTab
@@ -217,26 +233,32 @@ const ChecklistTab = observer(() => {
         onChange={e => store.setTab(e.target.value as Tab)}
         label="Checklist"
         groupName="right_drawer"
-        active={state.tab === 'checklist'}
+        active={active}
       />
-      <Tabs.TabContent>
-        <div className="px-4 my-2 flex gap-1 h-[24px]">
-          {checklistState.checklist.data?.length ? (
-            <CheckAllCheckboxes />
-          ) : null}
-          <ChecklistProgress />
-        </div>
-        <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100dvh-81px)]">
-          <Checklist />
-          <CheckboxInput />
-        </div>
-      </Tabs.TabContent>
+      <ChecklistTabContent />
     </>
+  )
+})
+
+const ChecklistTabContent = observer(() => {
+  const [checklistState] = useChecklistStore()
+  return (
+    <Tabs.TabContent>
+      <div className="px-4 my-2 flex gap-1 h-[24px]">
+        {checklistState.checklist.data?.length ? <CheckAllCheckboxes /> : null}
+        <ChecklistProgress />
+      </div>
+      <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100dvh-81px)]">
+        <Checklist />
+        <CheckboxInput />
+      </div>
+    </Tabs.TabContent>
   )
 })
 
 const ChatTab = observer(() => {
   const [state, store] = useGlobalStore()
+  const active = state.tab === 'chat'
 
   return (
     <>
@@ -245,13 +267,19 @@ const ChatTab = observer(() => {
         onChange={e => store.setTab(e.target.value as Tab)}
         label="Chat"
         groupName="right_drawer"
-        active={state.tab === 'chat'}
+        active={active}
       />
-      <Tabs.TabContent>
-        <div className="flex h-[calc(100dvh-41px)]">
-          <ChatWrapper />
-        </div>
-      </Tabs.TabContent>
+      <ChatTabContent />
     </>
   )
 })
+
+const ChatTabContent = () => {
+  return (
+    <Tabs.TabContent>
+      <div className="flex h-[calc(100dvh-41px)]">
+        <ChatWrapper />
+      </div>
+    </Tabs.TabContent>
+  )
+}

@@ -14,7 +14,7 @@ export const Checklist = observer(() => {
     if (scrollEl) {
       scrollEl.scrollTop = scrollEl.scrollHeight
     }
-  }, [state.checklist, scrollEl])
+  }, [state.checklist.data, scrollEl])
 
   return (
     <PerfectScrollbar className="py-3 px-4" containerRef={setScrollEl}>

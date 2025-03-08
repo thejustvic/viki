@@ -20,10 +20,10 @@ export const Chat = observer(() => {
     if (scrollEl) {
       scrollEl.scrollTop = scrollEl.scrollHeight
     }
-  }, [state.chat, scrollEl])
+  }, [state.chat.data, scrollEl])
 
   return (
-    <PerfectScrollbar className="px-4" containerRef={ref => setScrollEl(ref)}>
+    <PerfectScrollbar className="px-4" containerRef={setScrollEl}>
       <Messages />
     </PerfectScrollbar>
   )
@@ -90,14 +90,14 @@ const Message = (props: BubbleProps) => {
   const {my, children} = props
 
   return (
-    <ChatBubble end={my} className="grid-flow-col">
+    <ChatBubble end={my}>
+      <MessageDropdown {...props} />
       <ChatBubble.Message
         color={my ? 'primary' : undefined}
         className="break-words"
       >
         {children}
       </ChatBubble.Message>
-      <MessageDropdown {...props} />
     </ChatBubble>
   )
 }
@@ -113,7 +113,11 @@ const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
     addSuffix: true
   })
   return (
-    <Dropdown placements={my ? ['left'] : ['right']} hover>
+    <Dropdown
+      placements={my ? ['left'] : ['right']}
+      hover
+      className="chat-image"
+    >
       <UserImage src={avatar} shape="circle" />
       <Dropdown.Menu className="shadow-lg bg-base-200 px-2 py-0">
         {author}
