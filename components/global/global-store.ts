@@ -19,6 +19,7 @@ interface State {
     email: boolean
     github: boolean
     google: boolean
+    anonymously: boolean
   }
 }
 
@@ -36,7 +37,8 @@ export class GlobalStore {
     logging: {
       email: false,
       github: false,
-      google: false
+      google: false,
+      anonymously: false
     }
   }
 
@@ -109,7 +111,8 @@ export class GlobalStore {
     this.state.logging = {
       email: false,
       github: false,
-      google: false
+      google: false,
+      anonymously: false
     }
   }
 

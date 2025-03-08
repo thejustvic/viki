@@ -22,8 +22,20 @@ export const ProviderLogin = observer(() => {
     })
   }
 
+  const handleAnonymouslyLogin = async () => {
+    store.setLogging('anonymously')
+    await supabase.auth.signInAnonymously()
+  }
+
   return (
     <div className="join join-vertical">
+      <Button
+        className="join-item"
+        onClick={handleAnonymouslyLogin}
+        loading={state.logging.anonymously}
+      >
+        Anonymously
+      </Button>
       <Button
         className="join-item"
         onClick={handleGitHubLogin}
