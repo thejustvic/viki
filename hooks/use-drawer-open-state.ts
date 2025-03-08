@@ -45,6 +45,7 @@ export const useRightDrawerOpenState = (): void => {
       store.setRightDrawerOpen()
     } else {
       store.setRightDrawerClosed()
+      store.setLeftDrawerClosed()
     }
   }, [postId])
 
