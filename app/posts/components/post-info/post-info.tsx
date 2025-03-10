@@ -123,10 +123,15 @@ const TextData = observer(() => {
     }
   }, [debounced])
 
-  if (!state.post.data) {
+  if (state.post.loading) {
     return (
       <div className="relative w-full">
-        <Textarea size="md" value={''} className="w-full" onChange={() => {}} />
+        <Textarea
+          size="md"
+          value={''}
+          className="w-full border-none"
+          onChange={() => {}}
+        />
         <TwLoading className="absolute transform -translate-x-1/2 -translate-y-2/3 top-1/2 left-1/2" />
       </div>
     )
@@ -134,7 +139,12 @@ const TextData = observer(() => {
 
   return (
     <div className="w-full">
-      <Textarea size="md" value={text} onChange={onChange} className="w-full" />
+      <Textarea
+        size="md"
+        value={text}
+        onChange={onChange}
+        className="w-full border-none"
+      />
     </div>
   )
 })

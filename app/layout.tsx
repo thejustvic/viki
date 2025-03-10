@@ -1,6 +1,9 @@
 import '@/scss/app.scss'
 
 import GlobalProvider from '@/components/global/global-provider'
+import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
+import {ModalTeam} from '@/components/team/modal-team'
+import TeamProvider from '@/components/team/team-provider'
 import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
 import {getServerUser} from '@/utils/supabase-utils/get-server-user'
@@ -30,8 +33,12 @@ export default async function RootLayout({children}: PropsWithChildren) {
       <body>
         <SupabaseProvider user={user} session={session}>
           <GlobalProvider serverTheme={theme}>
-            <ModalCreatePost />
-            {children}
+            <TeamProvider>
+              <ModalTeam />
+              <ModalCreatePost />
+              <ModalCreateTeamMember />
+              {children}
+            </TeamProvider>
           </GlobalProvider>
         </SupabaseProvider>
         <Analytics mode="production" />

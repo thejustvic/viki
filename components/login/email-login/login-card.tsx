@@ -7,7 +7,7 @@ import {LoginForm} from './login-form'
 
 const TwLoginCard = tw.div`
   w-[300px]
-  h-[320px]
+  h-[360px]
   perspective-distant
   transform-3d
 `
@@ -89,10 +89,22 @@ const Register = observer(() => {
 
   return (
     <LoginForm
+      isRegister
       title="Register"
       linkTitle="Already have an account?"
       handleLink={store.setLoginView}
-      handleAuth={data => supabase.auth.signUp(data)}
+      handleAuth={data =>
+        supabase.auth.signUp({
+          email: data.email,
+          password: data.password,
+          options: {
+            data: {
+              full_name: data.name,
+              email: data.email
+            }
+          }
+        })
+      }
     />
   )
 })

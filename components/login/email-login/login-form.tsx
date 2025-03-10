@@ -7,7 +7,7 @@ import {useGlobalStore} from '@/components/global/global-store'
 import {AuthResponse} from '@supabase/supabase-js'
 import {observer} from 'mobx-react-lite'
 import {CSSProperties} from 'react'
-import {SubmitHandler, useForm} from 'react-hook-form'
+import {SubmitHandler, useForm, UseFormRegister} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
 
 const TwTitle = tw(Card.Title)`
@@ -46,6 +46,7 @@ const TwErrorWrapper = tw.div`
 `
 
 interface LoginFormProps {
+  isRegister?: boolean
   title: 'Login' | 'Register'
   linkTitle: 'Already have an account?' | "Don't have an account?"
   handleLink: () => void
@@ -53,6 +54,7 @@ interface LoginFormProps {
 }
 
 interface FormValues {
+  name?: string
   email: string
   password: string
 }
@@ -62,13 +64,20 @@ const transform: CSSProperties = {
 }
 
 export const LoginForm = observer(
-  ({handleLink, handleAuth, title, linkTitle}: LoginFormProps) => {
+  ({
+    isRegister = false,
+    handleLink,
+    handleAuth,
+    title,
+    linkTitle
+  }: LoginFormProps) => {
     const {
       register,
       setError,
       handleSubmit,
       formState: {errors}
     } = useForm<FormValues>()
+
     const [state, store] = useGlobalStore()
     const onSubmit: SubmitHandler<FormValues> = async data => {
       store.setLogging('email')
@@ -97,27 +106,7 @@ export const LoginForm = observer(
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-8"
           >
-            <Input
-              label="Email"
-              type="text"
-              placeholder="email"
-              {...register('email', {
-                required: true,
-                pattern: /^\S+@\S+$/i
-              })}
-            />
-            <Input
-              label="Password"
-              type="password"
-              placeholder="password"
-              {...register('password', {
-                required: true,
-                minLength: {
-                  value: 6,
-                  message: 'Password should be at least 6 characters'
-                }
-              })}
-            />
+            <Inputs register={register} isRegister={isRegister} />
             <TwSubmit type="submit" loading={state.logging.email}>
               Submit
             </TwSubmit>
@@ -133,3 +122,47 @@ export const LoginForm = observer(
     )
   }
 )
+
+const Inputs = ({
+  isRegister,
+  register
+}: {
+  isRegister: boolean
+  register: UseFormRegister<FormValues>
+}) => {
+  return (
+    <>
+      {isRegister && (
+        <Input
+          label="Name"
+          type="text"
+          placeholder="name"
+          {...register('name', {
+            required: true
+          })}
+        />
+      )}
+      <Input
+        label="Email"
+        type="text"
+        placeholder="email"
+        {...register('email', {
+          required: true,
+          pattern: /^\S+@\S+$/i
+        })}
+      />
+      <Input
+        label="Password"
+        type="password"
+        placeholder="password"
+        {...register('password', {
+          required: true,
+          minLength: {
+            value: 6,
+            message: 'Password should be at least 6 characters'
+          }
+        })}
+      />
+    </>
+  )
+}

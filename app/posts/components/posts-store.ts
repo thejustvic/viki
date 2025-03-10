@@ -1,48 +1,67 @@
+import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {Util} from '@/utils/util'
 import {makeAutoObservable, observable} from 'mobx'
 import type {Post} from './types'
 
 interface State {
-  posts: Post[]
+  posts: SupabaseQuery<Post[]>
   searchValue: string
 }
 
 export class PostsStore {
   state: State = {
-    posts: [],
+    posts: {
+      loading: false,
+      data: null,
+      error: null
+    },
     searchValue: ''
   }
 
-  constructor(serverPosts: Post[]) {
+  constructor() {
     makeAutoObservable(this, {
       state: observable.shallow
     })
-    this.setPosts(serverPosts)
   }
 
-  setPosts(posts: Post[]): void {
-    this.state.posts = Util.sortByDate(posts)
+  setPosts(posts: State['posts']): void {
+    this.state.posts = posts
   }
 
   handleUpdate = (oldPost: Post, newPost: Post): void => {
-    this.setPosts(
-      this.state.posts.map(post => {
-        if (post.id === oldPost.id) {
-          return newPost
-        }
-        return post
+    const posts = this.state.posts.data?.map(post => {
+      if (post.id === oldPost.id) {
+        return newPost
+      }
+      return post
+    })
+    if (posts) {
+      this.setPosts({
+        ...this.state.posts,
+        data: posts
       })
-    )
+    }
   }
 
   handleInsert = (newPost: Post): void => {
-    this.setPosts([...this.state.posts, newPost])
+    if (!this.state.posts.data) {
+      return
+    }
+    this.setPosts({
+      ...this.state.posts,
+      data: [...this.state.posts.data, newPost]
+    })
   }
 
   handleDelete = (oldPost: Post): void => {
-    const posts = Util.clone(this.state.posts)
-    this.setPosts(posts.filter(post => post.id !== oldPost.id))
+    const posts = Util.clone(this.state.posts.data)
+    if (posts) {
+      this.setPosts({
+        ...this.state.posts,
+        data: posts.filter(message => message.id !== oldPost.id)
+      })
+    }
   }
 
   setSearchValue = (value: string): void => {
@@ -50,7 +69,10 @@ export class PostsStore {
   }
 
   searchedPosts = (): Post[] => {
-    const posts = Util.clone(this.state.posts)
+    const posts = Util.clone(this.state.posts.data)
+    if (!posts) {
+      return []
+    }
     return posts.filter(post => post.text.includes(this.state.searchValue))
   }
 }

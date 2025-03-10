@@ -7,6 +7,7 @@ import {useChecklistStore} from '@/components/checklist/checklist-store'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
+import {useTeamStore} from '@/components/team/team-store'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
@@ -31,18 +32,15 @@ const TwContainer = tw.div`
   md:justify-start
 `
 
-interface Props extends PropsWithChildren {
-  serverPosts: Post[]
-}
-
-export const PostsProvider = ({serverPosts, children}: Props) => {
-  const store = useMemoOne(() => new PostsStore(serverPosts), [])
+export const PostsProvider = observer(({children}: PropsWithChildren) => {
+  const store = useMemoOne(() => new PostsStore(), [])
   const {supabase, user} = useSupabase()
+  const [state] = useTeamStore()
 
-  usePostsListener(user, supabase, store)
+  usePostsListener({user, supabase, store, currentTeamId: state.currentTeamId})
 
   return <PostsContext.Provider value={store}>{children}</PostsContext.Provider>
-}
+})
 
 export const PostsBase = () => <PostsList />
 
@@ -58,8 +56,20 @@ const PostsList = observer(() => {
 })
 
 const Posts = observer(() => {
-  const [, store] = usePostsStore()
+  const [state, store] = usePostsStore()
   const postId = getSearchPost()
+
+  if (state.posts.loading) {
+    return Array(3)
+      .fill(null)
+      .map((_el, inx) => (
+        <div key={inx} className="skeleton w-[288px] h-[142px] md:w-[190px]" />
+      ))
+  }
+
+  if (state.posts.error) {
+    return <div className="text-error">{state.posts.error.message}</div>
+  }
 
   return store
     .searchedPosts()

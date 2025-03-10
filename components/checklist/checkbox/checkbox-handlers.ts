@@ -79,21 +79,7 @@ export const useCheckboxHandlers = (): Handlers => {
       if (!user) {
         throw Error('You must provide a user object!')
       }
-
-      if (!checklist) {
-        return
-      }
-
-      await Promise.all(
-        checklist.map(async checklist => {
-          await supabase
-            .from('checklist')
-            .update({
-              is_completed
-            })
-            .eq('id', checklist.id)
-        })
-      )
+      await updateAllCheckboxes(is_completed, checklist)
     }
 
   return {
@@ -103,4 +89,24 @@ export const useCheckboxHandlers = (): Handlers => {
     updateCheckboxIsCompleted,
     updateAllCheckboxIsCompleted
   }
+}
+
+const updateAllCheckboxes: Handlers['updateAllCheckboxIsCompleted'] = async (
+  is_completed,
+  checklist
+) => {
+  const {supabase} = useSupabase()
+  if (!checklist) {
+    return
+  }
+  await Promise.all(
+    checklist.map(async checklist => {
+      await supabase
+        .from('checklist')
+        .update({
+          is_completed
+        })
+        .eq('id', checklist.id)
+    })
+  )
 }

@@ -4,8 +4,10 @@ import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
+import {useTeamStore} from '@/components/team/team-store'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {Util} from '@/utils/util'
+import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
@@ -43,7 +45,8 @@ interface FormInputs {
   text: string
 }
 
-const Text = () => {
+const Text = observer(() => {
+  const [state] = useTeamStore()
   const updateSearchParams = useUpdateSearchParams()
 
   const {insertPost} = usePostHandlers()
@@ -66,7 +69,10 @@ const Text = () => {
   }, [createPostSearch])
 
   const onSubmit = async (data: FormInputs) => {
-    await insertPost(data.text)
+    if (!state.currentTeamId) {
+      return
+    }
+    await insertPost(data.text, state.currentTeamId)
     updateSearchParams('create-post')
   }
 
@@ -74,7 +80,7 @@ const Text = () => {
     <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 flex-col">
       <Textarea
         size="md"
-        className="w-full"
+        className="w-full border-none"
         {...register('text', {
           required: true
         })}
@@ -82,4 +88,4 @@ const Text = () => {
       <Button type="submit">Submit</Button>
     </Form>
   )
-}
+})

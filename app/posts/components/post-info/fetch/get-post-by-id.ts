@@ -5,11 +5,11 @@ import {Post} from '../../types'
 export const getPostById = (
   postId: Post['id'],
   supabase: SupabaseContext['supabase']
-): PostgrestBuilder<Post> => {
+): PostgrestBuilder<Post | null> => {
   return supabase
     .from('posts')
     .select()
     .match({id: postId})
     .throwOnError()
-    .single()
+    .maybeSingle()
 }

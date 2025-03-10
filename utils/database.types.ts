@@ -102,6 +102,7 @@ export type Database = {
           author_id: string
           created_at: string
           id: string
+          team_id: string
           text: string
         }
         Insert: {
@@ -109,6 +110,7 @@ export type Database = {
           author_id: string
           created_at?: string
           id?: string
+          team_id: string
           text: string
         }
         Update: {
@@ -116,6 +118,7 @@ export type Database = {
           author_id?: string
           created_at?: string
           id?: string
+          team_id?: string
           text?: string
         }
         Relationships: [
@@ -124,6 +127,13 @@ export type Database = {
             columns: ['author_id']
             isOneToOne: false
             referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'posts_team_id_fkey'
+            columns: ['team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
             referencedColumns: ['id']
           }
         ]
@@ -157,6 +167,73 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          role: string
+          status: string
+          team_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          role?: string
+          status?: string
+          team_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          role?: string
+          status?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'team_members_team_id_fkey'
+            columns: ['team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'teams_owner_id_fkey'
+            columns: ['owner_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
       }
     }
     Views: {

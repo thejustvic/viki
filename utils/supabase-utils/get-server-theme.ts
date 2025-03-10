@@ -12,7 +12,7 @@ export const getServerTheme = async (
     .from('profiles')
     .select()
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   return data?.theme
 }

@@ -3,7 +3,7 @@ import type {Post} from './types'
 
 interface Handlers {
   removePost: (id: Post['id']) => Promise<void>
-  insertPost: (text: string) => Promise<void>
+  insertPost: (text: string, teamId: string) => Promise<void>
   updatePost: (text: string, postId: string) => Promise<void>
 }
 
@@ -14,14 +14,15 @@ export const usePostHandlers = (): Handlers => {
     await supabase.from('posts').delete().eq('id', id)
   }
 
-  const insertPost = async (text: string): Promise<void> => {
+  const insertPost = async (text: string, teamId: string): Promise<void> => {
     if (!user) {
       throw Error('You must provide a user object!')
     }
     await supabase.from('posts').insert({
       text,
       author_id: user.id,
-      author_email: user.email || ''
+      author_email: user.email || '',
+      team_id: teamId
     })
   }
 

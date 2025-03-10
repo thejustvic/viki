@@ -17,7 +17,7 @@ export const updateTheme = async (props: Props): Promise<string> => {
     .update({theme})
     .eq('id', user?.id || '')
     .select()
-    .single()
+    .maybeSingle()
 
   return data?.theme || 'dark'
 }
