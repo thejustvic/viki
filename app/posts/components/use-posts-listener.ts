@@ -1,4 +1,5 @@
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
+import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useEffect} from 'react'
@@ -31,12 +32,15 @@ export const usePostsListener = ({
   store: PostsStore
   currentTeamId: string | null
 }): void => {
+  const updateSearchParams = useUpdateSearchParams()
+
   const {data, loading, error} = useSupabaseFetch(
     currentTeamId ? () => getMyPosts(user, supabase, currentTeamId) : null,
     [user, currentTeamId]
   )
 
   useEffect(() => {
+    updateSearchParams('post')
     store.setPosts({
       loading,
       data,
