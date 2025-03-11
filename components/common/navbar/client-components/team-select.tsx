@@ -10,7 +10,6 @@ import type {MouseEvent} from 'react'
 import {useEffect, useState} from 'react'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
-import {OpenTeamButton} from './open-team-button'
 
 export const TeamSelect = observer(() => {
   const {user, supabase} = useSupabase()
@@ -60,9 +59,6 @@ export const TeamSelect = observer(() => {
             ) : null}
           </ul>
         </details>
-      </li>
-      <li>
-        <OpenTeamButton />
       </li>
     </TwMenu>
   )

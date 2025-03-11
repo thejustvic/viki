@@ -15,6 +15,7 @@ import {Toggle} from '../../../daisyui/toggle'
 import {useGlobalStore} from '../../../global/global-store'
 import {UserImage} from '../../user-image'
 import {LeftDrawerButton} from './left-drawer-button'
+import {OpenTeamButton} from './open-team-button'
 import {RightDrawerButton} from './right-drawer-button'
 import {TeamSelect} from './team-select'
 
@@ -40,8 +41,9 @@ const NavStart = () => {
     <Nav.Start>
       {postId && <LeftDrawerButton />}
       {!isMobile && (
-        <div className="ml-4">
+        <div className="ml-4 flex gap-2 items-center">
           <TeamSelect />
+          <OpenTeamButton />
         </div>
       )}
     </Nav.Start>
@@ -109,8 +111,9 @@ const AvatarDropdown = observer(() => {
       <Dropdown.Menu className="shadow-lg bg-base-200">
         {postId && <LabelShowLeftMenu />}
         {isMobile && (
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
             <TeamSelect />
+            <OpenTeamButton />
           </div>
         )}
         <Button onClick={handleLogout} loading={state.logging.logout}>
