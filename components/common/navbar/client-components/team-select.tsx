@@ -12,13 +12,9 @@ import {useEffect, useState} from 'react'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 
-export const TeamSelect = observer(() => {
+const useFirstCurrentTeamIdListener = () => {
   const {user, supabase} = useSupabase()
-  const updateSearchParams = useUpdateSearchParams()
-  const {removeTeam} = useTeamHandlers()
   const [teamState, teamStore] = useTeamStore()
-  const [id, setId] = useState('')
-  const open = useBoolean(false)
 
   useEffect(() => {
     if (teamState.currentTeamId) {
@@ -39,6 +35,17 @@ export const TeamSelect = observer(() => {
       }
     })()
   }, [teamState.myTeams.data])
+}
+
+export const TeamSelect = observer(() => {
+  const {user, supabase} = useSupabase()
+  const updateSearchParams = useUpdateSearchParams()
+  const {removeTeam} = useTeamHandlers()
+  const [teamState, teamStore] = useTeamStore()
+  const [id, setId] = useState('')
+  const open = useBoolean(false)
+
+  useFirstCurrentTeamIdListener()
 
   useEffect(() => {
     if (!id) {
