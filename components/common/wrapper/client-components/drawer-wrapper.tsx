@@ -245,8 +245,12 @@ const ChecklistTabContent = observer(() => {
   return (
     <Tabs.TabContent>
       <div className="px-4 my-2 flex gap-1 h-[24px]">
-        {checklistState.checklist.data?.length ? <CheckAllCheckboxes /> : null}
-        <ChecklistProgress />
+        {checklistState.checklist.data?.length ? (
+          <>
+            <CheckAllCheckboxes />
+            <ChecklistProgress />
+          </>
+        ) : null}
       </div>
       <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100dvh-81px)]">
         <Checklist />
