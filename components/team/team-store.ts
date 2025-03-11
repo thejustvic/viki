@@ -41,9 +41,6 @@ export class TeamStore {
   }
 
   setMyTeams(teams: State['myTeams']): void {
-    if (teams.data?.[0].id && !this.state.currentTeamId) {
-      this.setCurrentTeamId(teams.data[0].id)
-    }
     this.state.myTeams = teams
   }
 
@@ -139,10 +136,6 @@ export class TeamStore {
   }
 
   setCurrentTeam(team: State['currentTeam']): void {
-    if (team.data?.id) {
-      this.setCurrentTeamId(team.data.id)
-    }
-
     this.state.currentTeam = team
   }
 

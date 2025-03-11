@@ -19,6 +19,26 @@ export const TeamSelect = observer(() => {
   const [id, setId] = useState('')
 
   useEffect(() => {
+    if (teamState.currentTeamId) {
+      return
+    }
+    const firstMyTeamId = teamState.myTeams.data?.[0].id
+    if (!firstMyTeamId) {
+      return
+    }
+
+    void (async (): Promise<void> => {
+      const currentTeamId = await updateCurrentTeamId({
+        currentTeamId: firstMyTeamId,
+        opts: {supabase, user}
+      })
+      if (currentTeamId) {
+        teamStore.setCurrentTeamId(currentTeamId)
+      }
+    })()
+  }, [teamState.myTeams.data])
+
+  useEffect(() => {
     if (!id) {
       return
     }
@@ -31,7 +51,7 @@ export const TeamSelect = observer(() => {
           opts: {supabase, user}
         })
         if (currentTeamId) {
-          teamStore.setCurrentTeamId(id)
+          teamStore.setCurrentTeamId(currentTeamId)
         }
       })()
     }
