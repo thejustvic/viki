@@ -37,18 +37,6 @@ export class TeamStore {
     })
   }
 
-  setCurrentTeam(team: State['currentTeam']): void {
-    if (team.data?.id) {
-      this.setCurrentTeamId(team.data.id)
-    }
-
-    this.state.currentTeam = team
-  }
-
-  setCurrentTeamId(id: string): void {
-    this.state.currentTeamId = id
-  }
-
   setMyTeams(teams: State['myTeams']): void {
     if (teams.data?.[0].id) {
       this.setCurrentTeamId(teams.data[0].id)
@@ -56,11 +44,48 @@ export class TeamStore {
     this.state.myTeams = teams
   }
 
+  handleUpdateTeam = (oldTeam: Team, newTeam: Team): void => {
+    if (!this.state.myTeams.data) {
+      return
+    }
+    const teams = this.state.myTeams.data.map(team => {
+      if (team.id === oldTeam.id) {
+        return newTeam
+      }
+      return team
+    })
+    if (teams) {
+      this.setMyTeams({
+        ...this.state.myTeams,
+        data: teams
+      })
+    }
+  }
+
+  handleInsertTeam = (newTeam: Team): void => {
+    if (this.state.myTeams.data) {
+      this.setMyTeams({
+        ...this.state.myTeams,
+        data: [...this.state.myTeams.data, newTeam]
+      })
+    }
+  }
+
+  handleDeleteTeam = (oldTeam: Team): void => {
+    const teams = Util.clone(this.state.myTeams.data)
+    if (teams) {
+      this.setMyTeams({
+        ...this.state.myTeams,
+        data: teams.filter(teamMember => teamMember.id !== oldTeam.id)
+      })
+    }
+  }
+
   setMemberTeams(teams: State['memberTeams']): void {
     this.state.memberTeams = teams
   }
 
-  handleUpdate = (
+  handleUpdateTeamMember = (
     oldTeamMember: TeamMember,
     newTeamMember: TeamMember
   ): void => {
@@ -82,7 +107,7 @@ export class TeamStore {
     }
   }
 
-  handleInsert = (newTeamMember: TeamMember): void => {
+  handleInsertTeamMember = (newTeamMember: TeamMember): void => {
     if (this.state.currentTeam.data) {
       const {team_members, ...teamData} = this.state.currentTeam.data
       this.setCurrentTeam({
@@ -92,7 +117,7 @@ export class TeamStore {
     }
   }
 
-  handleDelete = (oldTeamMember: TeamMember): void => {
+  handleDeleteTeamMember = (oldTeamMember: TeamMember): void => {
     if (!this.state.currentTeam.data) {
       return
     }
@@ -108,6 +133,18 @@ export class TeamStore {
         }
       })
     }
+  }
+
+  setCurrentTeam(team: State['currentTeam']): void {
+    if (team.data?.id) {
+      this.setCurrentTeamId(team.data.id)
+    }
+
+    this.state.currentTeam = team
+  }
+
+  setCurrentTeamId(id: string): void {
+    this.state.currentTeamId = id
   }
 }
 

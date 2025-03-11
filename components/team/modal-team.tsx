@@ -39,11 +39,6 @@ export const ModalTeam = observer(() => {
 const TeamName = observer(() => {
   const [state] = useTeamStore()
   const teamName = state.currentTeam.data?.name
-  const name = `${teamName}'s`
 
-  return (
-    <div className="flex justify-center mb-2">
-      {teamName ? name : 'My'} Team
-    </div>
-  )
+  return <div className="flex justify-center mb-2">Team '{teamName}'</div>
 })

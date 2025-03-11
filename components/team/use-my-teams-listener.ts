@@ -32,4 +32,44 @@ export const useMyTeamsListener = (
       error
     })
   }, [data, loading, error])
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('team')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'teams',
+          filter: `owner_id=eq.${user?.id}`
+        },
+        payload => store.handleInsertTeam(payload.new as Team)
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'teams'
+        },
+        payload => store.handleDeleteTeam(payload.old as Team)
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'teams',
+          filter: `owner_id=eq.${user?.id}`
+        },
+        payload =>
+          store.handleUpdateTeam(payload.old as Team, payload.new as Team)
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [supabase, store, user])
 }

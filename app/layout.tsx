@@ -1,6 +1,7 @@
 import '@/scss/app.scss'
 
 import GlobalProvider from '@/components/global/global-provider'
+import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
 import {ModalTeam} from '@/components/team/modal-team'
 import TeamProvider from '@/components/team/team-provider'
@@ -34,9 +35,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
         <SupabaseProvider user={user} session={session}>
           <GlobalProvider serverTheme={theme}>
             <TeamProvider>
-              <ModalTeam />
-              <ModalCreatePost />
-              <ModalCreateTeamMember />
+              <Modals />
               {children}
             </TeamProvider>
           </GlobalProvider>
@@ -45,5 +44,16 @@ export default async function RootLayout({children}: PropsWithChildren) {
         <SpeedInsights />
       </body>
     </html>
+  )
+}
+
+const Modals = () => {
+  return (
+    <>
+      <ModalTeam />
+      <ModalCreateTeam />
+      <ModalCreatePost />
+      <ModalCreateTeamMember />
+    </>
   )
 }

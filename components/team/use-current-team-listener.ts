@@ -56,7 +56,7 @@ export const useCurrentTeamListener = ({
           table: 'team_members',
           filter: `team_id=eq.${teamId}`
         },
-        payload => store.handleInsert(payload.new as TeamMember)
+        payload => store.handleInsertTeamMember(payload.new as TeamMember)
       )
       .on(
         'postgres_changes',
@@ -65,7 +65,7 @@ export const useCurrentTeamListener = ({
           schema: 'public',
           table: 'team_members'
         },
-        payload => store.handleDelete(payload.old as TeamMember)
+        payload => store.handleDeleteTeamMember(payload.old as TeamMember)
       )
       .on(
         'postgres_changes',
@@ -76,7 +76,7 @@ export const useCurrentTeamListener = ({
           filter: `team_id=eq.${teamId}`
         },
         payload =>
-          store.handleUpdate(
+          store.handleUpdateTeamMember(
             payload.old as TeamMember,
             payload.new as TeamMember
           )

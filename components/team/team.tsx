@@ -8,7 +8,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import type {MouseEvent} from 'react'
 import {Button} from '../daisyui/button'
-import {useTeamHandlers} from './team-handlers'
+import {useTeamMemberHandlers} from './team-member-handlers'
 import {useTeamStore} from './team-store'
 
 export const Team = observer(() => {
@@ -52,7 +52,7 @@ const TwState = tw.div`
 
 const TeamMembers = observer(() => {
   const [state] = useTeamStore()
-  const {removeTeamMember} = useTeamHandlers()
+  const {removeTeamMember} = useTeamMemberHandlers()
 
   const handleRemove = async (e: MouseEvent, id: string) => {
     e.stopPropagation()

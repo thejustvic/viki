@@ -4,26 +4,26 @@ import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {Input} from '../daisyui/input'
-import {useTeamMemberHandlers} from './team-member-handlers'
-import {useTeamStore} from './team-store'
+import {useTeamHandlers} from './team-handlers'
 
-export const ModalCreateTeamMember = () => {
+export const ModalCreateTeam = () => {
   const updateSearchParams = useUpdateSearchParams()
-  const createTeamMember = Util.getSearchParam('create-team-member')
+  const createTeam = Util.getSearchParam('create-team')
 
   const goBack = () => {
-    updateSearchParams('create-team-member')
+    updateSearchParams('create-team')
   }
 
   return (
     <Modal
-      id="modal-create-team-member"
-      open={Boolean(createTeamMember)}
+      id="modal-create-team"
+      open={Boolean(createTeam)}
       goBack={goBack}
       header={<ModalHeader />}
       body={<Data />}
@@ -32,27 +32,26 @@ export const ModalCreateTeamMember = () => {
 }
 
 const ModalHeader = () => {
-  return <div className="flex justify-center mb-2">Create Team Member</div>
+  return <div className="flex justify-center mb-2">Create Team</div>
 }
 
 interface FormInputs {
   name: string
-  email: string
 }
 
 const Data = observer(() => {
-  const [state] = useTeamStore()
+  const {user} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
 
-  const {insertTeamMember} = useTeamMemberHandlers()
+  const {insertTeam} = useTeamHandlers()
   const {register, handleSubmit, setFocus, reset} = useForm<FormInputs>()
 
-  const createTeamMemberSearch = Util.getSearchParam('create-team-member')
+  const createTeamSearch = Util.getSearchParam('create-team')
 
   useEffect(() => {
-    if (createTeamMemberSearch) {
+    if (createTeamSearch) {
       document
-        .getElementById('dialog-modal-create-team-member')
+        .getElementById('dialog-modal-create-team')
         ?.addEventListener('transitionend', e => {
           if (e.propertyName === 'opacity') {
             setFocus('name')
@@ -61,23 +60,20 @@ const Data = observer(() => {
     } else {
       reset()
     }
-  }, [createTeamMemberSearch])
+  }, [createTeamSearch])
 
   const onSubmit = async (data: FormInputs) => {
-    if (!state.currentTeamId) {
-      console.error('undefined currentTeamId')
+    if (!user) {
+      console.error('undefined user')
       return
     }
-    await insertTeamMember({
-      team_id: state.currentTeamId,
+    await insertTeam({
+      owner_id: user.id,
       data: {
-        name: data.name,
-        email: data.email,
-        role: 'member',
-        status: 'active'
+        name: data.name
       }
     })
-    updateSearchParams('create-team-member')
+    updateSearchParams('create-team')
   }
 
   return (
@@ -92,16 +88,7 @@ const Data = observer(() => {
           required: true
         })}
       />
-      <Input
-        type="email"
-        label="email"
-        inputClassName="w-full"
-        {...register('email', {
-          required: true
-        })}
-      />
-
-      <Button type="submit">Create Member</Button>
+      <Button type="submit">Create Team</Button>
     </Form>
   )
 })
