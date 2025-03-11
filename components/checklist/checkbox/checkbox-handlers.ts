@@ -1,4 +1,7 @@
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {
+  SupabaseContext,
+  useSupabase
+} from '@/utils/supabase-utils/supabase-provider'
 import {ChecklistStore} from '../checklist-store'
 import {Checkbox} from '../types'
 
@@ -79,7 +82,7 @@ export const useCheckboxHandlers = (): Handlers => {
       if (!user) {
         throw Error('You must provide a user object!')
       }
-      await updateAllCheckboxes(is_completed, checklist)
+      await updateAllCheckboxes({supabase, is_completed, checklist})
     }
 
   return {
@@ -91,11 +94,15 @@ export const useCheckboxHandlers = (): Handlers => {
   }
 }
 
-const updateAllCheckboxes: Handlers['updateAllCheckboxIsCompleted'] = async (
+const updateAllCheckboxes = async ({
+  supabase,
   is_completed,
   checklist
-) => {
-  const {supabase} = useSupabase()
+}: {
+  supabase: SupabaseContext['supabase']
+  is_completed: Checkbox['is_completed']
+  checklist: ChecklistStore['state']['checklist']['data']
+}) => {
   if (!checklist) {
     return
   }
