@@ -1,15 +1,19 @@
 import {Button} from '@/components/daisyui/button'
 import {useTeamHandlers} from '@/components/team/team-handlers'
 import {useTeamStore} from '@/components/team/team-store'
+import {updateCurrentTeamId} from '@/components/team/update-current-team-id'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus, IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import type {MouseEvent} from 'react'
 import {useEffect, useState} from 'react'
 import {twJoin} from 'tailwind-merge'
+import tw from 'tailwind-styled-components'
 import {OpenTeamButton} from './open-team-button'
 
 export const TeamSelect = observer(() => {
+  const {user, supabase} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
   const {removeTeam} = useTeamHandlers()
   const [teamState, teamStore] = useTeamStore()
@@ -19,10 +23,18 @@ export const TeamSelect = observer(() => {
     if (!id) {
       return
     }
-    if (id === 'add') {
+    if (id === 'create-team') {
       updateSearchParams('create-team', 'true')
     } else {
-      teamStore.setCurrentTeamId(id)
+      void (async (): Promise<void> => {
+        const currentTeamId = await updateCurrentTeamId({
+          currentTeamId: id,
+          opts: {supabase, user}
+        })
+        if (currentTeamId) {
+          teamStore.setCurrentTeamId(id)
+        }
+      })()
     }
     setId('')
   }, [id])
@@ -33,7 +45,7 @@ export const TeamSelect = observer(() => {
   }
 
   return (
-    <ul className="menu menu-horizontal bg-base-200 rounded-box gap-2 items-center">
+    <TwMenu>
       <li>
         <details>
           <summary>{teamState.currentTeam.data?.name}</summary>
@@ -52,9 +64,18 @@ export const TeamSelect = observer(() => {
       <li>
         <OpenTeamButton />
       </li>
-    </ul>
+    </TwMenu>
   )
 })
+
+const TwMenu = tw.ul`
+  menu 
+  menu-horizontal 
+  bg-base-200 
+  rounded-box 
+  gap-2 
+  items-center
+`
 
 const MyTeams = observer(
   ({
@@ -80,7 +101,9 @@ const MyTeams = observer(
                     teamState.currentTeam.data?.id === team.id &&
                       'bg-accent-content'
                   )}
-                  onClick={() => setId(team.id)}
+                  onClick={() => {
+                    setId(team.id)
+                  }}
                 >
                   <div className="flex justify-between">
                     <div>{team.name}</div>
@@ -99,7 +122,7 @@ const MyTeams = observer(
               )
             })}
             <li>
-              <a onClick={() => setId('add')}>
+              <a onClick={() => setId('create-team')}>
                 <IconSquareRoundedPlus size={18} /> new team
               </a>
             </li>
@@ -126,7 +149,13 @@ const MemberTeams = observer(({setId}: {setId: (id: string) => void}) => {
                     'bg-accent-content'
                 )}
               >
-                <a onClick={() => setId(team.id)}>{team.name}</a>
+                <a
+                  onClick={() => {
+                    setId(team.id)
+                  }}
+                >
+                  {team.name}
+                </a>
               </li>
             )
           })}

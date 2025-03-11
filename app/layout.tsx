@@ -5,6 +5,7 @@ import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
 import {ModalTeam} from '@/components/team/modal-team'
 import TeamProvider from '@/components/team/team-provider'
+import {getServerCurrentTeamId} from '@/utils/supabase-utils/get-server-current-team-id'
 import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerTheme} from '@/utils/supabase-utils/get-server-theme'
 import {getServerUser} from '@/utils/supabase-utils/get-server-user'
@@ -25,6 +26,8 @@ export default async function RootLayout({children}: PropsWithChildren) {
   const session = await getServerSession()
 
   const serverTheme = await getServerTheme(user)
+  const serverCurrentTeamId = await getServerCurrentTeamId(user)
+
   const cookieStore = await cookies()
   const cookieTheme = cookieStore.get('theme')?.value
   const theme = serverTheme || cookieTheme
@@ -34,7 +37,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
       <body>
         <SupabaseProvider user={user} session={session}>
           <GlobalProvider serverTheme={theme}>
-            <TeamProvider>
+            <TeamProvider serverCurrentTeamId={serverCurrentTeamId}>
               <Modals />
               {children}
             </TeamProvider>

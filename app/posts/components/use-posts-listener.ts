@@ -1,9 +1,11 @@
+import {useTeamStore} from '@/components/team/team-store'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useEffect} from 'react'
-import {PostsStore} from './posts-store'
+import {getSearchPost} from './get-search-post'
+import {PostsStore, usePostsStore} from './posts-store'
 import type {Post} from './types'
 
 const getMyPosts = (
@@ -21,6 +23,27 @@ const getMyPosts = (
   return supabase.from('posts').select().eq('team_id', currentTeamId)
 }
 
+export const useCheckPostExistInCurrentTeam = (): void => {
+  const [teamState] = useTeamStore()
+  const [postState] = usePostsStore()
+  const updateSearchParams = useUpdateSearchParams()
+  const postId = getSearchPost()
+
+  const checkIfPostExistInCurrentTeam = (): boolean => {
+    const post = postState?.posts?.data?.find(post => post.id === postId)
+    return teamState.currentTeamId === post?.team_id
+  }
+
+  useEffect(() => {
+    if (!postState?.posts?.data) {
+      return
+    }
+    if (!checkIfPostExistInCurrentTeam()) {
+      updateSearchParams('post')
+    }
+  }, [postState?.posts?.data])
+}
+
 export const usePostsListener = ({
   user,
   supabase,
@@ -32,15 +55,12 @@ export const usePostsListener = ({
   store: PostsStore
   currentTeamId: string | null
 }): void => {
-  const updateSearchParams = useUpdateSearchParams()
-
   const {data, loading, error} = useSupabaseFetch(
     currentTeamId ? () => getMyPosts(user, supabase, currentTeamId) : null,
     [user, currentTeamId]
   )
 
   useEffect(() => {
-    updateSearchParams('post')
     store.setPosts({
       loading,
       data,

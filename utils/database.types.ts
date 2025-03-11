@@ -141,6 +141,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          current_team_id: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -150,6 +151,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          current_team_id?: string | null
           email?: string | null
           full_name?: string | null
           id: string
@@ -159,6 +161,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          current_team_id?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
@@ -166,7 +169,15 @@ export type Database = {
           updated_at?: string | null
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'profiles_current_team_id_fkey'
+            columns: ['current_team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          }
+        ]
       }
       team_members: {
         Row: {

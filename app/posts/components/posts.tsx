@@ -21,7 +21,10 @@ import {getSearchPost} from './get-search-post'
 import {usePostHandlers} from './posts-handlers'
 import {PostsContext, PostsStore, usePostsStore} from './posts-store'
 import type {Post} from './types'
-import {usePostsListener} from './use-posts-listener'
+import {
+  useCheckPostExistInCurrentTeam,
+  usePostsListener
+} from './use-posts-listener'
 
 const TwContainer = tw.div`
   flex
@@ -45,6 +48,7 @@ export const PostsProvider = observer(({children}: PropsWithChildren) => {
 export const PostsBase = () => <PostsList />
 
 const PostsList = observer(() => {
+  useCheckPostExistInCurrentTeam()
   useLoggingOff()
 
   return (
