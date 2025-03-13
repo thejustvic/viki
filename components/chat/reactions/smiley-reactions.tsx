@@ -13,12 +13,12 @@ import {getReactions} from './smiley-reactions-utils'
 import {useReactionsHandlers} from './use-reactions-handlers'
 
 const TwSmileyContainer = tw.div`
-  bg-accent-content 
+  bg-accent-content
   rounded-box
   px-1
-  flex
-  flex-wrap
-  w-[80px]
+  grid
+  gap-px
+  grid-cols-[repeat(3,1fr)]
 `
 
 const TwSmiley = tw.div`
