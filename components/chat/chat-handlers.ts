@@ -1,5 +1,6 @@
+import {Json} from '@/utils/database.types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Message} from './types'
+import {Message, Reactions} from './types'
 
 interface Handlers {
   removeMessage: (id: Message['id']) => Promise<void>
@@ -10,7 +11,11 @@ interface Handlers {
     postId: Message['post_id']
     text: string
   }) => Promise<void>
-  updateMessage: (text: string, messageId: string) => Promise<void>
+  updateMessageText: (text: string, messageId: string) => Promise<void>
+  updateMessageReactions: (
+    reactions: Reactions,
+    messageId: string
+  ) => Promise<void>
 }
 
 export const useChatHandlers = (): Handlers => {
@@ -29,11 +34,15 @@ export const useChatHandlers = (): Handlers => {
       post_id: postId,
       author_email: user.email ?? '',
       author_image: user.user_metadata?.avatar_url ?? '',
+      reactions: {},
       text
     })
   }
 
-  const updateMessage: Handlers['updateMessage'] = async (text, messageId) => {
+  const updateMessageText: Handlers['updateMessageText'] = async (
+    text,
+    messageId
+  ) => {
     if (!user) {
       throw Error('You must provide a user object!')
     }
@@ -45,9 +54,26 @@ export const useChatHandlers = (): Handlers => {
       .eq('id', messageId)
   }
 
+  const updateMessageReactions: Handlers['updateMessageReactions'] = async (
+    reactions,
+    messageId
+  ) => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    const reactionsAsJson = reactions as unknown as Json
+    await supabase
+      .from('messages')
+      .update({
+        reactions: reactionsAsJson
+      })
+      .eq('id', messageId)
+  }
+
   return {
     removeMessage,
     insertMessage,
-    updateMessage
+    updateMessageText,
+    updateMessageReactions
   }
 }

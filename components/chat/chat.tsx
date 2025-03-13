@@ -1,7 +1,8 @@
+import {useBoolean} from '@/hooks/use-boolean'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
-import {MouseEvent, ReactNode, useEffect, useState} from 'react'
+import {MouseEvent, useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {Loader} from '../common/loader'
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
@@ -11,6 +12,9 @@ import {ChatBubble} from '../daisyui/chat-bubble'
 import {Dropdown} from '../daisyui/dropdown'
 import {useChatHandlers} from './chat-handlers'
 import {useChatStore} from './chat-store'
+import {SmileyReactions} from './reactions/smiley-reactions'
+import {useReactionsHandlers} from './reactions/use-reactions-handlers'
+import type {Message as MessageType} from './types'
 
 export const Chat = observer(() => {
   const [scrollEl, setScrollEl] = useState<HTMLElement>()
@@ -60,17 +64,13 @@ const Messages = observer(() => {
   return (
     <div className="flex flex-col gap-2 h-[54px]">
       {state.chat.data?.map(message => {
+        const userEmail = user?.email
         return (
           <Message
             key={message.id}
-            id={message.id}
-            author={message.author_email}
-            time={message.created_at}
-            avatar={message.author_image}
-            my={message.author_email === user?.email}
-          >
-            {message.text}
-          </Message>
+            message={message}
+            my={message.author_email === userEmail}
+          />
         )
       })}
     </div>
@@ -78,38 +78,60 @@ const Messages = observer(() => {
 })
 
 interface BubbleProps {
-  children: ReactNode
-  id: string
-  author: string
-  time: string
-  avatar: string
+  message: MessageType
   my?: boolean
 }
 
 const Message = (props: BubbleProps) => {
-  const {my, children} = props
+  const {my, message} = props
+  const showReactions = useBoolean(false)
+  const {selectReaction} = useReactionsHandlers()
+
+  const [lastTap, setLastTap] = useState(0)
+
+  const putHeart = async () => {
+    await selectReaction('❤️', message)
+  }
+
+  const handleTap = (e: React.TouchEvent) => {
+    e.preventDefault()
+    const now = Date.now()
+    if (now - lastTap < 300) {
+      console.table('Double Tap Detected!')
+      void putHeart()
+    }
+    setLastTap(now)
+  }
 
   return (
     <ChatBubble end={my}>
       <MessageDropdown {...props} />
       <ChatBubble.Message
         color={my ? 'primary' : undefined}
-        className="break-words"
+        className="break-words relative"
+        onMouseEnter={showReactions.turnOn}
+        onMouseLeave={showReactions.turnOff}
+        onDoubleClick={putHeart}
+        onTouchStart={handleTap}
       >
-        {children}
+        {message.text}
+        <SmileyReactions message={message} isMouseOver={showReactions.value} />
       </ChatBubble.Message>
     </ChatBubble>
   )
 }
 
-const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
+const MessageDropdown = ({
+  my,
+  message: {id, created_at, author_image, author_email}
+}: BubbleProps) => {
   const {removeMessage} = useChatHandlers()
 
   const remove = async (e: MouseEvent) => {
     e.stopPropagation()
     await removeMessage(id)
   }
-  const timeDistance = formatDistance(new Date(time), new Date(), {
+  const timeDistance = formatDistance(new Date(created_at), new Date(), {
     addSuffix: true,
     includeSeconds: true
   })
@@ -119,9 +141,9 @@ const MessageDropdown = ({author, time, avatar, my, id}: BubbleProps) => {
       hover
       className="chat-image"
     >
-      <UserImage src={avatar} shape="circle" />
+      <UserImage src={author_image} shape="circle" />
       <Dropdown.Menu className="shadow-lg bg-base-200 px-2 py-0">
-        {author}
+        {author_email}
         <div className="flex items-start gap-1">
           <time className="text-xs opacity-50">{timeDistance}</time>
           {my && (

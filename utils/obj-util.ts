@@ -129,4 +129,20 @@ export class ObjUtil {
 
     return newObj
   }
+
+  public static filter<T extends Record<string, unknown>>(
+    obj: T,
+    filter: (k: keyof T, v: T[keyof T]) => boolean
+  ): Partial<T> {
+    if (!obj) {
+      return {}
+    }
+    const res: Partial<T> = {}
+    ObjUtil.forEach(obj, (k, v) => {
+      if (filter(k, v)) {
+        res[k] = v
+      }
+    })
+    return res
+  }
 }

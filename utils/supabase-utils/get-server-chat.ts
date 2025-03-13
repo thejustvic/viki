@@ -1,4 +1,4 @@
-import {Message} from '@/components/chat/types'
+import {Message, Reactions} from '@/components/chat/types'
 import {createClient} from './supabase-server'
 
 export const getServerChat = async (
@@ -14,5 +14,14 @@ export const getServerChat = async (
     .eq('post_id', postId)
     .order('created_at')
 
-  return data
+  if (!data) {
+    return null
+  }
+
+  const messages = data.map(msg => ({
+    ...msg,
+    reactions: msg.reactions as unknown as Reactions // Explicitly cast from Json to Reactions
+  }))
+
+  return messages
 }

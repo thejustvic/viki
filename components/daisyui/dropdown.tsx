@@ -5,6 +5,7 @@ interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
   style?: HTMLProps<HTMLElement>['style']
   onClick?: HTMLProps<HTMLElement>['onClick']
+  tabIndex?: number | undefined
 }
 
 type Placement =

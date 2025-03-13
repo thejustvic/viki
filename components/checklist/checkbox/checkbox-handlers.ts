@@ -102,7 +102,7 @@ const updateAllCheckboxes = async ({
   supabase: SupabaseContext['supabase']
   is_completed: Checkbox['is_completed']
   checklist: ChecklistStore['state']['checklist']['data']
-}) => {
+}): Promise<void> => {
   if (!checklist) {
     return
   }

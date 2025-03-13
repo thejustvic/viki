@@ -1,4 +1,9 @@
-import {HTMLProps, PropsWithChildren} from 'react'
+import {
+  HTMLProps,
+  MouseEventHandler,
+  PropsWithChildren,
+  TouchEventHandler
+} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
@@ -28,6 +33,10 @@ export const ChatBubble = ({
 
 interface PropsChatBubbleMessage extends Props {
   color?: 'primary' | 'secondary'
+  onMouseEnter?: MouseEventHandler<HTMLDivElement>
+  onMouseLeave?: MouseEventHandler<HTMLDivElement>
+  onDoubleClick?: MouseEventHandler<HTMLDivElement>
+  onTouchStart?: TouchEventHandler<HTMLDivElement>
 }
 
 ChatBubble.Message = ({
@@ -39,7 +48,7 @@ ChatBubble.Message = ({
   return (
     <div
       className={twJoin(
-        'chat-bubble',
+        'chat-bubble touch-manipulation',
         className,
         color === 'primary' && 'chat-bubble-primary',
         color === 'secondary' && 'chat-bubble-secondary'

@@ -2,7 +2,6 @@ import {Button} from '@/components/daisyui/button'
 import {useTeamHandlers} from '@/components/team/team-handlers'
 import {useTeamStore} from '@/components/team/team-store'
 import {updateCurrentTeamId} from '@/components/team/update-current-team-id'
-import {useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus, IconTrash} from '@tabler/icons-react'
@@ -43,7 +42,6 @@ export const TeamSelect = observer(() => {
   const {removeTeam} = useTeamHandlers()
   const [teamState, teamStore] = useTeamStore()
   const [id, setId] = useState('')
-  const open = useBoolean(false)
 
   useFirstCurrentTeamIdListener()
 
@@ -63,7 +61,6 @@ export const TeamSelect = observer(() => {
           teamStore.setCurrentTeamId(currentTeamId)
         }
       })()
-      open.turnOff()
     }
     setId('')
   }, [id])
@@ -76,19 +73,7 @@ export const TeamSelect = observer(() => {
   return (
     <TwMenu>
       <li>
-        <details
-          open={open.value}
-          onToggle={({newState}) => {
-            switch (newState) {
-              case 'open': {
-                return open.turnOn()
-              }
-              case 'closed': {
-                return open.turnOff()
-              }
-            }
-          }}
-        >
+        <details>
           <summary>{teamState.currentTeam.data?.name}</summary>
           <ul>
             <MyTeams
@@ -184,7 +169,7 @@ const MemberTeams = observer(({setId}: {setId: (id: string) => void}) => {
                 key={team.id}
                 className={twJoin(
                   teamState.currentTeam.data?.id === team.id &&
-                    'bg-accent-content'
+                    'bg-accent-content rounded-sm'
                 )}
               >
                 <a

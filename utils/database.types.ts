@@ -59,6 +59,7 @@ export type Database = {
           created_at: string
           id: string
           post_id: string
+          reactions: Json
           text: string
         }
         Insert: {
@@ -68,6 +69,7 @@ export type Database = {
           created_at?: string
           id?: string
           post_id: string
+          reactions: Json
           text: string
         }
         Update: {
@@ -77,6 +79,7 @@ export type Database = {
           created_at?: string
           id?: string
           post_id?: string
+          reactions?: Json
           text?: string
         }
         Relationships: [
