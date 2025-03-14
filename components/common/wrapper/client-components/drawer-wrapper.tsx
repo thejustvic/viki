@@ -37,10 +37,13 @@ export const DrawerWrapper = observer(({children}: Props) => {
   return (
     <LeftDrawer>
       <RightDrawer>
-        <div style={{height: `calc(100% - ${headerHeight})`}}>
-          <Navbar />
-          <PerfectScrollbar className="h-dvh">{children}</PerfectScrollbar>
-        </div>
+        <Navbar />
+        <PerfectScrollbar
+          className="h-dvh"
+          style={{height: `calc(100% - ${headerHeight})`}}
+        >
+          {children}
+        </PerfectScrollbar>
       </RightDrawer>
     </LeftDrawer>
   )
@@ -81,7 +84,7 @@ const LeftDrawer = observer(({children}: PropsWithChildren) => {
       mobile={isMobile || state.drawerOpenByHover}
       side={user ? <LeftDrawerSide /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
-      contentClassName="h-screen"
+      contentClassName="h-dvh"
       {...leftSwipeHandlers}
     >
       {children}
@@ -149,7 +152,7 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
       mobile={isMobile}
       side={user ? <RightDrawerSide /> : null}
       onClickOverlay={onRightDrawerClickOverlay}
-      contentClassName="h-screen"
+      contentClassName="h-dvh"
       {...rightSwipeHandlers}
     >
       {children}
