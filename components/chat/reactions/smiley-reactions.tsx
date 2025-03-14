@@ -88,24 +88,29 @@ export const SmileyReactions = ({
 
 const maxShownUsers = 3
 
+const useUsersWhoReacted = (usersWhoReact: UserWhoReacted[]) => {
+  const {supabase} = useSupabase()
+  const [users, setUsers] = useState<Profile[]>([])
+
+  useEffect(() => {
+    const users = usersWhoReact
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map(el => el.user_id)
+
+    void (async (): Promise<void> => {
+      const {data} = await supabase.from('profiles').select().in('id', users)
+      if (data) {
+        setUsers(data)
+      }
+    })()
+  }, [usersWhoReact])
+
+  return users
+}
+
 const UsersWhoReacted = observer(
   ({usersWhoReact}: {usersWhoReact: UserWhoReacted[]}) => {
-    const {supabase} = useSupabase()
-
-    const [users, setUsers] = useState<Profile[]>([])
-
-    useEffect(() => {
-      const users = usersWhoReact
-        .sort((a, b) => b.timestamp - a.timestamp)
-        .map(el => el.user_id)
-
-      void (async (): Promise<void> => {
-        const {data} = await supabase.from('profiles').select().in('id', users)
-        if (data) {
-          setUsers(data)
-        }
-      })()
-    }, [usersWhoReact])
+    const users = useUsersWhoReacted(usersWhoReact)
 
     return (
       <TwUsers>
