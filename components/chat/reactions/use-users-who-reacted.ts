@@ -8,20 +8,22 @@ export const useUsersWhoReacted = (
   const {supabase} = useSupabase()
   const [users, setUsers] = useState<Profile[]>([])
   const [error, setError] = useState<string | null>(null)
-  const hasFetched = useRef(false) // Prevents repeated fetching
+  const hasFetched = useRef(false) // Prevents repeated fetching after the first fetch
+  const isMounted = useRef(true) // Track mount status without re-triggering effect
 
   // Get unique userIds to avoid requesting unnecessary data
   const userIds = useMemo(() => Object.keys(reactions || {}), [reactions])
 
   useEffect(() => {
+    // Prevent fetching if no userIds or already fetched
     if (userIds.length === 0 || hasFetched.current) {
       return
     }
 
-    hasFetched.current = true // Set flag to avoid repeated fetch
+    // Set flag to indicate fetching has occurred
+    hasFetched.current = true
 
-    let isMounted = true // Flag to prevent state update after component unmount
-
+    // Fetch the users if not already fetched
     const fetchUsers = async (): Promise<void> => {
       try {
         const {data, error} = await supabase
@@ -29,26 +31,34 @@ export const useUsersWhoReacted = (
           .select()
           .in('id', userIds)
 
+        // Handle error from supabase
         if (error) {
-          throw error
+          throw new Error(error.message || 'Error fetching users')
         }
-        if (isMounted) {
-          setUsers(data || [])
-        }
+
+        setUsers(data || [])
       } catch (err) {
-        if (isMounted) {
-          console.error('Error fetching users:', err)
-          setError('Failed to fetch users')
+        if (err instanceof Error) {
+          console.error('Error fetching users:', err.message)
+          setError(
+            err.message || 'Failed to fetch users. Please try again later.'
+          )
+        } else {
+          // In case err is not an instance of Error (unexpected errors)
+          console.error('Unexpected error fetching users:', err)
+          setError('An unexpected error occurred. Please try again later.')
         }
       }
     }
 
+    // Call the fetch function
     void fetchUsers()
 
+    // Cleanup: set the component as unmounted
     return () => {
-      isMounted = false // Prevent state update after unmount
+      isMounted.current = false
     }
-  }, [userIds, supabase])
+  }, [userIds, supabase]) // Don't include isMounted or hasFetched in dependencies
 
   return {users, error}
 }
