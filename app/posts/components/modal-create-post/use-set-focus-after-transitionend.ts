@@ -1,20 +1,34 @@
 import {useEffect} from 'react'
 
 export const useSetFocusAfterTransitionEnd = (
-  id: string,
-  dep: string | null,
+  data: {
+    id: string
+    dep: string | null
+  },
   focusHandler: () => void,
   callbackHandler: () => void
 ) => {
+  const {id, dep} = data
   useEffect(() => {
-    if (dep) {
-      document.getElementById(id)?.addEventListener('transitionend', e => {
-        if (e.propertyName === 'opacity') {
+    const element = document.getElementById(id)
+    if (!element) {
+      return
+    }
+
+    const handleTransitionend = (e: TransitionEvent) => {
+      if (dep) {
+        if (e?.propertyName === 'opacity') {
           focusHandler()
         }
-      })
-    } else {
-      callbackHandler()
+      } else {
+        callbackHandler()
+      }
+    }
+
+    element?.addEventListener('transitionend', handleTransitionend)
+
+    return () => {
+      element?.removeEventListener('transitionend', handleTransitionend)
     }
   }, [dep])
 }

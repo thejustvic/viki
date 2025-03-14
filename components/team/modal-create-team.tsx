@@ -47,8 +47,10 @@ const Data = observer(() => {
   const {register, handleSubmit, setFocus, reset} = useForm<FormInputs>()
 
   useSetFocusAfterTransitionEnd(
-    'dialog-modal-create-team',
-    getSearchParam('create-team'),
+    {
+      id: 'dialog-modal-create-team',
+      dep: getSearchParam('create-team')
+    },
     () => setFocus('name'),
     () => reset()
   )

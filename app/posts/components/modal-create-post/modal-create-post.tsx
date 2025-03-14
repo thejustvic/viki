@@ -54,8 +54,10 @@ const Text = observer(() => {
   const {register, handleSubmit, setFocus, resetField} = useForm<FormInputs>()
 
   useSetFocusAfterTransitionEnd(
-    'dialog-modal-create-post',
-    getSearchParam('create-post'),
+    {
+      id: 'dialog-modal-create-post',
+      dep: getSearchParam('create-post')
+    },
     () => setFocus('text'),
     () => resetField('text')
   )
