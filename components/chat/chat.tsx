@@ -2,7 +2,7 @@ import {useBoolean} from '@/hooks/use-boolean'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
-import {MouseEvent, useEffect, useState} from 'react'
+import {MouseEvent, useEffect, useRef, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {Loader} from '../common/loader'
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
@@ -14,6 +14,7 @@ import {useChatHandlers} from './chat-handlers'
 import {useChatStore} from './chat-store'
 import {SmileyReactions} from './reactions/smiley-reactions'
 import {useReactionsHandlers} from './reactions/use-reactions-handlers'
+import {useUsersWhoReacted} from './reactions/use-users-who-reacted'
 import type {Message as MessageType} from './types'
 
 export const Chat = observer(() => {
@@ -57,14 +58,19 @@ const Messages = observer(() => {
     )
   }
 
-  if (state.chat.data?.length === 0) {
+  if (!state.chat.data) {
+    return <TwState className="text-info">can not take data</TwState>
+  }
+
+  if (state.chat.data.length === 0) {
     return <TwState className="text-info">type some message</TwState>
   }
 
+  const userEmail = user?.email
+
   return (
     <div className="flex flex-col gap-2 h-[54px]">
-      {state.chat.data?.map(message => {
-        const userEmail = user?.email
+      {state.chat.data.map(message => {
         return (
           <Message
             key={message.id}
@@ -82,12 +88,12 @@ interface BubbleProps {
   my?: boolean
 }
 
-const Message = (props: BubbleProps) => {
-  const {my, message} = props
+const Message = observer(({my, message}: BubbleProps) => {
   const showReactions = useBoolean(false)
   const {selectReaction} = useReactionsHandlers()
+  const {users: allUsersWhoReacted} = useUsersWhoReacted(message.reactions)
 
-  const [lastTap, setLastTap] = useState(0)
+  const lastTapRef = useRef<number>(0) // Use ref to avoid state updates
 
   const putHeart = async () => {
     await selectReaction('❤️', message)
@@ -96,16 +102,16 @@ const Message = (props: BubbleProps) => {
   const handleTap = (e: React.TouchEvent) => {
     e.preventDefault()
     const now = Date.now()
-    if (now - lastTap < 300) {
-      console.table('Double Tap Detected!')
+    if (now - lastTapRef.current < 300) {
+      // Double Tap Detected!
       void putHeart()
     }
-    setLastTap(now)
+    lastTapRef.current = now
   }
 
   return (
     <ChatBubble end={my}>
-      <MessageDropdown {...props} />
+      <MessageDropdown my={my} message={message} />
       <ChatBubble.Message
         color={my ? 'primary' : undefined}
         className="break-words relative"
@@ -115,11 +121,15 @@ const Message = (props: BubbleProps) => {
         onTouchStart={handleTap}
       >
         {message.text}
-        <SmileyReactions message={message} isMouseOver={showReactions.value} />
+        <SmileyReactions
+          allUsersWhoReacted={allUsersWhoReacted}
+          message={message}
+          isMouseOver={showReactions.value}
+        />
       </ChatBubble.Message>
     </ChatBubble>
   )
-}
+})
 
 const MessageDropdown = ({
   my,

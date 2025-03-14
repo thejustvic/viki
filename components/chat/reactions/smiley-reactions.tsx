@@ -4,16 +4,16 @@ import {ObjUtil} from '@/utils/obj-util'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMoodSmile, IconMoodSmileFilled} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {HTMLProps, useEffect, useState} from 'react'
+import {HTMLProps} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
-import {Message, Profile, smileys, UserWhoReacted} from '../types'
+import {Message, Profile, smileys} from '../types'
 import {getReactions} from './smiley-reactions-utils'
 import {useReactionsHandlers} from './use-reactions-handlers'
 
 const TwSmileyContainer = tw.div`
-  bg-accent-content
+  bg-info-content
   rounded-box
   px-1
   grid
@@ -69,11 +69,18 @@ const TwDropdown = tw(Dropdown)`
 `
 
 interface SmileyReactionsProps {
+  allUsersWhoReacted: Profile[]
+  message: Message
+  isMouseOver: boolean
+}
+
+interface EmptyReactionsProps {
   message: Message
   isMouseOver: boolean
 }
 
 export const SmileyReactions = ({
+  allUsersWhoReacted,
   message,
   isMouseOver
 }: SmileyReactionsProps) => {
@@ -83,56 +90,32 @@ export const SmileyReactions = ({
   if (ObjUtil.isEmpty(message.reactions)) {
     return
   }
-  return <Reactions message={message} />
+  return <Reactions allUsersWhoReacted={allUsersWhoReacted} message={message} />
 }
 
 const maxShownUsers = 3
 
-const useUsersWhoReacted = (usersWhoReact: UserWhoReacted[]) => {
-  const {supabase} = useSupabase()
-  const [users, setUsers] = useState<Profile[]>([])
+const UsersWhoReacted = observer(({users}: {users: Profile[]}) => {
+  return (
+    <TwUsers>
+      {users.slice(0, maxShownUsers).map(user => {
+        return (
+          <div className="flex items-center gap-2" key={user.id}>
+            <UserImage
+              src={user.avatar_url ?? undefined}
+              containerClassName="h-[24px] w-[24px]"
+            />
+            <div className="truncate">{user.full_name}</div>
+          </div>
+        )
+      })}
+      {users.length > maxShownUsers &&
+        `... and ${users.length - maxShownUsers} more`}
+    </TwUsers>
+  )
+})
 
-  useEffect(() => {
-    const users = usersWhoReact
-      .sort((a, b) => b.timestamp - a.timestamp)
-      .map(el => el.user_id)
-
-    void (async (): Promise<void> => {
-      const {data} = await supabase.from('profiles').select().in('id', users)
-      if (data) {
-        setUsers(data)
-      }
-    })()
-  }, [usersWhoReact])
-
-  return users
-}
-
-const UsersWhoReacted = observer(
-  ({usersWhoReact}: {usersWhoReact: UserWhoReacted[]}) => {
-    const users = useUsersWhoReacted(usersWhoReact)
-
-    return (
-      <TwUsers>
-        {users.slice(0, maxShownUsers).map(user => {
-          return (
-            <div className="flex items-center gap-4" key={user.id}>
-              <UserImage
-                src={user.avatar_url ?? undefined}
-                containerClassName="h-[24px] w-[24px]"
-              />
-              <div className="truncate">{user.full_name}</div>
-            </div>
-          )
-        })}
-        {users.length > maxShownUsers &&
-          `... and ${users.length - maxShownUsers} more`}
-      </TwUsers>
-    )
-  }
-)
-
-const EmptyReactions = ({message, isMouseOver}: SmileyReactionsProps) => {
+const EmptyReactions = ({message, isMouseOver}: EmptyReactionsProps) => {
   return (
     <TwDropdown
       className={twJoin(isMouseOver && 'opacity-100')}
@@ -156,7 +139,10 @@ const EmptyReactions = ({message, isMouseOver}: SmileyReactionsProps) => {
   )
 }
 
-const Reactions = (props: {message: Message}) => {
+const Reactions = (props: {
+  message: Message
+  allUsersWhoReacted: Profile[]
+}) => {
   return (
     <TwContainer>
       <ReactionsList {...props} />
@@ -185,47 +171,82 @@ const ReactionsDropdown = ({message}: {message: Message}) => {
   )
 }
 
-const ReactionsList = observer(({message}: {message: Message}) => {
-  const {user} = useSupabase()
-  const {selectReaction} = useReactionsHandlers()
+const FirstUserWhoReacted = ({user}: {user: Profile | undefined}) => {
+  return (
+    <UserImage
+      src={user?.avatar_url ?? undefined}
+      containerClassName="h-[20px] w-[20px]"
+    />
+  )
+}
 
-  return getReactions(message).map(reaction => {
-    const isUsersWhoReactedHasCurrentUserId = reaction.usersWhoReacted.some(
-      e => e.user_id === user?.id
-    )
-    const usersWhoReactedLength = reaction.usersWhoReacted.length
-    return (
-      <div
-        key={reaction.smiley}
-        onClick={() => selectReaction(reaction.smiley, message)}
-      >
-        <Dropdown hover={!isMobile}>
-          <div
-            className={twJoin(
-              'flex gap-1 px-2 rounded-box items-center cursor-pointer',
-              isUsersWhoReactedHasCurrentUserId
-                ? 'bg-accent-content'
-                : 'bg-info-content'
-            )}
-          >
-            <SmileyText value={reaction.smiley} className="text-[16px]" />
-            {usersWhoReactedLength > 1 ? (
-              <span
-                className="text-sm truncate max-w-[30px] text-info"
-                title={String(usersWhoReactedLength)}
-              >
-                {usersWhoReactedLength}
-              </span>
-            ) : null}
-          </div>
-          <Dropdown.Menu>
-            <UsersWhoReacted usersWhoReact={reaction.usersWhoReacted} />
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-    )
-  })
-})
+const ReactionsList = observer(
+  ({
+    message,
+    allUsersWhoReacted
+  }: {
+    message: Message
+    allUsersWhoReacted: Profile[]
+  }) => {
+    const {user} = useSupabase()
+    const {selectReaction} = useReactionsHandlers()
+
+    return getReactions(message).map(reaction => {
+      const isUsersWhoReactedHasCurrentUserId = reaction.usersWhoReacted.some(
+        e => e.user_id === user?.id
+      )
+      const usersWhoReactedLength = reaction.usersWhoReacted.length
+
+      // Create a Set of IDs from the reaction.usersWhoReacted for fast lookup
+      const filterIds = new Set(
+        reaction.usersWhoReacted.map(item => item.user_id)
+      )
+
+      // Filter allUsersWhoReacted, keeping only elements in reaction.usersWhoReacted
+      const filteredUsers = allUsersWhoReacted.filter(item =>
+        filterIds.has(item.id)
+      )
+
+      return (
+        <div
+          key={reaction.smiley}
+          onClick={() => selectReaction(reaction.smiley, message)}
+        >
+          <Dropdown hover={!isMobile}>
+            <div
+              className={twJoin(
+                'flex gap-1 px-2 rounded-box items-center cursor-pointer',
+                isUsersWhoReactedHasCurrentUserId
+                  ? 'bg-info'
+                  : 'bg-info-content'
+              )}
+            >
+              <SmileyText value={reaction.smiley} className="text-[16px]" />
+              {usersWhoReactedLength === 1 ? (
+                <FirstUserWhoReacted
+                  user={allUsersWhoReacted.find(
+                    e => e.id === reaction.usersWhoReacted?.[0]?.user_id
+                  )}
+                />
+              ) : null}
+              {usersWhoReactedLength > 1 ? (
+                <span
+                  className="text-sm text-base-content truncate max-w-[30px]"
+                  title={String(usersWhoReactedLength)}
+                >
+                  {usersWhoReactedLength}
+                </span>
+              ) : null}
+            </div>
+            <Dropdown.Menu>
+              <UsersWhoReacted users={filteredUsers} />
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      )
+    })
+  }
+)
 
 const DropdownContent = ({message}: {message: Message}) => {
   const {selectReaction} = useReactionsHandlers()
