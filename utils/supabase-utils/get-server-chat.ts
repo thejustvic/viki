@@ -1,4 +1,5 @@
 import {Message, Reactions} from '@/components/chat/types'
+import {Tables} from '../database.types'
 import {createClient} from './supabase-server'
 
 export const getServerChat = async (
@@ -14,6 +15,12 @@ export const getServerChat = async (
     .eq('post_id', postId)
     .order('created_at')
 
+  return useExplicitlyCastFromJsonToReactions(data)
+}
+
+export const useExplicitlyCastFromJsonToReactions = (
+  data: Tables<'messages'>[] | null
+) => {
   if (!data) {
     return null
   }
