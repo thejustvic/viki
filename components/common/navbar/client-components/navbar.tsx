@@ -8,6 +8,8 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSearch} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
+import {twJoin} from 'tailwind-merge'
+import tw from 'tailwind-styled-components'
 import {Button} from '../../../daisyui/button'
 import {Dropdown} from '../../../daisyui/dropdown'
 import {Navbar as Nav} from '../../../daisyui/navbar'
@@ -19,40 +21,49 @@ import {OpenTeamButton} from './open-team-button'
 import {RightDrawerButton} from './right-drawer-button'
 import {TeamSelect} from './team-select'
 
+const TwNav = tw(Nav)`
+  sticky 
+  top-0 
+  z-10 
+  px-0 
+  bg-base-200 
+  gap-6 
+  justify-between
+`
+
 export const Navbar = observer(() => {
   const {user} = useSupabase()
 
   return (
-    <Nav
-      className="sticky top-0 z-10 px-0 bg-base-200"
-      style={{height: headerHeight}}
-    >
-      {user ? <NavStart /> : <Nav.Start />}
+    <TwNav style={{height: headerHeight}}>
+      {user && !isMobile ? <NavStart /> : null}
       <NavCenter />
       {user ? <NavEnd /> : <Nav.End />}
-    </Nav>
+    </TwNav>
   )
 })
 
 const NavStart = () => {
   const postId = getSearchPost()
 
+  if (isMobile) {
+    return
+  }
+
   return (
     <Nav.Start>
       {postId && <LeftDrawerButton />}
-      {!isMobile && (
-        <div className="ml-4 flex gap-2 items-center">
-          <TeamSelect />
-          <OpenTeamButton />
-        </div>
-      )}
+      <div className="ml-4 flex gap-2 items-center">
+        <TeamSelect />
+        <OpenTeamButton />
+      </div>
     </Nav.Start>
   )
 }
 
 const NavCenter = () => {
   return (
-    <Nav.Center className="font-mono text-lg">
+    <Nav.Center className={twJoin('font-mono text-lg', isMobile && 'ml-4')}>
       <Search />
     </Nav.Center>
   )
@@ -69,6 +80,7 @@ const Search = observer(() => {
         placeholder="Search"
         onChange={e => store.setSearchValue(e.target.value)}
         value={state.searchValue}
+        className="truncate"
       />
     </label>
   )
