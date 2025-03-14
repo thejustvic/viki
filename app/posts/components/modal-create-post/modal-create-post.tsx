@@ -6,15 +6,15 @@ import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useTeamStore} from '@/components/team/team-store'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
-import {Util} from '@/utils/util'
+import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
-import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {usePostHandlers} from '../posts-handlers'
+import {useSetFocusAfterTransitionEnd} from './use-set-focus-after-transitionend'
 
 export const ModalCreatePost = () => {
   const updateSearchParams = useUpdateSearchParams()
-  const createPost = Util.getSearchParam('create-post')
+  const createPost = getSearchParam('create-post')
 
   const goBack = () => {
     updateSearchParams('create-post')
@@ -47,26 +47,18 @@ interface FormInputs {
 
 const Text = observer(() => {
   const [state] = useTeamStore()
+
   const updateSearchParams = useUpdateSearchParams()
 
   const {insertPost} = usePostHandlers()
   const {register, handleSubmit, setFocus, resetField} = useForm<FormInputs>()
 
-  const createPostSearch = Util.getSearchParam('create-post')
-
-  useEffect(() => {
-    if (createPostSearch) {
-      document
-        .getElementById('dialog-modal-create-post')
-        ?.addEventListener('transitionend', e => {
-          if (e.propertyName === 'opacity') {
-            setFocus('text')
-          }
-        })
-    } else {
-      resetField('text')
-    }
-  }, [createPostSearch])
+  useSetFocusAfterTransitionEnd(
+    'dialog-modal-create-post',
+    getSearchParam('create-post'),
+    () => setFocus('text'),
+    () => resetField('text')
+  )
 
   const onSubmit = async (data: FormInputs) => {
     if (!state.currentTeamId) {

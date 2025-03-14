@@ -2,8 +2,8 @@
 
 import {Modal} from '@/components/common/modal'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
+import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Util} from '@/utils/util'
 import {observer} from 'mobx-react-lite'
 import {Team} from './team'
 import {useTeamStore} from './team-store'
@@ -28,7 +28,7 @@ export const ModalTeam = observer(() => {
   return (
     <Modal
       id="modal-team"
-      open={Boolean(Util.getSearchParam('team'))}
+      open={Boolean(getSearchParam('team'))}
       goBack={goBack}
       header={<TeamName />}
       body={<Team />}

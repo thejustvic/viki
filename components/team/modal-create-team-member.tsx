@@ -1,12 +1,12 @@
 'use client'
 
+import {useSetFocusAfterTransitionEnd} from '@/app/posts/components/modal-create-post/use-set-focus-after-transitionend'
 import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
-import {Util} from '@/utils/util'
+import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
-import {useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {Input} from '../daisyui/input'
 import {useTeamMemberHandlers} from './team-member-handlers'
@@ -14,7 +14,7 @@ import {useTeamStore} from './team-store'
 
 export const ModalCreateTeamMember = () => {
   const updateSearchParams = useUpdateSearchParams()
-  const createTeamMember = Util.getSearchParam('create-team-member')
+  const createTeamMember = getSearchParam('create-team-member')
 
   const goBack = () => {
     updateSearchParams('create-team-member')
@@ -47,21 +47,12 @@ const Data = observer(() => {
   const {insertTeamMember} = useTeamMemberHandlers()
   const {register, handleSubmit, setFocus, reset} = useForm<FormInputs>()
 
-  const createTeamMemberSearch = Util.getSearchParam('create-team-member')
-
-  useEffect(() => {
-    if (createTeamMemberSearch) {
-      document
-        .getElementById('dialog-modal-create-team-member')
-        ?.addEventListener('transitionend', e => {
-          if (e.propertyName === 'opacity') {
-            setFocus('name')
-          }
-        })
-    } else {
-      reset()
-    }
-  }, [createTeamMemberSearch])
+  useSetFocusAfterTransitionEnd(
+    'dialog-modal-create-team-member',
+    getSearchParam('create-team-member'),
+    () => setFocus('name'),
+    () => reset()
+  )
 
   const onSubmit = async (data: FormInputs) => {
     if (!state.currentTeamId) {
