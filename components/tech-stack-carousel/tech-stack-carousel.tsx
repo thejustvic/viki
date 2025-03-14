@@ -3,7 +3,7 @@
 import {useBoolean} from '@/hooks/use-boolean'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
-import {CSSProperties} from 'react'
+import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
 import {Button} from '../daisyui/button'
 import {Link} from '../daisyui/link'
@@ -15,16 +15,13 @@ const TwCarousel = tw.div`
   justify-center 
   flex-1
 `
-
 const TwScene = tw.div`
   scene
 `
-
 const TwKeenSlider = tw.div`
   carousel 
   keen-slider
 `
-
 const TwTechStack = tw.h1`
   flex 
   justify-center 
@@ -32,47 +29,76 @@ const TwTechStack = tw.h1`
   font-mono 
   text-2xl 
   pointer-events-none 
-  drop-shadow-2xl
+  drop-shadow-2xl 
   truncate
 `
+const TwCard = tw.div`
+  p-4 
+  bg-base-300 
+  shadow-2xl 
+  rounded-2xl 
+  h-[142px] 
+  w-[190px] 
+  carousel__cell 
+  transform-3d
+`
+const TwCardInner = tw.div`
+  flex 
+  flex-col 
+  h-full
+`
+const TwImage = tw.div`
+  flex 
+  items-center 
+  justify-center 
+  flex-1
+`
+const TwLink = tw.div`
+  flex 
+  items-center 
+  justify-center
+`
 
+// 3D Rotation Logic
 const carousel: KeenSliderPlugin = slider => {
   const z = 300
   function rotate() {
     const deg = 360 * slider.track.details.progress
     slider.container.style.transform = `translateZ(-${z}px) rotateY(${-deg}deg)`
   }
+
   slider.on('created', () => {
     const deg = 360 / slider.slides.length
-    slider.slides.forEach((element, idx) => {
-      element.style.transform = `rotateY(${deg * idx}deg) translateZ(${z}px)`
+    slider.slides.forEach((el, idx) => {
+      el.style.transform = `rotateY(${deg * idx}deg) translateZ(${z}px)`
     })
     rotate()
   })
+
   slider.on('detailsChanged', rotate)
 }
 
-const animation = {
-  duration: 8000,
-  easing: (t: number) => t
-}
+// Animation Config
+const animation = {duration: 8000, easing: (t: number) => t}
 
 export const TechStackCarousel = () => {
   const mouseOver = useBoolean(false)
-  const [sliderRef] = useKeenSlider<HTMLDivElement>(
+
+  const [sliderRef, sliderInstance] = useKeenSlider<HTMLDivElement>(
     {
       loop: true,
       selector: '.carousel__cell',
       renderMode: 'custom',
       mode: 'free-snap',
       created(s) {
-        s.container.addEventListener('mouseover', () => {
-          mouseOver.setValue(true)
-        })
-        s.container.addEventListener('mouseout', () => {
-          mouseOver.setValue(false)
-        })
         s.moveToIdx(5, true, animation)
+
+        s.container.addEventListener('mouseover', () =>
+          mouseOver.setValue(true)
+        )
+        s.container.addEventListener('mouseout', () =>
+          mouseOver.setValue(false)
+        )
       },
       updated(s) {
         if (!mouseOver.value) {
@@ -88,6 +114,19 @@ export const TechStackCarousel = () => {
     [carousel]
   )
 
+  useEffect(() => {
+    if (!sliderInstance.current) {
+      return
+    }
+
+    const container = sliderInstance.current.container
+
+    return () => {
+      container.removeEventListener('mouseover', () => mouseOver.setValue(true))
+      container.removeEventListener('mouseout', () => mouseOver.setValue(false))
+    }
+  }, [sliderInstance])
+
   return (
     <div>
       <TwTechStack>Project Tech Stack</TwTechStack>
@@ -95,7 +134,7 @@ export const TechStackCarousel = () => {
         <TwScene>
           <TwKeenSlider ref={sliderRef}>
             {stack.map(card => (
-              <Card card={card} key={card.href} />
+              <Card key={card.href} card={card} />
             ))}
           </TwKeenSlider>
         </TwScene>
@@ -104,46 +143,17 @@ export const TechStackCarousel = () => {
   )
 }
 
-const TwCard = tw.div`
-  p-4
-  bg-base-300 
-  shadow-2xl
-  rounded-2xl
-  h-[142px]
-  w-[190px]
-  carousel__cell
-  transform-3d
-`
-
-const TwCardInner = tw.div`
-  flex 
-  flex-col 
-  h-full
-`
-
-const TwImage = tw.div`
-  flex 
-  items-center 
-  justify-center 
-  flex-1
-`
-
-const TwLink = tw.div`
-  flex 
-  items-center 
-  justify-center
-`
-
 const Card = ({card}: {card: CardProps}) => {
-  const transform: CSSProperties = {
-    transform: 'translateZ(20px)'
-  }
-
   return (
     <TwCard>
-      <TwCardInner style={transform}>
+      <TwCardInner style={{transform: 'translateZ(20px)'}}>
         <TwImage>
-          <Image height={58} width={58} src={card.logo} alt="logo" />
+          <Image
+            height={58}
+            width={58}
+            src={card.logo}
+            alt={`${card.name} logo`}
+          />
         </TwImage>
         <TwLink>
           <Link href={card.href} rel="noopener noreferrer" target="_blank">
