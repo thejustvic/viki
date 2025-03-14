@@ -1,5 +1,6 @@
-import {useSearchParams} from 'next/navigation'
+import {Reactions} from '@/components/chat/types'
 import {Writable} from 'ts-essentials'
+import {Tables} from './database.types'
 
 export class Util {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -36,8 +37,19 @@ export class Util {
     })
   }
 
-  static getSearchParam(value: string): string | null {
-    return useSearchParams().get(value)
+  static explicitlyCastFromJsonToReactions = (
+    data: Tables<'messages'>[] | null
+  ) => {
+    if (!data) {
+      return null
+    }
+
+    const messages = data.map(msg => ({
+      ...msg,
+      reactions: msg.reactions as unknown as Reactions // Explicitly cast from Json to Reactions
+    }))
+
+    return messages
   }
 }
 

@@ -1,5 +1,5 @@
-import {Util} from '@/utils/util'
+import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 
 export const getSearchPost = (): string | null => {
-  return Util.getSearchParam('post')
+  return getSearchParam('post')
 }

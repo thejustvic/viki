@@ -2,8 +2,8 @@ import {getSearchPost} from '@/app/posts/components/get-search-post'
 import {Post} from '@/app/posts/components/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {Tables} from '@/utils/database.types'
-import {useExplicitlyCastFromJsonToReactions} from '@/utils/supabase-utils/get-server-chat'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
+import {Util} from '@/utils/util'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useEffect} from 'react'
 import {ChatStore} from './chat-store'
@@ -34,7 +34,7 @@ export const useChatListener = (
   )
 
   useEffect(() => {
-    const messages = useExplicitlyCastFromJsonToReactions(data)
+    const messages = Util.explicitlyCastFromJsonToReactions(data)
     if (messages) {
       store.setChat({
         loading,

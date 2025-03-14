@@ -36,7 +36,7 @@ export const Modal = ({
       <div
         id={`dialog-${id}`}
         role="dialog"
-        className={twJoin('modal', className, open && 'modal-open')}
+        className={twJoin('modal', className)}
       >
         <div className="modal-box">
           {children}
