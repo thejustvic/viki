@@ -7,7 +7,7 @@ export const useSetFocusAfterTransitionEnd = (
   },
   focusHandler: () => void,
   callbackHandler: () => void
-) => {
+): void => {
   const {id, dep} = data
   useEffect(() => {
     const element = document.getElementById(id)
@@ -15,7 +15,7 @@ export const useSetFocusAfterTransitionEnd = (
       return
     }
 
-    const handleTransitionend = (e: TransitionEvent) => {
+    const handleTransitionend = (e: TransitionEvent): void => {
       if (dep) {
         if (e?.propertyName === 'opacity') {
           focusHandler()

@@ -1,4 +1,4 @@
-import {Reactions} from '@/components/chat/types'
+import {Message, Reactions} from '@/components/chat/types'
 import {Writable} from 'ts-essentials'
 import {Tables} from './database.types'
 
@@ -39,7 +39,7 @@ export class Util {
 
   static explicitlyCastFromJsonToReactions = (
     data: Tables<'messages'>[] | null
-  ) => {
+  ): Message[] | null => {
     if (!data) {
       return null
     }
