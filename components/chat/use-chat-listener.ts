@@ -61,7 +61,7 @@ export const useChatListener = (
 
   const fetchMessages = useCallback(() => {
     if (!postId) {
-      return null as unknown as PostgrestBuilder<Tables<'messages'>[]>
+      return null
     }
     return getMessages(postId, supabase)
   }, [postId, supabase])

@@ -80,7 +80,7 @@ export const useCurrentTeamListener = ({
 }): void => {
   const fetchTeam = useCallback(() => {
     if (!teamId) {
-      return null as unknown as PostgrestBuilder<TeamWithMembers | null>
+      return null
     }
     return getTeam(supabase, teamId)
   }, [supabase, teamId])

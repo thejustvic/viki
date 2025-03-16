@@ -23,7 +23,7 @@ export const useMyTeamsListener = (
 ): void => {
   const fetchMyTeams = useCallback(() => {
     if (!user) {
-      return null as unknown as PostgrestBuilder<Team[]>
+      return null
     }
     return getMyTeams(user, supabase)
   }, [supabase, user])

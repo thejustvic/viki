@@ -97,7 +97,7 @@ export const usePostsListener = ({
 }): void => {
   const fetchPosts = useCallback(() => {
     if (!currentTeamId) {
-      return null as unknown as PostgrestBuilder<Post[]>
+      return null
     }
     return getMyPosts(supabase, currentTeamId)
   }, [currentTeamId, supabase])

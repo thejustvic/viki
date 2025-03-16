@@ -79,7 +79,7 @@ export const useChecklistListener = ({
   // Memoize the fetch function so it doesn't get recreated unnecessarily
   const fetchChecklist = useCallback(() => {
     if (!postId) {
-      return null as unknown as PostgrestBuilder<Checkbox[]>
+      return null
     }
     return getChecklist(postId, supabase)
   }, [postId, supabase])
