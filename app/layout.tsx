@@ -43,8 +43,12 @@ export default async function RootLayout({children}: PropsWithChildren) {
             </TeamProvider>
           </GlobalProvider>
         </SupabaseProvider>
-        <Analytics mode="production" />
-        <SpeedInsights />
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Analytics mode="production" />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   )
