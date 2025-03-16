@@ -8,7 +8,7 @@ export interface SupabaseQuery<T> {
 }
 
 export const useSupabaseFetch = <T>(
-  postgrestBuilder: null | (() => PostgrestBuilder<T>),
+  postgrestBuilder: null | (() => PostgrestBuilder<T> | null),
   deps: unknown[]
 ): SupabaseQuery<T> => {
   const isFetching = useRef(false)
@@ -32,7 +32,18 @@ export const useSupabaseFetch = <T>(
       setResult(prev => ({...prev, loading: true})) // Only update `loading`
 
       try {
-        const {data, error} = await postgrestBuilder()
+        const response = postgrestBuilder()
+
+        if (!response) {
+          return
+        }
+
+        const {data, error} = await response
+
+        if (typeof data !== 'object') {
+          console.error('Unexpected response:', data)
+          return
+        }
 
         setResult({
           loading: false,
