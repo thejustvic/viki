@@ -2,10 +2,11 @@ import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {Util} from '@/utils/util'
 import {makeAutoObservable, observable} from 'mobx'
-import {Message} from './types'
+import {Message, Profile} from './types'
 
 interface State {
   chat: SupabaseQuery<Message[]>
+  usersWhoReacted: Profile[]
 }
 
 export class ChatStore {
@@ -14,7 +15,8 @@ export class ChatStore {
       loading: false,
       data: null,
       error: null
-    }
+    },
+    usersWhoReacted: []
   }
 
   constructor(serverChat: Message[]) {
@@ -26,6 +28,10 @@ export class ChatStore {
 
   setChat(chat: State['chat']): void {
     this.state.chat = chat
+  }
+
+  setUsersWhoReacted(users: State['usersWhoReacted']): void {
+    this.state.usersWhoReacted = users
   }
 
   handleUpdate = (oldMessage: Message, newMessage: Message): void => {

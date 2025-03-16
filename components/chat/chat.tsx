@@ -44,7 +44,6 @@ const TwState = tw.div`
 
 const Messages = observer(() => {
   const [state] = useChatStore()
-  const {user} = useSupabase()
 
   if (state.chat.error) {
     return <TwState>{state.chat.error.message}</TwState>
@@ -66,11 +65,20 @@ const Messages = observer(() => {
     return <TwState className="text-info">type some message</TwState>
   }
 
+  return <MessageList />
+})
+
+const MessageList = observer(() => {
+  const [state] = useChatStore()
+  const {user} = useSupabase()
+
+  useUsersWhoReacted()
+
   const userEmail = user?.email
 
   return (
     <div className="flex flex-col gap-2 h-[54px]">
-      {state.chat.data.map(message => {
+      {state.chat.data?.map(message => {
         return (
           <Message
             key={message.id}
@@ -91,7 +99,6 @@ interface BubbleProps {
 const Message = observer(({my, message}: BubbleProps) => {
   const showReactions = useBoolean(false)
   const {selectReaction} = useReactionsHandlers()
-  const {users: allUsersWhoReacted} = useUsersWhoReacted(message.reactions)
 
   const lastTapRef = useRef<number>(0) // Use ref to avoid state updates
 
@@ -121,11 +128,7 @@ const Message = observer(({my, message}: BubbleProps) => {
         onTouchStart={handleTap}
       >
         {message.text}
-        <SmileyReactions
-          allUsersWhoReacted={allUsersWhoReacted}
-          message={message}
-          isMouseOver={showReactions.value}
-        />
+        <SmileyReactions message={message} isMouseOver={showReactions.value} />
       </ChatBubble.Message>
     </ChatBubble>
   )

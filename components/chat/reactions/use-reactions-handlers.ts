@@ -1,7 +1,7 @@
 import {ObjUtil} from '@/utils/obj-util'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {useChatHandlers} from '../chat-handlers'
-import {Message, Reaction, Reactions, Smiley} from '../types'
+import {Message, Reactions, Smiley} from '../types'
 
 interface Handlers {
   addReaction: (smiley: Smiley, message: Message) => Promise<void>
@@ -21,19 +21,15 @@ export const useReactionsHandlers = (): Handlers => {
       return
     }
     const userId = user.id
-    const reaction: Reaction = {
-      timestamp: Date.now(),
-      smiley
-    }
+    const userIds = new Set(message.reactions[smiley])
+    userIds.add(userId)
+
     const reactions: Reactions = {
       ...message.reactions,
-      [userId]: message.reactions?.[userId]
-        ? [...message.reactions[userId], reaction]
-        : [reaction]
+      [smiley]: Array.from(userIds)
     }
-    const reactionsResult = reactions
 
-    await updateMessageReactions(reactionsResult, message.id)
+    await updateMessageReactions(reactions, message.id)
   }
 
   const removeReaction: Handlers['removeReaction'] = async (
@@ -44,18 +40,19 @@ export const useReactionsHandlers = (): Handlers => {
       return
     }
     const userId = user.id
+    const userIds = new Set(message.reactions[smiley])
+    userIds.delete(userId)
+
     const reactions: Reactions = {
       ...message.reactions,
-      [userId]: message.reactions?.[userId].filter(
-        reaction => reaction.smiley !== smiley
-      )
+      [smiley]: Array.from(userIds)
     }
     const filteredReactions = ObjUtil.filter(
       reactions,
-      (_userId, reactions) => reactions.length > 0
+      (_smiley, userIds) => userIds?.length !== 0
     )
 
-    const reactionsResult = ObjUtil.isEmpty(filteredReactions)
+    const reactionsResult: Reactions = ObjUtil.isEmpty(filteredReactions)
       ? {}
       : (filteredReactions as Reactions)
 
@@ -69,9 +66,9 @@ export const useReactionsHandlers = (): Handlers => {
     if (!user) {
       return
     }
-    const reactionExist = message.reactions?.[user.id]?.some(
-      reaction => reaction.smiley === smiley
-    )
+    const userIds = new Set(message.reactions[smiley])
+    const userId = user.id
+    const reactionExist = userIds.has(userId)
     if (reactionExist) {
       await removeReaction(smiley, message)
     } else {

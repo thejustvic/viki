@@ -7,35 +7,20 @@ export type Message = Omit<Tables<'messages'>, 'reactions'> & {
   reactions: Reactions
 }
 
-export interface Reactions {
-  [user_id: User['id']]: Reaction[]
+export type Reactions = {
+  [smiley in Smiley]?: User['id'][]
 }
-
-export interface Reaction {
-  smiley: Smiley
-  timestamp: number
-}
-
-export type Smiley = (typeof smileys)[number]
 
 export const smileys = [
-  '👍',
-  '👎',
-  '😂',
-  '😕',
-  '😨',
-  '❤️',
-  '💀',
-  '😈',
-  '😇'
+  '\uD83D\uDC4D', //👍
+  '\uD83D\uDC4E', //👎
+  '\uD83D\uDE02', //😂
+  '\uD83D\uDE15', //😕
+  '\uD83D\uDE28', //😨
+  '\u2764\uFE0F', //❤️
+  '\uD83D\uDC80', //💀
+  '\uD83D\uDE08', //😈
+  '\uD83D\uDE07' //😇
 ] as const
 
-export interface UserWhoReacted {
-  user_id: User['id']
-  timestamp: number
-}
-
-export interface SmileyWithUserWhoReacted {
-  smiley: Smiley
-  usersWhoReacted: UserWhoReacted[]
-}
+export type Smiley = (typeof smileys)[number]

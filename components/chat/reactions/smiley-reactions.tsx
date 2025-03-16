@@ -8,8 +8,9 @@ import {HTMLProps} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
+import {useChatStore} from '../chat-store'
 import {Message, Profile, smileys} from '../types'
-import {getReactions} from './smiley-reactions-utils'
+// import {getReactions} from './smiley-reactions-utils'
 import {useReactionsHandlers} from './use-reactions-handlers'
 
 const TwSmileyContainer = tw.div`
@@ -69,7 +70,6 @@ const TwDropdown = tw(Dropdown)`
 `
 
 interface SmileyReactionsProps {
-  allUsersWhoReacted: Profile[]
   message: Message
   isMouseOver: boolean
 }
@@ -80,17 +80,13 @@ interface EmptyReactionsProps {
 }
 
 export const SmileyReactions = ({
-  allUsersWhoReacted,
   message,
   isMouseOver
 }: SmileyReactionsProps) => {
   if (ObjUtil.isEmpty(message.reactions)) {
     return <EmptyReactions message={message} isMouseOver={isMouseOver} />
   }
-  if (ObjUtil.isEmpty(message.reactions)) {
-    return
-  }
-  return <Reactions allUsersWhoReacted={allUsersWhoReacted} message={message} />
+  return <Reactions message={message} />
 }
 
 const maxShownUsers = 3
@@ -139,10 +135,7 @@ const EmptyReactions = ({message, isMouseOver}: EmptyReactionsProps) => {
   )
 }
 
-const Reactions = (props: {
-  message: Message
-  allUsersWhoReacted: Profile[]
-}) => {
+const Reactions = (props: {message: Message}) => {
   return (
     <TwContainer>
       <ReactionsList {...props} />
@@ -180,73 +173,67 @@ const FirstUserWhoReacted = ({user}: {user: Profile | undefined}) => {
   )
 }
 
-const ReactionsList = observer(
-  ({
-    message,
-    allUsersWhoReacted
-  }: {
-    message: Message
-    allUsersWhoReacted: Profile[]
-  }) => {
-    const {user} = useSupabase()
-    const {selectReaction} = useReactionsHandlers()
+const ReactionsList = observer(({message}: {message: Message}) => {
+  const [state] = useChatStore()
+  const {user} = useSupabase()
+  const userId = user?.id
+  const {selectReaction} = useReactionsHandlers()
 
-    return getReactions(message).map(reaction => {
-      const isUsersWhoReactedHasCurrentUserId = reaction.usersWhoReacted.some(
-        e => e.user_id === user?.id
-      )
-      const usersWhoReactedLength = reaction.usersWhoReacted.length
+  return (
+    <>
+      {ObjUtil.list(message.reactions, (smiley, userIds) => {
+        // Create a Set of IDs from the reaction.usersWhoReacted for fast lookup
+        const filterIds = new Set(userIds)
 
-      // Create a Set of IDs from the reaction.usersWhoReacted for fast lookup
-      const filterIds = new Set(
-        reaction.usersWhoReacted.map(item => item.user_id)
-      )
+        const isUsersWhoReactedHasCurrentUserId = userId
+          ? filterIds.has(userId)
+          : false
 
-      // Filter allUsersWhoReacted, keeping only elements in reaction.usersWhoReacted
-      const filteredUsers = allUsersWhoReacted.filter(item =>
-        filterIds.has(item.id)
-      )
+        const usersWhoReactedLength = filterIds.size
 
-      return (
-        <div
-          key={reaction.smiley}
-          onClick={() => selectReaction(reaction.smiley, message)}
-        >
-          <Dropdown hover={!isMobile}>
-            <div
-              className={twJoin(
-                'flex gap-1 px-2 rounded-box items-center cursor-pointer',
-                isUsersWhoReactedHasCurrentUserId
-                  ? 'bg-info'
-                  : 'bg-info-content'
-              )}
-            >
-              <SmileyText value={reaction.smiley} className="text-[16px]" />
-              {usersWhoReactedLength === 1 ? (
-                <FirstUserWhoReacted
-                  user={allUsersWhoReacted.find(
-                    e => e.id === reaction.usersWhoReacted?.[0]?.user_id
-                  )}
-                />
-              ) : null}
-              {usersWhoReactedLength > 1 ? (
-                <span
-                  className="text-sm text-base-content truncate max-w-[30px]"
-                  title={String(usersWhoReactedLength)}
-                >
-                  {usersWhoReactedLength}
-                </span>
-              ) : null}
-            </div>
-            <Dropdown.Menu>
-              <UsersWhoReacted users={filteredUsers} />
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      )
-    })
-  }
-)
+        // Filter usersWhoReacted, keeping only elements in reaction.usersWhoReacted
+        const filteredUsers = state.usersWhoReacted.filter(item =>
+          filterIds.has(item.id)
+        )
+
+        return (
+          <div key={smiley} onClick={() => selectReaction(smiley, message)}>
+            <Dropdown hover={!isMobile}>
+              <div
+                className={twJoin(
+                  'flex gap-1 px-2 rounded-box items-center cursor-pointer',
+                  isUsersWhoReactedHasCurrentUserId
+                    ? 'bg-info'
+                    : 'bg-info-content'
+                )}
+              >
+                <SmileyText value={smiley} className="text-[16px]" />
+                {usersWhoReactedLength === 1 ? (
+                  <FirstUserWhoReacted
+                    user={state.usersWhoReacted.find(
+                      e => e.id === userIds?.[0]
+                    )}
+                  />
+                ) : null}
+                {usersWhoReactedLength > 1 ? (
+                  <span
+                    className="text-sm text-base-content truncate max-w-[30px]"
+                    title={String(usersWhoReactedLength)}
+                  >
+                    {usersWhoReactedLength}
+                  </span>
+                ) : null}
+              </div>
+              <Dropdown.Menu>
+                <UsersWhoReacted users={filteredUsers} />
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        )
+      })}
+    </>
+  )
+})
 
 const DropdownContent = ({message}: {message: Message}) => {
   const {selectReaction} = useReactionsHandlers()
