@@ -7,6 +7,7 @@ import {Message, Profile} from './types'
 interface State {
   chat: SupabaseQuery<Message[]>
   usersWhoReacted: Profile[]
+  isNeedToUpdateScroll: boolean
 }
 
 export class ChatStore {
@@ -16,7 +17,8 @@ export class ChatStore {
       data: null,
       error: null
     },
-    usersWhoReacted: []
+    usersWhoReacted: [],
+    isNeedToUpdateScroll: false
   }
 
   constructor(serverChat: Message[]) {
@@ -26,7 +28,14 @@ export class ChatStore {
     this.setChat({loading: false, data: serverChat, error: null})
   }
 
+  setIsNeedToUpdateScroll(value: boolean) {
+    this.state.isNeedToUpdateScroll = value
+  }
+
   setChat(chat: State['chat']): void {
+    if (!this.state.chat.data) {
+      this.setIsNeedToUpdateScroll(true)
+    }
     this.state.chat = chat
   }
 
@@ -56,6 +65,7 @@ export class ChatStore {
         data: [...this.state.chat.data, newMessage]
       })
     }
+    this.setIsNeedToUpdateScroll(true)
   }
 
   handleDelete = (oldMessage: Message): void => {

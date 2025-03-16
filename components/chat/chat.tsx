@@ -19,13 +19,14 @@ import type {Message as MessageType} from './types'
 
 export const Chat = observer(() => {
   const [scrollEl, setScrollEl] = useState<HTMLElement>()
-  const [state] = useChatStore()
+  const [state, store] = useChatStore()
 
   useEffect(() => {
-    if (scrollEl) {
+    if (scrollEl && state.isNeedToUpdateScroll) {
       scrollEl.scrollTop = scrollEl.scrollHeight
+      store.setIsNeedToUpdateScroll(false)
     }
-  }, [state.chat.data, scrollEl])
+  }, [state.chat.data, state.isNeedToUpdateScroll, scrollEl])
 
   return (
     <PerfectScrollbar className="px-4" containerRef={setScrollEl}>
