@@ -6,7 +6,7 @@ import {Message, Profile} from './types'
 
 interface State {
   chat: SupabaseQuery<Message[]>
-  usersWhoReacted: Profile[]
+  usersWhoReacted: SupabaseQuery<Profile[]>
   isNeedToUpdateScroll: boolean
 }
 
@@ -17,7 +17,11 @@ export class ChatStore {
       data: null,
       error: null
     },
-    usersWhoReacted: [],
+    usersWhoReacted: {
+      loading: false,
+      data: null,
+      error: null
+    },
     isNeedToUpdateScroll: false
   }
 

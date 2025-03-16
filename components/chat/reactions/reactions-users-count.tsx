@@ -18,7 +18,7 @@ export const ReactionsUsersCount = observer(
     if (usersWhoReactedLength === 1) {
       return (
         <ReactionsFirstUser
-          user={state.usersWhoReacted.find(e => e.id === userIds?.[0])}
+          user={state.usersWhoReacted.data?.find(e => e.id === userIds?.[0])}
         />
       )
     }

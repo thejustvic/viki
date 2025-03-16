@@ -1,8 +1,20 @@
+import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {useEffect, useMemo, useRef} from 'react'
+import {
+  SupabaseContext,
+  useSupabase
+} from '@/utils/supabase-utils/supabase-provider'
+import {PostgrestBuilder} from '@supabase/postgrest-js'
+import {useCallback, useEffect, useMemo, useRef} from 'react'
 import {useChatStore} from '../chat-store'
-import {Message} from '../types'
+import {Message, Profile} from '../types'
+
+const getUsers = (
+  supabase: SupabaseContext['supabase'],
+  newUserIds: string[]
+): PostgrestBuilder<Profile[]> => {
+  return supabase.from('profiles').select().in('id', newUserIds).throwOnError()
+}
 
 const getAllUserIdsByReactions = (messages: Message[]): string[] => {
   const userIds = new Set<string>()
@@ -22,7 +34,6 @@ export const useUsersWhoReacted = (): void => {
   const {supabase} = useSupabase()
   const [state, store] = useChatStore()
   const fetchedUserIds = useRef(new Set<string>())
-  const isFetching = useRef(false)
 
   // Get unique userIds to avoid requesting unnecessary data
   const userIds = useMemo(() => {
@@ -32,47 +43,24 @@ export const useUsersWhoReacted = (): void => {
     return getAllUserIdsByReactions(state.chat.data)
   }, [state.chat.data])
 
-  useEffect(() => {
-    if (!userIds || userIds.length === 0 || isFetching.current) {
-      return
+  const fetchUsers = useCallback(() => {
+    if (!userIds) {
+      return null
     }
 
-    // Filter out already fetched userIds
+    if (!userIds || userIds.length === 0) {
+      return null
+    }
     const newUserIds = userIds.filter(id => !fetchedUserIds.current.has(id))
-
     if (newUserIds.length === 0) {
-      return
+      return null
     }
+    return getUsers(supabase, newUserIds)
+  }, [supabase, userIds])
 
-    isFetching.current = true
+  const {data, loading, error} = useSupabaseFetch(fetchUsers, [userIds])
 
-    // Fetch the users if not already fetched
-    const fetchUsers = async (): Promise<void> => {
-      try {
-        const {data, error} = await supabase
-          .from('profiles')
-          .select()
-          .in('id', newUserIds)
-
-        // Handle error from supabase
-        if (error) {
-          throw new Error(error.message || 'Error fetching users')
-        }
-
-        store.setUsersWhoReacted(data || [])
-      } catch (err) {
-        if (err instanceof Error) {
-          console.error('Error fetching users:', err.message)
-        } else {
-          // In case err is not an instance of Error (unexpected errors)
-          console.error('Unexpected error fetching users:', err)
-        }
-      } finally {
-        isFetching.current = false
-      }
-    }
-
-    // Call the fetch function
-    void fetchUsers()
-  }, [userIds, supabase, store]) // Don't include isMounted or hasFetched in dependencies
+  useEffect(() => {
+    store.setUsersWhoReacted({loading, data, error})
+  }, [data, loading, error, store])
 }

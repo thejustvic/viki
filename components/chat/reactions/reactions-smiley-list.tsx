@@ -22,7 +22,7 @@ export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
     const filterIds = new Set(userIds)
 
     // Filter usersWhoReacted, keeping only elements in reactions userIds
-    const filteredUsers = state.usersWhoReacted.filter(item =>
+    const filteredUsers = state.usersWhoReacted.data?.filter(item =>
       filterIds.has(item.id)
     )
 
@@ -34,7 +34,7 @@ export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
             <ReactionsUsersCount filterIds={filterIds} userIds={userIds} />
           </ReactionsSmileyWrapper>
           <Dropdown.Menu>
-            <ReactionsUsersList users={filteredUsers} />
+            <ReactionsUsersList users={filteredUsers ?? []} />
           </Dropdown.Menu>
         </Dropdown>
       </div>
