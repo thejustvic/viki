@@ -1,18 +1,15 @@
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {TeamStore} from './team-store'
 import {TeamMember, TeamWithMembers} from './types'
 
+// Fetch team and its members
 const getTeam = (
-  user: SupabaseContext['user'],
   supabase: SupabaseContext['supabase'],
   teamId: string
 ): PostgrestBuilder<TeamWithMembers | null> => {
-  if (!user) {
-    throw Error('You must provide a user object!')
-  }
   return supabase
     .from('teams')
     .select('*, team_members(*)')
@@ -21,33 +18,19 @@ const getTeam = (
     .throwOnError()
 }
 
-export const useCurrentTeamListener = ({
-  user,
-  supabase,
-  store,
-  teamId
-}: {
-  user: SupabaseContext['user']
-  supabase: SupabaseContext['supabase']
+// Supabase Realtime Listener Hook
+const useSupabaseTeamListener = (
+  supabase: SupabaseContext['supabase'],
+  teamId: string,
   store: TeamStore
-  teamId: string
-}): void => {
-  const {data, loading, error} = useSupabaseFetch(
-    teamId ? () => getTeam(user, supabase, teamId) : null,
-    [teamId]
-  )
-
+): void => {
   useEffect(() => {
-    store.setCurrentTeam({
-      loading,
-      data,
-      error
-    })
-  }, [data, loading, error])
+    if (!teamId) {
+      return
+    }
 
-  useEffect(() => {
     const channel = supabase
-      .channel('teamMembers')
+      .channel(`team-members-${teamId}`)
       .on(
         'postgres_changes',
         {
@@ -60,11 +43,7 @@ export const useCurrentTeamListener = ({
       )
       .on(
         'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'team_members'
-        },
+        {event: 'DELETE', schema: 'public', table: 'team_members'},
         payload => store.handleDeleteTeamMember(payload.old as TeamMember)
       )
       .on(
@@ -86,5 +65,31 @@ export const useCurrentTeamListener = ({
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, user, teamId])
+  }, [supabase, store, teamId])
+}
+
+// Fetch team data and listen for changes
+export const useCurrentTeamListener = ({
+  supabase,
+  store,
+  teamId
+}: {
+  supabase: SupabaseContext['supabase']
+  store: TeamStore
+  teamId: string
+}): void => {
+  const fetchTeam = useCallback(() => {
+    if (!teamId) {
+      return null as unknown as PostgrestBuilder<TeamWithMembers | null>
+    }
+    return getTeam(supabase, teamId)
+  }, [supabase, teamId])
+
+  const {data, loading, error} = useSupabaseFetch(fetchTeam, [teamId])
+
+  useEffect(() => {
+    store.setCurrentTeam({loading, data, error})
+  }, [data, loading, error, store])
+
+  useSupabaseTeamListener(supabase, teamId, store)
 }

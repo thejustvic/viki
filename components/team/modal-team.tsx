@@ -10,11 +10,10 @@ import {useTeamStore} from './team-store'
 import {useCurrentTeamListener} from './use-current-team-listener'
 
 export const ModalTeam = observer(() => {
-  const {user, supabase} = useSupabase()
+  const {supabase} = useSupabase()
   const [state, store] = useTeamStore()
 
   useCurrentTeamListener({
-    user,
     supabase,
     store,
     teamId: state.currentTeamId || ''

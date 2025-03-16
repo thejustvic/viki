@@ -28,7 +28,7 @@ export class ChatStore {
     this.setChat({loading: false, data: serverChat, error: null})
   }
 
-  setIsNeedToUpdateScroll(value: boolean) {
+  setIsNeedToUpdateScroll(value: boolean): void {
     this.state.isNeedToUpdateScroll = value
   }
 

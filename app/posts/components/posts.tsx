@@ -37,10 +37,10 @@ const TwContainer = tw.div`
 
 export const PostsProvider = observer(({children}: PropsWithChildren) => {
   const store = useMemoOne(() => new PostsStore(), [])
-  const {supabase, user} = useSupabase()
+  const {supabase} = useSupabase()
   const [state] = useTeamStore()
 
-  usePostsListener({user, supabase, store, currentTeamId: state.currentTeamId})
+  usePostsListener({supabase, store, currentTeamId: state.currentTeamId})
 
   return <PostsContext.Provider value={store}>{children}</PostsContext.Provider>
 })

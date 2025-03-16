@@ -3,72 +3,53 @@ import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {getSearchPost} from './get-search-post'
 import {PostsStore, usePostsStore} from './posts-store'
 import type {Post} from './types'
 
+// Fetch posts for a given team
 const getMyPosts = (
-  user: SupabaseContext['user'],
   supabase: SupabaseContext['supabase'],
-  currentTeamId: string | null
+  currentTeamId: string
 ): PostgrestBuilder<Post[]> => {
-  if (!user) {
-    throw Error('You must provide a user object!')
-  }
   if (!currentTeamId) {
-    throw Error('You must provide a current team Id!')
+    throw new Error('Current team ID is required!')
   }
 
   return supabase.from('posts').select().eq('team_id', currentTeamId)
 }
 
+// Check if post exists in current team
 export const useCheckPostExistInCurrentTeam = (): void => {
   const [teamState] = useTeamStore()
   const [postState] = usePostsStore()
   const updateSearchParams = useUpdateSearchParams()
   const postId = getSearchPost()
 
-  const checkIfPostExistInCurrentTeam = (): boolean => {
-    const post = postState?.posts?.data?.find(post => post.id === postId)
-    return teamState.currentTeamId === post?.team_id
-  }
+  const postExists = useCallback(() => {
+    const post = postState.posts?.data?.find(p => p.id === postId)
+    return post ? post.team_id === teamState.currentTeamId : false
+  }, [postState.posts?.data, postId, teamState.currentTeamId])
 
   useEffect(() => {
-    if (!postState?.posts?.data) {
-      return
-    }
-    if (!checkIfPostExistInCurrentTeam()) {
+    if (postState.posts?.data && !postExists()) {
       updateSearchParams('post')
     }
-  }, [postState?.posts?.data])
+  }, [postExists, updateSearchParams])
 }
 
-export const usePostsListener = ({
-  user,
-  supabase,
-  store,
-  currentTeamId
-}: {
-  user: SupabaseContext['user']
-  supabase: SupabaseContext['supabase']
+// Reusable Supabase Listener Hook
+const useSupabaseListener = (
+  supabase: SupabaseContext['supabase'],
+  currentTeamId: string | null,
   store: PostsStore
-  currentTeamId: string | null
-}): void => {
-  const {data, loading, error} = useSupabaseFetch(
-    currentTeamId ? () => getMyPosts(user, supabase, currentTeamId) : null,
-    [user, currentTeamId]
-  )
-
+): void => {
   useEffect(() => {
-    store.setPosts({
-      loading,
-      data,
-      error
-    })
-  }, [data, loading, error])
+    if (!currentTeamId) {
+      return
+    }
 
-  useEffect(() => {
     const channel = supabase
       .channel('posts')
       .on(
@@ -83,11 +64,7 @@ export const usePostsListener = ({
       )
       .on(
         'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'posts'
-        },
+        {event: 'DELETE', schema: 'public', table: 'posts'},
         payload => store.handleDelete(payload.old as Post)
       )
       .on(
@@ -105,5 +82,31 @@ export const usePostsListener = ({
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, user, currentTeamId])
+  }, [supabase, store, currentTeamId])
+}
+
+// Fetch posts and listen for updates
+export const usePostsListener = ({
+  supabase,
+  store,
+  currentTeamId
+}: {
+  supabase: SupabaseContext['supabase']
+  store: PostsStore
+  currentTeamId: string | null
+}): void => {
+  const fetchPosts = useCallback(() => {
+    if (!currentTeamId) {
+      return null as unknown as PostgrestBuilder<Post[]>
+    }
+    return getMyPosts(supabase, currentTeamId)
+  }, [currentTeamId, supabase])
+
+  const {data, loading, error} = useSupabaseFetch(fetchPosts, [currentTeamId])
+
+  useEffect(() => {
+    store.setPosts({loading, data, error})
+  }, [data, loading, error, store])
+
+  useSupabaseListener(supabase, currentTeamId, store)
 }

@@ -5,7 +5,7 @@ import {Tables} from '@/utils/database.types'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect, useMemo} from 'react'
+import {useCallback, useEffect} from 'react'
 import {ChatStore} from './chat-store'
 import {Message} from './types'
 
@@ -20,31 +20,12 @@ const getMessages = (
     .order('created_at')
     .throwOnError()
 
-export const useChatListener = (
-  user: SupabaseContext['user'],
+// Reusable Supabase Listener Hook
+const useSupabaseChatListener = (
   supabase: SupabaseContext['supabase'],
+  postId: Post['id'] | null,
   store: ChatStore
 ): void => {
-  const postId = getSearchPost()
-
-  // Memoize `getMessages` to prevent unnecessary re-renders
-  const fetchMessages = useMemo(
-    () => (postId ? () => getMessages(postId, supabase) : null),
-    [postId, supabase]
-  )
-
-  // Fetch messages using custom hook
-  const {data, loading, error} = useSupabaseFetch(fetchMessages, [postId])
-
-  useEffect(() => {
-    if (!data) {
-      return // Avoid updating store with null data
-    }
-
-    const messages = Util.explicitlyCastFromJsonToReactions(data)
-    store.setChat({loading, data: messages, error})
-  }, [data, loading, error, store])
-
   useEffect(() => {
     const channel = supabase
       .channel('messages')
@@ -69,5 +50,29 @@ export const useChatListener = (
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, user, postId])
+  }, [supabase, store, postId])
+}
+
+export const useChatListener = (
+  supabase: SupabaseContext['supabase'],
+  store: ChatStore
+): void => {
+  const postId = getSearchPost()
+
+  const fetchMessages = useCallback(() => {
+    if (!postId) {
+      return null as unknown as PostgrestBuilder<Tables<'messages'>[]>
+    }
+    return getMessages(postId, supabase)
+  }, [postId, supabase])
+
+  // Fetch messages using custom hook
+  const {data, loading, error} = useSupabaseFetch(fetchMessages, [postId])
+
+  useEffect(() => {
+    const messages = Util.explicitlyCastFromJsonToReactions(data)
+    store.setChat({loading, data: messages, error})
+  }, [data, loading, error, store])
+
+  useSupabaseChatListener(supabase, postId, store)
 }

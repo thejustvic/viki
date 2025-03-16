@@ -2,7 +2,7 @@ import {Post} from '@/app/posts/components/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {ChecklistStore} from './checklist-store'
 import {Checkbox} from './types'
 
@@ -18,31 +18,17 @@ const getChecklist = (
     .throwOnError()
 }
 
-export const useChecklistListener = ({
-  postId,
-  user,
-  supabase,
-  store
-}: {
-  postId: Post['id']
-  user: SupabaseContext['user']
-  supabase: SupabaseContext['supabase']
+// Reusable Supabase Listener Hook
+const useSupabaseChecklistListener = (
+  supabase: SupabaseContext['supabase'],
+  postId: Post['id'],
   store: ChecklistStore
-}): void => {
-  const {data, loading, error} = useSupabaseFetch(
-    postId ? () => getChecklist(postId, supabase) : null,
-    [postId]
-  )
-
+): void => {
   useEffect(() => {
-    store.setChecklist({
-      loading,
-      data,
-      error
-    })
-  }, [data, loading, error, postId])
+    if (!postId) {
+      return
+    }
 
-  useEffect(() => {
     const uuid = crypto.randomUUID()
     const channel = supabase
       .channel(uuid)
@@ -54,20 +40,12 @@ export const useChecklistListener = ({
           table: 'checklist',
           filter: `post_id=eq.${postId}`
         },
-        payload => {
-          store.handleInsert(payload.new as Checkbox)
-        }
+        payload => store.handleInsert(payload.new as Checkbox)
       )
       .on(
         'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'checklist'
-        },
-        payload => {
-          store.handleDelete(payload.old as Checkbox)
-        }
+        {event: 'DELETE', schema: 'public', table: 'checklist'},
+        payload => store.handleDelete(payload.old as Checkbox)
       )
       .on(
         'postgres_changes',
@@ -77,14 +55,45 @@ export const useChecklistListener = ({
           table: 'checklist',
           filter: `post_id=eq.${postId}`
         },
-        payload => {
+        payload =>
           store.handleUpdate(payload.old as Checkbox, payload.new as Checkbox)
-        }
       )
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, user, postId])
+  }, [supabase, store, postId])
+}
+
+// Fetch checklist and listen for updates
+export const useChecklistListener = ({
+  postId,
+  supabase,
+  store
+}: {
+  postId: Post['id']
+  supabase: SupabaseContext['supabase']
+  store: ChecklistStore
+}): void => {
+  // Memoize the fetch function so it doesn't get recreated unnecessarily
+  const fetchChecklist = useCallback(() => {
+    if (!postId) {
+      return null as unknown as PostgrestBuilder<Checkbox[]>
+    }
+    return getChecklist(postId, supabase)
+  }, [postId, supabase])
+
+  // Fetch checklist data using the useSupabaseFetch hook
+  const {data, loading, error} = useSupabaseFetch(fetchChecklist, [postId])
+
+  useEffect(() => {
+    // Avoid updating the store if it's still loading
+    if (!loading) {
+      store.setChecklist({loading, data, error})
+    }
+  }, [data, loading, error, store])
+
+  // Reuse the listener for changes in the checklist
+  useSupabaseChecklistListener(supabase, postId, store)
 }

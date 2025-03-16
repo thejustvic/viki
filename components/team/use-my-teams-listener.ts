@@ -1,7 +1,8 @@
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect} from 'react'
+import {User} from '@supabase/supabase-js'
+import {useCallback, useEffect} from 'react'
 import {TeamStore} from './team-store'
 import {Team} from './types'
 
@@ -20,10 +21,14 @@ export const useMyTeamsListener = (
   supabase: SupabaseContext['supabase'],
   store: TeamStore
 ): void => {
-  const {data, loading, error} = useSupabaseFetch(
-    user ? () => getMyTeams(user, supabase) : null,
-    [user]
-  )
+  const fetchMyTeams = useCallback(() => {
+    if (!user) {
+      return null as unknown as PostgrestBuilder<Team[]>
+    }
+    return getMyTeams(user, supabase)
+  }, [supabase, user])
+
+  const {data, loading, error} = useSupabaseFetch(fetchMyTeams, [user])
 
   useEffect(() => {
     store.setMyTeams({
@@ -33,7 +38,16 @@ export const useMyTeamsListener = (
     })
   }, [data, loading, error])
 
+  useSupabaseMyTeamsListener(supabase, user, store)
+}
+
+const useSupabaseMyTeamsListener = (
+  supabase: SupabaseContext['supabase'],
+  user: User | null,
+  store: TeamStore
+): void => {
   useEffect(() => {
+    const userId = user?.id
     const channel = supabase
       .channel('team')
       .on(
@@ -42,7 +56,7 @@ export const useMyTeamsListener = (
           event: 'INSERT',
           schema: 'public',
           table: 'teams',
-          filter: `owner_id=eq.${user?.id}`
+          filter: `owner_id=eq.${userId}`
         },
         payload => store.handleInsertTeam(payload.new as Team)
       )
@@ -61,7 +75,7 @@ export const useMyTeamsListener = (
           event: 'UPDATE',
           schema: 'public',
           table: 'teams',
-          filter: `owner_id=eq.${user?.id}`
+          filter: `owner_id=eq.${userId}`
         },
         payload =>
           store.handleUpdateTeam(payload.old as Team, payload.new as Team)

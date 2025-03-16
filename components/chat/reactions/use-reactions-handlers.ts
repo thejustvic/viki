@@ -28,7 +28,6 @@ export const useReactionsHandlers = (): Handlers => {
       ...message.reactions,
       [smiley]: Array.from(userIds)
     }
-
     await updateMessageReactions(reactions, message.id)
   }
 
@@ -51,11 +50,9 @@ export const useReactionsHandlers = (): Handlers => {
       reactions,
       (_smiley, userIds) => userIds?.length !== 0
     )
-
     const reactionsResult: Reactions = ObjUtil.isEmpty(filteredReactions)
       ? {}
       : (filteredReactions as Reactions)
-
     await updateMessageReactions(reactionsResult, message.id)
   }
 
