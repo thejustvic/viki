@@ -12,7 +12,7 @@ import {ChatBubble} from '../daisyui/chat-bubble'
 import {Dropdown} from '../daisyui/dropdown'
 import {useChatHandlers} from './chat-handlers'
 import {useChatStore} from './chat-store'
-import {SmileyReactions} from './reactions/smiley-reactions'
+import {ReactionsSmiley} from './reactions/reactions-smiley'
 import {useReactionsHandlers} from './reactions/use-reactions-handlers'
 import {useUsersWhoReacted} from './reactions/use-users-who-reacted'
 import type {Message as MessageType} from './types'
@@ -128,7 +128,7 @@ const Message = observer(({my, message}: BubbleProps) => {
         onTouchStart={handleTap}
       >
         {message.text}
-        <SmileyReactions message={message} isMouseOver={showReactions.value} />
+        <ReactionsSmiley message={message} isMouseOver={showReactions.value} />
       </ChatBubble.Message>
     </ChatBubble>
   )
