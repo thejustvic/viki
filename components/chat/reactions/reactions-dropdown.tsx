@@ -1,20 +1,20 @@
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {IconMoodSmile} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
-import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {Message} from '../types'
 import {ReactionsDropdownContent} from './reactions-dropdown-content'
 
 const TwIconReaction = tw.div`
   cursor-pointer
+  flex
+  items-center
 `
 
 export const ReactionsDropdown = ({message}: {message: Message}) => {
   return (
     <Dropdown hover={!isMobile}>
       <TwIconReaction
-        className={twJoin('flex items-center')}
         tabIndex={isMobile ? 0 : undefined}
         role={isMobile ? 'button' : ''}
       >
