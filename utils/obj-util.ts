@@ -145,4 +145,32 @@ export class ObjUtil {
     })
     return res
   }
+
+  public static groupBy<T, K extends keyof T>(
+    items: T[],
+    key: K
+  ): Record<string, T[]> {
+    return items.reduce((acc: Record<string, T[]>, item: T) => {
+      const groupKey = String(item[key]) // ensure it's a string
+
+      if (!acc[groupKey]) {
+        acc[groupKey] = []
+      }
+
+      acc[groupKey].push(item)
+      return acc
+    }, {})
+  }
+
+  public static findInGroupedData<T, K extends keyof T>(
+    groupedData: Record<string, T[]>,
+    key: K,
+    value: T[K]
+  ): T | null {
+    for (const group of Object.values(groupedData)) {
+      const foundItem = group.find(item => item[key] === value)
+      if (foundItem) return foundItem
+    }
+    return null // return null if not found
+  }
 }
