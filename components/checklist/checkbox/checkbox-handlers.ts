@@ -106,14 +106,12 @@ const updateAllCheckboxes = async ({
   if (!checklist) {
     return
   }
-  await Promise.all(
-    checklist.map(async checklist => {
-      await supabase
-        .from('checklist')
-        .update({
-          is_completed
-        })
-        .eq('id', checklist.id)
+  const ids = checklist.map(checklist => checklist.id)
+
+  await supabase
+    .from('checklist')
+    .update({
+      is_completed
     })
-  )
+    .in('id', ids)
 }
