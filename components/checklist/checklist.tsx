@@ -43,6 +43,9 @@ const Checkboxes = observer(() => {
       </TwState>
     )
   }
+  if (state.checklist.data?.length === 0) {
+    return <TwState className="text-info">type some stuff</TwState>
+  }
 
   return state.checklist.data?.map(checkbox => {
     return (
