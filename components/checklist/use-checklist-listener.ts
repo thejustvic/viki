@@ -88,10 +88,7 @@ export const useChecklistListener = ({
   const {data, loading, error} = useSupabaseFetch(fetchChecklist, [postId])
 
   useEffect(() => {
-    // Avoid updating the store if it's still loading
-    if (!loading) {
-      store.setChecklist({loading, data, error})
-    }
+    store.setChecklist({loading, data, error})
   }, [data, loading, error, store])
 
   // Reuse the listener for changes in the checklist
