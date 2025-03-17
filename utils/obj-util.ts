@@ -169,7 +169,9 @@ export class ObjUtil {
   ): T | null {
     for (const group of Object.values(groupedData)) {
       const foundItem = group.find(item => item[key] === value)
-      if (foundItem) return foundItem
+      if (foundItem) {
+        return foundItem
+      }
     }
     return null // return null if not found
   }

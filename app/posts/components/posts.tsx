@@ -1,12 +1,12 @@
 'use client'
 
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
-import {ChecklistProgress} from '@/components/checklist/checklist-progress'
-import ChecklistProvider from '@/components/checklist/checklist-provider'
 import {useChecklistStore} from '@/components/checklist/checklist-store'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
+import {PostChecklistProgress} from '@/components/post-checklist/post-checklist-progress'
+import PostChecklistProvider from '@/components/post-checklist/post-checklist-provider'
 import {useTeamStore} from '@/components/team/team-store'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useMemoOne} from '@/hooks/use-memo-one'
@@ -53,7 +53,9 @@ const PostsList = observer(() => {
 
   return (
     <TwContainer>
-      <Posts />
+      <PostChecklistProvider>
+        <Posts />
+      </PostChecklistProvider>
       <AddNewPost />
     </TwContainer>
   )
@@ -90,12 +92,10 @@ const Post = observer(({post, active}: {post: Post; active: boolean}) => {
   }
 
   return (
-    <ChecklistProvider id={post.id}>
-      <ParallaxCardContainer
-        active={active}
-        cardNodeBody={<CardBody post={post} remove={remove} />}
-      />
-    </ChecklistProvider>
+    <ParallaxCardContainer
+      active={active}
+      cardNodeBody={<CardBody post={post} remove={remove} />}
+    />
   )
 })
 
@@ -123,7 +123,7 @@ const CardBody = observer(({post, remove}: PostProps) => {
       </Card.Title>
       <Card.Actions className="justify-center">
         <Button color="primary" className="w-full" onClick={onClickHandler}>
-          <ChecklistProgress />
+          <PostChecklistProgress id={post.id} />
         </Button>
       </Card.Actions>
     </>
