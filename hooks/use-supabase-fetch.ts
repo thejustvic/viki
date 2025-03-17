@@ -1,4 +1,4 @@
-import {PostgrestBuilder, PostgrestError} from '@supabase/postgrest-js' // Ensure correct import
+import {PostgrestBuilder, PostgrestError} from '@supabase/postgrest-js'
 import {useEffect, useRef, useState} from 'react'
 
 export interface SupabaseQuery<T> {
@@ -25,34 +25,39 @@ export const useSupabaseFetch = <T>(
     if (!postgrestBuilder) {
       return
     }
-
     isFetching.current = true
 
     const fetchData = async (): Promise<void> => {
-      setResult(prev => ({...prev, loading: true})) // Only update `loading`
-
+      setResult({
+        loading: true,
+        data: null,
+        error: null
+      })
       try {
         const response = postgrestBuilder()
-
         if (!response) {
           return
         }
-
         const {data, error} = await response
-
         if (typeof data !== 'object') {
           console.error('Unexpected response:', data)
           return
         }
-
-        setResult({
-          loading: false,
-          data: error ? null : data,
-          error: error ?? null
-        })
+        if (error) {
+          setResult({
+            loading: false,
+            data: null,
+            error
+          })
+        } else {
+          setResult({
+            loading: false,
+            data,
+            error: null
+          })
+        }
       } catch (e) {
         console.error('Supabase fetch error:', e)
-
         setResult({
           loading: false,
           data: null,
@@ -64,10 +69,6 @@ export const useSupabaseFetch = <T>(
     }
 
     void fetchData()
-
-    return () => {
-      setResult(prev => ({...prev, loading: false})) // Cleanup: stop loading if unmounted
-    }
   }, deps)
 
   return result

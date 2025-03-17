@@ -5,15 +5,17 @@ import {
   useSupabase
 } from '@/utils/supabase-utils/supabase-provider'
 import {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useCallback, useEffect, useMemo, useRef} from 'react'
+import {useEffect, useMemo, useRef} from 'react'
 import {useChatStore} from '../chat-store'
 import {Message, Profile} from '../types'
 
 const getUsers = (
   supabase: SupabaseContext['supabase'],
   newUserIds: string[]
-): PostgrestBuilder<Profile[]> => {
-  return supabase.from('profiles').select().in('id', newUserIds).throwOnError()
+): PostgrestBuilder<Profile[]> | null => {
+  return newUserIds.length
+    ? supabase.from('profiles').select().in('id', newUserIds).throwOnError()
+    : null
 }
 
 const getAllUserIdsByReactions = (messages: Message[]): string[] => {
@@ -21,9 +23,7 @@ const getAllUserIdsByReactions = (messages: Message[]): string[] => {
 
   messages.forEach(message => {
     ObjUtil.forEach(message.reactions, reaction => {
-      message.reactions[reaction]?.forEach(userId => {
-        userIds.add(userId)
-      })
+      message.reactions[reaction]?.forEach(userId => userIds.add(userId))
     })
   })
 
@@ -35,30 +35,25 @@ export const useUsersWhoReacted = (): void => {
   const [state, store] = useChatStore()
   const fetchedUserIds = useRef(new Set<string>())
 
-  // Get unique userIds to avoid requesting unnecessary data
-  const userIds = useMemo(() => {
-    if (!state.chat.data) {
-      return null
+  const newUserIds = useMemo(() => {
+    if (!state.chat.data?.length) {
+      return []
     }
-    return getAllUserIdsByReactions(state.chat.data)
+
+    const allUserIds = getAllUserIdsByReactions(state.chat.data)
+    return allUserIds.filter(id => !fetchedUserIds.current.has(id))
   }, [state.chat.data])
 
-  const fetchUsers = useCallback(() => {
-    if (!userIds) {
-      return null
-    }
+  const {data, loading, error} = useSupabaseFetch(
+    newUserIds.length ? () => getUsers(supabase, newUserIds) : null,
+    [newUserIds]
+  )
 
-    if (!userIds || userIds.length === 0) {
-      return null
+  useEffect(() => {
+    if (data?.length) {
+      data.forEach(user => fetchedUserIds.current.add(user.id))
     }
-    const newUserIds = userIds.filter(id => !fetchedUserIds.current.has(id))
-    if (newUserIds.length === 0) {
-      return null
-    }
-    return getUsers(supabase, newUserIds)
-  }, [supabase, userIds])
-
-  const {data, loading, error} = useSupabaseFetch(fetchUsers, [userIds])
+  }, [data])
 
   useEffect(() => {
     store.setUsersWhoReacted({loading, data, error})

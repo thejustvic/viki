@@ -25,11 +25,10 @@ export class ChatStore {
     isNeedToUpdateScroll: false
   }
 
-  constructor(serverChat: Message[]) {
+  constructor() {
     makeAutoObservable(this, {
       state: observable.shallow
     })
-    this.setChat({loading: false, data: serverChat, error: null})
   }
 
   setIsNeedToUpdateScroll(value: boolean): void {
