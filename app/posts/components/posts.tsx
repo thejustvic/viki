@@ -1,12 +1,11 @@
 'use client'
 
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
-import {useChecklistStore} from '@/components/checklist/checklist-store'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
 import {PostChecklistProgress} from '@/components/post-checklist/post-checklist-progress'
-import PostChecklistProvider from '@/components/post-checklist/post-checklist-provider'
+import {usePostChecklistStore} from '@/components/post-checklist/post-checklist-store'
 import {useTeamStore} from '@/components/team/team-store'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useMemoOne} from '@/hooks/use-memo-one'
@@ -53,9 +52,7 @@ const PostsList = observer(() => {
 
   return (
     <TwContainer>
-      <PostChecklistProvider>
-        <Posts />
-      </PostChecklistProvider>
+      <Posts />
       <AddNewPost />
     </TwContainer>
   )
@@ -131,9 +128,11 @@ const CardBody = observer(({post, remove}: PostProps) => {
 })
 
 export const CheckAllCheckboxes = observer(() => {
-  const [state] = useChecklistStore()
+  const id = String(getSearchPost())
+  const [state] = usePostChecklistStore()
   const {updateAllCheckboxIsCompleted} = useCheckboxHandlers()
-  const isAllCompleted = state.progress === 100
+  const isAllCompleted = state.progress.get(id) === 100
+  const checkboxIds = state.checklists.data?.get(id)?.map(c => c.id)
 
   return (
     <div className="tooltip tooltip-info" data-tip="all">
@@ -141,9 +140,13 @@ export const CheckAllCheckboxes = observer(() => {
         type="checkbox"
         checked={isAllCompleted}
         className="checkbox text-success"
-        onChange={() =>
-          updateAllCheckboxIsCompleted(!isAllCompleted, state.checklist.data)
-        }
+        onChange={() => {
+          if (checkboxIds) {
+            updateAllCheckboxIsCompleted(!isAllCompleted, checkboxIds)
+          } else {
+            console.error('checkboxIds is undefined')
+          }
+        }}
       />
     </div>
   )

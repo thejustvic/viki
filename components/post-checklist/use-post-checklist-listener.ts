@@ -3,7 +3,7 @@ import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useCallback, useEffect} from 'react'
+import {useEffect} from 'react'
 import {PostChecklistStore} from './post-checklist-store'
 import {Checkbox} from './types'
 
@@ -24,7 +24,7 @@ const useSupabaseChecklistListener = (
   store: PostChecklistStore
 ): void => {
   useEffect(() => {
-    if (!postIds) {
+    if (postIds.length === 0) {
       return
     }
     const channel = supabase
@@ -78,18 +78,19 @@ export const usePostChecklistListener = ({
   supabase: SupabaseContext['supabase']
   store: PostChecklistStore
 }): void => {
-  const fetchChecklists = useCallback(() => {
-    if (!postIds) {
-      return null
-    }
-    return getChecklists(postIds, supabase)
-  }, [postIds, supabase])
-
-  const {data, loading, error} = useSupabaseFetch(fetchChecklists, [postIds])
+  const {data, loading, error} = useSupabaseFetch(
+    postIds.length > 0 ? () => getChecklists(postIds, supabase) : null,
+    [postIds]
+  )
 
   useEffect(() => {
     const checkboxes = ObjUtil.groupBy(data ?? [], 'post_id')
-    store.setChecklists({loading, data: checkboxes, error})
+
+    // Convert Record<string, Checkbox[]> to Map<string, Checkbox[]>
+    const checkboxesMap = new Map<string, Checkbox[]>(
+      Object.entries(checkboxes)
+    )
+    store.setChecklists({loading, data: checkboxesMap, error})
   }, [data, loading, error, store])
 
   useSupabaseChecklistListener(supabase, postIds, store)

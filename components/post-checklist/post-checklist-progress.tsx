@@ -7,7 +7,7 @@ export const PostChecklistProgress = observer(({id}: {id: string}) => {
   const [state, store] = usePostChecklistStore()
 
   useEffect(() => {
-    if (state.checklists.data?.[id]) {
+    if (state.checklists.data?.get(id)) {
       store.setProgress(id)
     }
   }, [state.checklists.data])
@@ -18,13 +18,13 @@ export const PostChecklistProgress = observer(({id}: {id: string}) => {
         <div
           className={twJoin(
             'h-full rounded-sm min-w-[8px] transition-[width] duration-300',
-            state.progress[id] === 100 ? 'bg-success' : 'bg-info'
+            state.progress.get(id) === 100 ? 'bg-success' : 'bg-info'
           )}
-          style={{width: state.progress[id] + '%'}}
+          style={{width: (state.progress.get(id) ?? 0) + '%'}}
         />
       </div>
       <div className={twJoin('w-[48px] text-xs text-center')}>
-        {state.progressText[id]}
+        {state.progressText.get(id) ?? '0/0'}
       </div>
     </div>
   )

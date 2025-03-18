@@ -2,7 +2,6 @@ import {
   SupabaseContext,
   useSupabase
 } from '@/utils/supabase-utils/supabase-provider'
-import {ChecklistStore} from '../checklist-store'
 import {Checkbox} from '../types'
 
 interface Handlers {
@@ -24,7 +23,7 @@ interface Handlers {
   ) => Promise<void>
   updateAllCheckboxIsCompleted: (
     is_completed: Checkbox['is_completed'],
-    checklist: ChecklistStore['state']['checklist']['data']
+    checkboxIds: string[]
   ) => Promise<void>
 }
 
@@ -78,11 +77,11 @@ export const useCheckboxHandlers = (): Handlers => {
     }
 
   const updateAllCheckboxIsCompleted: Handlers['updateAllCheckboxIsCompleted'] =
-    async (is_completed, checklist) => {
+    async (is_completed, checkboxIds) => {
       if (!user) {
         throw Error('You must provide a user object!')
       }
-      await updateAllCheckboxes({supabase, is_completed, checklist})
+      await updateAllCheckboxes({supabase, is_completed, checkboxIds})
     }
 
   return {
@@ -97,21 +96,19 @@ export const useCheckboxHandlers = (): Handlers => {
 const updateAllCheckboxes = async ({
   supabase,
   is_completed,
-  checklist
+  checkboxIds
 }: {
   supabase: SupabaseContext['supabase']
   is_completed: Checkbox['is_completed']
-  checklist: ChecklistStore['state']['checklist']['data']
+  checkboxIds: string[]
 }): Promise<void> => {
-  if (!checklist) {
+  if (!checkboxIds) {
     return
   }
-  const ids = checklist.map(checklist => checklist.id)
-
   await supabase
     .from('checklist')
     .update({
       is_completed
     })
-    .in('id', ids)
+    .in('id', checkboxIds)
 }

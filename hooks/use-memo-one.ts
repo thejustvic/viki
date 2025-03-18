@@ -1,6 +1,6 @@
-import {DependencyList, MutableRefObject, useRef, useState} from 'react'
+import {DependencyList, RefObject, useRef, useState} from 'react'
 
-const useLazyRef = <T>(getInitialValue: () => T): MutableRefObject<T> => {
+const useLazyRef = <T>(getInitialValue: () => T): RefObject<T> => {
   const [value] = useState(getInitialValue)
   return useRef(value)
 }

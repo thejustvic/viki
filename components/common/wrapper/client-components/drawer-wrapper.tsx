@@ -5,13 +5,13 @@ import {PostInfo} from '@/app/posts/components/post-info/post-info'
 import {CheckAllCheckboxes} from '@/app/posts/components/posts'
 import {CheckboxInput} from '@/components/checklist/checkbox/checkbox-input'
 import {Checklist} from '@/components/checklist/checklist'
-import {ChecklistProgress} from '@/components/checklist/checklist-progress'
-import ChecklistProvider from '@/components/checklist/checklist-provider'
-import {useChecklistStore} from '@/components/checklist/checklist-store'
+
 import {Drawer} from '@/components/daisyui/drawer'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global/global-store'
 import {Tab} from '@/components/global/types'
+import {PostChecklistProgress} from '@/components/post-checklist/post-checklist-progress'
+import {usePostChecklistStore} from '@/components/post-checklist/post-checklist-store'
 import {
   useLeftDrawerOpenState,
   useRightDrawerOpenState
@@ -163,9 +163,7 @@ const RightDrawer = observer(({children}: PropsWithChildren) => {
 const RightDrawerSide = () => {
   return (
     <DrawerContentWrapper>
-      <ChecklistProvider id={getSearchPost() || ''}>
-        <TabsComponent />
-      </ChecklistProvider>
+      <TabsComponent />
     </DrawerContentWrapper>
   )
 }
@@ -244,14 +242,15 @@ const ChecklistTab = observer(() => {
 })
 
 const ChecklistTabContent = observer(() => {
-  const [checklistState] = useChecklistStore()
+  const [state] = usePostChecklistStore()
+  const id = String(getSearchPost())
   return (
     <Tabs.TabContent>
       <div className="px-4 my-2 flex gap-1 h-[24px]">
-        {checklistState.checklist.data?.length ? (
+        {state.checklists.data?.get(id)?.length ? (
           <>
             <CheckAllCheckboxes />
-            <ChecklistProgress />
+            <PostChecklistProgress id={id} />
           </>
         ) : null}
       </div>

@@ -1,29 +1,20 @@
+import {getSearchPost} from '@/app/posts/components/get-search-post'
 import {observer} from 'mobx-react-lite'
-import {useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {Loader} from '../common/loader'
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
+import {usePostChecklistStore} from '../post-checklist/post-checklist-store'
 import {CheckboxComponent} from './checkbox/checkbox'
-import {useChecklistStore} from './checklist-store'
 
-export const Checklist = observer(() => {
-  const [scrollEl, setScrollEl] = useState<HTMLElement>()
-  const [state] = useChecklistStore()
-
-  useEffect(() => {
-    if (scrollEl) {
-      scrollEl.scrollTop = scrollEl.scrollHeight
-    }
-  }, [state.checklist.data, scrollEl])
-
+export const Checklist = () => {
   return (
-    <PerfectScrollbar className="py-3 px-4" containerRef={setScrollEl}>
+    <PerfectScrollbar className="py-3 px-4">
       <div className="flex flex-col gap-2 h-[24px]">
         <Checkboxes />
       </div>
     </PerfectScrollbar>
   )
-})
+}
 
 const TwState = tw.div`
   flex
@@ -31,23 +22,24 @@ const TwState = tw.div`
 `
 
 const Checkboxes = observer(() => {
-  const [state] = useChecklistStore()
+  const id = String(getSearchPost())
+  const [state] = usePostChecklistStore()
 
-  if (state.checklist.error) {
-    return <TwState>{state.checklist.error.message}</TwState>
+  if (state.checklists.error) {
+    return <TwState>{state.checklists.error.message}</TwState>
   }
-  if (state.checklist.loading) {
+  if (state.checklists.loading) {
     return (
       <TwState>
         <Loader />
       </TwState>
     )
   }
-  if (state.checklist.data?.length === 0) {
+  if (state.checklists.data?.get(id)?.length === 0) {
     return <TwState className="text-info">type some stuff</TwState>
   }
 
-  return state.checklist.data?.map(checkbox => {
+  return state.checklists.data?.get(id)?.map(checkbox => {
     return (
       <CheckboxComponent
         key={checkbox.id}
