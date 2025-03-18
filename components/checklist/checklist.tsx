@@ -35,7 +35,7 @@ const Checkboxes = observer(() => {
       </TwState>
     )
   }
-  if (state.checklists.data?.get(id)?.length === 0) {
+  if (!state.checklists.data?.get(id)) {
     return <TwState className="text-info">type some stuff</TwState>
   }
 
