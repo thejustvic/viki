@@ -1,8 +1,8 @@
 import 'server-only'
 
 import ChatProvider from '@/components/chat/chat-provider'
+import {DrawerWrapper} from '@/components/common/drawer/drawer-wrapper'
 import {Load} from '@/components/common/load'
-import {DrawerWrapper} from '@/components/common/wrapper/client-components/drawer-wrapper'
 import {PostChecklistProvider} from '@/components/post-checklist/post-checklist-provider'
 import {Suspense} from 'react'
 import {PostsBase, PostsProvider} from './components/posts'
