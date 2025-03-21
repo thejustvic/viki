@@ -5,7 +5,7 @@ import {Button} from '../daisyui/button'
 import {useGlobalStore} from '../global/global-store'
 
 // Supabase auth needs to be triggered client-side
-export const ProviderLogin = observer(() => {
+export const LoginProviders = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase} = useSupabase()
 

@@ -1,11 +1,12 @@
 'use client'
 
 import {Hero} from '@/components/daisyui/hero'
-import {EmailLogin} from '@/components/login/email-login/email-login'
-import {ProviderLogin} from '@/components/login/provider-login'
+import {EmailLoginProvider} from '@/components/login/email-login/email-login-provider'
+import {LoginProviders} from '@/components/login/login-provider'
 import tw from 'tailwind-styled-components'
+import {EmailLoginCard} from './email-login/email-login-card'
 
-export const TwAnonymous = tw.div`
+export const TwLogin = tw.div`
   flex
   flex-col
   gap-4
@@ -30,14 +31,16 @@ const TwOr = tw.p`
   justify-center
 `
 
-export const HeroLogin = () => {
+export const Login = () => {
   return (
     <Hero>
       <TwHeroContent>
-        <EmailLogin />
+        <EmailLoginProvider>
+          <EmailLoginCard />
+        </EmailLoginProvider>
         <TwProviderLogin>
           <TwOr>OR</TwOr>
-          <ProviderLogin />
+          <LoginProviders />
         </TwProviderLogin>
       </TwHeroContent>
     </Hero>

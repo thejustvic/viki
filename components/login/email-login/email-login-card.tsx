@@ -2,8 +2,8 @@ import {Card} from '@/components/daisyui/card'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
+import {EmailLoginForm} from './email-login-form'
 import {useEmailLoginStore} from './email-login-store'
-import {LoginForm} from './login-form'
 
 const TwLoginCard = tw.div`
   w-[300px]
@@ -48,7 +48,7 @@ const TwCard = tw(Card)`
   h-full
 `
 
-export const LoginCard = observer(() => {
+export const EmailLoginCard = observer(() => {
   const [state] = useEmailLoginStore()
 
   return (
@@ -74,7 +74,7 @@ const Login = observer(() => {
   const {supabase} = useSupabase()
 
   return (
-    <LoginForm
+    <EmailLoginForm
       title="Login"
       linkTitle="Don't have an account?"
       handleLink={store.setRegisterView}
@@ -88,7 +88,7 @@ const Register = observer(() => {
   const {supabase} = useSupabase()
 
   return (
-    <LoginForm
+    <EmailLoginForm
       isRegister
       title="Register"
       linkTitle="Already have an account?"

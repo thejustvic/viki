@@ -1,5 +1,3 @@
-'use client'
-
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {makeAutoObservable, observable} from 'mobx'

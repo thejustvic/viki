@@ -63,7 +63,7 @@ const transform: CSSProperties = {
   transform: 'translateZ(20px)'
 }
 
-export const LoginForm = observer(
+export const EmailLoginForm = observer(
   ({
     isRegister = false,
     handleLink,
