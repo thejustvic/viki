@@ -1,23 +1,23 @@
 import 'server-only'
 
+import {CardChecklistProvider} from '@/components/card-checklist/card-checklist-provider'
 import ChatProvider from '@/components/chat/chat-provider'
 import {DrawerWrapper} from '@/components/common/drawer/drawer-wrapper'
 import {Load} from '@/components/common/load'
-import {PostChecklistProvider} from '@/components/post-checklist/post-checklist-provider'
 import {Suspense} from 'react'
-import {PostsBase, PostsProvider} from './components/posts'
+import {CardsBase, CardsProvider} from './components/cards'
 
-export default async function PostsPage() {
+export default async function CardsPage() {
   return (
     <Suspense fallback={<Load center />}>
       <ChatProvider>
-        <PostsProvider>
-          <PostChecklistProvider>
+        <CardsProvider>
+          <CardChecklistProvider>
             <DrawerWrapper>
-              <PostsBase />
+              <CardsBase />
             </DrawerWrapper>
-          </PostChecklistProvider>
-        </PostsProvider>
+          </CardChecklistProvider>
+        </CardsProvider>
       </ChatProvider>
     </Suspense>
   )

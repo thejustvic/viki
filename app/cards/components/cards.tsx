@@ -1,11 +1,11 @@
 'use client'
 
+import {CardChecklistProgress} from '@/components/card-checklist/card-checklist-progress'
+import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
-import {Card} from '@/components/daisyui/card'
-import {PostChecklistProgress} from '@/components/post-checklist/post-checklist-progress'
-import {usePostChecklistStore} from '@/components/post-checklist/post-checklist-store'
+import {Card as CardUI} from '@/components/daisyui/card'
 import {useTeamStore} from '@/components/team/team-store'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useMemoOne} from '@/hooks/use-memo-one'
@@ -15,15 +15,16 @@ import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import tw from 'tailwind-styled-components'
-import {AddNewPost} from './add-new-post'
-import {getSearchPost} from './get-search-post'
-import {usePostHandlers} from './posts-handlers'
-import {PostsContext, PostsStore, usePostsStore} from './posts-store'
-import type {Post} from './types'
+import {AddNewCard} from './add-new-card'
+import {useCardHandlers} from './cards-handlers'
+import {CardsContext, CardsStore, useCardsStore} from './cards-store'
+import {getSearchCard} from './get-search-card'
+
+import {Card as CardType} from './types'
 import {
-  useCheckPostExistInCurrentTeam,
-  usePostsListener
-} from './use-posts-listener'
+  useCardsListener,
+  useCheckCardExistInCurrentTeam
+} from './use-cards-listener'
 
 const TwContainer = tw.div`
   flex
@@ -34,35 +35,35 @@ const TwContainer = tw.div`
   md:justify-start
 `
 
-export const PostsProvider = observer(({children}: PropsWithChildren) => {
-  const store = useMemoOne(() => new PostsStore(), [])
+export const CardsProvider = observer(({children}: PropsWithChildren) => {
+  const store = useMemoOne(() => new CardsStore(), [])
   const {supabase} = useSupabase()
   const [state] = useTeamStore()
 
-  usePostsListener({supabase, store, currentTeamId: state.currentTeamId})
+  useCardsListener({supabase, store, currentTeamId: state.currentTeamId})
 
-  return <PostsContext.Provider value={store}>{children}</PostsContext.Provider>
+  return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
 })
 
-export const PostsBase = () => <PostsList />
+export const CardsBase = () => <CardsList />
 
-const PostsList = observer(() => {
-  useCheckPostExistInCurrentTeam()
+const CardsList = observer(() => {
+  useCheckCardExistInCurrentTeam()
   useLoggingOff()
 
   return (
     <TwContainer>
-      <Posts />
-      <AddNewPost />
+      <Cards />
+      <AddNewCard />
     </TwContainer>
   )
 })
 
-const Posts = observer(() => {
-  const [state, store] = usePostsStore()
-  const postId = getSearchPost()
+const Cards = observer(() => {
+  const [state, store] = useCardsStore()
+  const cardId = getSearchCard()
 
-  if (state.posts.loading) {
+  if (state.cards.loading) {
     return Array(3)
       .fill(null)
       .map((_el, inx) => (
@@ -70,66 +71,66 @@ const Posts = observer(() => {
       ))
   }
 
-  if (state.posts.error) {
-    return <div className="text-error">{state.posts.error.message}</div>
+  if (state.cards.error) {
+    return <div className="text-error">{state.cards.error.message}</div>
   }
 
   return store
-    .searchedPosts()
-    .map(post => <Post post={post} key={post.id} active={postId === post.id} />)
+    .searchedCards()
+    .map(card => <Card card={card} key={card.id} active={cardId === card.id} />)
 })
 
-const Post = observer(({post, active}: {post: Post; active: boolean}) => {
+const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
   const updateSearchParams = useUpdateSearchParams()
-  const {removePost} = usePostHandlers()
+  const {removeCard} = useCardHandlers()
 
   const remove = async () => {
-    await removePost(post.id)
-    updateSearchParams('post')
+    await removeCard(card.id)
+    updateSearchParams('card')
   }
 
   return (
     <ParallaxCardContainer
       active={active}
-      cardNodeBody={<CardBody post={post} remove={remove} />}
+      cardNodeBody={<CardBody card={card} remove={remove} />}
     />
   )
 })
 
-interface PostProps {
-  post: Post
+interface CardProps {
+  card: CardType
   remove: () => void
 }
 
-const CardBody = observer(({post, remove}: PostProps) => {
+const CardBody = observer(({card, remove}: CardProps) => {
   const updateSearchParams = useUpdateSearchParams()
 
   const onClickHandler = () => {
-    updateSearchParams('post', post.id)
+    updateSearchParams('card', card.id)
   }
 
   return (
     <>
-      <Card.Title tag="h2" className="flex justify-between">
+      <CardUI.Title tag="h2" className="flex justify-between">
         <Button color="ghost" className="p-0" onClick={onClickHandler}>
-          <span className="w-16 truncate">{post.text}</span>
+          <span className="w-16 truncate">{card.text}</span>
         </Button>
         <Button color="ghost" shape="circle" onClick={remove}>
           <IconTrash />
         </Button>
-      </Card.Title>
-      <Card.Actions className="justify-center">
+      </CardUI.Title>
+      <CardUI.Actions className="justify-center">
         <Button color="primary" className="w-full" onClick={onClickHandler}>
-          <PostChecklistProgress id={post.id} />
+          <CardChecklistProgress id={card.id} />
         </Button>
-      </Card.Actions>
+      </CardUI.Actions>
     </>
   )
 })
 
 export const CheckAllCheckboxes = observer(() => {
-  const id = String(getSearchPost())
-  const [state] = usePostChecklistStore()
+  const id = String(getSearchCard())
+  const [state] = useCardChecklistStore()
   const {updateAllCheckboxIsCompleted} = useCheckboxHandlers()
   const isAllCompleted = state.progress.get(id) === 100
   const checkboxIds = state.checklists.data?.get(id)?.map(c => c.id)

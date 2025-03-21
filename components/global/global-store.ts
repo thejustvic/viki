@@ -11,7 +11,7 @@ interface State {
   rightDrawerOpen: boolean
   drawerOpenByHover: boolean
   showLeftMenuOnHover: boolean
-  lastPostId: string | undefined
+  lastCardId: string | undefined
   rightDrawerWidth: number
   leftDrawerWidth: number
   tab: Tab
@@ -31,7 +31,7 @@ export class GlobalStore {
     rightDrawerOpen: false,
     drawerOpenByHover: false,
     showLeftMenuOnHover: false,
-    lastPostId: undefined,
+    lastCardId: undefined,
     rightDrawerWidth: 320,
     leftDrawerWidth: 320,
     tab: 'info',
@@ -70,8 +70,8 @@ export class GlobalStore {
     this.setTheme(newTheme)
   }
 
-  setLastPostId = (postId: State['lastPostId']): void => {
-    this.state.lastPostId = postId
+  setLastCardId = (cardId: State['lastCardId']): void => {
+    this.state.lastCardId = cardId
   }
 
   setRightDrawerToggle = (): void => {

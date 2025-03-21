@@ -1,10 +1,10 @@
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {twJoin} from 'tailwind-merge'
-import {usePostChecklistStore} from './post-checklist-store'
+import {useCardChecklistStore} from './card-checklist-store'
 
-export const PostChecklistProgress = observer(({id}: {id: string}) => {
-  const [state, store] = usePostChecklistStore()
+export const CardChecklistProgress = observer(({id}: {id: string}) => {
+  const [state, store] = useCardChecklistStore()
 
   useEffect(() => {
     if (state.checklists.data?.get(id)) {

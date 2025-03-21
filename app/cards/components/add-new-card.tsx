@@ -16,14 +16,14 @@ const TwAdd = tw(Button)`
   text-primary
 `
 
-export const AddNewPost = () => {
+export const AddNewCard = () => {
   return <ParallaxCardContainer cardNodeBody={<CardBody />} />
 }
 
 const CardBody = () => {
   const updateSearchParams = useUpdateSearchParams()
   const onClickHandler = () => {
-    updateSearchParams('create-post', 'true')
+    updateSearchParams('create-card', 'true')
   }
 
   return (

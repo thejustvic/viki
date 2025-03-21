@@ -1,6 +1,6 @@
 'use client'
 
-import {useSetFocusAfterTransitionEnd} from '@/app/posts/components/modal-create-post/use-set-focus-after-transitionend'
+import {useSetFocusAfterTransitionEnd} from '@/app/cards/components/modal-create-card/use-set-focus-after-transitionend'
 import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'

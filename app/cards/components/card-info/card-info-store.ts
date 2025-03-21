@@ -3,21 +3,21 @@ import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import type {User} from '@supabase/supabase-js'
 import {makeAutoObservable, observable} from 'mobx'
-import {Post} from '../types'
+import {Card} from '../types'
 
 interface State {
-  post: SupabaseQuery<Post>
-  postCreator: FetchQuery<User>
+  card: SupabaseQuery<Card>
+  cardCreator: FetchQuery<User>
 }
 
-export class PostInfoStore {
+export class CardInfoStore {
   state: State = {
-    post: {
+    card: {
       loading: false,
       data: null,
       error: null
     },
-    postCreator: {
+    cardCreator: {
       loading: false,
       data: null,
       error: null
@@ -30,15 +30,15 @@ export class PostInfoStore {
     })
   }
 
-  setPost = (post: State['post']): void => {
-    this.state.post = post
+  setCard = (card: State['card']): void => {
+    this.state.card = card
   }
 
-  setPostCreator = (postCreator: State['postCreator']): void => {
-    this.state.postCreator = postCreator
+  setCardCreator = (cardCreator: State['cardCreator']): void => {
+    this.state.cardCreator = cardCreator
   }
 }
 
-const [PostInfoStoreContext, usePostInfoStore] = createUseStore<PostInfoStore>()
+const [CardInfoStoreContext, useCardInfoStore] = createUseStore<CardInfoStore>()
 
-export {PostInfoStoreContext, usePostInfoStore}
+export {CardInfoStoreContext, useCardInfoStore}

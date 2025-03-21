@@ -1,15 +1,15 @@
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {Post} from '../../types'
+import {Card} from '../../types'
 
-export const getPostById = (
-  postId: Post['id'],
+export const getCardById = (
+  cardId: Card['id'],
   supabase: SupabaseContext['supabase']
-): PostgrestBuilder<Post | null> => {
+): PostgrestBuilder<Card | null> => {
   return supabase
-    .from('posts')
+    .from('cards')
     .select()
-    .match({id: postId})
+    .match({id: cardId})
     .throwOnError()
     .maybeSingle()
 }

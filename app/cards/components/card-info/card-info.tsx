@@ -11,14 +11,14 @@ import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {ReactNode, useEffect} from 'react'
 import tw from 'tailwind-styled-components'
-import {getSearchPost} from '../get-search-post'
-import {usePostHandlers} from '../posts-handlers'
-import {usePostListener} from './fetch/use-post-listener'
+import {useCardHandlers} from '../cards-handlers'
+import {getSearchCard} from '../get-search-card'
 import {
-  PostInfoStore,
-  PostInfoStoreContext,
-  usePostInfoStore
-} from './post-info-store'
+  CardInfoStore,
+  CardInfoStoreContext,
+  useCardInfoStore
+} from './card-info-store'
+import {useCardListener} from './fetch/use-card-listener'
 
 const TwLoading = tw(Loader)`
   p-0
@@ -38,21 +38,21 @@ const TwMenu = tw(Menu)`
   w-full
 `
 
-export const PostInfo = () => {
-  const store = useMemoOne(() => new PostInfoStore(), [])
+export const CardInfo = () => {
+  const store = useMemoOne(() => new CardInfoStore(), [])
 
   return (
-    <PostInfoStoreContext.Provider value={store}>
-      <PostInfoBase />
-    </PostInfoStoreContext.Provider>
+    <CardInfoStoreContext.Provider value={store}>
+      <CardInfoBase />
+    </CardInfoStoreContext.Provider>
   )
 }
 
-export const PostInfoBase = observer(() => {
-  const [state] = usePostInfoStore()
-  const postId = getSearchPost()
+export const CardInfoBase = observer(() => {
+  const [state] = useCardInfoStore()
+  const cardId = getSearchCard()
 
-  usePostListener({postId, authorId: state.post.data?.author_id})
+  useCardListener({cardId, authorId: state.card.data?.author_id})
 
   return (
     <TwMenu>
@@ -70,12 +70,12 @@ const ModalBody = () => (
 )
 
 const Time = () => {
-  const [state] = usePostInfoStore()
+  const [state] = useCardInfoStore()
 
   return (
     <ShowData
-      loading={state.post.loading}
-      error={state.post.error?.message}
+      loading={state.card.loading}
+      error={state.card.error?.message}
       data={<TimeData />}
       prefix={'time:'}
     />
@@ -83,13 +83,13 @@ const Time = () => {
 }
 
 const TimeData = observer(() => {
-  const [state] = usePostInfoStore()
+  const [state] = useCardInfoStore()
 
-  if (!state.post.data) {
+  if (!state.card.data) {
     return null
   }
 
-  const time = state.post.data.created_at
+  const time = state.card.data.created_at
 
   const timeDistance = format(new Date(time), 'hh:mm:ss, PPPP')
 
@@ -97,11 +97,11 @@ const TimeData = observer(() => {
 })
 
 const Text = observer(() => {
-  const [state] = usePostInfoStore()
+  const [state] = useCardInfoStore()
   return (
     <ShowData
-      loading={state.post.loading}
-      error={state.post.error?.message}
+      loading={state.card.loading}
+      error={state.card.error?.message}
       data={<TextData />}
       prefix={'content:'}
       stopSpinner
@@ -110,20 +110,20 @@ const Text = observer(() => {
 })
 
 const TextData = observer(() => {
-  const {updatePost} = usePostHandlers()
-  const [state] = usePostInfoStore()
-  const [text, onChange] = useInput(state.post.data?.text ?? '')
+  const {updateCard} = useCardHandlers()
+  const [state] = useCardInfoStore()
+  const [text, onChange] = useInput(state.card.data?.text ?? '')
   const debounced = useDebouncedValue(text, 500)
 
   useEffect(() => {
-    const text = state.post.data?.text
-    const id = state.post.data?.id
+    const text = state.card.data?.text
+    const id = state.card.data?.id
     if (id && text !== debounced && debounced.length > 0) {
-      void updatePost(debounced, id)
+      void updateCard(debounced, id)
     }
   }, [debounced])
 
-  if (state.post.loading) {
+  if (state.card.loading) {
     return (
       <div className="relative w-full">
         <Textarea
@@ -150,29 +150,29 @@ const TextData = observer(() => {
 })
 
 const CreatorData = observer(() => {
-  const [state] = usePostInfoStore()
+  const [state] = useCardInfoStore()
 
-  if (!state.postCreator.data) {
+  if (!state.cardCreator.data) {
     return null
   }
 
-  const src = state.postCreator.data.user_metadata?.avatar_url
+  const src = state.cardCreator.data.user_metadata?.avatar_url
 
   return (
     <div className="flex gap-2 items-center truncate">
       <UserImage src={src} />
-      <div className="truncate">{state.postCreator.data.email}</div>
+      <div className="truncate">{state.cardCreator.data.email}</div>
     </div>
   )
 })
 
 const Creator = observer(() => {
-  const [modalState] = usePostInfoStore()
+  const [modalState] = useCardInfoStore()
 
   return (
     <ShowData
-      loading={modalState.postCreator.loading}
-      error={modalState.postCreator.error?.message}
+      loading={modalState.cardCreator.loading}
+      error={modalState.cardCreator.error?.message}
       data={<CreatorData />}
       prefix={'creator:'}
     />

@@ -1,5 +1,5 @@
-import {getSearchPost} from '@/app/posts/components/get-search-post'
-import {Post} from '@/app/posts/components/types'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
+import {Card} from '@/app/cards/components/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {Tables} from '@/utils/database.types'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
@@ -10,20 +10,20 @@ import {ChatStore} from './chat-store'
 import {Message} from './types'
 
 const getMessages = (
-  postId: Post['id'],
+  cardId: Card['id'],
   supabase: SupabaseContext['supabase']
 ): PostgrestBuilder<Tables<'messages'>[]> =>
   supabase
     .from('messages')
     .select()
-    .eq('post_id', postId)
+    .eq('card_id', cardId)
     .order('created_at')
     .throwOnError()
 
 // Reusable Supabase Listener Hook
 const useSupabaseChatListener = (
   supabase: SupabaseContext['supabase'],
-  postId: Post['id'] | null,
+  cardId: Card['id'] | null,
   store: ChatStore
 ): void => {
   useEffect(() => {
@@ -50,29 +50,29 @@ const useSupabaseChatListener = (
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, postId])
+  }, [supabase, store, cardId])
 }
 
 export const useChatListener = (
   supabase: SupabaseContext['supabase'],
   store: ChatStore
 ): void => {
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
   const fetchMessages = useCallback(() => {
-    if (!postId) {
+    if (!cardId) {
       return null
     }
-    return getMessages(postId, supabase)
-  }, [postId, supabase])
+    return getMessages(cardId, supabase)
+  }, [cardId, supabase])
 
   // Fetch messages using custom hook
-  const {data, loading, error} = useSupabaseFetch(fetchMessages, [postId])
+  const {data, loading, error} = useSupabaseFetch(fetchMessages, [cardId])
 
   useEffect(() => {
     const messages = Util.explicitlyCastFromJsonToReactions(data)
     store.setChat({loading, data: messages, error})
   }, [data, loading, error, store])
 
-  useSupabaseChatListener(supabase, postId, store)
+  useSupabaseChatListener(supabase, cardId, store)
 }

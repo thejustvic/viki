@@ -1,7 +1,7 @@
 'use client'
 
-import {getSearchPost} from '@/app/posts/components/get-search-post'
-import {usePostsStore} from '@/app/posts/components/posts-store'
+import {useCardsStore} from '@/app/cards/components/cards-store'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
 import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
@@ -44,7 +44,7 @@ export const Navbar = observer(() => {
 })
 
 const NavStart = () => {
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
   if (isMobile) {
     return
@@ -52,7 +52,7 @@ const NavStart = () => {
 
   return (
     <Nav.Start>
-      {postId && <LeftDrawerButton />}
+      {cardId && <LeftDrawerButton />}
       <div className="ml-4 flex gap-2 items-center">
         <TeamSelect />
         <OpenTeamButton />
@@ -70,7 +70,7 @@ const NavCenter = () => {
 }
 
 const Search = observer(() => {
-  const [state, store] = usePostsStore()
+  const [state, store] = useCardsStore()
 
   return (
     <label className="input input-info border-none">
@@ -103,7 +103,7 @@ const NavEnd = () => {
 const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase, user} = useSupabase()
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
   const handleLogout = async () => {
     store.setLogging('logout')
@@ -121,7 +121,7 @@ const AvatarDropdown = observer(() => {
         <UserImage src={user.user_metadata?.avatar_url} />
       </Button>
       <Dropdown.Menu className="shadow-lg bg-base-200">
-        {postId && <LabelShowLeftMenu />}
+        {cardId && <LabelShowLeftMenu />}
         {isMobile && (
           <div className="flex gap-1 items-center">
             <TeamSelect />

@@ -4,46 +4,46 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect} from 'react'
-import {getSearchPost} from './get-search-post'
-import {PostsStore, usePostsStore} from './posts-store'
-import type {Post} from './types'
+import {CardsStore, useCardsStore} from './cards-store'
+import {getSearchCard} from './get-search-card'
+import type {Card} from './types'
 
-// Fetch posts for a given team
-const getMyPosts = (
+// Fetch cards for a given team
+const getMyCards = (
   supabase: SupabaseContext['supabase'],
   currentTeamId: string
-): PostgrestBuilder<Post[]> => {
+): PostgrestBuilder<Card[]> => {
   if (!currentTeamId) {
     throw new Error('Current team ID is required!')
   }
 
-  return supabase.from('posts').select().eq('team_id', currentTeamId)
+  return supabase.from('cards').select().eq('team_id', currentTeamId)
 }
 
-// Check if post exists in current team
-export const useCheckPostExistInCurrentTeam = (): void => {
+// Check if card exists in current team
+export const useCheckCardExistInCurrentTeam = (): void => {
   const [teamState] = useTeamStore()
-  const [postState] = usePostsStore()
+  const [cardState] = useCardsStore()
   const updateSearchParams = useUpdateSearchParams()
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
-  const postExists = useCallback(() => {
-    const post = postState.posts?.data?.find(p => p.id === postId)
-    return post ? post.team_id === teamState.currentTeamId : false
-  }, [postState.posts?.data, postId, teamState.currentTeamId])
+  const cardExists = useCallback(() => {
+    const card = cardState.cards?.data?.find(p => p.id === cardId)
+    return card ? card.team_id === teamState.currentTeamId : false
+  }, [cardState.cards?.data, cardId, teamState.currentTeamId])
 
   useEffect(() => {
-    if (postState.posts?.data && !postExists()) {
-      updateSearchParams('post')
+    if (cardState.cards?.data && !cardExists()) {
+      updateSearchParams('card')
     }
-  }, [postExists, updateSearchParams])
+  }, [cardExists, updateSearchParams])
 }
 
 // Reusable Supabase Listener Hook
 const useSupabaseListener = (
   supabase: SupabaseContext['supabase'],
   currentTeamId: string | null,
-  store: PostsStore
+  store: CardsStore
 ): void => {
   useEffect(() => {
     if (!currentTeamId) {
@@ -51,31 +51,31 @@ const useSupabaseListener = (
     }
 
     const channel = supabase
-      .channel('posts')
+      .channel('cards')
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'posts',
+          table: 'cards',
           filter: `team_id=eq.${currentTeamId}`
         },
-        payload => store.handleInsert(payload.new as Post)
+        payload => store.handleInsert(payload.new as Card)
       )
       .on(
         'postgres_changes',
-        {event: 'DELETE', schema: 'public', table: 'posts'},
-        payload => store.handleDelete(payload.old as Post)
+        {event: 'DELETE', schema: 'public', table: 'cards'},
+        payload => store.handleDelete(payload.old as Card)
       )
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'posts',
+          table: 'cards',
           filter: `team_id=eq.${currentTeamId}`
         },
-        payload => store.handleUpdate(payload.old as Post, payload.new as Post)
+        payload => store.handleUpdate(payload.old as Card, payload.new as Card)
       )
       .subscribe()
 
@@ -85,27 +85,27 @@ const useSupabaseListener = (
   }, [supabase, store, currentTeamId])
 }
 
-// Fetch posts and listen for updates
-export const usePostsListener = ({
+// Fetch cards and listen for updates
+export const useCardsListener = ({
   supabase,
   store,
   currentTeamId
 }: {
   supabase: SupabaseContext['supabase']
-  store: PostsStore
+  store: CardsStore
   currentTeamId: string | null
 }): void => {
-  const fetchPosts = useCallback(() => {
+  const fetchCards = useCallback(() => {
     if (!currentTeamId) {
       return null
     }
-    return getMyPosts(supabase, currentTeamId)
+    return getMyCards(supabase, currentTeamId)
   }, [currentTeamId, supabase])
 
-  const {data, loading, error} = useSupabaseFetch(fetchPosts, [currentTeamId])
+  const {data, loading, error} = useSupabaseFetch(fetchCards, [currentTeamId])
 
   useEffect(() => {
-    store.setPosts({loading, data, error})
+    store.setCards({loading, data, error})
   }, [data, loading, error, store])
 
   useSupabaseListener(supabase, currentTeamId, store)

@@ -7,10 +7,10 @@ import {Checkbox} from '../types'
 interface Handlers {
   removeCheckbox: (id: Checkbox['id']) => Promise<void>
   insertCheckbox: ({
-    postId,
+    cardId,
     title
   }: {
-    postId: Checkbox['post_id']
+    cardId: Checkbox['card_id']
     title: Checkbox['title']
   }) => Promise<void>
   updateCheckboxTitle: (
@@ -35,7 +35,7 @@ export const useCheckboxHandlers = (): Handlers => {
   }
 
   const insertCheckbox: Handlers['insertCheckbox'] = async ({
-    postId,
+    cardId,
     title
   }) => {
     if (!user) {
@@ -43,7 +43,7 @@ export const useCheckboxHandlers = (): Handlers => {
     }
     await supabase.from('checklist').insert({
       author_id: user.id,
-      post_id: postId,
+      card_id: cardId,
       title
     })
   }

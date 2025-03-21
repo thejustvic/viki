@@ -1,34 +1,34 @@
-import {Post} from '@/app/posts/components/types'
+import {Card} from '@/app/cards/components/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useEffect} from 'react'
-import {PostChecklistStore} from './post-checklist-store'
+import {CardChecklistStore} from './card-checklist-store'
 import {Checkbox} from './types'
 
 const getChecklists = (
-  postIds: Post['id'][],
+  cardIds: Card['id'][],
   supabase: SupabaseContext['supabase']
 ): PostgrestBuilder<Checkbox[]> => {
   return supabase
     .from('checklist')
     .select()
-    .in('post_id', postIds)
+    .in('card_id', cardIds)
     .throwOnError()
 }
 
 const useSupabaseChecklistListener = (
   supabase: SupabaseContext['supabase'],
-  postIds: Post['id'][],
-  store: PostChecklistStore
+  cardIds: Card['id'][],
+  store: CardChecklistStore
 ): void => {
   useEffect(() => {
-    if (postIds.length === 0) {
+    if (cardIds.length === 0) {
       return
     }
     const channel = supabase
-      .channel('post-checklist')
+      .channel('card-checklist')
       .on(
         'postgres_changes',
         {
@@ -38,7 +38,7 @@ const useSupabaseChecklistListener = (
         },
         payload =>
           store.handleInsert(
-            payload.new.post_id as Checkbox['post_id'],
+            payload.new.card_id as Checkbox['card_id'],
             payload.new as Checkbox
           )
       )
@@ -56,7 +56,7 @@ const useSupabaseChecklistListener = (
         },
         payload =>
           store.handleUpdate(
-            payload.new.post_id as Checkbox['post_id'],
+            payload.new.card_id as Checkbox['card_id'],
             payload.old as Checkbox,
             payload.new as Checkbox
           )
@@ -66,25 +66,25 @@ const useSupabaseChecklistListener = (
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, store, postIds])
+  }, [supabase, store, cardIds])
 }
 
-export const usePostChecklistListener = ({
-  postIds,
+export const useCardChecklistListener = ({
+  cardIds,
   supabase,
   store
 }: {
-  postIds: Post['id'][]
+  cardIds: Card['id'][]
   supabase: SupabaseContext['supabase']
-  store: PostChecklistStore
+  store: CardChecklistStore
 }): void => {
   const {data, loading, error} = useSupabaseFetch(
-    postIds.length > 0 ? () => getChecklists(postIds, supabase) : null,
-    [postIds]
+    cardIds.length > 0 ? () => getChecklists(cardIds, supabase) : null,
+    [cardIds]
   )
 
   useEffect(() => {
-    const checkboxes = ObjUtil.groupBy(data ?? [], 'post_id')
+    const checkboxes = ObjUtil.groupBy(data ?? [], 'card_id')
 
     // Convert Record<string, Checkbox[]> to Map<string, Checkbox[]>
     const checkboxesMap = new Map<string, Checkbox[]>(
@@ -93,5 +93,5 @@ export const usePostChecklistListener = ({
     store.setChecklists({loading, data: checkboxesMap, error})
   }, [data, loading, error, store])
 
-  useSupabaseChecklistListener(supabase, postIds, store)
+  useSupabaseChecklistListener(supabase, cardIds, store)
 }

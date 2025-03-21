@@ -1,9 +1,9 @@
-import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
+import {useCardChecklistStore} from '../card-checklist/card-checklist-store'
 import {Loader} from '../common/loader'
 import {PerfectScrollbar} from '../common/perfect-scrollbar'
-import {usePostChecklistStore} from '../post-checklist/post-checklist-store'
 import {CheckboxComponent} from './checkbox/checkbox'
 
 export const Checklist = () => {
@@ -22,8 +22,8 @@ const TwState = tw.div`
 `
 
 const Checkboxes = observer(() => {
-  const id = String(getSearchPost())
-  const [state] = usePostChecklistStore()
+  const id = String(getSearchCard())
+  const [state] = useCardChecklistStore()
 
   if (state.checklists.error) {
     return <TwState>{state.checklists.error.message}</TwState>

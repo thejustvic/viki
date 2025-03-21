@@ -10,7 +10,7 @@ interface State {
   progressText: Map<string, string>
 }
 
-export class PostChecklistStore {
+export class CardChecklistStore {
   state: State = {
     checklists: {
       loading: false,
@@ -87,7 +87,7 @@ export class PostChecklistStore {
     }
   }
 
-  handleInsert = (postId: string, newCheckbox: Checkbox): void => {
+  handleInsert = (cardId: string, newCheckbox: Checkbox): void => {
     const checklistMap = this.state.checklists.data
 
     if (!checklistMap) {
@@ -95,11 +95,11 @@ export class PostChecklistStore {
     }
 
     // Get the existing checklist array or create a new one if the key doesn't exist
-    const existingChecklist = checklistMap.get(postId) || []
+    const existingChecklist = checklistMap.get(cardId) || []
 
     // Create a new Map instance to maintain reactivity
     const updatedMap = new Map(checklistMap)
-    updatedMap.set(postId, [...existingChecklist, newCheckbox])
+    updatedMap.set(cardId, [...existingChecklist, newCheckbox])
 
     // Update state with the new Map
     this.setChecklists({
@@ -116,19 +116,19 @@ export class PostChecklistStore {
 
     const checkboxId = oldCheckbox.id
 
-    // Find the post_id associated with the checkbox
-    const checkboxPostId = ObjUtil.findInGroupedData(
+    // Find the card_id associated with the checkbox
+    const checkboxCardId = ObjUtil.findInGroupedData(
       Object.fromEntries(checklistMap), // Convert Map to a plain object for compatibility
       'id',
       checkboxId
-    )?.post_id
+    )?.card_id
 
-    if (!checkboxPostId) {
+    if (!checkboxCardId) {
       return
     }
 
     // Get the existing checklist array
-    const existingChecklist = checklistMap.get(checkboxPostId)
+    const existingChecklist = checklistMap.get(checkboxCardId)
     if (!existingChecklist) {
       return
     }
@@ -143,9 +143,9 @@ export class PostChecklistStore {
 
     // If the checklist becomes empty, remove the entry entirely
     if (updatedChecklist.length > 0) {
-      updatedMap.set(checkboxPostId, updatedChecklist)
+      updatedMap.set(checkboxCardId, updatedChecklist)
     } else {
-      updatedMap.delete(checkboxPostId)
+      updatedMap.delete(checkboxCardId)
     }
 
     // Update state with the new Map
@@ -156,6 +156,6 @@ export class PostChecklistStore {
   }
 }
 
-const [PostChecklistContext, usePostChecklistStore] =
-  createUseStore<PostChecklistStore>()
-export {PostChecklistContext, usePostChecklistStore}
+const [CardChecklistContext, useCardChecklistStore] =
+  createUseStore<CardChecklistStore>()
+export {CardChecklistContext, useCardChecklistStore}

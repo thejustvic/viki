@@ -12,7 +12,7 @@ import {Analytics} from '@vercel/analytics/next'
 import {SpeedInsights} from '@vercel/speed-insights/next'
 import {cookies} from 'next/headers'
 import {PropsWithChildren} from 'react'
-import {ModalCreatePost} from './posts/components/modal-create-post/modal-create-post'
+import {ModalCreateCard} from './cards/components/modal-create-card/modal-create-card'
 
 export const metadata = {
   title: 'hobby',
@@ -54,7 +54,7 @@ const Modals = () => {
     <>
       <ModalTeam />
       <ModalCreateTeam />
-      <ModalCreatePost />
+      <ModalCreateCard />
       <ModalCreateTeamMember />
     </>
   )

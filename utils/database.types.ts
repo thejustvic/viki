@@ -9,97 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      checklist: {
-        Row: {
-          author_id: string
-          created_at: string
-          id: string
-          is_completed: boolean
-          post_id: string
-          title: string
-        }
-        Insert: {
-          author_id: string
-          created_at?: string
-          id?: string
-          is_completed?: boolean
-          post_id: string
-          title: string
-        }
-        Update: {
-          author_id?: string
-          created_at?: string
-          id?: string
-          is_completed?: boolean
-          post_id?: string
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'checklist_author_id_fkey'
-            columns: ['author_id']
-            isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'checklist_post_id_fkey'
-            columns: ['post_id']
-            isOneToOne: false
-            referencedRelation: 'posts'
-            referencedColumns: ['id']
-          }
-        ]
-      }
-      messages: {
-        Row: {
-          author_email: string
-          author_id: string
-          author_image: string
-          created_at: string
-          id: string
-          post_id: string
-          reactions: Json
-          text: string
-        }
-        Insert: {
-          author_email: string
-          author_id: string
-          author_image: string
-          created_at?: string
-          id?: string
-          post_id: string
-          reactions: Json
-          text: string
-        }
-        Update: {
-          author_email?: string
-          author_id?: string
-          author_image?: string
-          created_at?: string
-          id?: string
-          post_id?: string
-          reactions?: Json
-          text?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'messages_author_id_fkey'
-            columns: ['author_id']
-            isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'messages_post_id_fkey'
-            columns: ['post_id']
-            isOneToOne: false
-            referencedRelation: 'posts'
-            referencedColumns: ['id']
-          }
-        ]
-      }
-      posts: {
+      cards: {
         Row: {
           author_email: string
           author_id: string
@@ -126,17 +36,107 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'posts_author_id_fkey'
+            foreignKeyName: 'cards_author_id_fkey'
             columns: ['author_id']
             isOneToOne: false
             referencedRelation: 'profiles'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'posts_team_id_fkey'
+            foreignKeyName: 'cards_team_id_fkey'
             columns: ['team_id']
             isOneToOne: false
             referencedRelation: 'teams'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      checklist: {
+        Row: {
+          author_id: string
+          card_id: string
+          created_at: string
+          id: string
+          is_completed: boolean
+          title: string
+        }
+        Insert: {
+          author_id: string
+          card_id: string
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          title: string
+        }
+        Update: {
+          author_id?: string
+          card_id?: string
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'checklist_author_id_fkey'
+            columns: ['author_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'checklist_card_id_fkey'
+            columns: ['card_id']
+            isOneToOne: false
+            referencedRelation: 'cards'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      messages: {
+        Row: {
+          author_email: string
+          author_id: string
+          author_image: string
+          card_id: string
+          created_at: string
+          id: string
+          reactions: Json
+          text: string
+        }
+        Insert: {
+          author_email: string
+          author_id: string
+          author_image: string
+          card_id: string
+          created_at?: string
+          id?: string
+          reactions: Json
+          text: string
+        }
+        Update: {
+          author_email?: string
+          author_id?: string
+          author_image?: string
+          card_id?: string
+          created_at?: string
+          id?: string
+          reactions?: Json
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'messages_author_id_fkey'
+            columns: ['author_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'messages_card_id_fkey'
+            columns: ['card_id']
+            isOneToOne: false
+            referencedRelation: 'cards'
             referencedColumns: ['id']
           }
         ]

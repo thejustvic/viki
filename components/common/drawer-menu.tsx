@@ -1,4 +1,4 @@
-import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
@@ -31,11 +31,11 @@ export const DrawerMenu = observer(() => {
 })
 
 export const ChatWrapper = () => {
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
   return (
     <div className="flex flex-col justify-between flex-1 gap-3 pt-6">
       <Chat />
-      {postId && <ChatInput />}
+      {cardId && <ChatInput />}
     </div>
   )
 }

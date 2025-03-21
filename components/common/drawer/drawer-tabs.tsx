@@ -1,13 +1,13 @@
-import {getSearchPost} from '@/app/posts/components/get-search-post'
-import {PostInfo} from '@/app/posts/components/post-info/post-info'
-import {CheckAllCheckboxes} from '@/app/posts/components/posts'
+import {CardInfo} from '@/app/cards/components/card-info/card-info'
+import {CheckAllCheckboxes} from '@/app/cards/components/cards'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
+import {CardChecklistProgress} from '@/components/card-checklist/card-checklist-progress'
+import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
 import {CheckboxInput} from '@/components/checklist/checkbox/checkbox-input'
 import {Checklist} from '@/components/checklist/checklist'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global/global-store'
 import {Tab} from '@/components/global/types'
-import {PostChecklistProgress} from '@/components/post-checklist/post-checklist-progress'
-import {usePostChecklistStore} from '@/components/post-checklist/post-checklist-store'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
@@ -56,7 +56,7 @@ const InfoTab = observer(() => {
 const InfoTabContent = () => {
   return (
     <Tabs.TabContent>
-      <PostInfo />
+      <CardInfo />
     </Tabs.TabContent>
   )
 }
@@ -79,15 +79,15 @@ const ChecklistTab = observer(() => {
 })
 
 const ChecklistTabContent = observer(() => {
-  const [state] = usePostChecklistStore()
-  const id = String(getSearchPost())
+  const [state] = useCardChecklistStore()
+  const id = String(getSearchCard())
   return (
     <Tabs.TabContent>
       <div className="px-4 my-2 flex gap-1 h-[24px]">
         {state.checklists.data?.get(id)?.length ? (
           <>
             <CheckAllCheckboxes />
-            <PostChecklistProgress id={id} />
+            <CardChecklistProgress id={id} />
           </>
         ) : null}
       </div>

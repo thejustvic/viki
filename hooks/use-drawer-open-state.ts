@@ -1,4 +1,4 @@
-import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
 import {useGlobalStore} from '@/components/global/global-store'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
@@ -7,7 +7,7 @@ import {useUpdateSearchParams} from './use-update-search-params'
 export const useLeftDrawerOpenState = (): void => {
   const {x} = useMousePosition()
   const [state, store] = useGlobalStore()
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
   useEffect(() => {
     if (x === null) {
@@ -19,7 +19,7 @@ export const useLeftDrawerOpenState = (): void => {
     if (
       !state.leftDrawerOpen &&
       !state.drawerOpenByHover &&
-      postId &&
+      cardId &&
       Number(x) < 10
     ) {
       store.setLeftDrawerOpen(true)
@@ -37,24 +37,24 @@ export const useLeftDrawerOpenState = (): void => {
 export const useRightDrawerOpenState = (): void => {
   const [state, store] = useGlobalStore()
   const updateSearchParams = useUpdateSearchParams()
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
   useEffect(() => {
-    if (postId) {
-      store.setLastPostId(postId)
+    if (cardId) {
+      store.setLastCardId(cardId)
       store.setRightDrawerOpen()
     } else {
       store.setRightDrawerClosed()
       store.setLeftDrawerClosed()
     }
-  }, [postId])
+  }, [cardId])
 
   useEffect(() => {
-    if (!state.rightDrawerOpen && postId) {
-      store.setLastPostId(postId)
-      updateSearchParams('post')
-    } else if (state.rightDrawerOpen && state.lastPostId && !postId) {
-      updateSearchParams('post', state.lastPostId)
+    if (!state.rightDrawerOpen && cardId) {
+      store.setLastCardId(cardId)
+      updateSearchParams('card')
+    } else if (state.rightDrawerOpen && state.lastCardId && !cardId) {
+      updateSearchParams('card', state.lastCardId)
     }
   }, [state.rightDrawerOpen])
 }

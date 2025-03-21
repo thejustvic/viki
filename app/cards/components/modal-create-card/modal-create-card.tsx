@@ -9,21 +9,21 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
-import {usePostHandlers} from '../posts-handlers'
+import {useCardHandlers} from '../cards-handlers'
 import {useSetFocusAfterTransitionEnd} from './use-set-focus-after-transitionend'
 
-export const ModalCreatePost = () => {
+export const ModalCreateCard = () => {
   const updateSearchParams = useUpdateSearchParams()
-  const createPost = getSearchParam('create-post')
+  const createCard = getSearchParam('create-card')
 
   const goBack = () => {
-    updateSearchParams('create-post')
+    updateSearchParams('create-card')
   }
 
   return (
     <Modal
-      id="modal-create-post"
-      open={Boolean(createPost)}
+      id="modal-create-card"
+      open={Boolean(createCard)}
       goBack={goBack}
       header={<ModalHeader />}
       body={<ModalBody />}
@@ -50,13 +50,13 @@ const Text = observer(() => {
 
   const updateSearchParams = useUpdateSearchParams()
 
-  const {insertPost} = usePostHandlers()
+  const {insertCard} = useCardHandlers()
   const {register, handleSubmit, setFocus, resetField} = useForm<FormInputs>()
 
   useSetFocusAfterTransitionEnd(
     {
-      id: 'dialog-modal-create-post',
-      dep: getSearchParam('create-post')
+      id: 'dialog-modal-create-card',
+      dep: getSearchParam('create-card')
     },
     () => setFocus('text'),
     () => resetField('text')
@@ -66,8 +66,8 @@ const Text = observer(() => {
     if (!state.currentTeamId) {
       return
     }
-    await insertPost(data.text, state.currentTeamId)
-    updateSearchParams('create-post')
+    await insertCard(data.text, state.currentTeamId)
+    updateSearchParams('create-card')
   }
 
   return (

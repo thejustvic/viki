@@ -1,4 +1,4 @@
-import {getSearchPost} from '@/app/posts/components/get-search-post'
+import {getSearchCard} from '@/app/cards/components/get-search-card'
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
@@ -21,14 +21,14 @@ interface FormInputs {
 export const ChatInput = observer(() => {
   const {insertMessage} = useChatHandlers()
   const {register, handleSubmit, setValue} = useForm<FormInputs>()
-  const postId = getSearchPost()
+  const cardId = getSearchCard()
 
   const onSubmit = async (data: FormInputs) => {
-    if (!postId) {
+    if (!cardId) {
       return
     }
     try {
-      await insertMessage({text: data.text, postId})
+      await insertMessage({text: data.text, cardId})
       setValue('text', '')
     } catch (e) {
       setValue('text', (e as Error).message)

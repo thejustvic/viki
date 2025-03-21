@@ -5,10 +5,10 @@ import {Message, Reactions} from './types'
 interface Handlers {
   removeMessage: (id: Message['id']) => Promise<void>
   insertMessage: ({
-    postId,
+    cardId,
     text
   }: {
-    postId: Message['post_id']
+    cardId: Message['card_id']
     text: string
   }) => Promise<void>
   updateMessageText: (text: string, messageId: string) => Promise<void>
@@ -25,13 +25,13 @@ export const useChatHandlers = (): Handlers => {
     await supabase.from('messages').delete().eq('id', id)
   }
 
-  const insertMessage: Handlers['insertMessage'] = async ({postId, text}) => {
+  const insertMessage: Handlers['insertMessage'] = async ({cardId, text}) => {
     if (!user) {
       throw Error('You must log in first!')
     }
     await supabase.from('messages').insert({
       author_id: user.id,
-      post_id: postId,
+      card_id: cardId,
       author_email: user.email ?? '',
       author_image: user.user_metadata?.avatar_url ?? '',
       reactions: {},

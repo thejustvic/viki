@@ -12,8 +12,8 @@ export default async function Page() {
 
   const user = await getServerUser()
 
-  if (user && pathname !== '/posts') {
-    return <ClientRedirect href="/posts" />
+  if (user && pathname !== '/cards') {
+    return <ClientRedirect href="/cards" />
   } else {
     return (
       <Suspense fallback={<Load center />}>
