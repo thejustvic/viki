@@ -6,21 +6,18 @@ import {useEffect} from 'react'
 
 export const usePageRefresh = () => {
   const router = useRouter()
-  const {supabase} = useSupabase()
+  const {session: mySession, supabase} = useSupabase()
 
   useEffect(() => {
-    const {data: authListener} = supabase.auth.onAuthStateChange(
-      async event => {
-        if (
-          event === 'SIGNED_OUT' ||
-          event === 'TOKEN_REFRESHED' ||
-          event === 'INITIAL_SESSION'
-        ) {
-          router.refresh()
-        }
+    const {
+      data: {subscription}
+    } = supabase.auth.onAuthStateChange(async (_e, session) => {
+      if (session?.access_token !== mySession?.access_token) {
+        router.refresh()
       }
-    )
-
-    return () => authListener.subscription.unsubscribe()
-  }, [supabase, router])
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router, supabase, mySession])
 }
