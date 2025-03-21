@@ -6,7 +6,6 @@ import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
 import {ModalTeam} from '@/components/team/modal-team'
 import TeamProvider from '@/components/team/team-provider'
 import {getServerProfile} from '@/utils/supabase-utils/get-server-profile'
-import {getServerSession} from '@/utils/supabase-utils/get-server-session'
 import {getServerUser} from '@/utils/supabase-utils/get-server-user'
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
 import {Analytics} from '@vercel/analytics/next'
@@ -21,7 +20,6 @@ export const metadata = {
 }
 
 export default async function RootLayout({children}: PropsWithChildren) {
-  const session = await getServerSession()
   const user = await getServerUser()
   const profile = await getServerProfile(user)
 
@@ -32,7 +30,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
   return (
     <html data-theme={theme ?? 'dark'} lang="en">
       <body>
-        <SupabaseProvider user={user} session={session}>
+        <SupabaseProvider user={user}>
           <GlobalProvider serverTheme={theme}>
             <TeamProvider serverCurrentTeamId={profile?.current_team_id}>
               <Modals />
