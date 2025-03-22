@@ -2,6 +2,15 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+    async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/cards', 
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
