@@ -1,3 +1,5 @@
+import {useChatStore} from '@/components/chat/chat-store'
+import {Message, Profile} from '@/components/chat/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {
@@ -6,8 +8,6 @@ import {
 } from '@/utils/supabase-utils/supabase-provider'
 import {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useEffect, useMemo, useRef} from 'react'
-import {useChatStore} from '../chat-store'
-import {Message, Profile} from '../types'
 
 const getUsers = (
   supabase: SupabaseContext['supabase'],

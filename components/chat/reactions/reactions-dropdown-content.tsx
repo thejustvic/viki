@@ -1,8 +1,7 @@
+import {ReactionsSmileyText} from '@/components/chat/reactions/reactions-smiley-text'
+import {useReactionsHandlers} from '@/components/chat/reactions/use-reactions-handlers'
+import {Message, smileys} from '@/components/chat/types'
 import tw from 'tailwind-styled-components'
-import {Message, smileys} from '../types'
-
-import {ReactionsSmileyText} from './reactions-smiley-text'
-import {useReactionsHandlers} from './use-reactions-handlers'
 
 const TwSmileyContainer = tw.div`
   bg-info-content

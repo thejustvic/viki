@@ -1,11 +1,11 @@
+import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
+import {getCardById} from '@/components/cards/card-info/fetch/get-card-by-id'
+import {Card} from '@/components/cards/types'
 import {useFetch} from '@/hooks/use-fetch'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import type {User} from '@supabase/supabase-js'
 import {useEffect} from 'react'
-import {Card} from '../../types'
-import {useCardInfoStore} from '../card-info-store'
-import {getCardById} from './get-card-by-id'
 
 interface CardProps {
   cardId: Card['id'] | null

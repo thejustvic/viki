@@ -3,17 +3,23 @@ import {useGlobalStore} from '@/components/global/global-store'
 import {IconArrowBarLeft, IconArrowBarRight} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 
-export const LeftDrawerButton = observer(() => {
+export const NavbarRightDrawerButton = observer(() => {
   const [state, store] = useGlobalStore()
+
+  const toggleRightDrawer = () => {
+    store.setRightDrawerToggle()
+  }
 
   return (
     <Button
-      className="rounded-none rounded-r-md"
+      className="rounded-none rounded-l-md"
       color="ghost"
       size="sm"
-      onClick={store.setLeftDrawerToggle}
+      onClick={toggleRightDrawer}
     >
-      {state.leftDrawerOpen ? <IconArrowBarLeft /> : <IconArrowBarRight />}
+      <div className="text-lg normal-case">
+        {state.rightDrawerOpen ? <IconArrowBarRight /> : <IconArrowBarLeft />}
+      </div>
     </Button>
   )
 })

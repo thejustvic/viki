@@ -1,3 +1,5 @@
+import {DrawerMenu} from '@/components/common/drawer-menu'
+import {DrawerContentWrapper} from '@/components/common/drawer/drawer-wrapper'
 import {Drawer} from '@/components/daisyui/drawer'
 import {useGlobalStore} from '@/components/global/global-store'
 import {useLeftDrawerOpenState} from '@/hooks/use-drawer-open-state'
@@ -6,8 +8,6 @@ import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useSwipeable} from 'react-swipeable'
-import {DrawerMenu} from '../drawer-menu'
-import {DrawerContentWrapper} from './drawer-wrapper'
 
 export const DrawerLeft = observer(({children}: PropsWithChildren) => {
   useLeftDrawerOpenState()

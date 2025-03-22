@@ -1,13 +1,13 @@
+import {Loader} from '@/components/common/loader'
+import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {observer} from 'mobx-react-lite'
 import {useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
-import {Loader} from '../common/loader'
-import {PerfectScrollbar} from '../common/perfect-scrollbar'
 
+import {Button} from '@/components/daisyui/button'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import type {MouseEvent} from 'react'
-import {Button} from '../daisyui/button'
 import {useTeamMemberHandlers} from './team-member-handlers'
 import {useTeamStore} from './team-store'
 

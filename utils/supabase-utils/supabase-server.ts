@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import {Database} from '@/utils/database.types'
 import {createServerClient} from '@supabase/ssr'
 import {cookies} from 'next/headers'
-import {Database} from '../database.types'
 
 export async function createClient() {
   const cookieStore = await cookies()

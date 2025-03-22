@@ -1,6 +1,6 @@
+import {Avatar, AvatarProps} from '@/components/daisyui/avatar'
 import {IconUserCircle} from '@tabler/icons-react'
 import {HTMLProps} from 'react'
-import {Avatar, AvatarProps} from '../daisyui/avatar'
 
 interface Props {
   src: AvatarProps['src']

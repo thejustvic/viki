@@ -1,7 +1,7 @@
+import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {twJoin} from 'tailwind-merge'
-import {useCardChecklistStore} from './card-checklist-store'
 
 export const CardChecklistProgress = observer(({id}: {id: string}) => {
   const [state, store] = useCardChecklistStore()

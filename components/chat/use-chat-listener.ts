@@ -1,5 +1,5 @@
-import {getSearchCard} from '@/app/cards/components/get-search-card'
-import {Card} from '@/app/cards/components/types'
+import {getSearchCard} from '@/components/cards/get-search-card'
+import {Card} from '@/components/cards/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {Tables} from '@/utils/database.types'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'

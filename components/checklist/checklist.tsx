@@ -1,10 +1,10 @@
-import {getSearchCard} from '@/app/cards/components/get-search-card'
+import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
+import {getSearchCard} from '@/components/cards/get-search-card'
+import {CheckboxComponent} from '@/components/checklist/checkbox/checkbox'
+import {Loader} from '@/components/common/loader'
+import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
-import {useCardChecklistStore} from '../card-checklist/card-checklist-store'
-import {Loader} from '../common/loader'
-import {PerfectScrollbar} from '../common/perfect-scrollbar'
-import {CheckboxComponent} from './checkbox/checkbox'
 
 export const Checklist = () => {
   return (

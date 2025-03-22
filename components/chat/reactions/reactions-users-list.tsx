@@ -1,7 +1,7 @@
+import {Profile} from '@/components/chat/types'
 import {UserImage} from '@/components/common/user-image'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
-import {Profile} from '../types'
 
 const TwUsers = tw.div`
   flex

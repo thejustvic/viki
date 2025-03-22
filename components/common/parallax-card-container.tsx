@@ -1,8 +1,8 @@
+import {Card} from '@/components/daisyui/card'
 import {CSSProperties, ReactElement} from 'react'
 import {isMobile, isSafari} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
 import tw from 'tailwind-styled-components'
-import {Card} from '../daisyui/card'
 
 const TwCard = tw(Card)<{$active?: boolean}>`
   bg-base-300 

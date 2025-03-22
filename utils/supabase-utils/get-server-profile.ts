@@ -1,6 +1,6 @@
+import {Tables} from '@/utils/database.types'
+import {createClient} from '@/utils/supabase-utils/supabase-server'
 import type {User} from '@supabase/supabase-js'
-import {Tables} from '../database.types'
-import {createClient} from './supabase-server'
 
 export const getServerProfile = async (
   user: User | null

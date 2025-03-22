@@ -1,8 +1,8 @@
+import {Checkbox} from '@/components/checklist/types'
 import {
   SupabaseContext,
   useSupabase
 } from '@/utils/supabase-utils/supabase-provider'
-import {Checkbox} from '../types'
 
 interface Handlers {
   removeCheckbox: (id: Checkbox['id']) => Promise<void>

@@ -1,15 +1,15 @@
-import {useMemoOne} from '@/hooks/use-memo-one'
-import {observer} from 'mobx-react-lite'
-import {PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
-import {Checkbox} from '../types'
-import {CheckboxEdit} from './checkbox-edit'
-import {useCheckboxHandlers} from './checkbox-handlers'
+import {CheckboxEdit} from '@/components/checklist/checkbox/checkbox-edit'
+import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {
   CheckboxContext,
   CheckboxStore,
   useCheckboxStore
-} from './checkbox-store'
+} from '@/components/checklist/checkbox/checkbox-store'
+import {Checkbox} from '@/components/checklist/types'
+import {useMemoOne} from '@/hooks/use-memo-one'
+import {observer} from 'mobx-react-lite'
+import {PropsWithChildren} from 'react'
+import {twJoin} from 'tailwind-merge'
 
 export interface CheckboxProps extends PropsWithChildren {
   checked: Checkbox['is_completed']

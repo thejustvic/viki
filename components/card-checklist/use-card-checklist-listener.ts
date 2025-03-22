@@ -1,4 +1,4 @@
-import {Card} from '@/app/cards/components/types'
+import {Card} from '@/components/cards/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'

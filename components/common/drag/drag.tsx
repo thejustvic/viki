@@ -1,10 +1,10 @@
 'use client'
 
+import {useDragHandlers} from '@/components/common/drag/drag-handlers'
+import {useGlobalStore} from '@/components/global/global-store'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
-import {useGlobalStore} from '../global/global-store'
-import {useDragHandlers} from './drag-handlers'
 
 export interface DragProps {
   drawer: 'left' | 'right'

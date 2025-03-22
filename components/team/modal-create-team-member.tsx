@@ -1,14 +1,14 @@
 'use client'
 
-import {useSetFocusAfterTransitionEnd} from '@/app/cards/components/modal-create-card/use-set-focus-after-transitionend'
+import {useSetFocusAfterTransitionEnd} from '@/components/cards/modal-create-card/use-set-focus-after-transitionend'
 import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
+import {Input} from '@/components/daisyui/input'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
-import {Input} from '../daisyui/input'
 import {useTeamMemberHandlers} from './team-member-handlers'
 import {useTeamStore} from './team-store'
 

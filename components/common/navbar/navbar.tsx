@@ -1,7 +1,13 @@
 'use client'
 
-import {useCardsStore} from '@/app/cards/components/cards-store'
-import {getSearchCard} from '@/app/cards/components/get-search-card'
+import {useCardsStore} from '@/components/cards/cards-store'
+import {getSearchCard} from '@/components/cards/get-search-card'
+import {UserImage} from '@/components/common/user-image'
+import {Button} from '@/components/daisyui/button'
+import {Dropdown} from '@/components/daisyui/dropdown'
+import {Navbar as Nav} from '@/components/daisyui/navbar'
+import {Toggle} from '@/components/daisyui/toggle'
+import {useGlobalStore} from '@/components/global/global-store'
 import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
@@ -10,16 +16,10 @@ import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
-import {Button} from '../../../daisyui/button'
-import {Dropdown} from '../../../daisyui/dropdown'
-import {Navbar as Nav} from '../../../daisyui/navbar'
-import {Toggle} from '../../../daisyui/toggle'
-import {useGlobalStore} from '../../../global/global-store'
-import {UserImage} from '../../user-image'
-import {LeftDrawerButton} from './left-drawer-button'
-import {OpenTeamButton} from './open-team-button'
-import {RightDrawerButton} from './right-drawer-button'
-import {TeamSelect} from './team-select'
+import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
+import {NavbarOpenTeamButton} from './navbar-open-team-button'
+import {NavbarRightDrawerButton} from './navbar-right-drawer-button'
+import {NavbarTeamSelect} from './navbar-team-select'
 
 const TwNav = tw(Nav)`
   sticky 
@@ -52,10 +52,10 @@ const NavStart = () => {
 
   return (
     <Nav.Start>
-      {cardId && <LeftDrawerButton />}
+      {cardId && <NavbarLeftDrawerButton />}
       <div className="ml-4 flex gap-2 items-center">
-        <TeamSelect />
-        <OpenTeamButton />
+        <NavbarTeamSelect />
+        <NavbarOpenTeamButton />
       </div>
     </Nav.Start>
   )
@@ -94,7 +94,7 @@ const NavEnd = () => {
           <SwitchTheme />
           <AvatarDropdown />
         </div>
-        <RightDrawerButton />
+        <NavbarRightDrawerButton />
       </div>
     </Nav.End>
   )
@@ -124,8 +124,8 @@ const AvatarDropdown = observer(() => {
         {cardId && <LabelShowLeftMenu />}
         {isMobile && (
           <div className="flex gap-1 items-center">
-            <TeamSelect />
-            <OpenTeamButton />
+            <NavbarTeamSelect />
+            <NavbarOpenTeamButton />
           </div>
         )}
         <Button onClick={handleLogout} loading={state.logging.logout}>

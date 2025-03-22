@@ -1,8 +1,8 @@
+import {Button} from '@/components/daisyui/button'
+import {useGlobalStore} from '@/components/global/global-store'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
-import {Button} from '../daisyui/button'
-import {useGlobalStore} from '../global/global-store'
 
 // Supabase auth needs to be triggered client-side
 export const LoginProviders = observer(() => {

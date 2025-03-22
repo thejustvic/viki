@@ -1,6 +1,6 @@
+import {useGlobalStore} from '@/components/global/global-store'
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {useCallback, useState} from 'react'
-import {useGlobalStore} from '../global/global-store'
 import {DragProps} from './drag'
 
 interface Handlers {

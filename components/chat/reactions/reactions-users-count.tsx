@@ -1,7 +1,7 @@
+import {useChatStore} from '@/components/chat/chat-store'
+import {Profile} from '@/components/chat/types'
 import {UserImage} from '@/components/common/user-image'
 import {observer} from 'mobx-react-lite'
-import {useChatStore} from '../chat-store'
-import {Profile} from '../types'
 
 export const ReactionsUsersCount = observer(
   ({

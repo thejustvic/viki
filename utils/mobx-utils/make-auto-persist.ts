@@ -1,6 +1,6 @@
+import {ArrUtil} from '@/utils/arr-util'
+import {ObjUtil} from '@/utils/obj-util'
 import {autorun, set, toJS} from 'mobx'
-import {ArrUtil} from '../arr-util'
-import {ObjUtil} from '../obj-util'
 
 export const makeAutoPersist = <T extends {state: unknown}>(
   _this: T,

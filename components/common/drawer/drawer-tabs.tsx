@@ -1,18 +1,18 @@
-import {CardInfo} from '@/app/cards/components/card-info/card-info'
-import {CheckAllCheckboxes} from '@/app/cards/components/cards'
-import {getSearchCard} from '@/app/cards/components/get-search-card'
 import {CardChecklistProgress} from '@/components/card-checklist/card-checklist-progress'
 import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
+import {CardInfo} from '@/components/cards/card-info/card-info'
+import {CheckAllCheckboxes} from '@/components/cards/cards'
+import {getSearchCard} from '@/components/cards/get-search-card'
 import {CheckboxInput} from '@/components/checklist/checkbox/checkbox-input'
 import {Checklist} from '@/components/checklist/checklist'
+import {Drag} from '@/components/common/drag/drag'
+import {ChatWrapper} from '@/components/common/drawer-menu'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global/global-store'
 import {Tab} from '@/components/global/types'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
-import {Drag} from '../drag'
-import {ChatWrapper} from '../drawer-menu'
 
 export const TabsComponent = observer(() => {
   const [state] = useGlobalStore()

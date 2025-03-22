@@ -1,12 +1,12 @@
 'use client'
 
+import {Button} from '@/components/daisyui/button'
+import {Link} from '@/components/daisyui/link'
 import {useBoolean} from '@/hooks/use-boolean'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
 import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
-import {Button} from '../daisyui/button'
-import {Link} from '../daisyui/link'
 import './style.scss'
 
 const TwCarousel = tw.div`

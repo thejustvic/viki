@@ -1,9 +1,9 @@
+import {ReactionsDropdown} from '@/components/chat/reactions/reactions-dropdown'
+import {ReactionsEmptyList} from '@/components/chat/reactions/reactions-empty-list'
+import {ReactionsSmileyList} from '@/components/chat/reactions/reactions-smiley-list'
+import {Message} from '@/components/chat/types'
 import {ObjUtil} from '@/utils/obj-util'
 import tw from 'tailwind-styled-components'
-import {Message} from '../types'
-import {ReactionsDropdown} from './reactions-dropdown'
-import {ReactionsEmptyList} from './reactions-empty-list'
-import {ReactionsSmileyList} from './reactions-smiley-list'
 
 const TwContainer = tw.div`
   relative

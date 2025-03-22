@@ -1,6 +1,6 @@
 'use client'
 
-import {useCardsStore} from '@/app/cards/components/cards-store'
+import {useCardsStore} from '@/components/cards/cards-store'
 import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'

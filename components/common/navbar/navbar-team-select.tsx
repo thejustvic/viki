@@ -36,7 +36,7 @@ const useFirstCurrentTeamIdListener = () => {
   }, [teamState.myTeams.data])
 }
 
-export const TeamSelect = observer(() => {
+export const NavbarTeamSelect = observer(() => {
   const {user, supabase} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
   const {removeTeam} = useTeamHandlers()

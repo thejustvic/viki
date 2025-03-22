@@ -1,9 +1,9 @@
+import {ReactionsDropdownContent} from '@/components/chat/reactions/reactions-dropdown-content'
+import {Message} from '@/components/chat/types'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {IconMoodSmile} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
-import {Message} from '../types'
-import {ReactionsDropdownContent} from './reactions-dropdown-content'
 
 const TwIconReaction = tw.div`
   cursor-pointer

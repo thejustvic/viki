@@ -1,9 +1,9 @@
+import {Card} from '@/components/cards/types'
 import {FetchQuery} from '@/hooks/use-fetch'
 import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import type {User} from '@supabase/supabase-js'
 import {makeAutoObservable, observable} from 'mobx'
-import {Card} from '../types'
 
 interface State {
   card: SupabaseQuery<Card>

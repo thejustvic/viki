@@ -1,3 +1,9 @@
+import {useChatStore} from '@/components/chat/chat-store'
+import {ReactionsSmileyText} from '@/components/chat/reactions/reactions-smiley-text'
+import {ReactionsUsersCount} from '@/components/chat/reactions/reactions-users-count'
+import {ReactionsUsersList} from '@/components/chat/reactions/reactions-users-list'
+import {useReactionsHandlers} from '@/components/chat/reactions/use-reactions-handlers'
+import {Message} from '@/components/chat/types'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {ObjUtil} from '@/utils/obj-util'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
@@ -5,12 +11,6 @@ import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
-import {useChatStore} from '../chat-store'
-import {Message} from '../types'
-import {ReactionsSmileyText} from './reactions-smiley-text'
-import {ReactionsUsersCount} from './reactions-users-count'
-import {ReactionsUsersList} from './reactions-users-list'
-import {useReactionsHandlers} from './use-reactions-handlers'
 
 export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
   const [state] = useChatStore()

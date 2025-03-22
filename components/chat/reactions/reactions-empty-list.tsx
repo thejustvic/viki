@@ -1,10 +1,10 @@
+import {ReactionsDropdownContent} from '@/components/chat/reactions/reactions-dropdown-content'
+import {Message} from '@/components/chat/types'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {IconMoodSmileFilled} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
-import {Message} from '../types'
-import {ReactionsDropdownContent} from './reactions-dropdown-content'
 
 const TwDropdown = tw(Dropdown)`
   absolute 

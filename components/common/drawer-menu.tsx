@@ -1,11 +1,11 @@
-import {getSearchCard} from '@/app/cards/components/get-search-card'
+import {getSearchCard} from '@/components/cards/get-search-card'
+import {Chat} from '@/components/chat/chat'
+import {ChatInput} from '@/components/chat/chat-input'
+import {Drag} from '@/components/common/drag/drag'
+import {useGlobalStore} from '@/components/global/global-store'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
-import {Chat} from '../chat/chat'
-import {ChatInput} from '../chat/chat-input'
-import {useGlobalStore} from '../global/global-store'
-import {Drag} from './drag'
 
 const TwMenu = tw.div`
   border

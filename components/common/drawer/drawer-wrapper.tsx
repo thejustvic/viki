@@ -1,14 +1,14 @@
 'use client'
 
+import {DrawerLeft} from '@/components/common/drawer/drawer-left'
+import {DrawerRight} from '@/components/common/drawer/drawer-right'
+import {Navbar} from '@/components/common/navbar/navbar'
+import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {headerHeight} from '@/utils/const'
 import {observer} from 'mobx-react-lite'
 import {ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
-import {Navbar} from '../navbar/client-components/navbar'
-import {PerfectScrollbar} from '../perfect-scrollbar'
-import {DrawerLeft} from './drawer-left'
-import {DrawerRight} from './drawer-right'
 
 interface Props {
   children: ReactNode

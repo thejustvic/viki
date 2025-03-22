@@ -1,7 +1,7 @@
+import {useChatHandlers} from '@/components/chat/chat-handlers'
+import {Message, Reactions, Smiley} from '@/components/chat/types'
 import {ObjUtil} from '@/utils/obj-util'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {useChatHandlers} from '../chat-handlers'
-import {Message, Reactions, Smiley} from '../types'
 
 interface Handlers {
   addReaction: (smiley: Smiley, message: Message) => Promise<void>

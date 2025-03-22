@@ -1,5 +1,6 @@
 import '@/scss/app.scss'
 
+import {ModalCreateCard} from '@/components/cards/modal-create-card/modal-create-card'
 import GlobalProvider from '@/components/global/global-provider'
 import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
@@ -13,7 +14,6 @@ import {Analytics} from '@vercel/analytics/next'
 import {SpeedInsights} from '@vercel/speed-insights/next'
 import {cookies} from 'next/headers'
 import {PropsWithChildren} from 'react'
-import {ModalCreateCard} from './cards/components/modal-create-card/modal-create-card'
 
 export const metadata = {
   title: 'hobby',

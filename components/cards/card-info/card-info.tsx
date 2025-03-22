@@ -1,5 +1,7 @@
 'use client'
 
+import {useCardHandlers} from '@/components/cards/cards-handlers'
+import {getSearchCard} from '@/components/cards/get-search-card'
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
 import {Menu} from '@/components/daisyui/menu'
@@ -11,8 +13,6 @@ import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {ReactNode, useEffect} from 'react'
 import tw from 'tailwind-styled-components'
-import {useCardHandlers} from '../cards-handlers'
-import {getSearchCard} from '../get-search-card'
 import {
   CardInfoStore,
   CardInfoStoreContext,

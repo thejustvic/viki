@@ -1,4 +1,4 @@
-import {getSearchCard} from '@/app/cards/components/get-search-card'
+import {getSearchCard} from '@/components/cards/get-search-card'
 import {useGlobalStore} from '@/components/global/global-store'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
