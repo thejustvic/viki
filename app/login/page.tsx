@@ -14,14 +14,14 @@ export default async function Page() {
 
   if (user && pathname !== '/cards') {
     return <ClientRedirect href="/cards" />
-  } else {
-    return (
-      <Suspense fallback={<Load center />}>
-        <TwLogin>
-          <Login />
-          <TechStackCarousel />
-        </TwLogin>
-      </Suspense>
-    )
   }
+
+  return (
+    <Suspense fallback={<Load center />}>
+      <TwLogin>
+        <Login />
+        <TechStackCarousel />
+      </TwLogin>
+    </Suspense>
+  )
 }
