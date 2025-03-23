@@ -3,12 +3,13 @@ import {Button} from '@/components/daisyui/button'
 import {ChatBubble} from '@/components/daisyui/chat-bubble'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {useBoolean} from '@/hooks/use-boolean'
+import {useLongPressDoubleTap} from '@/hooks/use-long-press-double-tap'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
-import {MouseEvent, useRef} from 'react'
+import {MouseEvent} from 'react'
 import {useChatHandlers} from './chat-handlers'
+import {useChatMessageHandlers} from './chat-message-handlers'
 import {ReactionsSmiley} from './reactions/reactions-smiley'
-import {useReactionsHandlers} from './reactions/use-reactions-handlers'
 import type {Message as MessageType} from './types'
 
 interface BubbleProps {
@@ -18,23 +19,29 @@ interface BubbleProps {
 
 export const ChatMessage = observer(({my, message}: BubbleProps) => {
   const showReactions = useBoolean(false)
-  const {selectReaction} = useReactionsHandlers()
+  const showChoice = useBoolean(false)
+  const {putHeart} = useChatMessageHandlers()
 
-  const lastTapRef = useRef<number>(0) // Use ref to avoid state updates
+  const handleLongPress = () => showChoice.turnOn()
 
-  const putHeart = async () => {
-    await selectReaction('❤️', message)
+  const handleDoubleTap = () =>
+    Promise.resolve(putHeart(message)).catch(console.error)
+
+  const handleMouseEnter = () => {
+    showReactions.turnOn()
   }
 
-  const handleTap = (e: React.TouchEvent) => {
-    e.preventDefault()
-    const now = Date.now()
-    if (now - lastTapRef.current < 300) {
-      // Double Tap Detected!
-      void putHeart()
-    }
-    lastTapRef.current = now
+  const handleMouseLeave = () => {
+    showChoice.turnOff()
+    showReactions.turnOff()
   }
+
+  const {eventHandlers} = useLongPressDoubleTap({
+    onLongPress: handleLongPress,
+    onDoubleTap: handleDoubleTap,
+    onMouseEnterCallback: handleMouseEnter,
+    onMouseLeaveCallback: handleMouseLeave
+  })
 
   return (
     <ChatBubble end={my}>
@@ -42,13 +49,14 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
       <ChatBubble.Message
         color={my ? 'primary' : undefined}
         className="break-words relative"
-        onMouseEnter={showReactions.turnOn}
-        onMouseLeave={showReactions.turnOff}
-        onDoubleClick={putHeart}
-        onTouchStart={handleTap}
+        {...eventHandlers}
       >
         {message.text}
-        <ReactionsSmiley message={message} isMouseOver={showReactions.value} />
+        <ReactionsSmiley
+          message={message}
+          showChoice={showChoice}
+          isMouseOver={showReactions.value}
+        />
       </ChatBubble.Message>
     </ChatBubble>
   )

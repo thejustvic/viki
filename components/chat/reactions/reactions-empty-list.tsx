@@ -1,21 +1,11 @@
 import {ReactionsDropdownContent} from '@/components/chat/reactions/reactions-dropdown-content'
 import {Message} from '@/components/chat/types'
 import {Dropdown} from '@/components/daisyui/dropdown'
+import {BooleanHookState} from '@/hooks/use-boolean'
 import {IconMoodSmileFilled} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
-
-const TwDropdown = tw(Dropdown)`
-  absolute 
-  bottom-0 
-  left-0 
-  opacity-0 
-  hover:opacity-100 
-  transition-opacity 
-  ease-in-out 
-  duration-150
-`
 
 const TwIconReactionAbsoluteContainer = tw.div`
   absolute
@@ -30,17 +20,28 @@ const TwIconReactionAbsolute = tw.div`
 
 interface EmptyReactionsProps {
   message: Message
+  showChoice: BooleanHookState
   isMouseOver: boolean
 }
 
 export const ReactionsEmptyList = ({
   message,
+  showChoice,
   isMouseOver
 }: EmptyReactionsProps) => {
   return (
-    <TwDropdown
-      className={twJoin(isMouseOver && 'opacity-100')}
+    <Dropdown
+      onClickOutside={showChoice.turnOff}
       hover={!isMobile}
+      className={twJoin(
+        isMouseOver && 'opacity-100',
+        showChoice.value && 'dropdown-open',
+        `absolute bottom-0 left-0   opacity-0 
+  hover:opacity-100 
+  transition-opacity 
+  ease-in-out 
+  duration-150`
+      )}
     >
       <TwIconReactionAbsoluteContainer
         tabIndex={isMobile ? 0 : undefined}
@@ -54,8 +55,8 @@ export const ReactionsEmptyList = ({
         className="-top-6 -left-4"
         tabIndex={isMobile ? 0 : undefined}
       >
-        <ReactionsDropdownContent message={message} />
+        <ReactionsDropdownContent message={message} showChoice={showChoice} />
       </Dropdown.Menu>
-    </TwDropdown>
+    </Dropdown>
   )
 }
