@@ -19,7 +19,6 @@ export const useLongPressDoubleTap = (
     onMouseEnterCallback?: Callback
     onMouseLeaveCallback?: Callback
   },
-
   delays?: {
     longPressDelay?: number
     doubleTapDelay?: number
@@ -27,16 +26,21 @@ export const useLongPressDoubleTap = (
 ): {isLongPressed: boolean; eventHandlers: Handlers} => {
   const {onLongPress, onDoubleTap, onMouseLeaveCallback, onMouseEnterCallback} =
     callbacks
+
   const longPressDelay = delays?.longPressDelay ?? 500
   const doubleTapDelay = delays?.doubleTapDelay ?? 300
+
   const [isLongPressed, setIsLongPressed] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const lastTapRef = useRef<number | null>(null)
 
   const startPress = (): void => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+    }
     timerRef.current = setTimeout(() => {
       setIsLongPressed(true)
-      onLongPress()
+      onLongPress() // trigger long press callback
     }, longPressDelay)
   }
 
@@ -44,14 +48,14 @@ export const useLongPressDoubleTap = (
     if (timerRef.current) {
       clearTimeout(timerRef.current)
     }
-    setIsLongPressed(false)
+    setIsLongPressed(false) // reset long press state
   }
 
   const handleTap = (): void => {
     const now = Date.now()
     if (lastTapRef.current && now - lastTapRef.current < doubleTapDelay) {
-      onDoubleTap()
-      lastTapRef.current = null
+      onDoubleTap() // trigger double-tap callback
+      lastTapRef.current = null // reset timestamp after double-tap
     } else {
       lastTapRef.current = now
     }
