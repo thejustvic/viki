@@ -1,3 +1,4 @@
+import {useClickOutside} from '@/hooks/use-cilck-outside'
 import {HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
@@ -20,17 +21,21 @@ type Placement =
 interface PropsDropdown extends Props {
   hover?: boolean
   placements?: Placement[]
+  onClickOutside?: () => void
 }
 
 export const Dropdown = ({
+  onClickOutside,
   hover,
   placements,
   children,
   className,
   ...props
 }: PropsDropdown) => {
+  const dropdownRef = useClickOutside(onClickOutside)
   return (
     <div
+      ref={dropdownRef}
       className={twJoin(
         'dropdown',
         className,
