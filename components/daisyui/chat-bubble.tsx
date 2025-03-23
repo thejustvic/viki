@@ -33,10 +33,14 @@ export const ChatBubble = ({
 
 interface PropsChatBubbleMessage extends Props {
   color?: 'primary' | 'secondary'
+  onDoubleClick?: MouseEventHandler<HTMLDivElement>
+  onMouseDown?: MouseEventHandler<HTMLDivElement>
+  onMouseUp?: MouseEventHandler<HTMLDivElement>
   onMouseEnter?: MouseEventHandler<HTMLDivElement>
   onMouseLeave?: MouseEventHandler<HTMLDivElement>
-  onDoubleClick?: MouseEventHandler<HTMLDivElement>
   onTouchStart?: TouchEventHandler<HTMLDivElement>
+  onTouchEnd?: TouchEventHandler<HTMLDivElement>
+  onTouchMove?: TouchEventHandler<HTMLDivElement>
 }
 
 ChatBubble.Message = ({

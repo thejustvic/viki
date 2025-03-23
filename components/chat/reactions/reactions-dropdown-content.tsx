@@ -2,6 +2,8 @@ import {ReactionsSmileyText} from '@/components/chat/reactions/reactions-smiley-
 import {useReactionsHandlers} from '@/components/chat/reactions/use-reactions-handlers'
 import {Message, Smiley, smileys} from '@/components/chat/types'
 import {BooleanHookState} from '@/hooks/use-boolean'
+import {isMobile} from 'react-device-detect'
+import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 
 const TwSmileyContainer = tw.div`
@@ -10,7 +12,7 @@ const TwSmileyContainer = tw.div`
   px-1
   grid
   gap-px
-  grid-cols-[repeat(3,1fr)]
+  
 `
 
 const TwSmiley = tw.div`
@@ -20,10 +22,12 @@ const TwSmiley = tw.div`
 
 export const ReactionsDropdownContent = ({
   message,
-  showChoice
+  showChoice,
+  noSmilesInMessage = false
 }: {
   message: Message
   showChoice: BooleanHookState
+  noSmilesInMessage?: boolean
 }) => {
   const {selectReaction} = useReactionsHandlers()
 
@@ -33,7 +37,13 @@ export const ReactionsDropdownContent = ({
   }
 
   return (
-    <TwSmileyContainer>
+    <TwSmileyContainer
+      className={twJoin(
+        isMobile && noSmilesInMessage
+          ? 'grid-cols-[repeat(9,1fr)]'
+          : 'grid-cols-[repeat(3,1fr)]'
+      )}
+    >
       {smileys.map(smiley => {
         return (
           <TwSmiley onClick={() => handleSmile(smiley)} key={smiley}>

@@ -18,16 +18,19 @@ interface SmileyReactionsProps {
   message: Message
   showChoice: BooleanHookState
   isMouseOver: boolean
+  my: boolean
 }
 
 export const ReactionsSmiley = ({
   message,
   showChoice,
-  isMouseOver
+  isMouseOver,
+  my
 }: SmileyReactionsProps) => {
   if (ObjUtil.isEmpty(message.reactions)) {
     return (
       <ReactionsEmptyList
+        my={my}
         message={message}
         showChoice={showChoice}
         isMouseOver={isMouseOver}

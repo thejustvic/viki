@@ -2,8 +2,6 @@ import {UserImage} from '@/components/common/user-image'
 import {Button} from '@/components/daisyui/button'
 import {ChatBubble} from '@/components/daisyui/chat-bubble'
 import {Dropdown} from '@/components/daisyui/dropdown'
-import {useBoolean} from '@/hooks/use-boolean'
-import {useLongPressDoubleTap} from '@/hooks/use-long-press-double-tap'
 import {formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {MouseEvent} from 'react'
@@ -18,30 +16,15 @@ interface BubbleProps {
 }
 
 export const ChatMessage = observer(({my, message}: BubbleProps) => {
-  const showReactions = useBoolean(false)
-  const showChoice = useBoolean(false)
-  const {putHeart} = useChatMessageHandlers()
-
-  const handleLongPress = () => showChoice.turnOn()
-
-  const handleDoubleTap = () =>
-    Promise.resolve(putHeart(message)).catch(console.error)
-
-  const handleMouseEnter = () => {
-    showReactions.turnOn()
-  }
-
-  const handleMouseLeave = () => {
-    showChoice.turnOff()
-    showReactions.turnOff()
-  }
-
-  const {eventHandlers} = useLongPressDoubleTap({
-    onLongPress: handleLongPress,
-    onDoubleTap: handleDoubleTap,
-    onMouseEnterCallback: handleMouseEnter,
-    onMouseLeaveCallback: handleMouseLeave
-  })
+  const {
+    showChoice,
+    showReactions,
+    handlePutHeart,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleTouchStart,
+    handleTouchEnd
+  } = useChatMessageHandlers(message)
 
   return (
     <ChatBubble end={my}>
@@ -49,10 +32,16 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
       <ChatBubble.Message
         color={my ? 'primary' : undefined}
         className="break-words relative"
-        {...eventHandlers}
+        onDoubleClick={handlePutHeart}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchEnd}
       >
         {message.text}
         <ReactionsSmiley
+          my={Boolean(my)}
           message={message}
           showChoice={showChoice}
           isMouseOver={showReactions.value}
