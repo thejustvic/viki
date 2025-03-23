@@ -1,5 +1,5 @@
 import {Button} from '@/components/daisyui/button'
-import {useGlobalStore} from '@/components/global/global-store'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'

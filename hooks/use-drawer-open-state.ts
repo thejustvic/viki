@@ -1,5 +1,5 @@
 import {getSearchCard} from '@/components/cards/get-search-card'
-import {useGlobalStore} from '@/components/global/global-store'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useEffect} from 'react'
 import {useMousePosition} from './use-mouse-position'
 import {useUpdateSearchParams} from './use-update-search-params'

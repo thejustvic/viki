@@ -1,7 +1,7 @@
 import '@/scss/app.scss'
 
 import {ModalCreateCard} from '@/components/cards/modal-create-card/modal-create-card'
-import GlobalProvider from '@/components/global/global-provider'
+import GlobalProvider from '@/components/global-provider/global-provider'
 import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
 import {ModalTeam} from '@/components/team/modal-team'

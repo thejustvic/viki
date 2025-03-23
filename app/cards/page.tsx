@@ -1,6 +1,6 @@
 import 'server-only'
 
-import {CardChecklistProvider} from '@/components/card-checklist/card-checklist-provider'
+import {CardChecklistProvider} from '@/components/cards/card-checklist/card-checklist-provider'
 import {CardsBase, CardsProvider} from '@/components/cards/cards'
 import ChatProvider from '@/components/chat/chat-provider'
 import {DrawerWrapper} from '@/components/common/drawer/drawer-wrapper'

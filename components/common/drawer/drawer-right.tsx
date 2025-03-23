@@ -1,5 +1,5 @@
 import {Drawer} from '@/components/daisyui/drawer'
-import {useGlobalStore} from '@/components/global/global-store'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useRightDrawerOpenState} from '@/hooks/use-drawer-open-state'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'

@@ -1,7 +1,7 @@
 'use client'
 
-import {CardChecklistProgress} from '@/components/card-checklist/card-checklist-progress'
-import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
+import {CardChecklistProgress} from '@/components/cards/card-checklist/card-checklist-progress'
+import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'

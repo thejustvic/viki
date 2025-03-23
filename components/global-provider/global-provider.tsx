@@ -1,7 +1,10 @@
 'use client'
 
-import {GlobalContext, GlobalStore} from '@/components/global/global-store'
-import {Theme} from '@/components/global/types'
+import {
+  GlobalContext,
+  GlobalStore
+} from '@/components/global-provider/global-store'
+import {Theme} from '@/components/global-provider/types'
 import {usePageRefresh} from '@/hooks/use-page-refresh'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {ReactNode, useEffect, useState} from 'react'

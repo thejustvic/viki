@@ -1,4 +1,4 @@
-import type {GlobalStore} from '@/components/global/global-store'
+import type {GlobalStore} from '@/components/global-provider/global-store'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 
 interface Props {

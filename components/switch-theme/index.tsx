@@ -1,8 +1,8 @@
 'use client'
 
 import {Button} from '@/components/daisyui/button'
-import {useGlobalStore} from '@/components/global/global-store'
-import {Theme} from '@/components/global/types'
+import {useGlobalStore} from '@/components/global-provider/global-store'
+import {Theme} from '@/components/global-provider/types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconMoon, IconSun} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'

@@ -1,4 +1,4 @@
-import {useCardChecklistStore} from '@/components/card-checklist/card-checklist-store'
+import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {CheckboxComponent} from '@/components/checklist/checkbox/checkbox'
 import {Loader} from '@/components/common/loader'

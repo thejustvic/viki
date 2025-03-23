@@ -1,7 +1,7 @@
 'use client'
 
 import {useDragHandlers} from '@/components/common/drag/drag-handlers'
-import {useGlobalStore} from '@/components/global/global-store'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
