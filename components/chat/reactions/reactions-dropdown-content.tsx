@@ -12,12 +12,6 @@ const TwSmileyContainer = tw.div`
   px-1
   grid
   gap-px
-  
-`
-
-const TwSmiley = tw.div`
-  px-1 
-  cursor-pointer 
 `
 
 export const ReactionsDropdownContent = ({
@@ -46,9 +40,17 @@ export const ReactionsDropdownContent = ({
     >
       {smileys.map(smiley => {
         return (
-          <TwSmiley onClick={() => handleSmile(smiley)} key={smiley}>
+          <div
+            className="px-1 cursor-pointer"
+            onClick={e => {
+              e.stopPropagation()
+              handleSmile(smiley)
+            }}
+            onTouchStart={e => e.stopPropagation()}
+            key={smiley}
+          >
             <ReactionsSmileyText value={smiley} className="text-[16px]" />
-          </TwSmiley>
+          </div>
         )
       })}
     </TwSmileyContainer>
