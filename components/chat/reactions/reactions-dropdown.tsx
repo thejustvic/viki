@@ -3,7 +3,6 @@ import {Message} from '@/components/chat/types'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {IconMoodSmile} from '@tabler/icons-react'
-import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 
@@ -23,19 +22,12 @@ export const ReactionsDropdown = ({
   return (
     <Dropdown
       onClickOutside={showChoice.turnOff}
-      hover={!isMobile}
       className={twJoin(showChoice.value && 'dropdown-open')}
     >
-      <TwIconReaction
-        tabIndex={isMobile ? 0 : undefined}
-        role={isMobile ? 'button' : ''}
-      >
+      <TwIconReaction onClick={showChoice.turnOn}>
         <IconMoodSmile size={24} />
       </TwIconReaction>
-      <Dropdown.Menu
-        className="-top-2 -left-2"
-        tabIndex={isMobile ? 0 : undefined}
-      >
+      <Dropdown.Menu className="-top-2 -left-2">
         <ReactionsDropdownContent message={message} showChoice={showChoice} />
       </Dropdown.Menu>
     </Dropdown>
