@@ -1,4 +1,5 @@
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
+import {ObjUtil} from '@/utils/obj-util'
 import {useRef} from 'react'
 import {useReactionsHandlers} from './reactions/use-reactions-handlers'
 import {Message} from './types'
@@ -11,35 +12,44 @@ interface Handlers {
   handleMouseEnter: () => void
   handleMouseLeave: () => void
   handleTouchStart: () => void
-  handleTouchEnd: () => void
 }
 
 export const useChatMessageHandlers = (message: Message): Handlers => {
+  const clickTimeout = useRef<NodeJS.Timeout | null>(null)
+  const lastTap = useRef<number>(0)
   const showReactions = useBoolean(false)
   const showChoice = useBoolean(false)
-  const lastTapRef = useRef<number>(0) // Use ref to avoid state updates
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+
   const {selectReaction} = useReactionsHandlers()
 
-  const putHeart: Handlers['putHeart'] = async () => {
-    await selectReaction('❤️', message)
-  }
-
-  const handleLongTap = (): void => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
+  const handleClick = (): void => {
+    if (!ObjUtil.isEmpty(message.reactions)) {
+      return
     }
-    timerRef.current = setTimeout(() => {
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current)
+    }
+    clickTimeout.current = setTimeout(() => {
       showChoice.turnOn()
-    }, 500)
+    }, 250)
   }
 
-  const handleDoubleTap = (): void => {
-    const now = Date.now()
-    if (now - lastTapRef.current < 300) {
-      void handlePutHeart() // Double Tap Detected!
+  const handleDoubleClick = (): void => {
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current)
     }
-    lastTapRef.current = now
+    void handlePutHeart() // Double Tap Detected!
+  }
+
+  const handleTouchStart = (): void => {
+    const now = Date.now()
+    const timeSinceLastTap = now - lastTap.current
+    if (timeSinceLastTap < 250) {
+      handleDoubleClick()
+    } else {
+      handleClick()
+    }
+    lastTap.current = now
   }
 
   const handlePutHeart = (): Promise<void> =>
@@ -52,22 +62,10 @@ export const useChatMessageHandlers = (message: Message): Handlers => {
   const handleMouseLeave = (): void => {
     showChoice.turnOff()
     showReactions.turnOff()
-    cancelLongPress()
   }
 
-  const handleTouchStart = (): void => {
-    handleLongTap()
-    handleDoubleTap()
-  }
-
-  const handleTouchEnd = (): void => {
-    cancelLongPress()
-  }
-
-  const cancelLongPress = (): void => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
+  const putHeart: Handlers['putHeart'] = async () => {
+    await selectReaction('❤️', message)
   }
 
   return {
@@ -75,7 +73,6 @@ export const useChatMessageHandlers = (message: Message): Handlers => {
     handleMouseEnter,
     handleMouseLeave,
     handleTouchStart,
-    handleTouchEnd,
     handlePutHeart,
     showReactions,
     showChoice

@@ -22,8 +22,7 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
     handlePutHeart,
     handleMouseEnter,
     handleMouseLeave,
-    handleTouchStart,
-    handleTouchEnd
+    handleTouchStart
   } = useChatMessageHandlers(message)
 
   return (
@@ -36,8 +35,6 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={handleTouchEnd}
       >
         {message.text}
         <ReactionsSmiley

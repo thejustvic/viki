@@ -27,7 +27,14 @@ export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
     )
 
     return (
-      <div key={smiley} onClick={() => selectReaction(smiley, message)}>
+      <div
+        key={smiley}
+        onClick={e => {
+          e.stopPropagation()
+          selectReaction(smiley, message)
+        }}
+        onTouchStart={e => e.stopPropagation()}
+      >
         <Dropdown hover={!isMobile}>
           <ReactionsSmileyWrapper filterIds={filterIds}>
             <ReactionsSmileyText value={smiley} className="text-[16px]" />
