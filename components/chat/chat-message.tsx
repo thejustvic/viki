@@ -2,9 +2,10 @@ import {UserImage} from '@/components/common/user-image'
 import {Button} from '@/components/daisyui/button'
 import {ChatBubble} from '@/components/daisyui/chat-bubble'
 import {Dropdown} from '@/components/daisyui/dropdown'
-import {formatDistance} from 'date-fns'
+import {format, formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {MouseEvent} from 'react'
+import {twJoin} from 'tailwind-merge'
 import {useChatHandlers} from './chat-handlers'
 import {useChatMessageHandlers} from './chat-message-handlers'
 import {ReactionsSmiley} from './reactions/reactions-smiley'
@@ -24,12 +25,13 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
     handleMouseLeave,
     handleTouchStart
   } = useChatMessageHandlers(message)
+  const formattedTime = format(message.created_at, 'HH:mm')
 
   return (
     <ChatBubble end={my}>
       <MessageDropdown my={my} message={message} />
       <ChatBubble.Message
-        color={my ? 'primary' : undefined}
+        color={my ? undefined : undefined}
         className="break-words relative"
         onDoubleClick={handlePutHeart}
         onMouseEnter={handleMouseEnter}
@@ -43,6 +45,14 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
           showChoice={showChoice}
           isMouseOver={showReactions.value}
         />
+        <div
+          className={twJoin(
+            my ? 'left-2' : 'right-2',
+            'absolute bottom-px text-[9px]'
+          )}
+        >
+          {formattedTime}
+        </div>
       </ChatBubble.Message>
     </ChatBubble>
   )
@@ -62,6 +72,7 @@ const MessageDropdown = ({
     addSuffix: true,
     includeSeconds: true
   })
+  const time = format(new Date(created_at), 'MMMM do, yyyy')
   return (
     <Dropdown
       placements={my ? ['left'] : ['right']}
@@ -72,7 +83,9 @@ const MessageDropdown = ({
       <Dropdown.Menu className="shadow-lg bg-base-200 px-2 py-0">
         {author_email}
         <div className="flex items-start gap-1">
-          <time className="text-xs opacity-50">{timeDistance}</time>
+          <time className="text-xs break-words w-[150px]">
+            {timeDistance} on {time}
+          </time>
           {my && (
             <Button size="xs" className="text-xs" onClick={remove}>
               delete

@@ -52,10 +52,10 @@ ChatBubble.Message = ({
   return (
     <div
       className={twJoin(
-        'chat-bubble touch-manipulation',
+        'chat-bubble touch-manipulation px-2 pb-4',
         className,
-        color === 'primary' && 'chat-bubble-primary',
-        color === 'secondary' && 'chat-bubble-secondary'
+        color === 'primary' && 'bg-base-300',
+        color === 'secondary' && 'bg-base-200'
       )}
       {...props}
     >
