@@ -81,6 +81,7 @@ const Cards = observer(() => {
 })
 
 const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
+  const {user} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
   const {removeCard} = useCardHandlers()
 
@@ -92,6 +93,7 @@ const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
   return (
     <ParallaxCardContainer
       active={active}
+      my={user?.id === card.author_id}
       cardNodeBody={<CardBody card={card} remove={remove} />}
     />
   )

@@ -17,7 +17,7 @@ const TwAdd = tw(Button)`
 `
 
 export const AddNewCard = () => {
-  return <ParallaxCardContainer cardNodeBody={<CardBody />} />
+  return <ParallaxCardContainer cardNodeBody={<CardBody />} my />
 }
 
 const CardBody = () => {

@@ -4,19 +4,20 @@ import {isMobile, isSafari} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
 import tw from 'tailwind-styled-components'
 
-const TwCard = tw(Card)<{$active?: boolean}>`
-  bg-base-300 
+const TwCard = tw(Card)<{$active?: boolean; $my?: boolean}>`
   shadow-md
   w-[288px]
   h-[142px]
   md:w-[190px]
   transform-3d
   ${p => (p.$active ? 'border-solid border-accent' : '')}
+  ${p => (p.$my ? 'bg-base-300' : 'bg-accent-content')}
 `
 
 interface Props {
   disableTransform?: boolean
   active?: boolean
+  my?: boolean
   cardNodeBody: ReactElement
 }
 
@@ -32,7 +33,7 @@ export const ParallaxCardContainer = (props: Props) => {
 }
 
 const CardComp = (props: Props) => {
-  const {disableTransform, active, cardNodeBody} = props
+  const {disableTransform, my, active, cardNodeBody} = props
 
   const transform: CSSProperties = {
     transform: 'translateZ(20px)'
@@ -41,7 +42,7 @@ const CardComp = (props: Props) => {
   const translateZ: CSSProperties = !disableTransform ? transform : {}
 
   return (
-    <TwCard $active={active} bordered size="sm">
+    <TwCard $active={active} $my={my} bordered size="sm">
       <Card.Body style={translateZ}>{cardNodeBody}</Card.Body>
     </TwCard>
   )
