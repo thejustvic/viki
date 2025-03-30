@@ -72,7 +72,6 @@ export const ReactionsEmptyList = ({
   return (
     <Dropdown
       onClickOutside={showChoice.turnOff}
-      hover
       className={twJoin(
         isMouseOver && 'opacity-100',
         showChoice.value && 'dropdown-open',
@@ -89,7 +88,7 @@ export const ReactionsEmptyList = ({
     >
       <TwIconReactionAbsoluteContainer>
         <TwIconReactionAbsolute>
-          <IconMoodSmileFilled size={24} />
+          <IconMoodSmileFilled size={24} onClick={showChoice.turnOn} />
         </TwIconReactionAbsolute>
       </TwIconReactionAbsoluteContainer>
       <Dropdown.Menu className="-top-6 -left-4">
