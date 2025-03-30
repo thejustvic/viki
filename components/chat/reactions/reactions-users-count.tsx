@@ -38,7 +38,7 @@ const ReactionsFirstUser = ({user}: {user: Profile | undefined}) => {
   return (
     <UserImage
       src={user?.avatar_url ?? undefined}
-      containerClassName="h-[20px] w-[20px]"
+      containerClassName="h-[20px] w-[20px] shadow-none"
     />
   )
 }
