@@ -92,6 +92,7 @@ const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
 
   return (
     <ParallaxCardContainer
+      bgImage={card.bg_image}
       active={active}
       my={user?.id === card.author_id}
       cardNodeBody={<CardBody card={card} remove={remove} />}

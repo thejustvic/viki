@@ -13,6 +13,7 @@ import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {ReactNode, useEffect} from 'react'
 import tw from 'tailwind-styled-components'
+import {CardBgImages} from '../types'
 import {
   CardInfoStore,
   CardInfoStoreContext,
@@ -56,18 +57,64 @@ export const CardInfoBase = observer(() => {
 
   return (
     <TwMenu>
-      <ModalBody />
+      <CardInfoBody />
     </TwMenu>
   )
 })
 
-const ModalBody = () => (
+const CardInfoBody = () => (
   <div className="flex flex-col gap-2">
     <Time />
     <Creator />
     <Text />
+    <Cover />
   </div>
 )
+
+const Cover = () => {
+  const [state] = useCardInfoStore()
+
+  return (
+    <ShowData
+      loading={state.card.loading}
+      error={state.card.error?.message}
+      data={<CoverData />}
+      prefix={'cover:'}
+    />
+  )
+}
+
+const TwRadio = tw.div`flex gap-1 items-center justify-between w-[120px] bg-base-300 p-2 rounded cursor-pointer`
+const bgImages: CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
+
+const CoverData = observer(() => {
+  const [state] = useCardInfoStore()
+  const {updateCardBgImage} = useCardHandlers()
+  const id = String(getSearchCard())
+
+  if (!state.card.data) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      {bgImages.map(image => {
+        return (
+          <TwRadio key={image} onClick={() => updateCardBgImage(image, id)}>
+            <div>{image}</div>
+            <input
+              type="radio"
+              name="radio-1"
+              className="radio"
+              checked={state?.card?.data?.bg_image === image}
+              readOnly
+            />
+          </TwRadio>
+        )
+      })}
+    </div>
+  )
+})
 
 const Time = () => {
   const [state] = useCardInfoStore()
