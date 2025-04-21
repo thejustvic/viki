@@ -5,6 +5,7 @@ interface Handlers {
   removeCard: (id: Card['id']) => Promise<void>
   insertCard: (text: string, teamId: string) => Promise<void>
   updateCard: (text: string, cardId: string) => Promise<void>
+  updateCardBgImage: (bgImage: string, cardId: string) => Promise<void>
 }
 
 export const useCardHandlers = (): Handlers => {
@@ -38,9 +39,25 @@ export const useCardHandlers = (): Handlers => {
       .eq('id', cardId)
   }
 
+  const updateCardBgImage = async (
+    bgImage: string,
+    cardId: string
+  ): Promise<void> => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    await supabase
+      .from('cards')
+      .update({
+        bg_image: bgImage
+      })
+      .eq('id', cardId)
+  }
+
   return {
     removeCard,
     insertCard,
-    updateCard
+    updateCard,
+    updateCardBgImage
   }
 }
