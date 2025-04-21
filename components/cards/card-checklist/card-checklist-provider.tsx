@@ -19,7 +19,7 @@ export const CardChecklistProvider = observer(
         return []
       }
       return state.cards.data?.map(card => card.id)
-    }, [state.cards.data])
+    }, [state.cards.data?.length])
 
     useCardChecklistListener({
       cardIds,
