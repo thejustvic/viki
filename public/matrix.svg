@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+
+      /* Базовий стиль для тексту */
+      .hacker-text {
+        font-family: monospace;
+        font-size: 16px;
+        fill: #00ff00; /* Основний зелений колір */
+      }
+      /* Стиль для яскравого першого символу в стовпці */
+      .hacker-text-bright {
+         font-family: 'VT323', monospace;
+         font-size: 16px;
+         fill: #ffffff; /* Яскравий білий колір */
+      }
+      /* Стиль для символів, що починають згасати */
+       .hacker-text-fade1 {
+         font-family: 'VT323', monospace;
+         font-size: 16px;
+         fill: #00cc00; /* Трохи темніший зелений */
+      }
+      /* Стиль для символів, що майже згасли */
+       .hacker-text-fade2 {
+         font-family: 'VT323', monospace;
+         font-size: 16px;
+         fill: #009900; /* Ще темніший зелений */
+      }
+    </style>
+  </defs>
+
+  <text x="50" y="20" class="hacker-text-bright">R</text>
+  <text x="50" y="40" class="hacker-text">3</text>
+  <text x="50" y="60" class="hacker-text">A</text>
+  <text x="50" y="80" class="hacker-text-fade1">L</text>
+  <text x="50" y="100" class="hacker-text-fade1">1</text>
+  <text x="50" y="120" class="hacker-text-fade2">T</text>
+  <text x="50" y="140" class="hacker-text-fade2">Y</text>
+
+  <text x="150" y="60" class="hacker-text-bright">Σ</text>
+   <text x="150" y="80" class="hacker-text">П</text>
+   <text x="150" y="100" class="hacker-text">7</text>
+   <text x="150" y="120" class="hacker-text">Ж</text>
+   <text x="150" y="140" class="hacker-text-fade1">0</text>
+   <text x="150" y="160" class="hacker-text-fade1">X</text>
+   <text x="150" y="180" class="hacker-text-fade2">B</text>
+   <text x="150" y="200" class="hacker-text-fade2">9</text>
+
+  <text x="280" y="40" class="hacker-text-bright">ネ</text> <text x="280" y="60" class="hacker-text">コ</text> <text x="280" y="80" class="hacker-text-fade1">0</text>
+  <text x="280" y="100" class="hacker-text-fade2">1</text>
+
+  <text x="400" y="80" class="hacker-text-bright">F</text>
+  <text x="400" y="100" class="hacker-text">U</text>
+  <text x="400" y="120" class="hacker-text">T</text>
+  <text x="400" y="140" class="hacker-text">U</text>
+  <text x="400" y="160" class="hacker-text-fade1">R</text>
+  <text x="400" y="180" class="hacker-text-fade1">3</text>
+  <text x="400" y="200" class="hacker-text-fade2">!</text>
+
+   <text x="500" y="30" class="hacker-text-bright">W</text>
+   <text x="500" y="50" class="hacker-text">A</text>
+   <text x="500" y="70" class="hacker-text">T</text>
+   <text x="500" y="90" class="hacker-text-fade1">C</text>
+   <text x="500" y="110" class="hacker-text-fade2">H</text>
+
+   <text x="215" y="150" class="hacker-text-bright">4</text>
+   <text x="215" y="170" class="hacker-text">2</text>
+   <text x="215" y="190" class="hacker-text-fade1">C</text>
+   <text x="215" y="210" class="hacker-text-fade2">0</text>
+   <text x="215" y="230" class="hacker-text-fade2">D</text>
+   <text x="215" y="250" class="hacker-text-fade2">E</text>
+
+</svg>
