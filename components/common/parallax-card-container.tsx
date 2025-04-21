@@ -9,7 +9,7 @@ interface Props {
   active?: boolean
   my?: boolean
   cardNodeBody: ReactElement
-  bgImage: string | null
+  bgImage?: string | null
 }
 
 export const ParallaxCardContainer = (props: Props) => {
@@ -24,7 +24,7 @@ export const ParallaxCardContainer = (props: Props) => {
 }
 
 const CardComp = (props: Props) => {
-  const {disableTransform, my, active, cardNodeBody, bgImage} = props
+  const {disableTransform, my, active, cardNodeBody, bgImage = 'none'} = props
 
   const transform: CSSProperties = {
     transform: 'translateZ(20px)'
