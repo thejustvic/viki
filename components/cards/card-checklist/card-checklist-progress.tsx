@@ -9,6 +9,8 @@ export const CardChecklistProgress = observer(({id}: {id: string}) => {
   useEffect(() => {
     if (state.checklists.data?.get(id)) {
       store.setProgress(id)
+    } else {
+      state.progressText.delete(id)
     }
   }, [state.checklists.data])
 
