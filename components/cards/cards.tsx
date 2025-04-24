@@ -114,7 +114,7 @@ const CardBody = observer(({card, remove}: CardProps) => {
 
   return (
     <>
-      <CardUI.Title tag="h2" className="flex justify-between">
+      <CardUI.Title className="flex justify-between">
         <Button color="ghost" className="p-0" onClick={onClickHandler}>
           <span className="w-16 truncate">{card.text}</span>
         </Button>

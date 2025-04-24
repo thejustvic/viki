@@ -1,4 +1,4 @@
-import {ElementType, HTMLProps, PropsWithChildren} from 'react'
+import {HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
@@ -45,20 +45,11 @@ Card.Body = ({children, className, ...props}: Props) => {
   )
 }
 
-interface TitleProps extends Props {
-  tag?: ElementType
-}
-
-Card.Title = ({
-  tag: Tag = 'div',
-  className,
-  children,
-  ...props
-}: TitleProps) => {
+Card.Title = ({className, children, ...props}: Props) => {
   return (
-    <Tag className={twJoin('card-title', className)} {...props}>
+    <div className={twJoin('card-title', className)} {...props}>
       {children}
-    </Tag>
+    </div>
   )
 }
 
