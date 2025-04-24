@@ -67,6 +67,10 @@ export const useSwipeableHandlers = (): Handlers => {
         store.setTab('checklist')
         return
       }
+      case 'visual': {
+        store.setTab('chat')
+        return
+      }
     }
   }
 
@@ -78,6 +82,10 @@ export const useSwipeableHandlers = (): Handlers => {
       }
       case 'checklist': {
         store.setTab('chat')
+        return
+      }
+      case 'chat': {
+        store.setTab('visual')
         return
       }
     }
