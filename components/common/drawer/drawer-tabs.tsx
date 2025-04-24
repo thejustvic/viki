@@ -14,6 +14,15 @@ import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
+import dynamic from 'next/dynamic'
+import {Loader} from '../loader'
+const CardVisual = dynamic(() => import('@/components/cards/card-visual'), {
+  ssr: false,
+  loading: () => (
+    <Loader className="flex justify-center mt-8 w-full text-violet-400" />
+  )
+})
+
 export const TabsComponent = observer(() => {
   const [state] = useGlobalStore()
   return (
@@ -26,6 +35,7 @@ export const TabsComponent = observer(() => {
         <InfoTab />
         <ChecklistTab />
         {isMobile && <ChatTab />}
+        <VisualTab />
       </Tabs>
     </div>
   )
@@ -123,6 +133,31 @@ const ChatTabContent = () => {
       <div className="flex h-[calc(100dvh-41px)]">
         <ChatWrapper />
       </div>
+    </Tabs.TabContent>
+  )
+}
+
+const VisualTab = observer(() => {
+  const [state, store] = useGlobalStore()
+  const active = state.tab === 'visual'
+  return (
+    <>
+      <TwTab
+        value="visual"
+        onChange={e => store.setTab(e.target.value as Tab)}
+        label="Visual"
+        groupName="right_drawer"
+        checked={active}
+      />
+      {active && <VisualTabContent />}
+    </>
+  )
+})
+
+const VisualTabContent = () => {
+  return (
+    <Tabs.TabContent>
+      <CardVisual />
     </Tabs.TabContent>
   )
 }
