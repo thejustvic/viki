@@ -2,6 +2,7 @@ import {Button} from '@/components/daisyui/button'
 import {useTeamHandlers} from '@/components/team/team-handlers'
 import {useTeamStore} from '@/components/team/team-store'
 import {updateCurrentTeamId} from '@/components/team/update-current-team-id'
+import {useControlledDetails} from '@/hooks/use-controlled-details'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus, IconTrash} from '@tabler/icons-react'
@@ -70,19 +71,22 @@ export const NavbarTeamSelect = observer(() => {
     await removeTeam(id)
   }
 
+  const {ref, close} = useControlledDetails()
+
   return (
     <TwMenu>
       <li>
-        <details>
+        <details ref={ref}>
           <summary>{teamState.currentTeam.data?.name}</summary>
           <ul>
             <MyTeams
               setId={setId}
               handleRemove={handleRemove}
               showDeleteButton={Number(teamState.myTeams.data?.length) > 1}
+              closeDetails={close}
             />
             {teamState.memberTeams.data?.length ? (
-              <MemberTeams setId={setId} />
+              <MemberTeams setId={setId} closeDetails={close} />
             ) : null}
           </ul>
         </details>
@@ -104,11 +108,13 @@ const MyTeams = observer(
   ({
     setId,
     handleRemove,
-    showDeleteButton = true
+    showDeleteButton = true,
+    closeDetails
   }: {
     setId: (id: string) => void
     handleRemove: (e: MouseEvent, id: string) => Promise<void>
     showDeleteButton: boolean
+    closeDetails: () => void
   }) => {
     const [teamState] = useTeamStore()
 
@@ -126,6 +132,7 @@ const MyTeams = observer(
                   className={twJoin(currentTeamIdEqual && 'bg-accent-content')}
                   onClick={() => {
                     setId(team.id)
+                    closeDetails()
                   }}
                 >
                   <div className="flex justify-between">
@@ -156,34 +163,43 @@ const MyTeams = observer(
   }
 )
 
-const MemberTeams = observer(({setId}: {setId: (id: string) => void}) => {
-  const [teamState] = useTeamStore()
-  return (
-    <li>
-      <details open>
-        <summary className="truncate">member teams</summary>
-        <ul>
-          {teamState.memberTeams.data?.map(team => {
-            return (
-              <li
-                key={team.id}
-                className={twJoin(
-                  teamState.currentTeam.data?.id === team.id &&
-                    'bg-accent-content rounded-sm'
-                )}
-              >
-                <a
-                  onClick={() => {
-                    setId(team.id)
-                  }}
+const MemberTeams = observer(
+  ({
+    setId,
+    closeDetails
+  }: {
+    setId: (id: string) => void
+    closeDetails: () => void
+  }) => {
+    const [teamState] = useTeamStore()
+    return (
+      <li>
+        <details open>
+          <summary className="truncate">member teams</summary>
+          <ul>
+            {teamState.memberTeams.data?.map(team => {
+              return (
+                <li
+                  key={team.id}
+                  className={twJoin(
+                    teamState.currentTeam.data?.id === team.id &&
+                      'bg-accent-content rounded-sm'
+                  )}
                 >
-                  {team.name}
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </details>
-    </li>
-  )
-})
+                  <a
+                    onClick={() => {
+                      setId(team.id)
+                      closeDetails()
+                    }}
+                  >
+                    {team.name}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </details>
+      </li>
+    )
+  }
+)
