@@ -15,6 +15,7 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
 import dynamic from 'next/dynamic'
+import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
 const CardVisual = dynamic(() => import('@/components/cards/card-visual'), {
   ssr: false,
@@ -31,7 +32,12 @@ export const TabsComponent = observer(() => {
       style={isMobile ? {} : {width: state.rightDrawerWidth}}
     >
       <Drag drawer="right" />
-      <Tabs className="flex justify-between">
+      <Tabs
+        className={twJoin(
+          'flex justify-between',
+          state.tab === 'visual' && 'h-full'
+        )}
+      >
         <InfoTab />
         <ChecklistTab />
         {isMobile && <ChatTab />}
@@ -156,7 +162,7 @@ const VisualTab = observer(() => {
 
 const VisualTabContent = () => {
   return (
-    <Tabs.TabContent>
+    <Tabs.TabContent className="h-full">
       <CardVisual />
     </Tabs.TabContent>
   )
