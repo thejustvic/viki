@@ -1,6 +1,7 @@
 import {Card} from '@/components/daisyui/card'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
 import {EmailLoginForm} from './email-login-form'
 import {useEmailLoginStore} from './email-login-store'
@@ -48,8 +49,31 @@ const TwCard = tw(Card)`
   h-full
 `
 
+const useFlipCard = () => {
+  const [state, store] = useEmailLoginStore()
+
+  useEffect(() => {
+    let timer1, timer2
+    const timer_1_time = 1500
+    const timer_2_time = 3000
+    if (state.view === 'login') {
+      timer1 = setTimeout(store.setRegisterView, timer_1_time)
+      timer2 = setTimeout(store.setLoginView, timer_2_time)
+    } else {
+      timer1 = setTimeout(store.setLoginView, timer_1_time)
+      timer2 = setTimeout(store.setRegisterView, timer_2_time)
+    }
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+    }
+  }, [])
+}
+
 export const EmailLoginCard = observer(() => {
   const [state] = useEmailLoginStore()
+
+  useFlipCard()
 
   return (
     <TwLoginCard>
