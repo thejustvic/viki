@@ -30,7 +30,7 @@ export class GlobalStore {
     leftDrawerOpen: false,
     rightDrawerOpen: false,
     drawerOpenByHover: false,
-    showLeftMenuOnHover: false,
+    showLeftMenuOnHover: true,
     lastCardId: undefined,
     rightDrawerWidth: 320,
     leftDrawerWidth: 320,
