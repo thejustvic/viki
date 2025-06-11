@@ -1,7 +1,9 @@
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
+import {observer} from 'mobx-react-lite'
 
 import tw from 'tailwind-styled-components'
 
@@ -20,10 +22,13 @@ export const AddNewCard = () => {
   return <ParallaxCardContainer cardNodeBody={<CardBody />} my />
 }
 
-const CardBody = () => {
+const CardBody = observer(() => {
+  const {user} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
   const onClickHandler = () => {
-    updateSearchParams('create-card', 'true')
+    if (user) {
+      updateSearchParams('create-card', 'true')
+    }
   }
 
   return (
@@ -31,4 +36,4 @@ const CardBody = () => {
       <IconSquareRoundedPlus size={48} />
     </TwAdd>
   )
-}
+})

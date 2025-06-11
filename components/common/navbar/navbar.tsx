@@ -13,33 +13,29 @@ import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSearch} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
+import {useRouter} from 'next/navigation'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
 import {NavbarOpenTeamButton} from './navbar-open-team-button'
 import {NavbarRightDrawerButton} from './navbar-right-drawer-button'
 import {NavbarTeamSelect} from './navbar-team-select'
 
-const TwNav = tw(Nav)`
-  sticky 
-  top-0 
-  z-10 
-  px-0 
-  bg-base-200 
-  gap-6 
-  justify-between
-`
-
 export const Navbar = observer(() => {
   const {user} = useSupabase()
 
   return (
-    <TwNav style={{height: headerHeight}}>
+    <Nav
+      style={{height: headerHeight}}
+      className={twJoin(
+        'sticky top-0 z-10 px-0 bg-base-200 gap-6',
+        user ? 'justify-between' : 'justify-center'
+      )}
+    >
       {user && !isMobile ? <NavStart /> : null}
-      <NavCenter />
-      {user ? <NavEnd /> : <Nav.End />}
-    </TwNav>
+      {user ? <NavCenter /> : null}
+      {user ? <NavEnd /> : null}
+    </Nav>
   )
 })
 
@@ -104,11 +100,13 @@ const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase, user} = useSupabase()
   const cardId = getSearchCard()
+  const route = useRouter()
 
   const handleLogout = async () => {
     store.setLogging('logout')
     await supabase.auth.signOut()
     store.setLoggingOff()
+    route.push('/login')
   }
 
   if (!user) {
