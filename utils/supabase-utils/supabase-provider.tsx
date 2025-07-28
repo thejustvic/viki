@@ -1,7 +1,7 @@
 'use client'
 
 import {createClient} from '@/utils/supabase-utils/supabase-browser'
-import {createContext, useContext} from 'react'
+import {createContext, useContext, useEffect, useState} from 'react'
 
 import {useMemoOne} from '@/hooks/use-memo-one'
 import type {Database} from '@/utils/database.types'
@@ -19,15 +19,36 @@ const Context = createContext<SupabaseContext>({} as SupabaseContext)
 
 interface Props {
   children: React.ReactNode
-  user: User | null
+  serverUser: User | null
   session: MaybeSession
 }
 
-export default function SupabaseProvider({children, user, session}: Props) {
+export default function SupabaseProvider({
+  children,
+  serverUser,
+  session
+}: Props) {
   const supabase = useMemoOne(() => createClient(), [])
 
+  const [clientUser, setClientUser] = useState<User | null>(null)
+  useEffect(() => {
+    if (serverUser) {
+      return
+    }
+    void (async (): Promise<void> => {
+      const {
+        data: {user}
+      } = await supabase.auth.getUser()
+      if (user) {
+        setClientUser(user)
+      }
+    })()
+  }, [serverUser])
+
   return (
-    <Context.Provider value={{supabase, user, session}}>
+    <Context.Provider
+      value={{supabase, user: serverUser ?? clientUser, session}}
+    >
       {children}
     </Context.Provider>
   )

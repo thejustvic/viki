@@ -22,8 +22,8 @@ export const metadata = {
 
 export default async function RootLayout({children}: PropsWithChildren) {
   const session = await getServerSession()
-  const user = await getServerUser()
-  const profile = await getServerProfile(user)
+  const serverUser = await getServerUser()
+  const profile = await getServerProfile(serverUser)
 
   const cookieStore = await cookies()
   const cookieTheme = cookieStore.get('theme')?.value
@@ -32,7 +32,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
   return (
     <html data-theme={theme ?? 'dark'} lang="en">
       <body>
-        <SupabaseProvider user={user} session={session}>
+        <SupabaseProvider serverUser={serverUser} session={session}>
           <GlobalProvider serverTheme={theme}>
             <TeamProvider serverCurrentTeamId={profile?.current_team_id}>
               <Modals />
