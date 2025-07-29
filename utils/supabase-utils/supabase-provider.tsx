@@ -43,7 +43,7 @@ export default function SupabaseProvider({
         setClientUser(user)
       }
     })()
-  }, [serverUser])
+  }, [])
 
   return (
     <Context.Provider
