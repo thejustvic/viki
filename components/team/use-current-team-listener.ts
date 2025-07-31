@@ -21,7 +21,7 @@ const getTeam = (
 // Supabase Realtime Listener Hook
 const useSupabaseTeamListener = (
   supabase: SupabaseContext['supabase'],
-  teamId: string,
+  teamId: string | null | undefined,
   store: TeamStore
 ): void => {
   useEffect(() => {
@@ -76,14 +76,14 @@ export const useCurrentTeamListener = ({
 }: {
   supabase: SupabaseContext['supabase']
   store: TeamStore
-  teamId: string
+  teamId: string | null | undefined
 }): void => {
   const fetchTeam = useCallback(() => {
     if (!teamId) {
       return null
     }
     return getTeam(supabase, teamId)
-  }, [supabase, teamId])
+  }, [teamId])
 
   const {data, loading, error} = useSupabaseFetch(fetchTeam, [teamId])
 

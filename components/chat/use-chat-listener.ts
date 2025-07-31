@@ -64,7 +64,7 @@ export const useChatListener = (
       return null
     }
     return getMessages(cardId, supabase)
-  }, [cardId, supabase])
+  }, [cardId])
 
   // Fetch messages using custom hook
   const {data, loading, error} = useSupabaseFetch(fetchMessages, [cardId])

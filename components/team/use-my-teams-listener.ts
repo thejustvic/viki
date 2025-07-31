@@ -26,7 +26,7 @@ export const useMyTeamsListener = (
       return null
     }
     return getMyTeams(user, supabase)
-  }, [supabase, user])
+  }, [user])
 
   const {data, loading, error} = useSupabaseFetch(fetchMyTeams, [user])
 

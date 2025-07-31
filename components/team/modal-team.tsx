@@ -3,22 +3,11 @@
 import {Modal} from '@/components/common/modal'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {Team} from './team'
 import {useTeamStore} from './team-store'
-import {useCurrentTeamListener} from './use-current-team-listener'
 
 export const ModalTeam = observer(() => {
-  const {supabase} = useSupabase()
-  const [state, store] = useTeamStore()
-
-  useCurrentTeamListener({
-    supabase,
-    store,
-    teamId: state.currentTeamId || ''
-  })
-
   const updateSearchParams = useUpdateSearchParams()
   const goBack = () => {
     updateSearchParams('team')

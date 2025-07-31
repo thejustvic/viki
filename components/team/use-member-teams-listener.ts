@@ -1,7 +1,7 @@
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {TeamStore} from './team-store'
 import {Team} from './types'
 
@@ -31,10 +31,14 @@ export const useMemberTeamsListener = (
   supabase: SupabaseContext['supabase'],
   store: TeamStore
 ): void => {
-  const {data, loading, error} = useSupabaseFetch(
-    user ? () => getMemberTeams(supabase, user) : null,
-    [user]
-  )
+  const fetchMemberTeams = useCallback(() => {
+    if (!user) {
+      return null
+    }
+    return getMemberTeams(supabase, user)
+  }, [user])
+
+  const {data, loading, error} = useSupabaseFetch(fetchMemberTeams, [user])
 
   useEffect(() => {
     store.setMemberTeams({
@@ -42,5 +46,5 @@ export const useMemberTeamsListener = (
       data,
       error
     })
-  }, [data, loading, error])
+  }, [data, loading, error, store])
 }

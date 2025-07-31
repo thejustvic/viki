@@ -100,7 +100,7 @@ export const useCardsListener = ({
       return null
     }
     return getMyCards(supabase, currentTeamId)
-  }, [currentTeamId, supabase])
+  }, [currentTeamId])
 
   const {data, loading, error} = useSupabaseFetch(fetchCards, [currentTeamId])
 
