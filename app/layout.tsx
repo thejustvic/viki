@@ -21,7 +21,7 @@ export const metadata = {
 }
 
 export default async function RootLayout({children}: PropsWithChildren) {
-  const session = await getServerSession()
+  const serverSession = await getServerSession()
   const serverUser = await getServerUser()
   const serverProfile = await getServerProfile(serverUser)
 
@@ -32,7 +32,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
   return (
     <html data-theme={theme ?? 'dark'} lang="en">
       <body>
-        <SupabaseProvider serverUser={serverUser} session={session}>
+        <SupabaseProvider serverUser={serverUser} serverSession={serverSession}>
           <GlobalProvider serverTheme={theme}>
             <TeamProvider serverProfile={serverProfile}>
               <Modals />
