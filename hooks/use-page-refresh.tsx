@@ -9,6 +9,18 @@ export const usePageRefresh = () => {
   const {session: mySession, supabase} = useSupabase()
 
   useEffect(() => {
+    void (async (): Promise<void> => {
+      const {
+        data: {session}
+      } = await supabase.auth.getSession()
+
+      if (!session) {
+        router.push('/login')
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
     const {
       data: {subscription}
     } = supabase.auth.onAuthStateChange(async (_e, session) => {
