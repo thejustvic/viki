@@ -10,7 +10,8 @@
     "postgrest",
     "rootscrollgutter",
     "Swipeable",
-    "tabler"
+    "tabler",
+    "turbopack"
   ],
   "eslint.problems.shortenToSingleLine": true,
 }
