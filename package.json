@@ -32,7 +32,7 @@
     "react-swipeable": "7.0.2",
     "server-only": "0.0.1",
     "tailwind-styled-components": "2.2.0",
-    "three": "0.176.0"
+    "three": "0.180.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
