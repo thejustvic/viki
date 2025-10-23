@@ -1,15 +1,15 @@
-const path = require('path');
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type {NextConfig} from 'next'
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-    async redirects() {
+  async redirects() {
     return [
       {
         source: '/',
-        destination: '/cards', 
-        permanent: true,
-      },
-    ];
+        destination: '/cards',
+        permanent: true
+      }
+    ]
   },
   images: {
     remotePatterns: [
@@ -31,10 +31,10 @@ const nextConfig = {
     rules: {
       '*.svg': {
         loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
+        as: '*.js'
+      }
+    }
   }
 }
 
-module.exports = nextConfig
+export default nextConfig
