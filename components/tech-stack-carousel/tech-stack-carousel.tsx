@@ -190,12 +190,12 @@ const stack: CardProps[] = [
     href: 'https://www.typescriptlang.org/'
   },
   {
-    name: 'React19',
+    name: 'React19.2',
     logo: 'https://static.cdnlogo.com/logos/r/63/react.svg',
     href: 'https://react.dev'
   },
   {
-    name: 'Next15',
+    name: 'Next16',
     logo: '/nextjs.svg',
     href: 'https://nextjs.org/docs/app/getting-started'
   },
