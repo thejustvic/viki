@@ -148,12 +148,14 @@ const Card = ({card}: {card: CardProps}) => {
     <TwCard>
       <TwCardInner style={{transform: 'translateZ(20px)'}}>
         <TwImage>
-          <Image
-            height={58}
-            width={58}
-            src={card.logo}
-            alt={`${card.name} logo`}
-          />
+          <Link href={card.href} rel="noopener noreferrer" target="_blank">
+            <Image
+              height={58}
+              width={58}
+              src={card.logo}
+              alt={`${card.name} logo`}
+            />
+          </Link>
         </TwImage>
         <TwLink>
           <Link href={card.href} rel="noopener noreferrer" target="_blank">
