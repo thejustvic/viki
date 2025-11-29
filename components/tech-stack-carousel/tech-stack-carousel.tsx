@@ -61,7 +61,7 @@ const TwLink = tw.div`
 
 // 3D Rotation Logic
 const carousel: KeenSliderPlugin = slider => {
-  const z = 300
+  const z = 280
   function rotate() {
     const deg = 360 * slider.track.details.progress
     slider.container.style.transform = `translateZ(-${z}px) rotateY(${-deg}deg)`
@@ -128,7 +128,7 @@ export const TechStackCarousel = () => {
   }, [sliderInstance])
 
   return (
-    <div>
+    <div className="overflow-hidden">
       <TwTechStack>Project Tech Stack</TwTechStack>
       <TwCarousel>
         <TwScene>
