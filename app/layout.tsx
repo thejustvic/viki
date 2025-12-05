@@ -12,12 +12,13 @@ import {getServerUser} from '@/utils/supabase-utils/get-server-user'
 import SupabaseProvider from '@/utils/supabase-utils/supabase-provider'
 import {Analytics} from '@vercel/analytics/next'
 import {SpeedInsights} from '@vercel/speed-insights/next'
+import type {Metadata} from 'next'
 import {cookies} from 'next/headers'
 import {PropsWithChildren} from 'react'
 
-export const metadata = {
-  title: 'hobby',
-  description: 'hobby app'
+export const metadata: Metadata = {
+  title: 'crm',
+  description: 'crm app'
 }
 
 export default async function RootLayout({children}: PropsWithChildren) {
