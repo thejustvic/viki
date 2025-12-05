@@ -14,4 +14,21 @@
     "turbopack"
   ],
   "eslint.problems.shortenToSingleLine": true,
+  "tailwindCSS.experimental.classRegex": [
+    
+    "(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]",
+    "tw`([^`]*)",
+    "tw\\..+`([^`]*)",
+    "tw\\(.*?\\).*?`([^`]*)",
+    ["Classes \\=([^;]*);", "'([^']*)'"],
+    ["Classes \\=([^;]*);", "\"([^\"]*)\""],
+    ["Classes \\=([^;]*);", "\\`([^\\`]*)\\`"]
+  ],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+    ".*ClassName.*"
+  ],
 }
