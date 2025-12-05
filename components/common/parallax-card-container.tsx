@@ -2,7 +2,7 @@ import {Card} from '@/components/daisyui/card'
 import {CSSProperties, ReactElement} from 'react'
 import {isMobile, isSafari} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
-import {twJoin} from 'tailwind-merge'
+import {ClassNameValue, twJoin} from 'tailwind-merge'
 
 interface Props {
   disableTransform?: boolean
@@ -32,23 +32,25 @@ const CardComp = (props: Props) => {
 
   const translateZ: CSSProperties = !disableTransform ? transform : {}
 
+  const cardClassName: ClassNameValue = twJoin(
+    `shadow-md 
+    w-[288px]
+    h-[142px] 
+    md:w-[190px] 
+    transform-3d 
+    bg-no-repeat
+    bg-center
+    bg-cover`,
+    active && 'border-solid border-accent',
+    my ? 'bg-base-300' : 'bg-accent-content'
+  )
+
+  const cardStyle: CSSProperties = {
+    backgroundImage: bgImage ? `url('/${bgImage}.svg')` : 'none'
+  }
+
   return (
-    <Card
-      style={
-        bgImage !== 'none'
-          ? {
-              backgroundImage: `url('/${bgImage}.svg')`
-            }
-          : undefined
-      }
-      className={twJoin(
-        'shadow-md w-[288px] h-[142px] md:w-[190px] transform-3d bg-no-repeat bg-center bg-cover',
-        active && 'border-solid border-accent',
-        my ? 'bg-base-300' : 'bg-accent-content'
-      )}
-      bordered
-      size="sm"
-    >
+    <Card style={cardStyle} bordered size="sm" className={cardClassName}>
       <Card.Body style={translateZ}>{cardNodeBody}</Card.Body>
     </Card>
   )
