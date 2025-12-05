@@ -3,6 +3,5 @@
   "bracketSpacing": false,
   "semi": false,
   "trailingComma": "none",
-  "arrowParens": "avoid",
-  "plugins": ["@softonus/prettier-plugin-whitespace-remover"]
+  "arrowParens": "avoid"
 }
