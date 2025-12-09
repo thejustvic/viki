@@ -32,12 +32,7 @@ export const TabsComponent = observer(() => {
       style={isMobile ? {} : {width: state.rightDrawerWidth}}
     >
       <Drag drawer="right" />
-      <Tabs
-        className={twJoin(
-          'flex justify-between',
-          state.tab === 'visual' && 'h-full'
-        )}
-      >
+      <Tabs className={twJoin('flex justify-between')}>
         <InfoTab />
         <ChecklistTab />
         {isMobile && <ChatTab />}
@@ -160,10 +155,27 @@ const VisualTab = observer(() => {
   )
 })
 
+const TwDot = tw.div`
+  absolute
+  top-1/2
+  left-1/2
+  w-3
+  h-3
+  rounded-full
+  transform
+  -translate-x-1/2
+  -translate-y-1/2
+  border-2
+  border-white
+`
+
 const VisualTabContent = () => {
   return (
     <Tabs.TabContent className="h-full">
-      <CardVisual />
+      <div className="flex relative">
+        <CardVisual />
+        <TwDot />
+      </div>
     </Tabs.TabContent>
   )
 }
