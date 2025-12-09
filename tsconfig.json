@@ -38,7 +38,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "components/common/page/client",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    ".next\\dev/types/**/*.ts",
+    ".next\\dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
