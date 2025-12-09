@@ -33,7 +33,11 @@ const BaseBox = ({
       colliders={false}
       position={props.position}
       onCollisionEnter={e => {
-        console.log('Collision started:', e)
+        if (process.env.NODE_ENV !== 'production') {
+          // log in dev only
+          // eslint-disable-next-line no-console
+          console.log('Collision started:', e)
+        }
       }}
     >
       <mesh castShadow>

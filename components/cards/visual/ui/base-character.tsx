@@ -23,7 +23,9 @@ const BaseCharacter = (props: BaseCharacterProps) => {
 
   useFrame(() => {
     const body = rigidBodyRef.current
-    if (!body) return
+    if (!body) {
+      return
+    }
 
     const currentVelocity = body.linvel()
 
@@ -59,7 +61,7 @@ const BaseCharacter = (props: BaseCharacterProps) => {
 
   const radius = props.args?.[0] ?? 1
 
-  const initialPosition = props.position || [0, radius + 0.1, 0] // Ensure it spawns slightly above Y=0
+  const initialPosition = props.position ?? [0, radius + 0.1, 0] // Ensure it spawns slightly above Y=0
 
   return (
     <RigidBody

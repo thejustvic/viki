@@ -15,30 +15,32 @@ export const makeAutoPersist = <T extends {state: unknown}>(
     const storedJson = window.localStorage.getItem(name)
     if (storedJson) {
       const parsed = JSON.parse(storedJson)
-      const thisStateKeys = ObjUtil.keys((_this as any).state ?? {})
+      const thisStateKeys = ObjUtil.keys(_this.state ?? {})
       const storedStateKeys = ObjUtil.keys(parsed?.state ?? {})
 
       if (ArrUtil.areListsEqual(thisStateKeys, storedStateKeys)) {
-        set(_this as any, parsed)
+        set(_this, parsed)
       }
     }
   } catch (err) {
-    // Don't throw during startup; log in dev only
-    // eslint-disable-next-line no-console
-    if (process.env.NODE_ENV !== 'production')
+    if (process.env.NODE_ENV !== 'production') {
+      // log in dev only
+      // eslint-disable-next-line no-console
       console.warn('makeAutoPersist: failed to restore persisted state', err)
+    }
   }
 
   const disposer: IReactionDisposer = reaction(
-    () => toJS((_this as any).state ?? {}),
+    () => toJS(_this.state ?? {}),
     state => {
       try {
         window.localStorage.setItem(name, JSON.stringify({state}))
       } catch (err) {
-        // ignore quota/serialization errors in production, but warn in dev
-        // eslint-disable-next-line no-console
-        if (process.env.NODE_ENV !== 'production')
+        if (process.env.NODE_ENV !== 'production') {
+          // log in dev only
+          // eslint-disable-next-line no-console
           console.warn('makeAutoPersist: failed to save state', err)
+        }
       }
     },
     {delay: 300}
