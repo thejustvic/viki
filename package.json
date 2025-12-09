@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@react-three/drei": "10.0.7",
-    "@react-three/fiber": "9.1.2",
+    "@react-three/drei": "10.7.7",
+    "@react-three/fiber": "9.4.2",
+    "@react-three/rapier": "2.2.0",
     "@supabase/ssr": "0.5.2",
     "@supabase/supabase-js": "2.48.1",
     "@tabler/icons-react": "3.29.0",
@@ -32,7 +33,7 @@
     "react-swipeable": "7.0.2",
     "server-only": "0.0.1",
     "tailwind-styled-components": "2.2.0",
-    "three": "0.180.0"
+    "three": "0.181.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -44,7 +45,7 @@
     "@types/node": "22.13.1",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
-    "@types/three": "0.176.0",
+    "@types/three": "0.181.0",
     "@typescript-eslint/eslint-plugin": "8.23.0",
     "@typescript-eslint/parser": "8.23.0",
     "autoprefixer": "10.4.20",
