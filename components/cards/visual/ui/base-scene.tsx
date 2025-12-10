@@ -1,9 +1,24 @@
 import {Loader, PointerLockControls} from '@react-three/drei'
 import {Canvas} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
+import tw from 'tailwind-styled-components'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
 import {Snowfall} from './base-snowfall'
+
+const TwDot = tw.div`
+  absolute
+  top-1/2
+  left-1/2
+  w-3
+  h-3
+  rounded-full
+  transform
+  -translate-x-1/2
+  -translate-y-1/2
+  border-1
+  border-white
+`
 
 interface BasicSceneProps {
   children: React.ReactNode
@@ -23,6 +38,7 @@ const BasicScene = ({children}: BasicSceneProps) => {
         <PointerLockControls />
       </Canvas>
       <Loader />
+      <TwDot />
     </div>
   )
 }

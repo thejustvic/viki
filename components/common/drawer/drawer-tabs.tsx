@@ -155,26 +155,11 @@ const VisualTab = observer(() => {
   )
 })
 
-const TwDot = tw.div`
-  absolute
-  top-1/2
-  left-1/2
-  w-3
-  h-3
-  rounded-full
-  transform
-  -translate-x-1/2
-  -translate-y-1/2
-  border-2
-  border-white
-`
-
 const VisualTabContent = () => {
   return (
     <Tabs.TabContent className="h-full">
       <div className="flex relative">
         <CardVisual />
-        <TwDot />
       </div>
     </Tabs.TabContent>
   )
