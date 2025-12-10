@@ -2,7 +2,6 @@ import {Sky} from '@react-three/drei'
 import BaseBox from './visual/ui/base-box'
 import BaseCharacter from './visual/ui/base-character'
 import BaseScene from './visual/ui/base-scene'
-import {Snowfall} from './visual/ui/base-snowfall'
 
 export default function CardVisual() {
   return (
@@ -14,7 +13,6 @@ export default function CardVisual() {
       <BaseCharacter position={[0, 1, 0]} args={[0.5]} />
 
       <Sky />
-      <Snowfall />
     </BaseScene>
   )
 }

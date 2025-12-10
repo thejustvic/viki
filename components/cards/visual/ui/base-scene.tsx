@@ -3,6 +3,7 @@ import {Canvas} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
+import {Snowfall} from './base-snowfall'
 
 interface BasicSceneProps {
   children: React.ReactNode
@@ -18,7 +19,7 @@ const BasicScene = ({children}: BasicSceneProps) => {
           {children}
           <Floor color="white" />
         </Physics>
-
+        <Snowfall />
         <PointerLockControls />
       </Canvas>
       <Loader />

@@ -3,7 +3,7 @@ import React, {useEffect, useMemo, useRef} from 'react'
 import * as THREE from 'three'
 import {InstancedMesh} from 'three'
 
-const NUM_SNOWFLAKES = 1000
+const NUM_SNOWFLAKES = 5000
 const SCENE_WIDTH = 50
 const SNOW_RESET_Y = -5
 const SNOW_START_Y_MIN = 20
@@ -94,7 +94,7 @@ export const Snowfall: React.FC = () => {
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, NUM_SNOWFLAKES]}>
-      <sphereGeometry args={[0.1, 8, 8]} />
+      <sphereGeometry args={[0.03, 8, 8]} />
       <meshBasicMaterial color="white" transparent opacity={0.8} />
     </instancedMesh>
   )
