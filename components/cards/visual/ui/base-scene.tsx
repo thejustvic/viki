@@ -12,7 +12,7 @@ interface BasicSceneProps {
 const BasicScene = ({children}: BasicSceneProps) => {
   return (
     <div style={{height: 'calc(100vh - 41px)', width: '100vw'}}>
-      <Canvas shadows camera={{fov: 50}}>
+      <Canvas shadows camera={{fov: 50, position: [-0.2, -1, 5]}}>
         <Lights />
 
         <Physics gravity={[0, -9.8, 0]}>
