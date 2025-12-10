@@ -12,7 +12,7 @@ export default function CardVisual() {
 
       <BaseCharacter position={[0, 1, 0]} args={[0.5]} />
 
-      <Sky />
+      <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
     </BaseScene>
   )
 }
