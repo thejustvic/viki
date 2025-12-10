@@ -187,6 +187,11 @@ const stack: CardProps[] = [
     href: 'https://tailwindcss.com/blog/tailwindcss-v4'
   },
   {
+    name: 'Three',
+    logo: '/threejs.svg',
+    href: 'https://threejs.org'
+  },
+  {
     name: 'TypeScript',
     logo: 'https://static.cdnlogo.com/logos/t/96/typescript.svg',
     href: 'https://www.typescriptlang.org/'
