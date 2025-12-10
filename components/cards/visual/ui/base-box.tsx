@@ -40,7 +40,7 @@ const BaseBox = ({
         }
       }}
     >
-      <mesh castShadow>
+      <mesh castShadow receiveShadow>
         <boxGeometry args={args} />
         <meshStandardMaterial color={color} />
       </mesh>
