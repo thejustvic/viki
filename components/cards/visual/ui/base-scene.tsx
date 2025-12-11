@@ -1,4 +1,5 @@
-import {Loader, PointerLockControls} from '@react-three/drei'
+import {Environment, Loader, PointerLockControls} from '@react-three/drei'
+
 import {Canvas} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import tw from 'tailwind-styled-components'
@@ -35,6 +36,10 @@ const BasicScene = ({children}: BasicSceneProps) => {
           <Floor color="white" />
         </Physics>
         <Snowfall />
+
+        {/* Environment map for realistic reflections */}
+        <Environment preset="sunset" />
+
         <PointerLockControls />
       </Canvas>
       <Loader />
