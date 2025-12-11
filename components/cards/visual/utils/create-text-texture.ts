@@ -2,8 +2,8 @@ import {CanvasTexture} from 'three'
 
 export const createTextTexture = (
   text: string,
-  color: string = '#ffffff',
-  bgColor: string = '#ff0000'
+  color = '#ffffff',
+  bgColor = '#ff0000'
 ): CanvasTexture => {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
