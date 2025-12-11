@@ -1,5 +1,5 @@
 import {useFrame} from '@react-three/fiber'
-import React, {useEffect, useMemo, useRef} from 'react'
+import {useEffect, useMemo, useRef} from 'react'
 import * as THREE from 'three'
 import {InstancedMesh} from 'three'
 
@@ -17,32 +17,38 @@ interface Snowflake {
   rotationSpeed: THREE.Euler
 }
 
-export const Snowfall: React.FC = () => {
-  const meshRef = useRef<InstancedMesh>(null!)
+const getSnowflakes = (): Snowflake[] => {
+  const tempSnowflakes: Snowflake[] = []
+  for (let i = 0; i < NUM_SNOWFLAKES; i++) {
+    tempSnowflakes.push({
+      speed: 0.1 + Math.random() * 0.1,
+      driftX: (Math.random() - 0.5) * 0.03,
+      driftZ: (Math.random() - 0.5) * 0.03,
+      // Initialize rotation speed as a new Euler object with random initial rotation rates
+      rotationSpeed: new THREE.Euler(
+        Math.random() * 0.01,
+        Math.random() * 0.01,
+        Math.random() * 0.01
+      )
+    })
+  }
+  return tempSnowflakes
+}
+
+export const Snowfall = () => {
+  const meshRef = useRef<InstancedMesh>(null)
   const dummy = useMemo(() => new THREE.Object3D(), [])
   const rotationQuaternion = useMemo(() => new THREE.Quaternion(), [])
 
   const snowflakes = useMemo((): Snowflake[] => {
-    const tempSnowflakes: Snowflake[] = []
-    for (let i = 0; i < NUM_SNOWFLAKES; i++) {
-      tempSnowflakes.push({
-        speed: 0.1 + Math.random() * 0.1,
-        driftX: (Math.random() - 0.5) * 0.03,
-        driftZ: (Math.random() - 0.5) * 0.03,
-        // Initialize rotation speed as a new Euler object with random initial rotation rates
-        rotationSpeed: new THREE.Euler(
-          Math.random() * 0.01,
-          Math.random() * 0.01,
-          Math.random() * 0.01
-        )
-      })
-    }
-    return tempSnowflakes
+    return getSnowflakes()
   }, [])
 
   // Initialize instance positions immediately after mount/layout
   useEffect(() => {
-    if (!meshRef.current) return
+    if (!meshRef.current) {
+      return
+    }
     for (let i = 0; i < NUM_SNOWFLAKES; i++) {
       dummy.position.set(
         (Math.random() - 0.5) * SCENE_WIDTH,
@@ -57,13 +63,13 @@ export const Snowfall: React.FC = () => {
   }, [dummy])
 
   useFrame(() => {
-    if (!meshRef.current) return
-
+    const mesh = meshRef.current
+    if (!mesh) {
+      return
+    }
     snowflakes.forEach((snowflake, i) => {
-      meshRef.current.getMatrixAt(i, dummy.matrix)
+      mesh.getMatrixAt(i, dummy.matrix)
 
-      // Decompose matrix: Use dummy.quaternion for proper matrix decomposition
-      // We fixed the TS error in the previous step using .quaternion here:
       dummy.matrix.decompose(dummy.position, dummy.quaternion, dummy.scale)
 
       // --- Core Movement Logic (Pure Translation) ---
@@ -86,10 +92,10 @@ export const Snowfall: React.FC = () => {
 
       // Recompose the matrix and set it back to the instance
       dummy.updateMatrix()
-      meshRef.current.setMatrixAt(i, dummy.matrix)
+      mesh.setMatrixAt(i, dummy.matrix)
     })
 
-    meshRef.current.instanceMatrix.needsUpdate = true
+    mesh.instanceMatrix.needsUpdate = true
   })
 
   return (
