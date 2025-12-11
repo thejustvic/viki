@@ -14,6 +14,7 @@ import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
+import {Checkbox} from '@/components/cards/card-checklist/types'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
@@ -141,6 +142,8 @@ const ChatTabContent = () => {
 const VisualTab = observer(() => {
   const [state, store] = useGlobalStore()
   const active = state.tab === 'visual'
+  const id = String(getSearchCard())
+  const [cardChecklistState] = useCardChecklistStore()
   return (
     <>
       <TwTab
@@ -150,16 +153,20 @@ const VisualTab = observer(() => {
         groupName="right_drawer"
         checked={active}
       />
-      {active && <VisualTabContent />}
+      {active && (
+        <VisualTabContent
+          checklist={cardChecklistState.checklists.data?.get(id) ?? []}
+        />
+      )}
     </>
   )
 })
 
-const VisualTabContent = () => {
+const VisualTabContent = ({checklist}: {checklist: Checkbox[]}) => {
   return (
     <Tabs.TabContent className="h-full">
       <div className="flex relative">
-        <CardVisual />
+        <CardVisual checklist={checklist} />
       </div>
     </Tabs.TabContent>
   )
