@@ -114,11 +114,12 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
       {/* map over the array of random positions to render multiple spheres */}
       {spherePositions.map((position, index) => {
         const isCompleted = checklist?.[index]?.is_completed
+        const text = checklist?.[index]?.title || ''
         return (
           <BaseSphere
             key={index}
             position={position}
-            text={isCompleted ? 'Completed' : 'Incomplete'}
+            text={text}
             sphereColor={isCompleted ? 'green' : 'red'}
             textColor={isCompleted ? 'white' : 'black'}
           />
