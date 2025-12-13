@@ -24,10 +24,9 @@ export const BaseSphere = ({
     return createTextTexture({
       text,
       color: textColor,
-      bgColor: sphereColor,
-      offsetX: textOffsetX
+      bgColor: sphereColor
     })
-  }, [text, textColor, sphereColor, textOffsetX])
+  }, [text, textColor, sphereColor])
 
   useEffect(() => {
     texture.wrapS = RepeatWrapping
