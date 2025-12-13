@@ -1,6 +1,6 @@
 import {Sphere} from '@react-three/drei'
-import {useMemo} from 'react'
-import {CanvasTexture} from 'three'
+import {useEffect, useMemo} from 'react'
+import {CanvasTexture, RepeatWrapping} from 'three'
 import {createTextTexture} from '../utils/create-text-texture'
 
 interface BaseBoxProps {
@@ -9,18 +9,31 @@ interface BaseBoxProps {
   sphereColor?: string
   textColor?: string
   text: string
+  textOffsetX: number
 }
 
 export const BaseSphere = ({
   text,
+  textOffsetX,
   position,
   radius = 0.2,
   sphereColor = '#ff0000',
   textColor = '#ffffff'
 }: BaseBoxProps) => {
   const texture: CanvasTexture = useMemo(() => {
-    return createTextTexture(text, textColor, sphereColor)
-  }, [text, textColor, sphereColor])
+    return createTextTexture({
+      text,
+      color: textColor,
+      bgColor: sphereColor,
+      offsetX: textOffsetX
+    })
+  }, [text, textColor, sphereColor, textOffsetX])
+
+  useEffect(() => {
+    texture.wrapS = RepeatWrapping
+    texture.offset.x = textOffsetX
+    texture.needsUpdate = true
+  }, [texture, textOffsetX])
 
   return (
     <Sphere args={[radius, 64, 64]} position={position}>

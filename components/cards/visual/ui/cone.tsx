@@ -19,6 +19,11 @@ const distanceBetweenPoints = (p1: Position, p2: Position): number => {
   return Math.sqrt(dx * dx + dy * dy + dz * dz)
 }
 
+interface SphereData {
+  position: Position
+  theta: number
+}
+
 /**
  * generates random points on the cone's surface using rejection sampling to prevent overlap.
  */
@@ -32,8 +37,8 @@ const generateNonOverlappingPoints = ({
   coneRadius: number
   coneHeight: number
   minRequiredDistance: number // minimum center-to-center distance required
-}): Position[] => {
-  const points: Position[] = []
+}): SphereData[] => {
+  const points: SphereData[] = []
   const maxAttemptsPerPoint = 100 // prevent infinite loops if cone is full
   let attempts = 0
 
@@ -52,7 +57,10 @@ const generateNonOverlappingPoints = ({
     // 2. check for overlap with existing points
     let isOverlapping = false
     for (const existingPoint of points) {
-      if (distanceBetweenPoints(candidatePoint, existingPoint) < minDistance) {
+      if (
+        distanceBetweenPoints(candidatePoint, existingPoint.position) <
+        minDistance
+      ) {
         isOverlapping = true
         break // overlap found, reject this point
       }
@@ -60,7 +68,7 @@ const generateNonOverlappingPoints = ({
 
     // 3. if no overlap, accept the point
     if (!isOverlapping) {
-      points.push(candidatePoint)
+      points.push({position: candidatePoint, theta: theta})
       attempts = 0 // reset attempts counter for the *next* point
     }
   }
@@ -89,7 +97,7 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
   // the minimum distance between centers must be at least twice the sphere radius
   const minRequiredDistance = sphereRadius * 2.1
 
-  const spherePositions: Position[] = useMemo(() => {
+  const spherePositions: SphereData[] = useMemo(() => {
     return generateNonOverlappingPoints({
       numberOfSpheres,
       coneRadius,
@@ -112,7 +120,10 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
       </Cone>
 
       {/* map over the array of random positions to render multiple spheres */}
-      {spherePositions.map((position, index) => {
+      {spherePositions.map((data, index) => {
+        const {position, theta} = data
+        const offsetX = theta / (2 * Math.PI)
+
         const isCompleted = checklist?.[index]?.is_completed
         const text = checklist?.[index]?.title || ''
         return (
@@ -121,7 +132,8 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
             position={position}
             text={text}
             sphereColor={isCompleted ? 'green' : 'red'}
-            textColor={isCompleted ? 'white' : 'black'}
+            textColor={'white'}
+            textOffsetX={offsetX}
           />
         )
       })}
