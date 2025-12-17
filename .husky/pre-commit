@@ -1,4 +1,11 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# 1. Type check the whole project
+npx tsc --noEmit || {
+  echo "\033TypeScript type-check failed. Please fix types before committing.\033"
+  exit 1
+}
 
-npx lint-staged
+# 2. Run lint-staged for ESLint/Formatting
+npx lint-staged || {
+  echo "\033ESLint failed. Please fix errors before committing.\033"
+  exit 1
+}
