@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",
@@ -56,7 +57,7 @@
     "eslint-plugin-unused-imports": "4.1.4",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
-    "lint-staged": "15.4.3",
+    "lint-staged": "16.2.7",
     "postcss": "8.5.1",
     "postcss-import": "16.1.0",
     "prettier": "3.4.2",
@@ -68,7 +69,7 @@
     "typescript": "5.7.3"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --quiet"
     ]
