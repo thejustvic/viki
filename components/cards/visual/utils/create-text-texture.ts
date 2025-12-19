@@ -24,14 +24,15 @@ export const createTextTexture = ({
   context.fillRect(0, 0, size, size)
 
   const fontSize = 24
-  const padding = 200
-  const maxWidth = 120
+  const padding = 260
+  const maxWidth = 160
   const lineHeight = fontSize * 1.4
   const MAX_TEXT_LINES_TO_DISPLAY = 6
 
   context.fillStyle = color
   context.font = `${fontSize}px Arial`
   context.textBaseline = 'top'
+  context.textAlign = 'center'
 
   const words = text.split(' ')
   let line = ''
