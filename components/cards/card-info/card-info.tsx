@@ -4,22 +4,25 @@ import {useCardHandlers} from '@/components/cards/cards-handlers'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
+import {Input} from '@/components/daisyui/input'
 import {Menu} from '@/components/daisyui/menu'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {useMemoOne} from '@/hooks/use-memo-one'
+import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
-import {ReactNode, useEffect} from 'react'
+import {PropsWithChildren, ReactNode, useEffect} from 'react'
 import tw from 'tailwind-styled-components'
+import {useCardsStore} from '../cards-store'
 import {CardBgImages} from '../types'
 import {
   CardInfoStore,
   CardInfoStoreContext,
   useCardInfoStore
 } from './card-info-store'
-import {useCardListener} from './fetch/use-card-listener'
+import {useCardInfoListener} from './fetch/use-card-info-listener'
 
 const TwLoading = tw(Loader)`
   p-0
@@ -39,28 +42,34 @@ const TwMenu = tw(Menu)`
   w-full
 `
 
-export const CardInfo = () => {
-  const store = useMemoOne(() => new CardInfoStore(), [])
+export const CardInfoProvider = observer(({children}: PropsWithChildren) => {
+  const {user} = useSupabase()
+  const [cardsState] = useCardsStore()
+  const {supabase} = useSupabase()
+  const store = useMemoOne(() => new CardInfoStore(), [user])
+
+  const cardId = String(getSearchCard())
+
+  const authorId = cardsState.cards.data?.find(
+    card => card.id === cardId
+  )?.author_id
+
+  useCardInfoListener({cardId, authorId, store, supabase})
 
   return (
     <CardInfoStoreContext.Provider value={store}>
-      <CardInfoBase />
+      <>{children}</>
     </CardInfoStoreContext.Provider>
   )
-}
+})
 
-export const CardInfoBase = observer(() => {
-  const [state] = useCardInfoStore()
-  const cardId = getSearchCard()
-
-  useCardListener({cardId, authorId: state.card.data?.author_id})
-
+export const CardInfo = () => {
   return (
     <TwMenu>
       <CardInfoBody />
     </TwMenu>
   )
-})
+}
 
 const CardInfoBody = () => (
   <div className="flex flex-col gap-2">
@@ -68,8 +77,81 @@ const CardInfoBody = () => (
     <Creator />
     <Text />
     <Cover />
+    <ChooseBaubleColor />
   </div>
 )
+
+const ChooseBaubleColor = () => {
+  const [state] = useCardInfoStore()
+
+  return (
+    <div className="mt-4">
+      <ShowData
+        loading={state.card.loading}
+        error={state.card.error?.message}
+        data={<ChooseBaubleColorData />}
+        prefix={'baubles:'}
+      />
+    </div>
+  )
+}
+
+const ChooseBaubleColorData = observer(() => {
+  const [state] = useCardInfoStore()
+  const {updateCardBaubleColorCompleted, updateCardBaubleColorNotCompleted} =
+    useCardHandlers()
+  const id = String(getSearchCard())
+
+  if (!state.card.data) {
+    return null
+  }
+  if (
+    !state.card.data.bauble_color_not_completed ||
+    !state.card.data.bauble_color_completed
+  ) {
+    return null
+  }
+  return (
+    <div className="flex gap-2">
+      <ColorPicker
+        color={state.card.data.bauble_color_not_completed}
+        label="not checked"
+        onChange={e => {
+          const color = e.target.value
+          updateCardBaubleColorNotCompleted(color, id)
+        }}
+      />
+      <ColorPicker
+        color={state.card.data.bauble_color_completed}
+        label="checked"
+        onChange={e => {
+          const color = e.target.value
+          updateCardBaubleColorCompleted(color, id)
+        }}
+      />
+    </div>
+  )
+})
+
+const ColorPicker = ({
+  color = '#ff0000',
+  label = 'Color',
+  onChange
+}: {
+  color?: string
+  label?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+}) => {
+  return (
+    <Input
+      type="color"
+      defaultValue={color}
+      inputClassName="p-0 h-10 w-25"
+      label={label}
+      onChange={onChange}
+    />
+  )
+}
 
 const Cover = () => {
   const [state] = useCardInfoStore()
@@ -214,12 +296,12 @@ const CreatorData = observer(() => {
 })
 
 const Creator = observer(() => {
-  const [modalState] = useCardInfoStore()
+  const [cardCreatorState] = useCardInfoStore()
 
   return (
     <ShowData
-      loading={modalState.cardCreator.loading}
-      error={modalState.cardCreator.error?.message}
+      loading={cardCreatorState.cardCreator.loading}
+      error={cardCreatorState.cardCreator.error?.message}
       data={<CreatorData />}
       prefix={'creator:'}
     />
