@@ -124,13 +124,15 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
         const {position, theta} = data
         const offsetX = theta / (2 * Math.PI)
 
-        const isCompleted = checklist?.[index]?.is_completed
-        const text = checklist?.[index]?.title || ''
+        const checkbox = checklist?.[index]
+        const isCompleted = checkbox?.is_completed
+        const text = checkbox?.title || ''
         return (
           <BaseSphere
             key={index}
             position={position}
             text={text}
+            checkbox={checkbox}
             sphereColor={isCompleted ? 'green' : 'red'}
             textColor={'white'}
             textOffsetX={offsetX}
