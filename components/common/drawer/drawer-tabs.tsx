@@ -14,11 +14,7 @@ import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
-import {Checkbox} from '@/components/cards/card-checklist/types'
-import {
-  CardInfoStore,
-  useCardInfoStore
-} from '@/components/cards/card-info/card-info-store'
+import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
@@ -147,9 +143,6 @@ const ChatTabContent = () => {
 const VisualTab = observer(() => {
   const [state, store] = useGlobalStore()
   const active = state.tab === 'visual'
-  const id = String(getSearchCard())
-  const [cardChecklistState] = useCardChecklistStore()
-  const [cardInfoState] = useCardInfoStore()
 
   return (
     <>
@@ -160,28 +153,24 @@ const VisualTab = observer(() => {
         groupName="right_drawer"
         checked={active}
       />
-      {active && (
-        <VisualTabContent
-          checklist={cardChecklistState.checklists.data?.get(id) ?? []}
-          cardInfoState={cardInfoState}
-        />
-      )}
+      {active && <VisualTabContent />}
     </>
   )
 })
 
-const VisualTabContent = ({
-  checklist,
-  cardInfoState
-}: {
-  checklist: Checkbox[]
-  cardInfoState: CardInfoStore['state']
-}) => {
+const VisualTabContent = observer(() => {
+  const id = String(getSearchCard())
+  const [cardChecklistState] = useCardChecklistStore()
+  const [cardInfoState] = useCardInfoStore()
+
   return (
     <Tabs.TabContent className="h-full">
       <div className="flex relative">
-        <CardVisual checklist={checklist} cardInfoState={cardInfoState} />
+        <CardVisual
+          checklist={cardChecklistState.checklists.data?.get(id) ?? []}
+          cardInfoStateData={cardInfoState.card.data}
+        />
       </div>
     </Tabs.TabContent>
   )
-}
+})

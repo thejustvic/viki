@@ -9,14 +9,17 @@ import {ConeWithSpheres} from './visual/ui/cone'
 
 export default function CardVisual({
   checklist,
-  cardInfoState
+  cardInfoStateData
 }: {
   checklist?: Checkbox[]
-  cardInfoState?: CardInfoStore['state']
+  cardInfoStateData?: CardInfoStore['state']['card']['data']
 }) {
   return (
     <BaseScene>
-      <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />
+      <ConeWithSpheres
+        checklist={checklist}
+        cardInfoStateData={cardInfoStateData}
+      />
       <TreeModel position={[0, -1, -10]} scale={0.3} />
 
       <BaseBox position={[5, 1, -8]} args={[1, 1, 1]} color="green" />

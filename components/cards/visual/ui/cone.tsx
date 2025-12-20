@@ -89,10 +89,10 @@ const generateNonOverlappingPoints = ({
 
 export const ConeWithSpheres = ({
   checklist,
-  cardInfoState
+  cardInfoStateData
 }: {
   checklist?: Checkbox[]
-  cardInfoState?: CardInfoStore['state']
+  cardInfoStateData?: CardInfoStore['state']['card']['data']
 }) => {
   // define core dimensions for calculations
   const coneHeight = 6.4
@@ -116,12 +116,13 @@ export const ConeWithSpheres = ({
   // define the position for the whole group in the scene
   const groupScenePosition: Position = [0.3, 4.2, -9.8]
 
-  const cardInfo = cardInfoState?.card?.data
-  const colorCompleted = cardInfo?.bauble_color_completed || '#00ff00'
-  const colorNotCompleted = cardInfo?.bauble_color_not_completed || '#ff0000'
-  if (!cardInfo) {
+  if (!cardInfoStateData) {
     return null
   }
+  const colorCompleted = cardInfoStateData.bauble_color_completed || '#00ff00'
+  const colorNotCompleted =
+    cardInfoStateData.bauble_color_not_completed || '#ff0000'
+
   return (
     // group everything together to move the assembly easily
     <group position={groupScenePosition}>
