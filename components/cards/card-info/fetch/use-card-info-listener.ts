@@ -1,21 +1,17 @@
-import {
-  CardInfoStore,
-  useCardInfoStore
-} from '@/components/cards/card-info/card-info-store'
+import {CardInfoStore} from '@/components/cards/card-info/card-info-store'
 import {getCardById} from '@/components/cards/card-info/fetch/get-card-by-id'
 import {Card} from '@/components/cards/types'
 import {useFetch} from '@/hooks/use-fetch'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
-import {
-  SupabaseContext,
-  useSupabase
-} from '@/utils/supabase-utils/supabase-provider'
+import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {User} from '@supabase/supabase-js'
 import {useEffect} from 'react'
 
 interface CardProps {
   cardId: Card['id'] | null
   authorId: Card['author_id'] | undefined
+  supabase: SupabaseContext['supabase']
+  store: CardInfoStore
 }
 
 const useSupabaseListener = (
@@ -54,10 +50,12 @@ const useSupabaseListener = (
   }, [supabase, store, cardId])
 }
 
-export const useCardListener = ({cardId, authorId}: CardProps): void => {
-  const [, store] = useCardInfoStore()
-  const {supabase} = useSupabase()
-
+export const useCardInfoListener = ({
+  cardId,
+  authorId,
+  store,
+  supabase
+}: CardProps): void => {
   const {data, error, loading} = useSupabaseFetch(
     cardId ? () => getCardById(cardId, supabase) : null,
     [cardId]
