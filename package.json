@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "supabase": "supabase"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",
@@ -62,7 +63,7 @@
     "postcss-import": "16.1.0",
     "prettier": "3.4.2",
     "sass": "~1.84.0",
-    "supabase": "2.9.6",
+    "supabase": "2.67.3",
     "tailwind-merge": "3.0.1",
     "tailwindcss": "4.0.5",
     "ts-essentials": "10.0.4",
@@ -72,6 +73,11 @@
     "*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --quiet"
+    ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "supabase"
     ]
   }
 }
