@@ -1,6 +1,7 @@
 import {Cone} from '@react-three/drei'
 import {useMemo} from 'react'
 import {Checkbox} from '../../card-checklist/types'
+import {CardInfoStore} from '../../card-info/card-info-store'
 import {BaseSphere} from './base-sphere'
 
 type Position = [number, number, number]
@@ -86,7 +87,13 @@ const generateNonOverlappingPoints = ({
   return points
 }
 
-export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
+export const ConeWithSpheres = ({
+  checklist,
+  cardInfoState
+}: {
+  checklist?: Checkbox[]
+  cardInfoState?: CardInfoStore['state']
+}) => {
   // define core dimensions for calculations
   const coneHeight = 6.4
   const coneRadius = 2
@@ -109,6 +116,12 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
   // define the position for the whole group in the scene
   const groupScenePosition: Position = [0.3, 4.2, -9.8]
 
+  const cardInfo = cardInfoState?.card?.data
+  const colorCompleted = cardInfo?.bauble_color_completed || '#00ff00'
+  const colorNotCompleted = cardInfo?.bauble_color_not_completed || '#ff0000'
+  if (!cardInfo) {
+    return null
+  }
   return (
     // group everything together to move the assembly easily
     <group position={groupScenePosition}>
@@ -127,13 +140,14 @@ export const ConeWithSpheres = ({checklist}: {checklist?: Checkbox[]}) => {
         const checkbox = checklist?.[index]
         const isCompleted = checkbox?.is_completed
         const text = checkbox?.title || ''
+
         return (
           <BaseSphere
             key={index}
             position={position}
             text={text}
             checkbox={checkbox}
-            sphereColor={isCompleted ? 'green' : 'red'}
+            sphereColor={isCompleted ? colorCompleted : colorNotCompleted}
             textColor={'white'}
             textOffsetX={offsetX}
           />

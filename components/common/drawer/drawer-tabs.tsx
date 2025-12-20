@@ -15,9 +15,14 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
 import {Checkbox} from '@/components/cards/card-checklist/types'
+import {
+  CardInfoStore,
+  useCardInfoStore
+} from '@/components/cards/card-info/card-info-store'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
+
 const CardVisual = dynamic(() => import('@/components/cards/card-visual'), {
   ssr: false,
   loading: () => (
@@ -144,6 +149,8 @@ const VisualTab = observer(() => {
   const active = state.tab === 'visual'
   const id = String(getSearchCard())
   const [cardChecklistState] = useCardChecklistStore()
+  const [cardInfoState] = useCardInfoStore()
+
   return (
     <>
       <TwTab
@@ -156,17 +163,24 @@ const VisualTab = observer(() => {
       {active && (
         <VisualTabContent
           checklist={cardChecklistState.checklists.data?.get(id) ?? []}
+          cardInfoState={cardInfoState}
         />
       )}
     </>
   )
 })
 
-const VisualTabContent = ({checklist}: {checklist: Checkbox[]}) => {
+const VisualTabContent = ({
+  checklist,
+  cardInfoState
+}: {
+  checklist: Checkbox[]
+  cardInfoState: CardInfoStore['state']
+}) => {
   return (
     <Tabs.TabContent className="h-full">
       <div className="flex relative">
-        <CardVisual checklist={checklist} />
+        <CardVisual checklist={checklist} cardInfoState={cardInfoState} />
       </div>
     </Tabs.TabContent>
   )

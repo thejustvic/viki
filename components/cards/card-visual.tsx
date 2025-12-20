@@ -1,15 +1,22 @@
 import {Sky} from '@react-three/drei'
 import {Checkbox} from '../checklist/types'
+import {CardInfoStore} from './card-info/card-info-store'
 import {TreeModel} from './visual/components/tree-model'
 import BaseBox from './visual/ui/base-box'
 import BaseCharacter from './visual/ui/base-character'
 import BaseScene from './visual/ui/base-scene'
 import {ConeWithSpheres} from './visual/ui/cone'
 
-export default function CardVisual({checklist}: {checklist?: Checkbox[]}) {
+export default function CardVisual({
+  checklist,
+  cardInfoState
+}: {
+  checklist?: Checkbox[]
+  cardInfoState?: CardInfoStore['state']
+}) {
   return (
     <BaseScene>
-      <ConeWithSpheres checklist={checklist} />
+      <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />
       <TreeModel position={[0, -1, -10]} scale={0.3} />
 
       <BaseBox position={[5, 1, -8]} args={[1, 1, 1]} color="green" />
