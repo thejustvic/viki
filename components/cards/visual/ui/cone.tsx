@@ -1,7 +1,6 @@
 import {Cone} from '@react-three/drei'
-import {useMemo} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {Checkbox} from '../../card-checklist/types'
-import {CardInfoStore} from '../../card-info/card-info-store'
 import {BaseSphere} from './base-sphere'
 
 type Position = [number, number, number]
@@ -88,12 +87,22 @@ const generateNonOverlappingPoints = ({
 }
 
 export const ConeWithSpheres = ({
-  checklist,
-  cardInfoStateData
+  active,
+  checklist
 }: {
-  checklist?: Checkbox[]
-  cardInfoStateData?: CardInfoStore['state']['card']['data']
+  active: boolean
+  checklist: Checkbox[]
 }) => {
+  // shouldRender controls PHYSICAL presence in the scene
+  const [shouldRender, setShouldRender] = useState(active)
+
+  // when active becomes true, mount it immediately
+  useEffect(() => {
+    if (active) {
+      setShouldRender(true)
+    }
+  }, [active])
+
   // define core dimensions for calculations
   const coneHeight = 6.4
   const coneRadius = 2
@@ -116,44 +125,62 @@ export const ConeWithSpheres = ({
   // define the position for the whole group in the scene
   const groupScenePosition: Position = [0.3, 4.2, -9.8]
 
-  if (!cardInfoStateData) {
-    return null
-  }
-  const colorCompleted = cardInfoStateData.bauble_color_completed || '#00ff00'
-  const colorNotCompleted =
-    cardInfoStateData.bauble_color_not_completed || '#ff0000'
-
   return (
     // group everything together to move the assembly easily
-    <group position={groupScenePosition}>
-      {/* the cone is at relative to the parent group */}
-      {/* 'as const' is used on args to satisfy TS tuple requirements */}
-      <Cone args={[coneRadius, coneHeight, 32] as const}>
-        {/* change opacity to see the cone*/}
-        <meshStandardMaterial color="hotpink" transparent opacity={0} />
-      </Cone>
-
-      {/* map over the array of random positions to render multiple spheres */}
-      {spherePositions.map((data, index) => {
-        const {position, theta} = data
-        const offsetX = theta / (2 * Math.PI)
-
-        const checkbox = checklist?.[index]
-        const isCompleted = checkbox?.is_completed
-        const text = checkbox?.title || ''
-
-        return (
-          <BaseSphere
-            key={index}
-            position={position}
-            text={text}
-            checkbox={checkbox}
-            sphereColor={isCompleted ? colorCompleted : colorNotCompleted}
-            textColor={'white'}
-            textOffsetX={offsetX}
-          />
-        )
-      })}
-    </group>
+    shouldRender && (
+      <group position={groupScenePosition}>
+        {/* the cone is at relative to the parent group */}
+        {/* 'as const' is used on args to satisfy TS tuple requirements */}
+        <Cone args={[coneRadius, coneHeight, 32] as const}>
+          {/* change opacity to see the cone*/}
+          <meshStandardMaterial color="hotpink" transparent opacity={0} />
+        </Cone>
+        <Spheres
+          spherePositions={spherePositions}
+          checklist={checklist}
+          setShouldRender={setShouldRender}
+          active={active}
+        />
+      </group>
+    )
   )
+}
+
+const Spheres = ({
+  spherePositions,
+  checklist,
+  setShouldRender,
+  active
+}: {
+  spherePositions: SphereData[]
+  checklist: Checkbox[]
+  setShouldRender: (shouldRender: boolean) => void
+  active: boolean
+}) => {
+  const colorCompleted = localStorage.getItem('color-completed') || '#00ff00'
+  const colorNotCompleted =
+    localStorage.getItem('color-not-completed') || '#ff0000'
+
+  return spherePositions.map((data, index) => {
+    const {position, theta} = data
+    const offsetX = theta / (2 * Math.PI)
+
+    const checkbox = checklist?.[index]
+    const isCompleted = checkbox?.is_completed
+    const text = checkbox?.title || ''
+
+    return (
+      <BaseSphere
+        visible={active}
+        onUnmounted={() => setShouldRender(false)}
+        key={index}
+        position={position}
+        text={text}
+        checkbox={checkbox}
+        sphereColor={isCompleted ? colorCompleted : colorNotCompleted}
+        textColor={'white'}
+        textOffsetX={offsetX}
+      />
+    )
+  })
 }

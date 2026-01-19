@@ -1,4 +1,5 @@
 import {Sky} from '@react-three/drei'
+import {useEffect} from 'react'
 import {Checkbox} from '../checklist/types'
 import {CardInfoStore} from './card-info/card-info-store'
 import {TreeModel} from './visual/components/tree-model'
@@ -9,17 +10,33 @@ import {ConeWithSpheres} from './visual/ui/cone'
 
 export default function CardVisual({
   checklist,
-  cardInfoStateData
+  cardInfoState
 }: {
-  checklist?: Checkbox[]
-  cardInfoStateData?: CardInfoStore['state']['card']['data']
+  checklist: Checkbox[]
+  cardInfoState: CardInfoStore['state']['card']
 }) {
+  useEffect(() => {
+    if (cardInfoState.data === null) {
+      return
+    }
+
+    localStorage.setItem(
+      'color-completed',
+      cardInfoState.data.bauble_color_completed || ''
+    )
+    localStorage.setItem(
+      'color-not-completed',
+      cardInfoState.data.bauble_color_not_completed || ''
+    )
+  }, [cardInfoState])
+
   return (
     <BaseScene>
       <ConeWithSpheres
+        active={cardInfoState?.data !== null}
         checklist={checklist}
-        cardInfoStateData={cardInfoStateData}
       />
+
       <TreeModel position={[0, -1, -10]} scale={0.3} />
 
       <BaseBox position={[5, 1, -8]} args={[1, 1, 1]} color="green" />

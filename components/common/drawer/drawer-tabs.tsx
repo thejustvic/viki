@@ -168,7 +168,7 @@ const VisualTabContent = observer(() => {
       <div className="flex relative">
         <CardVisual
           checklist={cardChecklistState.checklists.data?.get(id) ?? []}
-          cardInfoStateData={cardInfoState.card.data}
+          cardInfoState={cardInfoState.card}
         />
       </div>
     </Tabs.TabContent>
