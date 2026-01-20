@@ -68,10 +68,10 @@ export const BaseSphere = ({
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
 
   return (
-    <group ref={groupRef} scale={[0, 0, 0]}>
+    <group ref={groupRef} position={position} scale={[0, 0, 0]}>
       <Sphere
         args={[radius, 64, 64]}
-        position={position}
+        position={[0, 0, 0]}
         onClick={event => {
           // prevent click from bleeding through to objects behind
           event.stopPropagation()
