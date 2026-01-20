@@ -70,15 +70,20 @@ const useSupabaseTeamListener = (
 
 // Fetch team data and listen for changes
 export const useCurrentTeamListener = ({
+  user,
   supabase,
   store,
   teamId
 }: {
+  user: SupabaseContext['user']
   supabase: SupabaseContext['supabase']
   store: TeamStore
   teamId: string | null | undefined
 }): void => {
   const fetchTeam = useCallback(() => {
+    if (!user) {
+      return null
+    }
     if (!teamId) {
       return null
     }

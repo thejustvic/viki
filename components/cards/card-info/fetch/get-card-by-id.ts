@@ -6,6 +6,9 @@ export const getCardById = (
   cardId: Card['id'],
   supabase: SupabaseContext['supabase']
 ): PostgrestBuilder<Card | null> => {
+  if (!cardId) {
+    throw new Error('Card ID is required to fetch card')
+  }
   return supabase
     .from('cards')
     .select()

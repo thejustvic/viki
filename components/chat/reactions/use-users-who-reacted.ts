@@ -7,7 +7,7 @@ import {
   useSupabase
 } from '@/utils/supabase-utils/supabase-provider'
 import {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect, useMemo, useRef} from 'react'
+import {useCallback, useEffect, useMemo, useRef} from 'react'
 
 const getUsers = (
   supabase: SupabaseContext['supabase'],
@@ -31,7 +31,7 @@ const getAllUserIdsByReactions = (messages: Message[]): string[] => {
 }
 
 export const useUsersWhoReacted = (): void => {
-  const {supabase} = useSupabase()
+  const {supabase, user} = useSupabase()
   const [state, store] = useChatStore()
   const fetchedUserIds = useRef(new Set<string>())
 
@@ -44,10 +44,17 @@ export const useUsersWhoReacted = (): void => {
     return allUserIds.filter(id => !fetchedUserIds.current.has(id))
   }, [state.chat.data])
 
-  const {data, loading, error} = useSupabaseFetch(
-    newUserIds.length ? () => getUsers(supabase, newUserIds) : null,
-    [newUserIds]
-  )
+  const fetchUsers = useCallback(() => {
+    if (!user) {
+      return null
+    }
+    if (!newUserIds.length) {
+      return null
+    }
+    return getUsers(supabase, newUserIds)
+  }, [newUserIds])
+
+  const {data, loading, error} = useSupabaseFetch(fetchUsers, [newUserIds])
 
   useEffect(() => {
     if (data?.length) {

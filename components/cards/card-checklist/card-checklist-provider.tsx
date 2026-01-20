@@ -24,7 +24,8 @@ export const CardChecklistProvider = observer(
     useCardChecklistListener({
       cardIds,
       supabase,
-      store
+      store,
+      user
     })
 
     return (

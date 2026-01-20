@@ -87,15 +87,20 @@ const useSupabaseListener = (
 
 // Fetch cards and listen for updates
 export const useCardsListener = ({
+  user,
   supabase,
   store,
   currentTeamId
 }: {
+  user: SupabaseContext['user']
   supabase: SupabaseContext['supabase']
   store: CardsStore
   currentTeamId: string | null
 }): void => {
   const fetchCards = useCallback(() => {
+    if (!user) {
+      return null
+    }
     if (!currentTeamId) {
       return null
     }

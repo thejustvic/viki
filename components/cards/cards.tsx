@@ -37,10 +37,10 @@ const TwContainer = tw.div`
 
 export const CardsProvider = observer(({children}: PropsWithChildren) => {
   const store = useMemoOne(() => new CardsStore(), [])
-  const {supabase} = useSupabase()
+  const {supabase, user} = useSupabase()
   const [state] = useTeamStore()
 
-  useCardsListener({supabase, store, currentTeamId: state.currentTeamId})
+  useCardsListener({supabase, user, store, currentTeamId: state.currentTeamId})
 
   return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
 })

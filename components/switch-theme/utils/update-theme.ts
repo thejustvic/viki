@@ -10,12 +10,15 @@ interface Props {
 }
 
 export const updateTheme = async (props: Props): Promise<string> => {
+  if (!props.opts.user) {
+    return 'dark'
+  }
   const {theme} = props
   const {supabase, user} = props.opts
   const {data} = await supabase
     .from('profiles')
     .update({theme})
-    .eq('id', user?.id || '')
+    .eq('id', user.id)
     .select()
     .maybeSingle()
 

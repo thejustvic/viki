@@ -48,6 +48,7 @@ export default function TeamProvider({children, serverProfile}: Props) {
   useMemberTeamsListener(user, supabase, store)
   useMyTeamsListener(user, supabase, store)
   useCurrentTeamListener({
+    user,
     supabase,
     store,
     teamId: serverProfile?.current_team_id ?? clientProfile?.current_team_id

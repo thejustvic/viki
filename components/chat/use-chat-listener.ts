@@ -54,17 +54,21 @@ const useSupabaseChatListener = (
 }
 
 export const useChatListener = (
+  user: SupabaseContext['user'],
   supabase: SupabaseContext['supabase'],
   store: ChatStore
 ): void => {
   const cardId = getSearchCard()
 
   const fetchMessages = useCallback(() => {
+    if (!user) {
+      return null
+    }
     if (!cardId) {
       return null
     }
     return getMessages(cardId, supabase)
-  }, [cardId])
+  }, [cardId, user])
 
   // Fetch messages using custom hook
   const {data, loading, error} = useSupabaseFetch(fetchMessages, [cardId])

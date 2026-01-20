@@ -43,18 +43,17 @@ const TwMenu = tw(Menu)`
 `
 
 export const CardInfoProvider = observer(({children}: PropsWithChildren) => {
-  const {user} = useSupabase()
   const [cardsState] = useCardsStore()
-  const {supabase} = useSupabase()
+  const {supabase, user} = useSupabase()
   const store = useMemoOne(() => new CardInfoStore(), [user])
 
-  const cardId = String(getSearchCard())
+  const cardId = getSearchCard()
 
   const authorId = cardsState.cards.data?.find(
     card => card.id === cardId
   )?.author_id
 
-  useCardInfoListener({cardId, authorId, store, supabase})
+  useCardInfoListener({cardId, authorId, store, supabase, user})
 
   return (
     <CardInfoStoreContext.Provider value={store}>

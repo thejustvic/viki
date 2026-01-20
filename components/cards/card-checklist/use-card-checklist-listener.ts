@@ -3,7 +3,7 @@ import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {PostgrestBuilder} from '@supabase/postgrest-js'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {CardChecklistStore} from './card-checklist-store'
 import {Checkbox} from './types'
 
@@ -72,16 +72,25 @@ const useSupabaseChecklistListener = (
 export const useCardChecklistListener = ({
   cardIds,
   supabase,
-  store
+  store,
+  user
 }: {
   cardIds: Card['id'][]
   supabase: SupabaseContext['supabase']
   store: CardChecklistStore
+  user: SupabaseContext['user']
 }): void => {
-  const {data, loading, error} = useSupabaseFetch(
-    cardIds.length > 0 ? () => getChecklists(cardIds, supabase) : null,
-    [cardIds]
-  )
+  const fetchChecklists = useCallback(() => {
+    if (!user) {
+      return null
+    }
+    if (!cardIds || cardIds.length === 0) {
+      return null
+    }
+    return getChecklists(cardIds, supabase)
+  }, [cardIds])
+
+  const {data, loading, error} = useSupabaseFetch(fetchChecklists, [cardIds])
 
   useEffect(() => {
     const checkboxes = ObjUtil.groupBy(data ?? [], 'card_id')

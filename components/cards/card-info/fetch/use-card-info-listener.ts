@@ -5,13 +5,14 @@ import {useFetch} from '@/hooks/use-fetch'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import type {User} from '@supabase/supabase-js'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 
 interface CardProps {
   cardId: Card['id'] | null
   authorId: Card['author_id'] | undefined
   supabase: SupabaseContext['supabase']
   store: CardInfoStore
+  user: SupabaseContext['user']
 }
 
 const useSupabaseListener = (
@@ -54,12 +55,20 @@ export const useCardInfoListener = ({
   cardId,
   authorId,
   store,
-  supabase
+  supabase,
+  user
 }: CardProps): void => {
-  const {data, error, loading} = useSupabaseFetch(
-    cardId ? () => getCardById(cardId, supabase) : null,
-    [cardId]
-  )
+  const fetchCardById = useCallback(() => {
+    if (!user) {
+      return null
+    }
+    if (!cardId) {
+      return null
+    }
+    return getCardById(cardId, supabase)
+  }, [cardId])
+
+  const {data, error, loading} = useSupabaseFetch(fetchCardById, [cardId])
 
   const {
     data: userData,

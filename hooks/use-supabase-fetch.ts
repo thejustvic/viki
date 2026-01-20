@@ -22,9 +22,15 @@ export const useSupabaseFetch = <T>(
     if (isFetching.current) {
       return
     }
-    if (!postgrestBuilder) {
+
+    // 1. Get the query object from the builder
+    const response = postgrestBuilder ? postgrestBuilder() : null
+
+    // 2. Guard: If the builder returned null, or dependencies aren't ready, don't fetch
+    if (!response) {
       return
     }
+
     isFetching.current = true
 
     const fetchData = async (): Promise<void> => {
@@ -34,10 +40,6 @@ export const useSupabaseFetch = <T>(
         error: null
       })
       try {
-        const response = postgrestBuilder()
-        if (!response) {
-          return
-        }
         const {data, error} = await response
         if (typeof data !== 'object') {
           console.error('Unexpected response:', data)

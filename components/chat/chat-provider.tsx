@@ -14,7 +14,7 @@ export default function ChatProvider({children}: Props) {
   const {user, supabase} = useSupabase()
   const store = useMemoOne(() => new ChatStore(), [user])
 
-  useChatListener(supabase, store)
+  useChatListener(user, supabase, store)
 
   return (
     <ChatContext.Provider value={store}>
