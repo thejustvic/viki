@@ -1,107 +1,119 @@
 import {useFrame} from '@react-three/fiber'
 import {useEffect, useMemo, useRef} from 'react'
-import * as THREE from 'three'
-import {InstancedMesh} from 'three'
+import {Euler, InstancedMesh, Object3D, Quaternion} from 'three'
 
 const NUM_SNOWFLAKES = 5000
 const SCENE_WIDTH = 50
 const SNOW_RESET_Y = -5
-const SNOW_START_Y_MIN = 20
 const SNOW_START_Y_MAX = 30
+const SCENE_BOTTOM = -5
 
-// Define the type for a single snowflake's dynamic data
-interface Snowflake {
+export interface SnowflakeMeta {
   speed: number
-  driftX: number // Constant horizontal drift amount (wind effect)
-  driftZ: number // Constant horizontal drift amount (wind effect)
-  rotationSpeed: THREE.Euler
+  driftX: number
+  driftZ: number
+  spin: Quaternion
 }
 
-const getSnowflakes = (): Snowflake[] => {
-  const tempSnowflakes: Snowflake[] = []
-  for (let i = 0; i < NUM_SNOWFLAKES; i++) {
-    tempSnowflakes.push({
-      speed: 0.1 + Math.random() * 0.1,
-      driftX: (Math.random() - 0.5) * 0.03,
-      driftZ: (Math.random() - 0.5) * 0.03,
-      // Initialize rotation speed as a new Euler object with random initial rotation rates
-      rotationSpeed: new THREE.Euler(
-        Math.random() * 0.01,
-        Math.random() * 0.01,
-        Math.random() * 0.01
+export const useSnowflakes = () => {
+  return useMemo(() => {
+    const pos = new Float32Array(NUM_SNOWFLAKES * 3)
+    const meta: SnowflakeMeta[] = []
+
+    for (let i = 0; i < NUM_SNOWFLAKES; i++) {
+      // Initial Position
+      pos[i * 3] = (Math.random() - 0.5) * SCENE_WIDTH
+      pos[i * 3 + 1] =
+        Math.random() * (SNOW_START_Y_MAX - SCENE_BOTTOM) + SCENE_BOTTOM
+      pos[i * 3 + 2] = (Math.random() - 0.5) * SCENE_WIDTH
+
+      // Pre-calculate a rotation Quaternion to represent the "spin" per frame
+      const spin = new Quaternion().setFromEuler(
+        new Euler(
+          Math.random() * 0.02,
+          Math.random() * 0.02,
+          Math.random() * 0.02
+        )
       )
-    })
-  }
-  return tempSnowflakes
+
+      meta.push({
+        speed: 2 + Math.random() * 4, // Units per second
+        driftX: (Math.random() - 0.5) * 0.5,
+        driftZ: (Math.random() - 0.5) * 0.5,
+        spin: spin
+      })
+    }
+
+    return {positions: pos, snowflakeMeta: meta}
+  }, [])
 }
 
 export const Snowfall = () => {
   const meshRef = useRef<InstancedMesh>(null)
-  const dummy = useMemo(() => new THREE.Object3D(), [])
-  const rotationQuaternion = useMemo(() => new THREE.Quaternion(), [])
+  const dummy = useMemo(() => new Object3D(), [])
 
-  const snowflakes = useMemo((): Snowflake[] => {
-    return getSnowflakes()
-  }, [])
+  // 1. Setup Data
+  const {positions, snowflakeMeta} = useSnowflakes()
 
-  // Initialize instance positions immediately after mount/layout
+  // 2. Initial Matrix Placement
   useEffect(() => {
-    if (!meshRef.current) {
-      return
-    }
-    for (let i = 0; i < NUM_SNOWFLAKES; i++) {
-      dummy.position.set(
-        (Math.random() - 0.5) * SCENE_WIDTH,
-        Math.random() * (SNOW_START_Y_MAX - SNOW_START_Y_MIN) +
-          SNOW_START_Y_MIN,
-        (Math.random() - 0.5) * SCENE_WIDTH
-      )
-      dummy.updateMatrix()
-      meshRef.current.setMatrixAt(i, dummy.matrix)
-    }
-    meshRef.current.instanceMatrix.needsUpdate = true
-  }, [dummy])
-
-  useFrame(() => {
     const mesh = meshRef.current
     if (!mesh) {
       return
     }
-    snowflakes.forEach((snowflake, i) => {
-      mesh.getMatrixAt(i, dummy.matrix)
-
-      dummy.matrix.decompose(dummy.position, dummy.quaternion, dummy.scale)
-
-      // --- Core Movement Logic (Pure Translation) ---
-      dummy.position.y -= snowflake.speed
-      dummy.position.x += snowflake.driftX
-      dummy.position.z += snowflake.driftZ
-
-      // Apply consistent, gentle rotation (tumbling effect)
-      rotationQuaternion.setFromEuler(snowflake.rotationSpeed)
-      dummy.quaternion.multiplyQuaternions(dummy.quaternion, rotationQuaternion)
-
-      // Reset logic
-      if (dummy.position.y < SNOW_RESET_Y) {
-        dummy.position.y =
-          Math.random() * (SNOW_START_Y_MAX - SNOW_START_Y_MIN) +
-          SNOW_START_Y_MIN
-        dummy.position.x = (Math.random() - 0.5) * SCENE_WIDTH
-        dummy.position.z = (Math.random() - 0.5) * SCENE_WIDTH
-      }
-
-      // Recompose the matrix and set it back to the instance
+    for (let i = 0; i < NUM_SNOWFLAKES; i++) {
+      dummy.position.set(
+        positions[i * 3],
+        positions[i * 3 + 1],
+        positions[i * 3 + 2]
+      )
       dummy.updateMatrix()
       mesh.setMatrixAt(i, dummy.matrix)
-    })
+    }
+    mesh.instanceMatrix.needsUpdate = true
+  }, [dummy, positions])
 
+  // 3. Animation Loop
+  useFrame((_state, delta) => {
+    const mesh = meshRef.current
+    if (!mesh) {
+      return
+    }
+
+    for (let i = 0; i < NUM_SNOWFLAKES; i++) {
+      const meta = snowflakeMeta[i]
+
+      // Update values using delta for frame-rate independence
+      positions[i * 3] += meta.driftX * delta
+      positions[i * 3 + 1] -= meta.speed * delta
+      positions[i * 3 + 2] += meta.driftZ * delta
+
+      if (positions[i * 3 + 1] < SNOW_RESET_Y) {
+        positions[i * 3 + 1] = SNOW_START_Y_MAX
+      }
+      // Update Dummy
+      dummy.position.set(
+        positions[i * 3],
+        positions[i * 3 + 1],
+        positions[i * 3 + 2]
+      )
+      // Apply pre-calculated spin
+      dummy.quaternion.multiply(meta.spin)
+
+      dummy.updateMatrix()
+      mesh.setMatrixAt(i, dummy.matrix)
+    }
     mesh.instanceMatrix.needsUpdate = true
   })
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, NUM_SNOWFLAKES]}>
-      <sphereGeometry args={[0.03, 8, 8]} />
-      <meshBasicMaterial color="white" transparent opacity={0.8} />
+    <instancedMesh
+      ref={meshRef}
+      args={[undefined, undefined, NUM_SNOWFLAKES]}
+      frustumCulled={false}
+    >
+      <sphereGeometry args={[0.05, 6, 6]} />
+      <meshBasicMaterial color="white" transparent opacity={0.7} />
     </instancedMesh>
   )
 }
