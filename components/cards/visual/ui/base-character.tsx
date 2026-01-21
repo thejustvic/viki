@@ -1,3 +1,4 @@
+import {BooleanHookState} from '@/hooks/use-boolean'
 import {useFrame, useThree} from '@react-three/fiber'
 import {BallCollider, RapierRigidBody, RigidBody} from '@react-three/rapier'
 import {useRef} from 'react'
@@ -7,6 +8,7 @@ import {usePlayerControls} from '../utils/helpers'
 const SPEED = 5
 
 interface BaseCharacterProps {
+  isLocked: BooleanHookState
   position?: [number, number, number]
   args?: [number] // sphere geometry args expects a single radius number
 }
@@ -26,7 +28,6 @@ const BaseCharacter = (props: BaseCharacterProps) => {
     if (!body) {
       return
     }
-
     const currentVelocity = body.linvel()
 
     // 1. Move the camera to the player's position
@@ -34,6 +35,9 @@ const BaseCharacter = (props: BaseCharacterProps) => {
     // Use the player's position to set the camera position
     camera.position.set(playerPosition.x, playerPosition.y, playerPosition.z)
 
+    if (!props.isLocked.value) {
+      return
+    }
     // 2. Calculate movement direction based on keyboard input and camera orientation
     frontVector.set(0, 0, Number(backward) - Number(forward))
     sideVector.set(Number(left) - Number(right), 0, 0)
@@ -43,13 +47,11 @@ const BaseCharacter = (props: BaseCharacterProps) => {
       .normalize()
       .multiplyScalar(SPEED)
       .applyEuler(camera.rotation)
-
     // 3. Apply the calculated velocity to the character, maintaining Y velocity (gravity/jumping)
     body.setLinvel(
       {x: direction.x, y: currentVelocity.y, z: direction.z},
       true // wake up the body
     )
-
     // 4. Handle Jumping
     if (jump && Math.abs(currentVelocity.y) < 0.05) {
       body.setLinvel(

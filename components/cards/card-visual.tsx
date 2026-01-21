@@ -1,3 +1,4 @@
+import {useBoolean} from '@/hooks/use-boolean'
 import {Sky} from '@react-three/drei'
 import {useEffect} from 'react'
 import {Checkbox} from '../checklist/types'
@@ -15,6 +16,7 @@ export default function CardVisual({
   checklist: Checkbox[]
   cardInfoState: CardInfoStore['state']['card']
 }) {
+  const isLocked = useBoolean(false)
   useEffect(() => {
     if (cardInfoState.data === null) {
       return
@@ -31,7 +33,7 @@ export default function CardVisual({
   }, [cardInfoState])
 
   return (
-    <BaseScene>
+    <BaseScene isLocked={isLocked}>
       <ConeWithSpheres
         active={cardInfoState?.data !== null}
         checklist={checklist}
@@ -43,7 +45,7 @@ export default function CardVisual({
       <BaseBox position={[5, 1, -6]} args={[1, 2, 1]} color="red" />
       <BaseBox position={[5, 1, -4]} args={[1, 3, 1]} color="orange" />
 
-      <BaseCharacter position={[0, 1, 0]} args={[0.5]} />
+      <BaseCharacter position={[0, 1, 0]} args={[0.5]} isLocked={isLocked} />
 
       <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
     </BaseScene>
