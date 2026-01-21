@@ -64,7 +64,7 @@ const BasicScene = ({children, isLocked}: BasicSceneProps) => {
         />
       </Canvas>
       <Loader />
-      <TwDot />
+      {!isMobile && <TwDot />}
     </div>
   )
 }
