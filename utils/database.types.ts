@@ -18,8 +18,10 @@ export type Database = {
         Row: {
           author_email: string
           author_id: string
-          bauble_color_completed: string | null
-          bauble_color_not_completed: string | null
+          bauble_color_completed: string
+          bauble_color_not_completed: string
+          bauble_text_color_completed: string
+          bauble_text_color_not_completed: string
           bg_image: string | null
           created_at: string
           id: string
@@ -29,8 +31,10 @@ export type Database = {
         Insert: {
           author_email: string
           author_id: string
-          bauble_color_completed?: string | null
-          bauble_color_not_completed?: string | null
+          bauble_color_completed?: string
+          bauble_color_not_completed?: string
+          bauble_text_color_completed?: string
+          bauble_text_color_not_completed?: string
           bg_image?: string | null
           created_at?: string
           id?: string
@@ -40,8 +44,10 @@ export type Database = {
         Update: {
           author_email?: string
           author_id?: string
-          bauble_color_completed?: string | null
-          bauble_color_not_completed?: string | null
+          bauble_color_completed?: string
+          bauble_color_not_completed?: string
+          bauble_text_color_completed?: string
+          bauble_text_color_not_completed?: string
           bg_image?: string | null
           created_at?: string
           id?: string

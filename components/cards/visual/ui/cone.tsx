@@ -157,9 +157,15 @@ const Spheres = ({
   setShouldRender: (shouldRender: boolean) => void
   active: boolean
 }) => {
-  const colorCompleted = localStorage.getItem('color-completed') || '#00ff00'
-  const colorNotCompleted =
-    localStorage.getItem('color-not-completed') || '#ff0000'
+  const sphereBgColorCompleted =
+    localStorage.getItem('sphere-bg-color-completed') || '#00ff00'
+  const sphereBgColorNotCompleted =
+    localStorage.getItem('sphere-bg-color-not-completed') || '#ff0000'
+
+  const sphereTextColorCompleted =
+    localStorage.getItem('sphere-text-color-completed') || '#ffffff'
+  const sphereTextColorNotCompleted =
+    localStorage.getItem('sphere-text-color-not-completed') || '#ffffff'
 
   return spherePositions.map((data, index) => {
     const {position, theta} = data
@@ -177,8 +183,12 @@ const Spheres = ({
         position={position}
         text={text}
         checkbox={checkbox}
-        sphereColor={isCompleted ? colorCompleted : colorNotCompleted}
-        textColor={'white'}
+        sphereColor={
+          isCompleted ? sphereBgColorCompleted : sphereBgColorNotCompleted
+        }
+        textColor={
+          isCompleted ? sphereTextColorCompleted : sphereTextColorNotCompleted
+        }
         textOffsetX={offsetX}
       />
     )

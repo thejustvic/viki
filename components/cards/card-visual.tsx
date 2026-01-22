@@ -23,12 +23,21 @@ export default function CardVisual({
     }
 
     localStorage.setItem(
-      'color-completed',
+      'sphere-bg-color-completed',
       cardInfoState.data.bauble_color_completed || ''
     )
     localStorage.setItem(
-      'color-not-completed',
+      'sphere-bg-color-not-completed',
       cardInfoState.data.bauble_color_not_completed || ''
+    )
+
+    localStorage.setItem(
+      'sphere-text-color-completed',
+      cardInfoState.data.bauble_text_color_completed || ''
+    )
+    localStorage.setItem(
+      'sphere-text-color-not-completed',
+      cardInfoState.data.bauble_text_color_not_completed || ''
     )
   }, [cardInfoState])
 

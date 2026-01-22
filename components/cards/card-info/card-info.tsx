@@ -84,12 +84,18 @@ const ChooseBaubleColor = () => {
   const [state] = useCardInfoStore()
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 flex flex-col gap-2">
       <ShowData
         loading={state.card.loading}
         error={state.card.error?.message}
         data={<ChooseBaubleColorData />}
-        prefix={'baubles:'}
+        prefix={'bauble color:'}
+      />
+      <ShowData
+        loading={state.card.loading}
+        error={state.card.error?.message}
+        data={<ChooseBaubleTextColorData />}
+        prefix={'text color on bauble:'}
       />
     </div>
   )
@@ -132,6 +138,45 @@ const ChooseBaubleColorData = observer(() => {
   )
 })
 
+const ChooseBaubleTextColorData = observer(() => {
+  const [state] = useCardInfoStore()
+  const {
+    updateCardBaubleTextColorCompleted,
+    updateCardBaubleTextColorNotCompleted
+  } = useCardHandlers()
+  const id = String(getSearchCard())
+
+  if (!state.card.data) {
+    return null
+  }
+  if (
+    !state.card.data.bauble_text_color_not_completed ||
+    !state.card.data.bauble_text_color_completed
+  ) {
+    return null
+  }
+  return (
+    <div className="flex gap-2">
+      <ColorPicker
+        color={state.card.data.bauble_text_color_not_completed}
+        label="not checked"
+        onChange={e => {
+          const color = e.target.value
+          updateCardBaubleTextColorNotCompleted(color, id)
+        }}
+      />
+      <ColorPicker
+        color={state.card.data.bauble_text_color_completed}
+        label="checked"
+        onChange={e => {
+          const color = e.target.value
+          updateCardBaubleTextColorCompleted(color, id)
+        }}
+      />
+    </div>
+  )
+})
+
 const ColorPicker = ({
   color = '#ff0000',
   label = 'Color',
@@ -145,7 +190,7 @@ const ColorPicker = ({
     <Input
       type="color"
       defaultValue={color}
-      inputClassName="p-0 h-10 w-25"
+      inputClassName="p-0 h-10 w-25 cursor-pointer"
       label={label}
       onChange={onChange}
     />
@@ -266,7 +311,7 @@ const TextData = observer(() => {
   }
 
   return (
-    <div className="w-full">
+    <div className="flex-1">
       <Textarea
         size="md"
         value={text}
@@ -322,7 +367,7 @@ const ShowData = ({
 }) => {
   return (
     <div className="flex">
-      <span className="w-20 pr-2 truncate shrink-0">{prefix}</span>
+      <span className="w-28 pr-2">{prefix}</span>
       {loading && !stopSpinner && (
         <div className="flex justify-center w-full">
           <TwLoading />

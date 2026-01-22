@@ -107,11 +107,7 @@ export const Snowfall = () => {
   })
 
   return (
-    <instancedMesh
-      ref={meshRef}
-      args={[undefined, undefined, NUM_SNOWFLAKES]}
-      frustumCulled={false}
-    >
+    <instancedMesh ref={meshRef} args={[undefined, undefined, NUM_SNOWFLAKES]}>
       <sphereGeometry args={[0.05, 6, 6]} />
       <meshBasicMaterial color="white" transparent opacity={0.7} />
     </instancedMesh>

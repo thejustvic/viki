@@ -14,6 +14,14 @@ interface Handlers {
     color: string,
     cardId: string
   ) => Promise<void>
+  updateCardBaubleTextColorCompleted: (
+    color: string,
+    cardId: string
+  ) => Promise<void>
+  updateCardBaubleTextColorNotCompleted: (
+    color: string,
+    cardId: string
+  ) => Promise<void>
 }
 
 export const useCardHandlers = (): Handlers => {
@@ -92,12 +100,44 @@ export const useCardHandlers = (): Handlers => {
       .eq('id', cardId)
   }
 
+  const updateCardBaubleTextColorCompleted = async (
+    color: string,
+    cardId: string
+  ): Promise<void> => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    await supabase
+      .from('cards')
+      .update({
+        bauble_text_color_completed: color
+      })
+      .eq('id', cardId)
+  }
+
+  const updateCardBaubleTextColorNotCompleted = async (
+    color: string,
+    cardId: string
+  ): Promise<void> => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    await supabase
+      .from('cards')
+      .update({
+        bauble_text_color_not_completed: color
+      })
+      .eq('id', cardId)
+  }
+
   return {
     removeCard,
     insertCard,
     updateCard,
     updateCardBgImage,
     updateCardBaubleColorCompleted,
-    updateCardBaubleColorNotCompleted
+    updateCardBaubleColorNotCompleted,
+    updateCardBaubleTextColorCompleted,
+    updateCardBaubleTextColorNotCompleted
   }
 }
