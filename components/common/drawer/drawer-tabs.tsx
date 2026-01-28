@@ -66,13 +66,13 @@ const InfoTab = observer(() => {
   )
 })
 
-const InfoTabContent = () => {
+const InfoTabContent = observer(() => {
   return (
     <Tabs.TabContent>
       <CardInfo />
     </Tabs.TabContent>
   )
-}
+})
 
 const ChecklistTab = observer(() => {
   const [state, store] = useGlobalStore()

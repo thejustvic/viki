@@ -45,6 +45,7 @@ const TwMenu = tw(Menu)`
 export const CardInfoProvider = ({children}: PropsWithChildren) => {
   const [cardsState] = useCardsStore()
   const {supabase, user} = useSupabase()
+
   const store = useMemoOne(() => new CardInfoStore(), [user])
 
   const cardId = getSearchCard()
@@ -56,29 +57,29 @@ export const CardInfoProvider = ({children}: PropsWithChildren) => {
   useCardInfoListener({cardId, authorId, store, supabase, user})
 
   return (
-    <CardInfoStoreContext.Provider value={store} key={user?.id ?? 'guest'}>
+    <CardInfoStoreContext.Provider value={store}>
       <>{children}</>
     </CardInfoStoreContext.Provider>
   )
 }
 
-export const CardInfo = () => {
+export const CardInfo = observer(() => {
   return (
     <TwMenu>
       <CardInfoBody />
     </TwMenu>
   )
-}
+})
 
-const CardInfoBody = () => (
+const CardInfoBody = observer(() => (
   <div className="flex flex-col gap-2">
-    <Time />
     <Creator />
+    <Time />
     <Text />
     <Cover />
     <ChooseBaubleColor />
   </div>
-)
+))
 
 const ChooseBaubleColor = observer(() => {
   const [state] = useCardInfoStore()

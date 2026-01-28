@@ -34,7 +34,7 @@ export const CardChecklistProvider = observer(
     })
 
     return (
-      <CardChecklistContext.Provider value={store} key={user?.id ?? 'guest'}>
+      <CardChecklistContext.Provider value={store}>
         <>{children}</>
       </CardChecklistContext.Provider>
     )

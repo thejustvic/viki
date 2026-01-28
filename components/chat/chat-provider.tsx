@@ -17,7 +17,7 @@ export default function ChatProvider({children}: Props) {
   useChatListener(user, supabase, store)
 
   return (
-    <ChatContext.Provider value={store} key={user?.id ?? 'guest'}>
+    <ChatContext.Provider value={store}>
       <>{children}</>
     </ChatContext.Provider>
   )

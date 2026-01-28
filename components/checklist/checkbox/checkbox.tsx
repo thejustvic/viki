@@ -7,7 +7,6 @@ import {
 } from '@/components/checklist/checkbox/checkbox-store'
 import {Checkbox} from '@/components/checklist/types'
 import {useMemoOne} from '@/hooks/use-memo-one'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
@@ -63,10 +62,9 @@ const CheckboxBase = observer((props: CheckboxProps) => {
 
 export const CheckboxComponent = (props: CheckboxProps) => {
   const store = useMemoOne(() => new CheckboxStore(), [])
-  const {user} = useSupabase()
 
   return (
-    <CheckboxContext.Provider value={store} key={user?.id ?? 'guest'}>
+    <CheckboxContext.Provider value={store}>
       <CheckboxBase {...props} />
     </CheckboxContext.Provider>
   )
