@@ -16,14 +16,20 @@ export const LoginProviders = observer(() => {
   const handleGitHubLogin = async () => {
     store.setLogging('github')
     await supabase.auth.signInWithOAuth({
-      provider: 'github'
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
     })
   }
 
   const handleGoogleLogin = async () => {
     store.setLogging('google')
     await supabase.auth.signInWithOAuth({
-      provider: 'google'
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
     })
   }
 
