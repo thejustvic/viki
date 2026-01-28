@@ -33,7 +33,7 @@ export const useCheckCardExistInCurrentTeam = (): void => {
   }, [cardState.cards?.data, cardId, teamState.currentTeamId])
 
   useEffect(() => {
-    if (cardState.cards?.data && !cardExists()) {
+    if (cardId && cardState.cards?.data && !cardExists()) {
       updateSearchParams('card')
     }
   }, [cardExists, updateSearchParams])
