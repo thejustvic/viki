@@ -57,7 +57,6 @@ const CardsList = observer(() => {
   return (
     <TwContainer>
       <Cards />
-      <AddNewCard />
     </TwContainer>
   )
 })
@@ -78,9 +77,16 @@ const Cards = observer(() => {
     return <div className="text-error">{state.cards.error.message}</div>
   }
 
-  return store
-    .searchedCards()
-    .map(card => <Card card={card} key={card.id} active={cardId === card.id} />)
+  return (
+    <>
+      {store.searchedCards().map(card => (
+        <Card card={card} key={card.id} active={cardId === card.id} />
+      ))}
+      {state.cards?.data && state.cards.data.length >= 0 ? (
+        <AddNewCard />
+      ) : null}
+    </>
+  )
 })
 
 const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
