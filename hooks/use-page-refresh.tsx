@@ -9,27 +9,18 @@ export const usePageRefresh = () => {
   const {session: mySession, supabase} = useSupabase()
 
   useEffect(() => {
-    void (async (): Promise<void> => {
-      const {
-        data: {session}
-      } = await supabase.auth.getSession()
-
-      if (!session) {
-        router.push('/login')
-      }
-    })()
-  }, [])
-
-  useEffect(() => {
     const {
       data: {subscription}
-    } = supabase.auth.onAuthStateChange(async (_e, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        router.refresh()
+      }
+
       if (session?.access_token !== mySession?.access_token) {
         router.refresh()
       }
     })
-    return () => {
-      subscription.unsubscribe()
-    }
+
+    return () => subscription.unsubscribe()
   }, [router, supabase, mySession])
 }
