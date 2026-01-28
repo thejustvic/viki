@@ -27,7 +27,7 @@ export const DrawerRight = observer(({children}: PropsWithChildren) => {
       end
       open={state.rightDrawerOpen}
       mobile={isMobile}
-      side={user ? <RightDrawerSide /> : null}
+      side={user && state.rightDrawerOpen ? <RightDrawerSide /> : null}
       onClickOverlay={store.setRightDrawerClosed}
       contentClassName="h-dvh"
       {...rightSwipeHandlers}

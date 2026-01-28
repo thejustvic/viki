@@ -42,7 +42,7 @@ export const DrawerLeft = observer(({children}: PropsWithChildren) => {
       id="left-drawer"
       open={leftDrawerOpen()}
       mobile={isMobile || state.drawerOpenByHover}
-      side={user ? <LeftDrawerSide /> : null}
+      side={user && state.leftDrawerOpen ? <LeftDrawerSide /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
       contentClassName="h-dvh"
       {...leftSwipeHandlers}
