@@ -35,7 +35,11 @@ export const LoginProviders = observer(() => {
 
   const handleAnonymouslyLogin = async () => {
     store.setLogging('anonymously')
-    await supabase.auth.signInAnonymously()
+    const {error} = await supabase.auth.signInAnonymously()
+
+    if (!error) {
+      window.location.href = '/cards'
+    }
   }
 
   return (
