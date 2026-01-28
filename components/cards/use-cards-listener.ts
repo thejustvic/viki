@@ -2,7 +2,6 @@ import {useTeamStore} from '@/components/team/team-store'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
-import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect} from 'react'
 import {CardsStore, useCardsStore} from './cards-store'
 import {getSearchCard} from './get-search-card'
@@ -12,7 +11,7 @@ import type {Card} from './types'
 const getMyCards = (
   supabase: SupabaseContext['supabase'],
   currentTeamId: string
-): PostgrestBuilder<Card[]> => {
+) => {
   if (!currentTeamId) {
     throw new Error('Current team ID is required!')
   }

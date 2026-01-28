@@ -1,15 +1,11 @@
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
-import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect} from 'react'
 import {TeamStore} from './team-store'
-import {TeamMember, TeamWithMembers} from './types'
+import {TeamMember} from './types'
 
 // Fetch team and its members
-const getTeam = (
-  supabase: SupabaseContext['supabase'],
-  teamId: string
-): PostgrestBuilder<TeamWithMembers | null> => {
+const getTeam = (supabase: SupabaseContext['supabase'], teamId: string) => {
   return supabase
     .from('teams')
     .select('*, team_members(*)')

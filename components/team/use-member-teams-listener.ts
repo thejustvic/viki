@@ -1,14 +1,12 @@
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
-import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect} from 'react'
 import {TeamStore} from './team-store'
-import {Team} from './types'
 
 const getMemberTeams = (
   supabase: SupabaseContext['supabase'],
   user: SupabaseContext['user']
-): PostgrestBuilder<Team[]> => {
+) => {
   if (!user) {
     throw Error('You must provide a user object!')
   }

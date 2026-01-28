@@ -1,18 +1,17 @@
 import {useChatStore} from '@/components/chat/chat-store'
-import {Message, Profile} from '@/components/chat/types'
+import {Message} from '@/components/chat/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {
   SupabaseContext,
   useSupabase
 } from '@/utils/supabase-utils/supabase-provider'
-import {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect, useMemo, useRef} from 'react'
 
 const getUsers = (
   supabase: SupabaseContext['supabase'],
   newUserIds: string[]
-): PostgrestBuilder<Profile[]> | null => {
+) => {
   return newUserIds.length
     ? supabase.from('profiles').select().in('id', newUserIds).throwOnError()
     : null

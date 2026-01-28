@@ -1,10 +1,8 @@
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Card} from '@/components/cards/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
-import {Tables} from '@/utils/database.types'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
 import {Util} from '@/utils/util'
-import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect} from 'react'
 import {ChatStore} from './chat-store'
 import {Message} from './types'
@@ -12,7 +10,7 @@ import {Message} from './types'
 const getMessages = (
   cardId: Card['id'],
   supabase: SupabaseContext['supabase']
-): PostgrestBuilder<Tables<'messages'>[]> =>
+) =>
   supabase
     .from('messages')
     .select()

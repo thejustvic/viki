@@ -2,7 +2,6 @@ import {Card} from '@/components/cards/types'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {ObjUtil} from '@/utils/obj-util'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
-import type {PostgrestBuilder} from '@supabase/postgrest-js'
 import {useCallback, useEffect} from 'react'
 import {CardChecklistStore} from './card-checklist-store'
 import {Checkbox} from './types'
@@ -10,7 +9,7 @@ import {Checkbox} from './types'
 const getChecklists = (
   cardIds: Card['id'][],
   supabase: SupabaseContext['supabase']
-): PostgrestBuilder<Checkbox[]> => {
+) => {
   return supabase
     .from('checklist')
     .select()
