@@ -1,11 +1,11 @@
-import {Load} from '@/components/common/load'
 import {Login, TwLogin} from '@/components/login/login'
 import {TechStackCarousel} from '@/components/tech-stack-carousel/tech-stack-carousel'
 import {Suspense} from 'react'
+import Loading from './loading'
 
 export default async function Page() {
   return (
-    <Suspense fallback={<Load center />}>
+    <Suspense fallback={<Loading />}>
       <TwLogin>
         <Login />
         <TechStackCarousel />
