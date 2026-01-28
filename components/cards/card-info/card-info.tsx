@@ -42,7 +42,7 @@ const TwMenu = tw(Menu)`
   w-full
 `
 
-export const CardInfoProvider = observer(({children}: PropsWithChildren) => {
+export const CardInfoProvider = ({children}: PropsWithChildren) => {
   const [cardsState] = useCardsStore()
   const {supabase, user} = useSupabase()
   const store = useMemoOne(() => new CardInfoStore(), [user])
@@ -60,7 +60,7 @@ export const CardInfoProvider = observer(({children}: PropsWithChildren) => {
       <>{children}</>
     </CardInfoStoreContext.Provider>
   )
-})
+}
 
 export const CardInfo = () => {
   return (
