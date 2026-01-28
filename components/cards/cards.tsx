@@ -41,7 +41,11 @@ export const CardsProvider = ({children}: PropsWithChildren) => {
   const [state] = useTeamStore()
   useCardsListener({supabase, user, store, currentTeamId: state.currentTeamId})
 
-  return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
+  return (
+    <CardsContext.Provider value={store} key={user?.id ?? 'guest'}>
+      {children}
+    </CardsContext.Provider>
+  )
 }
 
 export const CardsBase = () => <CardsList />

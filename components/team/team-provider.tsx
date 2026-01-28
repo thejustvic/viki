@@ -55,7 +55,7 @@ export default function TeamProvider({children, serverProfile}: Props) {
   })
 
   return (
-    <TeamContext.Provider value={store}>
+    <TeamContext.Provider value={store} key={user?.id ?? 'guest'}>
       <>{children}</>
     </TeamContext.Provider>
   )

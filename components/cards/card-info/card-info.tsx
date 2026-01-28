@@ -56,7 +56,7 @@ export const CardInfoProvider = ({children}: PropsWithChildren) => {
   useCardInfoListener({cardId, authorId, store, supabase, user})
 
   return (
-    <CardInfoStoreContext.Provider value={store}>
+    <CardInfoStoreContext.Provider value={store} key={user?.id ?? 'guest'}>
       <>{children}</>
     </CardInfoStoreContext.Provider>
   )

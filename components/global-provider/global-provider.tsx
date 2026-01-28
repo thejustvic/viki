@@ -28,7 +28,7 @@ export default function GlobalProvider({children, serverTheme}: Props) {
   }
 
   return (
-    <GlobalContext.Provider value={store}>
+    <GlobalContext.Provider value={store} key={user?.id ?? 'guest'}>
       <>{children}</>
     </GlobalContext.Provider>
   )
