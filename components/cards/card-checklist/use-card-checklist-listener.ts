@@ -20,11 +20,11 @@ const getChecklists = (
 
 const useSupabaseChecklistListener = (
   supabase: SupabaseContext['supabase'],
-  cardIds: Card['id'][],
+  cardIds: Card['id'][] | null,
   store: CardChecklistStore
 ): void => {
   useEffect(() => {
-    if (cardIds.length === 0) {
+    if (!cardIds || cardIds.length === 0) {
       return
     }
     const channel = supabase
@@ -75,7 +75,7 @@ export const useCardChecklistListener = ({
   store,
   user
 }: {
-  cardIds: Card['id'][]
+  cardIds: Card['id'][] | null
   supabase: SupabaseContext['supabase']
   store: CardChecklistStore
   user: SupabaseContext['user']
