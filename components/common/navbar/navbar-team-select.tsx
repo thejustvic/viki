@@ -73,6 +73,10 @@ export const NavbarTeamSelect = observer(() => {
 
   const {ref, close} = useControlledDetails()
 
+  if (user?.is_anonymous) {
+    return null
+  }
+
   return (
     <TwMenu>
       <li>
