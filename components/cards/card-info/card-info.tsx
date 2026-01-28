@@ -80,7 +80,7 @@ const CardInfoBody = () => (
   </div>
 )
 
-const ChooseBaubleColor = () => {
+const ChooseBaubleColor = observer(() => {
   const [state] = useCardInfoStore()
 
   return (
@@ -99,7 +99,7 @@ const ChooseBaubleColor = () => {
       />
     </div>
   )
-}
+})
 
 const ChooseBaubleColorData = observer(() => {
   const [state] = useCardInfoStore()
@@ -197,7 +197,7 @@ const ColorPicker = ({
   )
 }
 
-const Cover = () => {
+const Cover = observer(() => {
   const [state] = useCardInfoStore()
 
   return (
@@ -208,7 +208,7 @@ const Cover = () => {
       prefix={'cover:'}
     />
   )
-}
+})
 
 const TwRadio = tw.div`flex gap-1 items-center justify-between w-[120px] bg-base-300 p-2 rounded cursor-pointer`
 const bgImages: CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
@@ -242,7 +242,7 @@ const CoverData = observer(() => {
   )
 })
 
-const Time = () => {
+const Time = observer(() => {
   const [state] = useCardInfoStore()
 
   return (
@@ -253,7 +253,7 @@ const Time = () => {
       prefix={'time:'}
     />
   )
-}
+})
 
 const TimeData = observer(() => {
   const [state] = useCardInfoStore()
@@ -277,7 +277,6 @@ const Text = observer(() => {
       error={state.card.error?.message}
       data={<TextData />}
       prefix={'content:'}
-      stopSpinner
     />
   )
 })
@@ -356,25 +355,26 @@ const ShowData = ({
   loading,
   error,
   data,
-  prefix,
-  stopSpinner = false
+  prefix
 }: {
   loading: boolean
   error: string | undefined
   data: ReactNode
   prefix: string
-  stopSpinner?: boolean
 }) => {
   return (
     <div className="flex">
       <span className="w-28 pr-2">{prefix}</span>
-      {loading && !stopSpinner && (
+      {loading ? (
         <div className="flex justify-center w-full">
           <TwLoading />
         </div>
+      ) : (
+        <>
+          {error && <p>{error}</p>}
+          {data}
+        </>
       )}
-      {error && <p>{error}</p>}
-      {data}
     </div>
   )
 }
