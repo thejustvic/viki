@@ -88,15 +88,12 @@ export const useCardInfoListener = ({
       data,
       error
     })
-  }, [data, loading, error])
-
-  useEffect(() => {
     store.setCardCreator({
       loading: userLoading,
       data: userData,
       error: userError
     })
-  }, [userData, userError, userLoading])
+  }, [userData, userError, userLoading, data, loading, error])
 
   useSupabaseListener(supabase, cardId, store)
 }
