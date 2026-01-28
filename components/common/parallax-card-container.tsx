@@ -45,8 +45,12 @@ const CardComp = (props: Props) => {
     my ? 'bg-base-300' : 'bg-accent-content'
   )
 
+  const getBgImageUrl = () => {
+    return bgImage === 'none' ? 'none' : `url('/${bgImage}.svg')`
+  }
+
   const cardStyle: CSSProperties = {
-    backgroundImage: bgImage ? `url('/${bgImage}.svg')` : 'none'
+    backgroundImage: bgImage ? getBgImageUrl() : 'none'
   }
 
   return (
