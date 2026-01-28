@@ -1,5 +1,9 @@
-import {PostgrestBuilder, PostgrestError} from '@supabase/postgrest-js'
-import {useEffect, useRef, useState} from 'react'
+import {
+  PostgrestError,
+  PostgrestResponse,
+  PostgrestSingleResponse
+} from '@supabase/postgrest-js'
+import {useEffect, useState} from 'react'
 
 export interface SupabaseQuery<T> {
   loading: boolean
@@ -7,11 +11,16 @@ export interface SupabaseQuery<T> {
   error: PostgrestError | null
 }
 
+type SupabaseRequest<T> = PromiseLike<
+  PostgrestSingleResponse<T> | PostgrestResponse<T>
+> & {
+  abortSignal?: (signal: AbortSignal) => SupabaseRequest<T>
+}
+
 export const useSupabaseFetch = <T>(
-  postgrestBuilder: null | (() => PostgrestBuilder<T> | null),
+  postgrestBuilder: null | (() => SupabaseRequest<T> | null),
   deps: unknown[]
 ): SupabaseQuery<T> => {
-  const isFetching = useRef(false)
   const [result, setResult] = useState<SupabaseQuery<T>>({
     loading: false,
     data: null,
@@ -19,58 +28,50 @@ export const useSupabaseFetch = <T>(
   })
 
   useEffect(() => {
-    if (isFetching.current) {
+    let ignore = false
+    const controller = new AbortController()
+
+    const query = postgrestBuilder ? postgrestBuilder() : null
+    if (!query) {
       return
     }
 
-    // 1. Get the query object from the builder
-    const response = postgrestBuilder ? postgrestBuilder() : null
+    const fetchData = async () => {
+      setResult(prev => ({...prev, loading: true}))
 
-    // 2. Guard: If the builder returned null, or dependencies aren't ready, don't fetch
-    if (!response) {
-      return
-    }
-
-    isFetching.current = true
-
-    const fetchData = async (): Promise<void> => {
-      setResult({
-        loading: true,
-        data: null,
-        error: null
-      })
       try {
-        const {data, error} = await response
-        if (typeof data !== 'object') {
-          console.error('Unexpected response:', data)
+        const res = query.abortSignal
+          ? await query.abortSignal(controller.signal)
+          : await query
+
+        if (ignore) {
           return
         }
-        if (error) {
-          setResult({
-            loading: false,
-            data: null,
-            error
-          })
-        } else {
-          setResult({
-            loading: false,
-            data,
-            error: null
-          })
+
+        setResult({
+          loading: false,
+          data: res.error ? null : (res.data as T),
+          error: res.error || null
+        })
+      } catch (e: unknown) {
+        if (ignore || (e instanceof Error && e.name === 'AbortError')) {
+          return
         }
-      } catch (e) {
-        console.error('Supabase fetch error:', e)
+
         setResult({
           loading: false,
           data: null,
-          error: e as PostgrestError // Type assertion for better TS handling
+          error: e as PostgrestError
         })
-      } finally {
-        isFetching.current = false
       }
     }
 
     void fetchData()
+
+    return () => {
+      ignore = true
+      controller.abort()
+    }
   }, deps)
 
   return result
