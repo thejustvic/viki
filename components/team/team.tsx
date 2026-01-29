@@ -24,7 +24,7 @@ export const Team = observer(() => {
   return (
     <PerfectScrollbar containerRef={setScrollEl}>
       <TeamMembers />
-      <div className="flex justify-center pt-2">
+      <div className="flex pt-2">
         <AddTeamMember />
       </div>
     </PerfectScrollbar>
