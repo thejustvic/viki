@@ -8,12 +8,11 @@ import {Button} from '@/components/daisyui/button'
 import {Card as CardUI} from '@/components/daisyui/card'
 import {useTeamStore} from '@/components/team/team-store'
 import {useLoggingOff} from '@/hooks/use-logging-off'
-import {useMemoOne} from '@/hooks/use-memo-one'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren} from 'react'
+import {PropsWithChildren, useMemo} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewCard} from './add-new-card'
 import {useCardHandlers} from './cards-handlers'
@@ -36,7 +35,7 @@ const TwContainer = tw.div`
 `
 
 export const CardsProvider = ({children}: PropsWithChildren) => {
-  const store = useMemoOne(() => new CardsStore(), [])
+  const store = useMemo(() => new CardsStore(), [])
   const {supabase, user} = useSupabase()
   const [state] = useTeamStore()
   useCardsListener({supabase, user, store, currentTeamId: state.currentTeamId})

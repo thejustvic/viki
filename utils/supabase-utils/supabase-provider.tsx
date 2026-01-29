@@ -1,9 +1,8 @@
 'use client'
 
 import {createClient} from '@/utils/supabase-utils/supabase-browser'
-import {createContext, useContext} from 'react'
+import {createContext, useContext, useMemo} from 'react'
 
-import {useMemoOne} from '@/hooks/use-memo-one'
 import type {Database} from '@/utils/database.types'
 import type {Session, SupabaseClient, User} from '@supabase/supabase-js'
 
@@ -28,7 +27,7 @@ export default function SupabaseProvider({
   serverUser,
   serverSession
 }: Props) {
-  const supabase = useMemoOne(() => createClient(), [])
+  const supabase = useMemo(() => createClient(), [])
 
   return (
     <Context.Provider

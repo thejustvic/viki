@@ -6,9 +6,8 @@ import {
   useCheckboxStore
 } from '@/components/checklist/checkbox/checkbox-store'
 import {Checkbox} from '@/components/checklist/types'
-import {useMemoOne} from '@/hooks/use-memo-one'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren} from 'react'
+import {PropsWithChildren, useMemo} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 export interface CheckboxProps extends PropsWithChildren {
@@ -61,7 +60,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
 })
 
 export const CheckboxComponent = (props: CheckboxProps) => {
-  const store = useMemoOne(() => new CheckboxStore(), [])
+  const store = useMemo(() => new CheckboxStore(), [])
 
   return (
     <CheckboxContext.Provider value={store}>

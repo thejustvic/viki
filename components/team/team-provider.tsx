@@ -1,6 +1,4 @@
 'use client'
-
-import {useMemoOne} from '@/hooks/use-memo-one'
 import {Tables} from '@/utils/database.types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
@@ -25,7 +23,7 @@ export default function TeamProvider({children, serverProfile}: Props) {
     [serverProfile?.current_team_id, clientProfile?.current_team_id]
   )
 
-  const store = useMemoOne(() => new TeamStore(effectiveTeamId), [user])
+  const store = useMemo(() => new TeamStore(effectiveTeamId), [user])
 
   useEffect(() => {
     if (!user || serverProfile) {

@@ -9,11 +9,10 @@ import {Menu} from '@/components/daisyui/menu'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
-import {useMemoOne} from '@/hooks/use-memo-one'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, ReactNode, useEffect} from 'react'
+import {PropsWithChildren, ReactNode, useEffect, useMemo} from 'react'
 import tw from 'tailwind-styled-components'
 import {useCardsStore} from '../cards-store'
 import {CardBgImages} from '../types'
@@ -46,7 +45,7 @@ export const CardInfoProvider = ({children}: PropsWithChildren) => {
   const [cardsState] = useCardsStore()
   const {supabase, user} = useSupabase()
 
-  const store = useMemoOne(() => new CardInfoStore(), [user])
+  const store = useMemo(() => new CardInfoStore(), [user])
 
   const cardId = getSearchCard()
 
