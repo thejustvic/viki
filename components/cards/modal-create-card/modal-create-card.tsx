@@ -63,11 +63,18 @@ const Text = observer(() => {
   )
 
   const onSubmit = async (data: FormInputs) => {
-    if (!state.currentTeamId) {
+    if (!state.currentTeamId || !data.text.trim()) {
       return
     }
     await insertCard(data.text, state.currentTeamId)
     updateSearchParams('create-card')
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit(onSubmit)()
+    }
   }
 
   return (
@@ -78,6 +85,7 @@ const Text = observer(() => {
         {...register('text', {
           required: true
         })}
+        onKeyDown={handleKeyDown}
       />
       <Button type="submit">Submit</Button>
     </Form>
