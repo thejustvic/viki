@@ -31,6 +31,20 @@ export class ChatStore {
     })
   }
 
+  clear = (): void => {
+    this.state.chat = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.usersWhoReacted = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.isNeedToUpdateScroll = false
+  }
+
   setIsNeedToUpdateScroll(value: boolean): void {
     this.state.isNeedToUpdateScroll = value
   }

@@ -40,6 +40,25 @@ export class TeamStore {
     }
   }
 
+  clear = (): void => {
+    this.state.currentTeam = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.myTeams = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.memberTeams = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.currentTeamId = null
+  }
+
   setMyTeams(teams: State['myTeams']): void {
     this.state.myTeams = teams
   }

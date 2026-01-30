@@ -60,6 +60,7 @@ const useSupabaseTeamListener = (
 
     return () => {
       supabase.removeChannel(channel)
+      store.clear()
     }
   }, [supabase, store, teamId])
 }

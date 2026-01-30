@@ -27,6 +27,16 @@ export class CardChecklistStore {
     })
   }
 
+  clear = (): void => {
+    this.state.checklists = {
+      loading: false,
+      data: new Map(),
+      error: null
+    }
+    this.state.progress.clear()
+    this.state.progressText.clear()
+  }
+
   setChecklists(checklist: State['checklists']): void {
     this.state.checklists = checklist
   }

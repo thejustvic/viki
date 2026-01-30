@@ -25,6 +25,15 @@ export class CardsStore {
     })
   }
 
+  clear = (): void => {
+    this.state.cards = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.searchValue = ''
+  }
+
   setCards(cards: State['cards']): void {
     this.state.cards = cards
   }

@@ -30,6 +30,19 @@ export class CardInfoStore {
     })
   }
 
+  clear = (): void => {
+    this.state.card = {
+      loading: false,
+      data: null,
+      error: null
+    }
+    this.state.cardCreator = {
+      loading: false,
+      data: null,
+      error: null
+    }
+  }
+
   setCard = (card: State['card']): void => {
     this.state.card = card
   }

@@ -47,6 +47,7 @@ const useSupabaseListener = (
 
     return () => {
       supabase.removeChannel(channel)
+      store.clear()
     }
   }, [supabase, store, cardId])
 }
