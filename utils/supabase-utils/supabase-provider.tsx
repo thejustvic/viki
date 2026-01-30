@@ -27,7 +27,7 @@ export default function SupabaseProvider({
   serverUser,
   serverSession
 }: Props) {
-  const supabase = useMemo(() => createClient(), [])
+  const supabase = useMemo(() => createClient(), [serverUser])
 
   return (
     <Context.Provider
