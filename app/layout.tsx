@@ -29,15 +29,14 @@ export default async function RootLayout({children}: PropsWithChildren) {
   const cookieStore = await cookies()
   const cookieTheme = cookieStore.get('theme')?.value
   const theme = serverProfile?.theme || cookieTheme
+  const currentTeamId = serverProfile?.current_team_id ?? null
 
   return (
     <html data-theme={theme ?? 'dark'} lang="en">
       <body>
         <SupabaseProvider serverUser={serverUser} serverSession={serverSession}>
           <GlobalProvider serverTheme={theme}>
-            <TeamProvider
-              currentTeamId={serverProfile?.current_team_id ?? null}
-            >
+            <TeamProvider currentTeamId={currentTeamId}>
               <Modals />
               {children}
             </TeamProvider>
