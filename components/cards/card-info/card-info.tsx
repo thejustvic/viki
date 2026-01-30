@@ -12,7 +12,7 @@ import {useInput} from '@/hooks/use-input'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {format} from 'date-fns'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, ReactNode, useEffect, useMemo} from 'react'
+import {PropsWithChildren, ReactNode, useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {useCardsStore} from '../cards-store'
 import {CardBgImages} from '../types'
@@ -45,7 +45,7 @@ export const CardInfoProvider = ({children}: PropsWithChildren) => {
   const [cardsState] = useCardsStore()
   const {supabase, user} = useSupabase()
 
-  const store = useMemo(() => new CardInfoStore(), [user])
+  const [store] = useState(() => new CardInfoStore())
 
   const cardId = getSearchCard()
 

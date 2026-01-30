@@ -12,7 +12,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, useMemo} from 'react'
+import {PropsWithChildren, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewCard} from './add-new-card'
 import {useCardHandlers} from './cards-handlers'
@@ -36,7 +36,7 @@ const TwContainer = tw.div`
 
 export const CardsProvider = observer(({children}: PropsWithChildren) => {
   const {supabase, user} = useSupabase()
-  const store = useMemo(() => new CardsStore(), [user])
+  const [store] = useState(() => new CardsStore())
   const [state] = useTeamStore()
   useCardsListener({supabase, user, store, currentTeamId: state.currentTeamId})
 

@@ -1,6 +1,6 @@
 'use client'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {PropsWithChildren, useEffect, useMemo} from 'react'
+import {PropsWithChildren, useEffect, useState} from 'react'
 import {TeamContext, TeamStore} from './team-store'
 import {useCurrentTeamListener} from './use-current-team-listener'
 import {useMemberTeamsListener} from './use-member-teams-listener'
@@ -13,7 +13,7 @@ interface Props extends PropsWithChildren {
 export default function TeamProvider({children, currentTeamId}: Props) {
   const {user, supabase} = useSupabase()
 
-  const store = useMemo(() => new TeamStore(), [user])
+  const [store] = useState(() => new TeamStore())
 
   useEffect(() => {
     if (!user) {

@@ -3,7 +3,7 @@
 import {useCardsStore} from '@/components/cards/cards-store'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, useMemo} from 'react'
+import {PropsWithChildren, useMemo, useState} from 'react'
 import {CardChecklistContext, CardChecklistStore} from './card-checklist-store'
 import {useCardChecklistListener} from './use-card-checklist-listener'
 
@@ -11,7 +11,7 @@ export const CardChecklistProvider = observer(
   ({children}: PropsWithChildren) => {
     const {user, supabase} = useSupabase()
     const [state] = useCardsStore()
-    const store = useMemo(() => new CardChecklistStore(), [user])
+    const [store] = useState(() => new CardChecklistStore())
 
     const cards = state.cards.data
     const cardsCount = cards?.length
