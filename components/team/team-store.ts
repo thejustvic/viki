@@ -31,13 +31,10 @@ export class TeamStore {
     currentTeamId: null
   }
 
-  constructor(serverCurrentTeamId: string | null | undefined) {
+  constructor() {
     makeAutoObservable(this, {
       state: observable.shallow
     })
-    if (serverCurrentTeamId) {
-      this.setCurrentTeamId(serverCurrentTeamId)
-    }
   }
 
   clear = (): void => {

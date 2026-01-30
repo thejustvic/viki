@@ -34,14 +34,14 @@ const TwContainer = tw.div`
   md:justify-start
 `
 
-export const CardsProvider = ({children}: PropsWithChildren) => {
-  const store = useMemo(() => new CardsStore(), [])
+export const CardsProvider = observer(({children}: PropsWithChildren) => {
   const {supabase, user} = useSupabase()
+  const store = useMemo(() => new CardsStore(), [user])
   const [state] = useTeamStore()
   useCardsListener({supabase, user, store, currentTeamId: state.currentTeamId})
 
   return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
-}
+})
 
 export const CardsBase = () => <CardsList />
 

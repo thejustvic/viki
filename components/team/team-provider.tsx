@@ -1,7 +1,6 @@
 'use client'
-import {Tables} from '@/utils/database.types'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
+import {PropsWithChildren, useEffect, useMemo} from 'react'
 import {TeamContext, TeamStore} from './team-store'
 import {useCurrentTeamListener} from './use-current-team-listener'
 import {useMemberTeamsListener} from './use-member-teams-listener'
@@ -12,20 +11,17 @@ interface Props extends PropsWithChildren {
 }
 
 export default function TeamProvider({children, currentTeamId}: Props) {
-  const [clientProfile, setClientProfile] = useState<Tables<'profiles'> | null>(
-    null
-  )
   const {user, supabase} = useSupabase()
 
-  const effectiveTeamId = useMemo(
-    () => currentTeamId ?? clientProfile?.current_team_id ?? null,
-    [currentTeamId, clientProfile?.current_team_id]
-  )
-
-  const store = useMemo(() => new TeamStore(effectiveTeamId), [user])
+  const store = useMemo(() => new TeamStore(), [user])
 
   useEffect(() => {
-    if (!user || currentTeamId) {
+    if (!user) {
+      return
+    }
+
+    if (currentTeamId) {
+      store.setCurrentTeamId(currentTeamId)
       return
     }
 
@@ -35,8 +31,8 @@ export default function TeamProvider({children, currentTeamId}: Props) {
         .select()
         .eq('id', user.id)
         .maybeSingle()
-      if (data) {
-        setClientProfile(data)
+      if (data?.current_team_id) {
+        store.setCurrentTeamId(data.current_team_id)
       }
     })()
   }, [user, currentTeamId, supabase])
@@ -47,7 +43,7 @@ export default function TeamProvider({children, currentTeamId}: Props) {
     user,
     supabase,
     store,
-    teamId: effectiveTeamId
+    teamId: store.state.currentTeamId
   })
 
   return (
