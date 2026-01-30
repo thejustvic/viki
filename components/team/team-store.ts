@@ -56,6 +56,7 @@ export class TeamStore {
       data: null,
       error: null
     }
+    this.state.currentTeamId = null
   }
 
   setMyTeams(teams: State['myTeams']): void {

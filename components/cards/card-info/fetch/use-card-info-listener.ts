@@ -67,7 +67,7 @@ export const useCardInfoListener = ({
       return null
     }
     return getCardById(cardId, supabase)
-  }, [cardId, store, user, supabase])
+  }, [cardId])
 
   const {data, error, loading} = useSupabaseFetch(fetchCardById, [
     cardId,
