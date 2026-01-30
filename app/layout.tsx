@@ -35,7 +35,9 @@ export default async function RootLayout({children}: PropsWithChildren) {
       <body>
         <SupabaseProvider serverUser={serverUser} serverSession={serverSession}>
           <GlobalProvider serverTheme={theme}>
-            <TeamProvider serverProfile={serverProfile}>
+            <TeamProvider
+              currentTeamId={serverProfile?.current_team_id ?? null}
+            >
               <Modals />
               {children}
             </TeamProvider>

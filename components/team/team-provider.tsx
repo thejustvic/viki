@@ -8,25 +8,24 @@ import {useMemberTeamsListener} from './use-member-teams-listener'
 import {useMyTeamsListener} from './use-my-teams-listener'
 
 interface Props extends PropsWithChildren {
-  serverProfile: Tables<'profiles'> | null
+  currentTeamId: string | null
 }
 
-export default function TeamProvider({children, serverProfile}: Props) {
+export default function TeamProvider({children, currentTeamId}: Props) {
   const [clientProfile, setClientProfile] = useState<Tables<'profiles'> | null>(
     null
   )
   const {user, supabase} = useSupabase()
 
   const effectiveTeamId = useMemo(
-    () =>
-      serverProfile?.current_team_id ?? clientProfile?.current_team_id ?? null,
-    [serverProfile?.current_team_id, clientProfile?.current_team_id]
+    () => currentTeamId ?? clientProfile?.current_team_id ?? null,
+    [currentTeamId, clientProfile?.current_team_id]
   )
 
   const store = useMemo(() => new TeamStore(effectiveTeamId), [user])
 
   useEffect(() => {
-    if (!user || serverProfile) {
+    if (!user || currentTeamId) {
       return
     }
 
@@ -40,7 +39,7 @@ export default function TeamProvider({children, serverProfile}: Props) {
         setClientProfile(data)
       }
     })()
-  }, [user, serverProfile, supabase])
+  }, [user, currentTeamId, supabase])
 
   useMemberTeamsListener(user, supabase, store)
   useMyTeamsListener(user, supabase, store)
