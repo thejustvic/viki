@@ -1,4 +1,3 @@
-import {useCheckCardExistInCurrentTeam} from '@/components/cards/use-cards-listener'
 import {Button} from '@/components/daisyui/button'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {IconArrowBarLeft, IconArrowBarRight} from '@tabler/icons-react'
@@ -6,7 +5,6 @@ import {observer} from 'mobx-react-lite'
 
 export const NavbarRightDrawerButton = observer(() => {
   const [state, store] = useGlobalStore()
-  useCheckCardExistInCurrentTeam()
 
   const toggleRightDrawer = () => {
     store.setRightDrawerToggle()
