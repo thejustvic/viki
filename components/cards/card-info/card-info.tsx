@@ -11,8 +11,8 @@ import {useDebouncedValue} from '@/hooks/use-debounced-value'
 import {useInput} from '@/hooks/use-input'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {format} from 'date-fns'
-import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, ReactNode, useEffect, useState} from 'react'
+import {observer, useLocalObservable} from 'mobx-react-lite'
+import {PropsWithChildren, ReactNode, useEffect} from 'react'
 import tw from 'tailwind-styled-components'
 import {useCardsStore} from '../cards-store'
 import {CardBgImages} from '../types'
@@ -42,7 +42,7 @@ const TwMenu = tw(Menu)`
 `
 
 export default function CardInfoProvider({children}: PropsWithChildren) {
-  const [store] = useState(() => new CardInfoStore())
+  const store = useLocalObservable(() => new CardInfoStore())
 
   return (
     <CardInfoStoreContext.Provider value={store}>

@@ -15,19 +15,25 @@ const getMyTeams = (
   return supabase.from('teams').select().eq('owner_id', user.id).throwOnError()
 }
 
-export const useMyTeamsListener = (
-  user: SupabaseContext['user'],
-  supabase: SupabaseContext['supabase'],
+export const useMyTeamsListener = ({
+  user,
+  supabase,
+  store,
+  currentTeamId
+}: {
+  user: SupabaseContext['user']
+  supabase: SupabaseContext['supabase']
   store: TeamStore
-): void => {
+  currentTeamId: string | null
+}): void => {
   const fetchMyTeams = useCallback(() => {
     if (!user) {
       return null
     }
     return getMyTeams(user, supabase)
-  }, [user])
+  }, [currentTeamId])
 
-  const {data, loading, error} = useSupabaseFetch(fetchMyTeams, [user])
+  const {data, loading, error} = useSupabaseFetch(fetchMyTeams, [currentTeamId])
 
   useEffect(() => {
     store.setMyTeams({
@@ -83,7 +89,6 @@ const useSupabaseMyTeamsListener = (
 
     return () => {
       supabase.removeChannel(channel)
-      store.clear()
     }
   }, [user])
 }

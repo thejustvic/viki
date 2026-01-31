@@ -31,10 +31,13 @@ export class TeamStore {
     currentTeamId: null
   }
 
-  constructor() {
+  constructor(serverCurrentTeamId: string | null | undefined) {
     makeAutoObservable(this, {
       state: observable.shallow
     })
+    if (serverCurrentTeamId) {
+      this.setCurrentTeamId(serverCurrentTeamId)
+    }
   }
 
   clear = (): void => {
@@ -53,7 +56,6 @@ export class TeamStore {
       data: null,
       error: null
     }
-    this.state.currentTeamId = null
   }
 
   setMyTeams(teams: State['myTeams']): void {

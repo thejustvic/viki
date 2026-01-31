@@ -10,8 +10,8 @@ import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconTrash} from '@tabler/icons-react'
-import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, useMemo, useState} from 'react'
+import {observer, useLocalObservable} from 'mobx-react-lite'
+import {PropsWithChildren, useMemo} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewCard} from './add-new-card'
 import {useCardHandlers} from './cards-handlers'
@@ -36,19 +36,34 @@ const TwContainer = tw.div`
 `
 
 export default function CardsProvider({children}: PropsWithChildren) {
-  const [store] = useState(() => new CardsStore())
+  const store = useLocalObservable(() => new CardsStore())
 
   return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
 }
 
-export const CardsBase = () => <CardsList />
+export const CardsList = observer(() => {
+  const {supabase, user} = useSupabase()
+  const [, store] = useCardsStore()
+  const [teamState] = useTeamStore()
 
-const CardsList = observer(() => {
+  useCardsListener({supabase, user, store, teamState})
+
+  useCheckCardExistInCurrentTeam()
+  useLoggingOff()
+
+  return (
+    <TwContainer>
+      <Cards />
+    </TwContainer>
+  )
+})
+
+const Cards = observer(() => {
   const {supabase, user} = useSupabase()
   const [state, store] = useCardsStore()
-  const [teamState] = useTeamStore()
+  const cardId = getSearchCard()
+
   const [, cardChecklistStore] = useCardChecklistStore()
-  const currentTeamId = teamState.currentTeamId
 
   const cards = state.cards.data
   const cardsCount = cards?.length
@@ -68,21 +83,6 @@ const CardsList = observer(() => {
     store: cardChecklistStore,
     user
   })
-  useCardsListener({supabase, user, store, currentTeamId})
-
-  useCheckCardExistInCurrentTeam()
-  useLoggingOff()
-
-  return (
-    <TwContainer>
-      <Cards />
-    </TwContainer>
-  )
-})
-
-const Cards = observer(() => {
-  const [state, store] = useCardsStore()
-  const cardId = getSearchCard()
 
   if (state.cards.loading) {
     return Array(3)

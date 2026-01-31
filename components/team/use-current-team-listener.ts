@@ -70,28 +70,28 @@ export const useCurrentTeamListener = ({
   user,
   supabase,
   store,
-  teamId
+  currentTeamId
 }: {
   user: SupabaseContext['user']
   supabase: SupabaseContext['supabase']
   store: TeamStore
-  teamId: string | null | undefined
+  currentTeamId: string | null
 }): void => {
   const fetchTeam = useCallback(() => {
     if (!user) {
       return null
     }
-    if (!teamId) {
+    if (!currentTeamId) {
       return null
     }
-    return getTeam(supabase, teamId)
-  }, [teamId])
+    return getTeam(supabase, currentTeamId)
+  }, [currentTeamId])
 
-  const {data, loading, error} = useSupabaseFetch(fetchTeam, [teamId])
+  const {data, loading, error} = useSupabaseFetch(fetchTeam, [currentTeamId])
 
   useEffect(() => {
     store.setCurrentTeam({loading, data, error})
   }, [data, loading, error])
 
-  useSupabaseTeamListener(supabase, teamId, store)
+  useSupabaseTeamListener(supabase, currentTeamId, store)
 }

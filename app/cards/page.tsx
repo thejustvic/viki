@@ -2,7 +2,7 @@ import 'server-only'
 
 import CardChecklistProvider from '@/components/cards/card-checklist/card-checklist-provider'
 import CardInfoProvider from '@/components/cards/card-info/card-info'
-import CardsProvider, {CardsBase} from '@/components/cards/cards'
+import CardsProvider, {CardsList} from '@/components/cards/cards'
 import ChatProvider from '@/components/chat/chat-provider'
 import {DrawerWrapper} from '@/components/common/drawer/drawer-wrapper'
 import {Load} from '@/components/common/load'
@@ -16,7 +16,7 @@ export default async function CardsPage() {
           <CardInfoProvider>
             <CardChecklistProvider>
               <DrawerWrapper>
-                <CardsBase />
+                <CardsList />
               </DrawerWrapper>
             </CardChecklistProvider>
           </CardInfoProvider>

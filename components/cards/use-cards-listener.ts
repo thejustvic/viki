@@ -1,4 +1,4 @@
-import {useTeamStore} from '@/components/team/team-store'
+import {TeamStore, useTeamStore} from '@/components/team/team-store'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
@@ -90,13 +90,14 @@ export const useCardsListener = ({
   user,
   supabase,
   store,
-  currentTeamId
+  teamState
 }: {
   user: SupabaseContext['user']
   supabase: SupabaseContext['supabase']
   store: CardsStore
-  currentTeamId: string | null
+  teamState: TeamStore['state']
 }): void => {
+  const currentTeamId = teamState.currentTeamId
   const fetchCards = useCallback(() => {
     if (!user) {
       return null

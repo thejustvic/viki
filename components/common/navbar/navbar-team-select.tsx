@@ -1,10 +1,16 @@
 import {Button} from '@/components/daisyui/button'
 import {useTeamHandlers} from '@/components/team/team-handlers'
-import {useTeamStore} from '@/components/team/team-store'
+import {TeamStore, useTeamStore} from '@/components/team/team-store'
 import {updateCurrentTeamId} from '@/components/team/update-current-team-id'
+import {useCurrentTeamListener} from '@/components/team/use-current-team-listener'
+import {useMemberTeamsListener} from '@/components/team/use-member-teams-listener'
+import {useMyTeamsListener} from '@/components/team/use-my-teams-listener'
 import {useControlledDetails} from '@/hooks/use-controlled-details'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {
+  SupabaseContext,
+  useSupabase
+} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus, IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import type {MouseEvent} from 'react'
@@ -12,39 +18,56 @@ import {useEffect, useState} from 'react'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 
-const useFirstCurrentTeamIdListener = () => {
-  const {user, supabase} = useSupabase()
-  const [teamState, teamStore] = useTeamStore()
-
+const useFirstCurrentTeamIdListener = ({
+  user,
+  supabase,
+  store,
+  currentTeamId
+}: {
+  user: SupabaseContext['user']
+  supabase: SupabaseContext['supabase']
+  store: TeamStore
+  currentTeamId: string | null
+}) => {
   useEffect(() => {
-    if (teamState.currentTeamId) {
+    if (currentTeamId) {
       return
     }
-    const firstMyTeamId = teamState.myTeams.data?.[0].id
+    const firstMyTeamId = store.state.myTeams.data?.[0].id
+
     if (!firstMyTeamId) {
       return
+    } else {
+      void (async (): Promise<void> => {
+        const currentTeamId = await updateCurrentTeamId({
+          currentTeamId: firstMyTeamId,
+          opts: {supabase, user}
+        })
+        if (currentTeamId) {
+          store.setCurrentTeamId(currentTeamId)
+        }
+      })()
     }
-
-    void (async (): Promise<void> => {
-      const currentTeamId = await updateCurrentTeamId({
-        currentTeamId: firstMyTeamId,
-        opts: {supabase, user}
-      })
-      if (currentTeamId) {
-        teamStore.setCurrentTeamId(currentTeamId)
-      }
-    })()
-  }, [teamState.myTeams.data])
+  }, [store.state.myTeams.data])
 }
 
 export const NavbarTeamSelect = observer(() => {
   const {user, supabase} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
   const {removeTeam} = useTeamHandlers()
-  const [teamState, teamStore] = useTeamStore()
+  const [state, store] = useTeamStore()
   const [id, setId] = useState('')
+  const currentTeamId = state.currentTeamId
 
-  useFirstCurrentTeamIdListener()
+  useMemberTeamsListener({user, supabase, store, currentTeamId})
+  useMyTeamsListener({user, supabase, store, currentTeamId})
+  useCurrentTeamListener({user, supabase, store, currentTeamId})
+  useFirstCurrentTeamIdListener({
+    user,
+    supabase,
+    store,
+    currentTeamId
+  })
 
   useEffect(() => {
     if (!id) {
@@ -59,7 +82,7 @@ export const NavbarTeamSelect = observer(() => {
           opts: {supabase, user}
         })
         if (currentTeamId) {
-          teamStore.setCurrentTeamId(currentTeamId)
+          store.setCurrentTeamId(currentTeamId)
         }
       })()
     }
@@ -81,15 +104,15 @@ export const NavbarTeamSelect = observer(() => {
     <TwMenu>
       <li>
         <details ref={ref}>
-          <summary>{teamState.currentTeam.data?.name}</summary>
+          <summary>{state.currentTeam.data?.name}</summary>
           <ul>
             <MyTeams
               setId={setId}
               handleRemove={handleRemove}
-              showDeleteButton={Number(teamState.myTeams.data?.length) > 1}
+              showDeleteButton={Number(state.myTeams.data?.length) > 1}
               closeDetails={close}
             />
-            {teamState.memberTeams.data?.length ? (
+            {state.memberTeams.data?.length ? (
               <MemberTeams setId={setId} closeDetails={close} />
             ) : null}
           </ul>

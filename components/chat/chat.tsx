@@ -7,8 +7,17 @@ import tw from 'tailwind-styled-components'
 import {ChatMessage} from './chat-message'
 import {useChatStore} from './chat-store'
 import {useUsersWhoReacted} from './reactions/use-users-who-reacted'
+import {useChatListener} from './use-chat-listener'
 
-export const Chat = observer(() => {
+export const ChatBase = observer(() => {
+  const {user, supabase} = useSupabase()
+  const [, store] = useChatStore()
+  useChatListener(user, supabase, store)
+
+  return <Chat />
+})
+
+const Chat = observer(() => {
   const [scrollEl, setScrollEl] = useState<HTMLElement>()
   const [state, store] = useChatStore()
 

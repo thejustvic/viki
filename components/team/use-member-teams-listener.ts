@@ -24,19 +24,27 @@ const getMemberTeams = (
     .throwOnError()
 }
 
-export const useMemberTeamsListener = (
-  user: SupabaseContext['user'],
-  supabase: SupabaseContext['supabase'],
+export const useMemberTeamsListener = ({
+  user,
+  supabase,
+  store,
+  currentTeamId
+}: {
+  user: SupabaseContext['user']
+  supabase: SupabaseContext['supabase']
   store: TeamStore
-): void => {
+  currentTeamId: string | null
+}): void => {
   const fetchMemberTeams = useCallback(() => {
     if (!user) {
       return null
     }
     return getMemberTeams(supabase, user)
-  }, [user])
+  }, [currentTeamId])
 
-  const {data, loading, error} = useSupabaseFetch(fetchMemberTeams, [user])
+  const {data, loading, error} = useSupabaseFetch(fetchMemberTeams, [
+    currentTeamId
+  ])
 
   useEffect(() => {
     store.setMemberTeams({

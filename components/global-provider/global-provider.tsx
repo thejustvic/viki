@@ -6,8 +6,8 @@ import {
 } from '@/components/global-provider/global-store'
 import {Theme} from '@/components/global-provider/types'
 import {usePageRefresh} from '@/hooks/use-page-refresh'
-import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {ReactNode, useEffect, useState} from 'react'
+import {useLocalObservable} from 'mobx-react-lite'
+import {ReactNode} from 'react'
 
 interface Props {
   children: ReactNode
@@ -16,16 +16,8 @@ interface Props {
 
 export default function GlobalProvider({children, serverTheme}: Props) {
   usePageRefresh()
-  const [store, setStore] = useState<GlobalStore>()
-  const {user} = useSupabase()
 
-  useEffect(() => {
-    setStore(new GlobalStore(serverTheme))
-  }, [user])
-
-  if (!store) {
-    return
-  }
+  const store = useLocalObservable(() => new GlobalStore(serverTheme))
 
   return (
     <GlobalContext.Provider value={store}>

@@ -1,5 +1,5 @@
 import {getSearchCard} from '@/components/cards/get-search-card'
-import {Chat} from '@/components/chat/chat'
+import {ChatBase} from '@/components/chat/chat'
 import {ChatInput} from '@/components/chat/chat-input'
 import {Drag} from '@/components/common/drag/drag'
 import {useGlobalStore} from '@/components/global-provider/global-store'
@@ -34,7 +34,7 @@ export const ChatWrapper = () => {
   const cardId = getSearchCard()
   return (
     <div className="flex flex-col justify-between flex-1 gap-3 pt-6">
-      <Chat />
+      <ChatBase />
       {cardId && <ChatInput />}
     </div>
   )
