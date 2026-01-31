@@ -68,7 +68,6 @@ export const NavbarTeamSelect = observer(() => {
     store,
     currentTeamId
   })
-
   useEffect(() => {
     if (!id) {
       return
@@ -88,37 +87,37 @@ export const NavbarTeamSelect = observer(() => {
     }
     setId('')
   }, [id])
-
   const handleRemove = async (e: MouseEvent, id: string) => {
     e.stopPropagation()
     await removeTeam(id)
   }
-
   const {ref, close} = useControlledDetails()
-
   if (user?.is_anonymous) {
     return null
   }
 
   return (
-    <TwMenu>
-      <li>
-        <details ref={ref}>
-          <summary>{state.currentTeam.data?.name}</summary>
-          <ul>
-            <MyTeams
-              setId={setId}
-              handleRemove={handleRemove}
-              showDeleteButton={Number(state.myTeams.data?.length) > 1}
-              closeDetails={close}
-            />
-            {state.memberTeams.data?.length ? (
-              <MemberTeams setId={setId} closeDetails={close} />
-            ) : null}
-          </ul>
-        </details>
-      </li>
-    </TwMenu>
+    <div className="flex items-center">
+      <div>team:</div>
+      <TwMenu>
+        <li>
+          <details ref={ref}>
+            <summary>{state.currentTeam.data?.name}</summary>
+            <ul>
+              <MyTeams
+                setId={setId}
+                handleRemove={handleRemove}
+                showDeleteButton={Number(state.myTeams.data?.length) > 1}
+                closeDetails={close}
+              />
+              {state.memberTeams.data?.length ? (
+                <MemberTeams setId={setId} closeDetails={close} />
+              ) : null}
+            </ul>
+          </details>
+        </li>
+      </TwMenu>
+    </div>
   )
 })
 

@@ -81,7 +81,7 @@ const TeamMembers = observer(() => {
     <div className="flex flex-col gap-2">
       {state.currentTeam.data?.team_members.map(teamMember => {
         return (
-          <div className="flex justify-between gap-2" key={teamMember.id}>
+          <div className="flex justify-between gap-2 px-2" key={teamMember.id}>
             <div className="flex gap-2 truncate">
               <span className="truncate">{teamMember.name}</span>
               <span className="opacity-50 truncate">{teamMember.email}</span>

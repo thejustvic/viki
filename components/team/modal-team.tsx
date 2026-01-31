@@ -28,5 +28,9 @@ const TeamName = observer(() => {
   const [state] = useTeamStore()
   const teamName = state.currentTeam.data?.name
 
-  return <div className="flex justify-center mb-2">Team '{teamName}'</div>
+  return (
+    <div className="flex justify-center mb-2">
+      members of the "{teamName}" team
+    </div>
+  )
 })
