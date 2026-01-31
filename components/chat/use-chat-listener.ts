@@ -49,7 +49,7 @@ const useSupabaseChatListener = (
       supabase.removeChannel(channel)
       store.clear()
     }
-  }, [supabase, store, cardId])
+  }, [cardId])
 }
 
 export const useChatListener = (
@@ -75,7 +75,7 @@ export const useChatListener = (
   useEffect(() => {
     const messages = Util.explicitlyCastFromJsonToReactions(data)
     store.setChat({loading, data: messages, error})
-  }, [data, loading, error, store])
+  }, [data, loading, error])
 
   useSupabaseChatListener(supabase, cardId, store)
 }

@@ -62,7 +62,7 @@ const useSupabaseTeamListener = (
       supabase.removeChannel(channel)
       store.clear()
     }
-  }, [supabase, store, teamId])
+  }, [teamId])
 }
 
 // Fetch team data and listen for changes
@@ -91,7 +91,7 @@ export const useCurrentTeamListener = ({
 
   useEffect(() => {
     store.setCurrentTeam({loading, data, error})
-  }, [data, loading, error, store])
+  }, [data, loading, error])
 
   useSupabaseTeamListener(supabase, teamId, store)
 }

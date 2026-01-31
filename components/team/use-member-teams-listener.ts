@@ -44,5 +44,5 @@ export const useMemberTeamsListener = (
       data,
       error
     })
-  }, [data, loading, error, store])
+  }, [data, loading, error])
 }

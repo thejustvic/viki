@@ -35,7 +35,7 @@ export default function TeamProvider({children, currentTeamId}: Props) {
         store.setCurrentTeamId(data.current_team_id)
       }
     })()
-  }, [user, currentTeamId, supabase])
+  }, [currentTeamId])
 
   useMemberTeamsListener(user, supabase, store)
   useMyTeamsListener(user, supabase, store)

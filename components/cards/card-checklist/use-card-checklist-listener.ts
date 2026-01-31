@@ -66,7 +66,7 @@ const useSupabaseChecklistListener = (
       supabase.removeChannel(channel)
       store.clear()
     }
-  }, [supabase, store, cardIds])
+  }, [cardIds])
 }
 
 export const useCardChecklistListener = ({
@@ -100,7 +100,7 @@ export const useCardChecklistListener = ({
       Object.entries(checkboxes)
     )
     store.setChecklists({loading, data: checkboxesMap, error})
-  }, [data, loading, error, store])
+  }, [data, loading, error])
 
   useSupabaseChecklistListener(supabase, cardIds, store)
 }

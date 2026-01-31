@@ -82,7 +82,7 @@ const useSupabaseListener = (
       supabase.removeChannel(channel)
       store.clear()
     }
-  }, [supabase, store, currentTeamId])
+  }, [currentTeamId])
 }
 
 // Fetch cards and listen for updates
@@ -111,7 +111,7 @@ export const useCardsListener = ({
 
   useEffect(() => {
     store.setCards({loading, data, error})
-  }, [data, loading, error, store])
+  }, [data, loading, error])
 
   useSupabaseListener(supabase, currentTeamId, store)
 }

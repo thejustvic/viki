@@ -63,5 +63,5 @@ export const useUsersWhoReacted = (): void => {
 
   useEffect(() => {
     store.setUsersWhoReacted({loading, data, error})
-  }, [data, loading, error, store])
+  }, [data, loading, error])
 }

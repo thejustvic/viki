@@ -49,7 +49,7 @@ const useSupabaseListener = (
       supabase.removeChannel(channel)
       store.clear()
     }
-  }, [supabase, store, cardId])
+  }, [cardId])
 }
 
 export const useCardInfoListener = ({
@@ -69,12 +69,7 @@ export const useCardInfoListener = ({
     return getCardById(cardId, supabase)
   }, [cardId])
 
-  const {data, error, loading} = useSupabaseFetch(fetchCardById, [
-    cardId,
-    store,
-    user,
-    supabase
-  ])
+  const {data, error, loading} = useSupabaseFetch(fetchCardById, [cardId])
 
   const {
     data: userData,
@@ -85,7 +80,7 @@ export const useCardInfoListener = ({
       ? () =>
           fetch(`${window.location.origin}/api/retrieve-user?id=${authorId}`)
       : null,
-    [authorId, store, user, supabase]
+    [authorId]
   )
 
   useEffect(() => {
@@ -99,17 +94,7 @@ export const useCardInfoListener = ({
       data: userData,
       error: userError
     })
-  }, [
-    userData,
-    userError,
-    userLoading,
-    data,
-    loading,
-    error,
-    store,
-    user,
-    supabase
-  ])
+  }, [userData, userError, userLoading, data, loading, error])
 
   useSupabaseListener(supabase, cardId, store)
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import {createClient} from '@/utils/supabase-utils/supabase-browser'
-import {createContext, useContext, useMemo} from 'react'
+import {createContext, useContext, useState} from 'react'
 
 import type {Database} from '@/utils/database.types'
 import type {Session, SupabaseClient, User} from '@supabase/supabase-js'
@@ -27,7 +27,7 @@ export default function SupabaseProvider({
   serverUser,
   serverSession
 }: Props) {
-  const supabase = useMemo(() => createClient(), [])
+  const [supabase] = useState(() => createClient())
 
   return (
     <Context.Provider

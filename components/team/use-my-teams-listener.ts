@@ -85,5 +85,5 @@ const useSupabaseMyTeamsListener = (
       supabase.removeChannel(channel)
       store.clear()
     }
-  }, [supabase, store, user])
+  }, [user])
 }
