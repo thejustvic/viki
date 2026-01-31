@@ -1,7 +1,7 @@
 import {PropsWithChildren, useState} from 'react'
 import {EmailLoginContext, EmailLoginStore} from './email-login-store'
 
-export const EmailLoginProvider = ({children}: PropsWithChildren) => {
+export default function EmailLoginProvider({children}: PropsWithChildren) {
   const [store] = useState(() => new EmailLoginStore())
 
   return (

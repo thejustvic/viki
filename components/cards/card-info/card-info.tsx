@@ -41,19 +41,8 @@ const TwMenu = tw(Menu)`
   w-full
 `
 
-export const CardInfoProvider = ({children}: PropsWithChildren) => {
-  const [cardsState] = useCardsStore()
-  const {supabase, user} = useSupabase()
-
+export default function CardInfoProvider({children}: PropsWithChildren) {
   const [store] = useState(() => new CardInfoStore())
-
-  const cardId = getSearchCard()
-
-  const authorId = cardsState.cards.data?.find(
-    card => card.id === cardId
-  )?.author_id
-
-  useCardInfoListener({cardId, authorId, store, supabase, user})
 
   return (
     <CardInfoStoreContext.Provider value={store}>
@@ -63,6 +52,17 @@ export const CardInfoProvider = ({children}: PropsWithChildren) => {
 }
 
 export const CardInfo = observer(() => {
+  const [cardsState] = useCardsStore()
+  const {supabase, user} = useSupabase()
+  const [, store] = useCardInfoStore()
+  const cardId = getSearchCard()
+
+  const authorId = cardsState.cards.data?.find(
+    card => card.id === cardId
+  )?.author_id
+
+  useCardInfoListener({cardId, authorId, store, supabase, user})
+
   return (
     <TwMenu>
       <CardInfoBody />

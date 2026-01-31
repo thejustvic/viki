@@ -1,7 +1,7 @@
 'use client'
 
 import {Hero} from '@/components/daisyui/hero'
-import {EmailLoginProvider} from '@/components/login/email-login/email-login-provider'
+import EmailLoginProvider from '@/components/login/email-login/email-login-provider'
 import {LoginProviders} from '@/components/login/login-provider'
 import tw from 'tailwind-styled-components'
 import {EmailLoginCard} from './email-login/email-login-card'

@@ -6,19 +6,20 @@ import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-hand
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card as CardUI} from '@/components/daisyui/card'
-import {useTeamStore} from '@/components/team/team-store'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren, useState} from 'react'
+import {PropsWithChildren, useMemo, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {AddNewCard} from './add-new-card'
 import {useCardHandlers} from './cards-handlers'
 import {CardsContext, CardsStore, useCardsStore} from './cards-store'
 import {getSearchCard} from './get-search-card'
 
+import {useTeamStore} from '../team/team-store'
+import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
 import {Card as CardType} from './types'
 import {
   useCardsListener,
@@ -34,18 +35,41 @@ const TwContainer = tw.div`
   md:justify-start
 `
 
-export const CardsProvider = observer(({children}: PropsWithChildren) => {
-  const {supabase, user} = useSupabase()
+export default function CardsProvider({children}: PropsWithChildren) {
   const [store] = useState(() => new CardsStore())
-  const [state] = useTeamStore()
-  useCardsListener({supabase, user, store, currentTeamId: state.currentTeamId})
 
   return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
-})
+}
 
 export const CardsBase = () => <CardsList />
 
 const CardsList = observer(() => {
+  const {supabase, user} = useSupabase()
+  const [state, store] = useCardsStore()
+  const [teamState] = useTeamStore()
+  const [, cardChecklistStore] = useCardChecklistStore()
+  const currentTeamId = teamState.currentTeamId
+
+  const cards = state.cards.data
+  const cardsCount = cards?.length
+
+  const cardIds = useMemo(() => {
+    const cards = state.cards.data
+    if (!cards || cards.length === 0) {
+      return null
+    }
+
+    return cards.map(card => card.id)
+  }, [cards, cardsCount])
+
+  useCardChecklistListener({
+    cardIds,
+    supabase,
+    store: cardChecklistStore,
+    user
+  })
+  useCardsListener({supabase, user, store, currentTeamId})
+
   useCheckCardExistInCurrentTeam()
   useLoggingOff()
 
