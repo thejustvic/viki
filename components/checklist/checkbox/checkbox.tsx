@@ -35,7 +35,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
           onChange={() => updateCheckboxIsCompleted(!props.checked, props.id)}
         />
         <div
-          className={twJoin('truncate', props.checked && 'line-through')}
+          className={twJoin(props.checked && 'line-through')}
           onClick={store.startEditing}
         >
           <span className="break-words">{props.title}</span>
