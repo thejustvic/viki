@@ -6,20 +6,21 @@ import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-hand
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
 import {Button} from '@/components/daisyui/button'
 import {Card as CardUI} from '@/components/daisyui/card'
+import {useBoolean} from '@/hooks/use-boolean'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconTrash} from '@tabler/icons-react'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren, useMemo} from 'react'
+import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
+import {useTeamStore} from '../team/team-store'
 import {AddNewCard} from './add-new-card'
+import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
 import {useCardHandlers} from './cards-handlers'
 import {CardsContext, CardsStore, useCardsStore} from './cards-store'
 import {getSearchCard} from './get-search-card'
-
-import {useTeamStore} from '../team/team-store'
-import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
 import {Card as CardType} from './types'
 import {
   useCardsListener,
@@ -135,27 +136,42 @@ interface CardProps {
 
 const CardBody = observer(({card, remove}: CardProps) => {
   const updateSearchParams = useUpdateSearchParams()
+  const hovered = useBoolean(false)
 
   const onClickHandler = () => {
     updateSearchParams('card', card.id)
   }
 
   return (
-    <>
+    <div onMouseEnter={hovered.turnOn} onMouseLeave={hovered.turnOff}>
       <CardUI.Title className="flex justify-between">
         <Button color="ghost" className="p-0" onClick={onClickHandler}>
           <span className="w-16 truncate">{card.text}</span>
         </Button>
-        <Button color="ghost" shape="circle" onClick={remove}>
-          <IconTrash />
-        </Button>
+        {isMobile ? (
+          <>
+            {
+              <Button color="ghost" shape="circle" onClick={remove}>
+                <IconTrash />
+              </Button>
+            }
+          </>
+        ) : (
+          <>
+            {hovered.value && (
+              <Button color="ghost" shape="circle" onClick={remove}>
+                <IconTrash />
+              </Button>
+            )}
+          </>
+        )}
       </CardUI.Title>
       <CardUI.Actions className="justify-center">
         <Button color="primary" className="w-full" onClick={onClickHandler}>
           <CardChecklistProgress id={card.id} />
         </Button>
       </CardUI.Actions>
-    </>
+    </div>
   )
 })
 
