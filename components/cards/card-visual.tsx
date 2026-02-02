@@ -5,7 +5,7 @@ import {Checkbox} from '../checklist/types'
 import {CardInfoStore} from './card-info/card-info-store'
 import {TreeModel} from './visual/components/tree-model'
 import BaseBox from './visual/ui/base-box'
-import BaseCharacter from './visual/ui/base-character'
+import {BaseCharacter} from './visual/ui/base-character'
 import BaseScene from './visual/ui/base-scene'
 import {ConeWithSpheres} from './visual/ui/cone'
 
