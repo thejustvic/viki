@@ -6,7 +6,6 @@ import {Link} from '@/components/daisyui/link'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {AuthResponse} from '@supabase/supabase-js'
 import {observer} from 'mobx-react-lite'
-import {CSSProperties} from 'react'
 import {SubmitHandler, useForm, UseFormRegister} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
 
@@ -20,7 +19,6 @@ const TwBody = tw(Card.Body)`
   pt-0 
   pb-4
   justify-between
-  backface-hidden
 `
 
 const TwSubmit = tw(Button)`
@@ -32,7 +30,6 @@ const TwError = tw.p`
   text-xs 
   text-center 
   text-error
-  backface-hidden
 `
 
 const TwLink = tw(Link)`
@@ -57,10 +54,6 @@ interface FormValues {
   name?: string
   email: string
   password: string
-}
-
-const transform: CSSProperties = {
-  transform: 'translateZ(20px)'
 }
 
 export const EmailLoginForm = observer(
@@ -99,12 +92,12 @@ export const EmailLoginForm = observer(
     }
 
     return (
-      <>
-        <TwTitle style={transform}>{title}</TwTitle>
-        <TwBody style={transform}>
+      <div className={'transform-3d backface-hidden'}>
+        <TwTitle>{title}</TwTitle>
+        <TwBody>
           <Form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-8"
+            className={'flex flex-col gap-8'}
           >
             <Inputs register={register} isRegister={isRegister} />
             <TwSubmit type="submit" loading={state.logging.email}>
@@ -118,7 +111,7 @@ export const EmailLoginForm = observer(
             </TwErrorWrapper>
           )}
         </TwBody>
-      </>
+      </div>
     )
   }
 )
