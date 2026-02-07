@@ -17,7 +17,6 @@ export const ParallaxCardContainer = (props: Props) => {
       perspective={800}
       scale={1.1}
       className="transform-3d"
-      gyroscope
       tiltMaxAngleY={0}
     >
       <CardComp {...props} />
