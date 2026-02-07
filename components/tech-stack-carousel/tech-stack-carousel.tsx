@@ -159,7 +159,7 @@ const Card = ({card}: {card: CardProps}) => {
         </TwImage>
         <TwLink>
           <Link href={card.href} rel="noopener noreferrer" target="_blank">
-            <Button color="primary" variant="outline" size="xs">
+            <Button color="primary" variant="link" size="xl">
               {card.name}
             </Button>
           </Link>
