@@ -6,6 +6,7 @@ import {useBoolean} from '@/hooks/use-boolean'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
 import {useEffect} from 'react'
+import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import './style.scss'
 
@@ -144,26 +145,41 @@ export const TechStackCarousel = () => {
 }
 
 const Card = ({card}: {card: CardProps}) => {
+  const hovered = useBoolean(false)
   return (
     <TwCard>
-      <TwCardInner style={{transform: 'translateZ(20px)'}}>
-        <TwImage>
-          <Link href={card.href} rel="noopener noreferrer" target="_blank">
-            <Image
-              height={58}
-              width={58}
-              src={card.logo}
-              alt={`${card.name} logo`}
-            />
-          </Link>
-        </TwImage>
-        <TwLink>
-          <Link href={card.href} rel="noopener noreferrer" target="_blank">
-            <Button color="primary" variant="link" size="xl">
+      <TwCardInner
+        style={{transform: 'translateZ(20px)'}}
+        onMouseEnter={hovered.turnOn}
+        onMouseLeave={hovered.turnOff}
+      >
+        <Link
+          href={card.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          className="flex flex-col h-full"
+        >
+          <TwImage>
+            <Link href={card.href} rel="noopener noreferrer" target="_blank">
+              <Image
+                height={58}
+                width={58}
+                src={card.logo}
+                alt={`${card.name} logo`}
+              />
+            </Link>
+          </TwImage>
+          <TwLink>
+            <Button
+              color="primary"
+              variant="link"
+              size="xl"
+              className={twJoin(hovered.value && 'btn-warning')}
+            >
               {card.name}
             </Button>
-          </Link>
-        </TwLink>
+          </TwLink>
+        </Link>
       </TwCardInner>
     </TwCard>
   )
