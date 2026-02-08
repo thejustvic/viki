@@ -9,6 +9,7 @@ interface Props
   variant?: 'outline' | 'link'
   shape?: 'circle' | 'square'
   loading?: boolean
+  disable?: boolean
 }
 
 export const Button = ({
@@ -17,6 +18,7 @@ export const Button = ({
   variant,
   shape,
   loading,
+  disable,
   children,
   className,
   ...props
@@ -35,13 +37,15 @@ export const Button = ({
         variant === 'outline' && 'btn-outline',
         shape === 'circle' && 'btn-circle',
         shape === 'square' && 'btn-square',
-        loading && 'pointer-events-none'
+        disable && 'pointer-events-none'
       )}
       {...props}
     >
-      {loading ? (
+      {disable ? (
         <>
-          <span className="loading loading-dots loading-sm absolute" />
+          {loading && (
+            <span className="loading loading-dots loading-sm absolute" />
+          )}
           <span className="opacity-25">{children}</span>
         </>
       ) : (
