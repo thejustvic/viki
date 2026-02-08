@@ -2,6 +2,7 @@
 
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
+import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
 import {Tab, Theme} from './types'
 
@@ -121,6 +122,10 @@ export class GlobalStore {
 
   setLogging = (value: keyof State['logging']): void => {
     this.state.logging = {...this.state.logging, [value]: true}
+  }
+
+  checkIfSomeLoad = () => {
+    return ObjUtil.values(this.state.logging).some(e => e === true)
   }
 }
 

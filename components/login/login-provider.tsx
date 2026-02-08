@@ -42,12 +42,15 @@ export const LoginProviders = observer(() => {
     }
   }
 
+  const someLoad = store.checkIfSomeLoad()
+
   return (
     <div className="join join-vertical">
       <Button
         className="join-item"
         onClick={handleAnonymouslyLogin}
         loading={state.logging.anonymously}
+        disable={someLoad}
       >
         Anonymously
       </Button>
@@ -55,6 +58,7 @@ export const LoginProviders = observer(() => {
         className="join-item"
         onClick={handleGitHubLogin}
         loading={state.logging.github}
+        disable={someLoad}
       >
         GitHub
       </Button>
@@ -62,6 +66,7 @@ export const LoginProviders = observer(() => {
         className="join-item"
         onClick={handleGoogleLogin}
         loading={state.logging.google}
+        disable={someLoad}
       >
         Google
       </Button>

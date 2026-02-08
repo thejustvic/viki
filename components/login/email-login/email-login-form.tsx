@@ -90,6 +90,7 @@ export const EmailLoginForm = observer(
         )
       }
     }
+    const someLoad = store.checkIfSomeLoad()
 
     return (
       <div className={'transform-3d backface-hidden'}>
@@ -100,7 +101,11 @@ export const EmailLoginForm = observer(
             className={'flex flex-col gap-8'}
           >
             <Inputs register={register} isRegister={isRegister} />
-            <TwSubmit type="submit" loading={state.logging.email}>
+            <TwSubmit
+              type="submit"
+              loading={state.logging.email}
+              disable={someLoad}
+            >
               Submit
             </TwSubmit>
           </Form>
