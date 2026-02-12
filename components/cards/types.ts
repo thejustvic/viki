@@ -5,3 +5,5 @@ export type Profile = Tables<'profiles'>
 export type Message = Tables<'messages'>
 
 export type CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
+
+export type CardVisual = ['winter', 'spring']
