@@ -5,6 +5,7 @@ interface Handlers {
   removeCard: (id: Card['id']) => Promise<void>
   insertCard: (text: string, teamId: string) => Promise<void>
   updateCard: (text: string, cardId: string) => Promise<void>
+  updateCardVisual: (visual: string, cardId: string) => Promise<void>
   updateCardBgImage: (bgImage: string, cardId: string) => Promise<void>
   updateCardBaubleColorCompleted: (
     color: string,
@@ -51,6 +52,21 @@ export const useCardHandlers = (): Handlers => {
       .from('cards')
       .update({
         text
+      })
+      .eq('id', cardId)
+  }
+
+  const updateCardVisual = async (
+    visual: string,
+    cardId: string
+  ): Promise<void> => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    await supabase
+      .from('cards')
+      .update({
+        selected_visual: visual
       })
       .eq('id', cardId)
   }
@@ -134,6 +150,7 @@ export const useCardHandlers = (): Handlers => {
     removeCard,
     insertCard,
     updateCard,
+    updateCardVisual,
     updateCardBgImage,
     updateCardBaubleColorCompleted,
     updateCardBaubleColorNotCompleted,
