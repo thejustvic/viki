@@ -4,7 +4,6 @@ import {useCardHandlers} from '@/components/cards/cards-handlers'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Loader} from '@/components/common/loader'
 import {UserImage} from '@/components/common/user-image'
-import {Input} from '@/components/daisyui/input'
 import {Menu} from '@/components/daisyui/menu'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useDebouncedValue} from '@/hooks/use-debounced-value'
@@ -22,6 +21,7 @@ import {
   useCardInfoStore
 } from './card-info-store'
 import {useCardInfoListener} from './fetch/use-card-info-listener'
+import {VisualContent} from './visual-content/visual-content'
 
 const TwLoading = tw(Loader)`
   p-0
@@ -76,123 +76,19 @@ const CardInfoBody = observer(() => (
     <Time />
     <Text />
     <Cover />
-    <ChooseBaubleColor />
+    <Visual />
   </div>
 ))
 
-const ChooseBaubleColor = observer(() => {
+const Visual = () => {
   const [state] = useCardInfoStore()
 
   return (
-    <div className="mt-4 flex flex-col gap-2">
-      <ShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={<ChooseBaubleColorData />}
-        prefix={'bauble color:'}
-      />
-      <ShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={<ChooseBaubleTextColorData />}
-        prefix={'text color on bauble:'}
-      />
-    </div>
-  )
-})
-
-const ChooseBaubleColorData = observer(() => {
-  const [state] = useCardInfoStore()
-  const {updateCardBaubleColorCompleted, updateCardBaubleColorNotCompleted} =
-    useCardHandlers()
-  const id = String(getSearchCard())
-
-  if (!state.card.data) {
-    return null
-  }
-  if (
-    !state.card.data.bauble_color_not_completed ||
-    !state.card.data.bauble_color_completed
-  ) {
-    return null
-  }
-  return (
-    <div className="flex gap-2">
-      <ColorPicker
-        color={state.card.data.bauble_color_not_completed}
-        label="not checked"
-        onChange={e => {
-          const color = e.target.value
-          updateCardBaubleColorNotCompleted(color, id)
-        }}
-      />
-      <ColorPicker
-        color={state.card.data.bauble_color_completed}
-        label="checked"
-        onChange={e => {
-          const color = e.target.value
-          updateCardBaubleColorCompleted(color, id)
-        }}
-      />
-    </div>
-  )
-})
-
-const ChooseBaubleTextColorData = observer(() => {
-  const [state] = useCardInfoStore()
-  const {
-    updateCardBaubleTextColorCompleted,
-    updateCardBaubleTextColorNotCompleted
-  } = useCardHandlers()
-  const id = String(getSearchCard())
-
-  if (!state.card.data) {
-    return null
-  }
-  if (
-    !state.card.data.bauble_text_color_not_completed ||
-    !state.card.data.bauble_text_color_completed
-  ) {
-    return null
-  }
-  return (
-    <div className="flex gap-2">
-      <ColorPicker
-        color={state.card.data.bauble_text_color_not_completed}
-        label="not checked"
-        onChange={e => {
-          const color = e.target.value
-          updateCardBaubleTextColorNotCompleted(color, id)
-        }}
-      />
-      <ColorPicker
-        color={state.card.data.bauble_text_color_completed}
-        label="checked"
-        onChange={e => {
-          const color = e.target.value
-          updateCardBaubleTextColorCompleted(color, id)
-        }}
-      />
-    </div>
-  )
-})
-
-const ColorPicker = ({
-  color = '#ff0000',
-  label = 'Color',
-  onChange
-}: {
-  color?: string
-  label?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}) => {
-  return (
-    <Input
-      type="color"
-      defaultValue={color}
-      inputClassName="p-0 h-10 w-25 cursor-pointer"
-      label={label}
-      onChange={onChange}
+    <ShowData
+      loading={state.card.loading}
+      error={state.card.error?.message}
+      data={<VisualContent />}
+      prefix={'visual:'}
     />
   )
 }
@@ -266,7 +162,7 @@ const TimeData = observer(() => {
 
   const timeDistance = format(new Date(time), 'hh:mm:ss, PPPP')
 
-  return <div>{timeDistance}</div>
+  return <div className="flex flex-1">{timeDistance}</div>
 })
 
 const Text = observer(() => {
@@ -351,7 +247,7 @@ const Creator = observer(() => {
   )
 })
 
-const ShowData = ({
+export const ShowData = ({
   loading,
   error,
   data,
@@ -364,7 +260,7 @@ const ShowData = ({
 }) => {
   return (
     <div className="flex">
-      <span className="w-28 pr-2">{prefix}</span>
+      <span className="w-20 pr-2">{prefix}</span>
       {loading ? (
         <div className="flex justify-center w-full">
           <TwLoading />
