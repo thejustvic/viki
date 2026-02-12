@@ -29,7 +29,7 @@ export const VisualContent = observer(() => {
               <div>{visual}</div>
               <input
                 type="radio"
-                name="radio-1"
+                name="radio-visual"
                 className="radio"
                 checked={state?.card?.data?.selected_visual === visual}
                 readOnly

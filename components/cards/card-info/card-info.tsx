@@ -126,7 +126,7 @@ const CoverData = observer(() => {
             <div>{image}</div>
             <input
               type="radio"
-              name="radio-1"
+              name="radio-cover"
               className="radio"
               checked={state?.card?.data?.bg_image === image}
               readOnly
