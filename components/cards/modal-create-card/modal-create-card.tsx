@@ -81,7 +81,7 @@ const Text = observer(() => {
     <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 flex-col">
       <Textarea
         size="md"
-        className="w-full border-none"
+        className="w-full"
         {...register('text', {
           required: true
         })}
