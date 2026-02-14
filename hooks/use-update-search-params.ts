@@ -16,7 +16,9 @@ export const useUpdateSearchParams = (): UpdateSearchParamsFunc => {
     } else {
       params.delete(key) // Removes the key if value is empty
     }
-    history.pushState(null, '', `${pathname}?${params.toString()}`)
+    const queryString = params.toString()
+    const url = queryString ? `${pathname}?${queryString}` : pathname
+    history.pushState(null, '', url)
   }
 
   return updateSearchParams
