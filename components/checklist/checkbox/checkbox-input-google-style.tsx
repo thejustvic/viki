@@ -57,7 +57,7 @@ export const GoogleStyleInput = observer(() => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
-        className="shadow-sm fixed z-50 py-[10px] px-[16px]"
+        className="shadow-sm fixed z-50 py-[10px] px-[16px] pointer-events-none"
         style={{
           left: 0,
           right: 0,
@@ -67,10 +67,10 @@ export const GoogleStyleInput = observer(() => {
           transition: 'transform 0.1s ease-out'
         }}
       >
-        <div style={{position: 'relative'}}>
+        <div style={{position: 'relative'}} className="pointer-events-none">
           <input
             {...register('text', {required: true})}
-            className="input input-md pr-10 flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
+            className="input input-md pr-10 flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary pointer-events-auto"
             autoComplete="one-time-code"
             placeholder="type..."
             readOnly
