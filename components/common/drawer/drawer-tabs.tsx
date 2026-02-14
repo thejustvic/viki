@@ -3,7 +3,7 @@ import {useCardChecklistStore} from '@/components/cards/card-checklist/card-chec
 import {CardInfo} from '@/components/cards/card-info/card-info'
 import {CheckAllCheckboxes} from '@/components/cards/cards'
 import {getSearchCard} from '@/components/cards/get-search-card'
-import {CheckboxInput} from '@/components/checklist/checkbox/checkbox-input'
+
 import {Checklist} from '@/components/checklist/checklist'
 import {Drag} from '@/components/common/drag/drag'
 import {ChatWrapper} from '@/components/common/drawer-menu'
@@ -15,6 +15,7 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
 import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
+import {GoogleStyleInput} from '@/components/checklist/checkbox/checkbox-input-google-style'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
@@ -96,17 +97,20 @@ const ChecklistTabContent = observer(() => {
   const id = String(getSearchCard())
   return (
     <Tabs.TabContent>
-      <div className="px-4 my-2 flex gap-1 h-[24px]">
-        {state.checklists.data?.get(id)?.length ? (
-          <>
-            <CheckAllCheckboxes />
-            <CardChecklistProgress id={id} />
-          </>
-        ) : null}
+      <div className="shadow-sm">
+        <div className="flex gap-1 p-4">
+          {state.checklists.data?.get(id)?.length ? (
+            <>
+              <CheckAllCheckboxes />
+              <CardChecklistProgress id={id} />
+            </>
+          ) : null}
+        </div>
       </div>
-      <div className="flex flex-col justify-between flex-1 gap-3 h-[calc(100dvh-81px)]">
+      <div className="h-[calc(100dvh-158px)]">
         <Checklist />
-        <CheckboxInput />
+        {/* <CheckboxInput /> */}
+        <GoogleStyleInput />
       </div>
     </Tabs.TabContent>
   )

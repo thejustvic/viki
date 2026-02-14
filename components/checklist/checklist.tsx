@@ -9,7 +9,7 @@ import tw from 'tailwind-styled-components'
 export const Checklist = () => {
   return (
     <PerfectScrollbar className="py-3 px-4">
-      <div className="flex flex-col gap-2 h-[24px]">
+      <div className="flex flex-col gap-2">
         <Checkboxes />
       </div>
     </PerfectScrollbar>
