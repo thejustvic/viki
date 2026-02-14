@@ -128,6 +128,13 @@ const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
   )
 })
 
+const TwText = tw.span`
+  h-12
+  line-clamp-2
+  text-base-content/90
+  drop-shadow-[var(--text-shadow)]
+`
+
 interface CardProps {
   card: CardType
   remove: () => void
@@ -144,13 +151,11 @@ const CardBody = observer(({card, remove}: CardProps) => {
   return (
     <div onMouseEnter={hovered.turnOn} onMouseLeave={hovered.turnOff}>
       <CardUI.Title className="flex justify-between">
-        <Button color="ghost" className="p-0" onClick={onClickHandler}>
-          <span className="w-16 truncate">{card.text}</span>
-        </Button>
+        <TwText>{card.text}</TwText>
         {isMobile ? (
           <>
             {
-              <Button color="ghost" shape="circle" onClick={remove}>
+              <Button soft color="error" shape="circle" onClick={remove}>
                 <IconTrash />
               </Button>
             }
@@ -158,15 +163,27 @@ const CardBody = observer(({card, remove}: CardProps) => {
         ) : (
           <>
             {hovered.value && (
-              <Button color="ghost" shape="circle" onClick={remove}>
-                <IconTrash />
+              <Button
+                soft
+                color="error"
+                shape="circle"
+                size="sm"
+                onClick={remove}
+                className="self-start"
+              >
+                <IconTrash size={16} />
               </Button>
             )}
           </>
         )}
       </CardUI.Title>
       <CardUI.Actions className="justify-center">
-        <Button color="primary" className="w-full" onClick={onClickHandler}>
+        <Button
+          soft
+          color="primary"
+          className="w-full"
+          onClick={onClickHandler}
+        >
           <CardChecklistProgress id={card.id} />
         </Button>
       </CardUI.Actions>

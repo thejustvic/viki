@@ -12,8 +12,8 @@ export const NavbarRightDrawerButton = observer(() => {
 
   return (
     <Button
+      soft
       className="rounded-none rounded-l-md"
-      color="ghost"
       size="sm"
       onClick={toggleRightDrawer}
     >

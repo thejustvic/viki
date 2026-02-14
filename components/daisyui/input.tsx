@@ -12,6 +12,7 @@ interface Props
 const InnerInput = ({color, inputClassName, ...props}: Props) => {
   return (
     <input
+      autoComplete="off"
       className={twJoin(
         'input input-md focus:outline-none',
         inputClassName,

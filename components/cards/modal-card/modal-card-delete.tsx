@@ -98,11 +98,17 @@ const ModalBody = observer(() => {
           border: '0'
         }}
       />
-      <Button type="button" onClick={goBack} className="flex-1">
-        cancel
-      </Button>
-      <Button type="submit" className="flex-1">
+      <Button soft type="submit" className="flex-1" color="error">
         delete
+      </Button>
+      <Button
+        soft
+        color="info"
+        type="button"
+        onClick={goBack}
+        className="flex-1"
+      >
+        cancel
       </Button>
     </Form>
   )

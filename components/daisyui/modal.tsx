@@ -40,7 +40,7 @@ export const Modal = ({
       >
         <div className="modal-box">
           {children}
-          <div className="modal-action">
+          <div className="modal-action mt-0">
             <label htmlFor={id} onClick={close}>
               <Close />
             </label>
@@ -61,10 +61,11 @@ export const Modal = ({
 const Close = () => {
   return (
     <Button
+      soft
       size="sm"
       shape="circle"
       className="absolute right-2 top-2"
-      color="ghost"
+      color="info"
     >
       <IconCircleX />
     </Button>

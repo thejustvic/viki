@@ -29,7 +29,7 @@ export default function NotFoundPage() {
         animate={{opacity: 1}}
         transition={{delay: 0.6}}
       >
-        <Button>
+        <Button soft color="info">
           <Link href="/cards">Go Home</Link>
         </Button>
       </motion.div>

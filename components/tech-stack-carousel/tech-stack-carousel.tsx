@@ -160,14 +160,12 @@ const Card = ({card}: {card: CardProps}) => {
           className="flex flex-col h-full"
         >
           <TwImage>
-            <Link href={card.href} rel="noopener noreferrer" target="_blank">
-              <Image
-                height={58}
-                width={58}
-                src={card.logo}
-                alt={`${card.name} logo`}
-              />
-            </Link>
+            <Image
+              height={58}
+              width={58}
+              src={card.logo}
+              alt={`${card.name} logo`}
+            />
           </TwImage>
           <TwLink>
             <Button

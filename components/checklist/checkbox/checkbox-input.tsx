@@ -34,13 +34,12 @@ export const CheckboxInput = observer(() => {
       className="flex justify-between p-2"
     >
       <Input
-        inputClassName="flex-1 flex-shrink w-full min-h-10 h-10"
-        color="primary"
+        inputClassName="flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
         {...register('text', {
           required: true
         })}
       />
-      <Button type="submit" variant="link" className="p-0 px-2">
+      <Button ghost variant="link" type="submit" className="p-0 px-2">
         <IconSend />
       </Button>
     </Form>

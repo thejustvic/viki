@@ -8,14 +8,12 @@ import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 
 const TwAdd = tw(Button)`
-  bg-base-300 
   shadow-md 
   border-0
   rounded-2xl
   w-[288px]
   h-[142px]
   md:w-[190px]
-  text-primary
 `
 
 export const AddNewCard = () => {
@@ -32,7 +30,7 @@ const CardBody = observer(() => {
   }
 
   return (
-    <TwAdd onClick={onClickHandler}>
+    <TwAdd soft color="primary" onClick={onClickHandler}>
       <IconSquareRoundedPlus size={48} />
     </TwAdd>
   )

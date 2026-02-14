@@ -87,7 +87,9 @@ const Text = observer(() => {
         })}
         onKeyDown={handleKeyDown}
       />
-      <Button type="submit">Submit</Button>
+      <Button soft color="primary" type="submit">
+        Submit
+      </Button>
     </Form>
   )
 })

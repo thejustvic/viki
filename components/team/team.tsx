@@ -38,7 +38,12 @@ const AddTeamMember = () => {
   }
 
   return (
-    <Button onClick={handlerAddMember} className="text-sm h-[32px] p-2">
+    <Button
+      soft
+      color="info"
+      onClick={handlerAddMember}
+      className="text-sm h-[32px] p-2"
+    >
       <IconSquareRoundedPlus size={24} /> add member
     </Button>
   )
@@ -87,6 +92,8 @@ const TeamMembers = observer(() => {
               <span className="opacity-50 truncate">{teamMember.email}</span>
             </div>
             <Button
+              soft
+              color="error"
               size="xs"
               className="text-xs"
               onClick={e => handleRemove(e, teamMember.id)}

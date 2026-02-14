@@ -12,7 +12,6 @@ export const LoginProviders = observer(() => {
   useEffect(() => {
     store.setLoggingOff()
   }, [])
-
   const handleGitHubLogin = async () => {
     store.setLogging('github')
     await supabase.auth.signInWithOAuth({
@@ -22,7 +21,6 @@ export const LoginProviders = observer(() => {
       }
     })
   }
-
   const handleGoogleLogin = async () => {
     store.setLogging('google')
     await supabase.auth.signInWithOAuth({
@@ -32,7 +30,6 @@ export const LoginProviders = observer(() => {
       }
     })
   }
-
   const handleAnonymouslyLogin = async () => {
     store.setLogging('anonymously')
     const {error} = await supabase.auth.signInAnonymously()
@@ -41,12 +38,13 @@ export const LoginProviders = observer(() => {
       window.location.href = '/cards'
     }
   }
-
   const someLoad = store.checkIfSomeLoad()
 
   return (
     <div className="join join-vertical">
       <Button
+        soft
+        color="primary"
         className="join-item"
         onClick={handleAnonymouslyLogin}
         loading={state.logging.anonymously}
@@ -55,6 +53,8 @@ export const LoginProviders = observer(() => {
         Anonymously
       </Button>
       <Button
+        soft
+        color="primary"
         className="join-item"
         onClick={handleGitHubLogin}
         loading={state.logging.github}
@@ -63,6 +63,8 @@ export const LoginProviders = observer(() => {
         GitHub
       </Button>
       <Button
+        soft
+        color="primary"
         className="join-item"
         onClick={handleGoogleLogin}
         loading={state.logging.google}

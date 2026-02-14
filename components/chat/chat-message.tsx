@@ -87,7 +87,13 @@ const MessageDropdown = ({
             {timeDistance} on {time}
           </time>
           {my && (
-            <Button size="xs" className="text-xs" onClick={remove}>
+            <Button
+              soft
+              color="error"
+              size="xs"
+              className="text-xs"
+              onClick={remove}
+            >
               delete
             </Button>
           )}

@@ -81,7 +81,9 @@ const Data = observer(() => {
           required: true
         })}
       />
-      <Button type="submit">Create Team</Button>
+      <Button soft color="primary" type="submit">
+        Create Team
+      </Button>
     </Form>
   )
 })

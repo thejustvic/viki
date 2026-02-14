@@ -23,7 +23,7 @@ export const Modal = ({id, header, body, goBack, open}: Props) => {
       close={goBack}
       onClickBackdrop={goBack}
     >
-      <ModalComponent.Header className="font-bold">
+      <ModalComponent.Header className="font-bold text-base-content/80">
         {header}
       </ModalComponent.Header>
       <ModalComponent.Body>{body}</ModalComponent.Body>

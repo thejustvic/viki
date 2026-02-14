@@ -115,9 +115,7 @@ const AvatarDropdown = observer(() => {
 
   return (
     <Dropdown placements={['end']} hover>
-      <Button color="ghost" shape="square">
-        <UserImage src={user.user_metadata?.avatar_url} />
-      </Button>
+      <UserImage src={user.user_metadata?.avatar_url} />
       <Dropdown.Menu className="shadow-lg bg-base-200">
         {cardId && <LabelShowLeftMenu />}
         {isMobile && (
@@ -126,7 +124,13 @@ const AvatarDropdown = observer(() => {
             <NavbarOpenTeamButton />
           </div>
         )}
-        <Button onClick={handleLogout} loading={state.logging.logout}>
+        <Button
+          soft
+          color="error"
+          onClick={handleLogout}
+          disable={state.logging.logout}
+          loading={state.logging.logout}
+        >
           Logout
         </Button>
       </Dropdown.Menu>

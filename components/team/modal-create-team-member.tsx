@@ -94,7 +94,9 @@ const Data = observer(() => {
         })}
       />
 
-      <Button type="submit">Create Member</Button>
+      <Button soft color="primary" type="submit">
+        Create Member
+      </Button>
     </Form>
   )
 })

@@ -16,7 +16,7 @@ export const NavbarOpenTeamButton = observer(() => {
   }
 
   return (
-    <Button shape="circle" onClick={handleOpenTeam}>
+    <Button soft color="info" shape="circle" onClick={handleOpenTeam}>
       <IconUsersGroup />
     </Button>
   )

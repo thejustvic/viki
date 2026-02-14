@@ -165,8 +165,9 @@ const MyTeams = observer(
                     <div>{team.name}</div>
                     {showDeleteButton && !currentTeamIdEqual && (
                       <Button
+                        soft
+                        color="error"
                         size="xs"
-                        color="ghost"
                         shape="circle"
                         onClick={e => handleRemove(e, team.id)}
                       >

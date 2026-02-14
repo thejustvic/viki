@@ -34,7 +34,12 @@ const BasicScene = ({children, isLocked}: BasicSceneProps) => {
       {!isMobile && (
         <>
           {!isLocked.value ? (
-            <Button className="m-2 absolute z-10" id="enter-btn">
+            <Button
+              soft
+              color="info"
+              className="m-2 absolute z-10"
+              id="enter-btn"
+            >
               Enter First Person With Movement by WASD keys and spacebar
             </Button>
           ) : (

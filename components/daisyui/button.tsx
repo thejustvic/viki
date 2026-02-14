@@ -4,15 +4,19 @@ import {twJoin} from 'tailwind-merge'
 interface Props
   extends PropsWithChildren,
     React.ButtonHTMLAttributes<HTMLButtonElement> {
-  color?: 'ghost' | 'primary'
+  color?: 'error' | 'primary' | 'info'
   size?: 'xs' | 'xl' | 'sm'
   variant?: 'outline' | 'link'
   shape?: 'circle' | 'square'
   loading?: boolean
   disable?: boolean
+  ghost?: boolean
+  soft?: boolean
 }
 
 export const Button = ({
+  soft,
+  ghost,
   color,
   size,
   variant,
@@ -27,8 +31,11 @@ export const Button = ({
     <button
       className={twJoin(
         'btn',
+        soft && 'btn-soft',
+        ghost && 'btn-ghost',
         className,
-        color === 'ghost' && 'btn-ghost',
+        color === 'error' && 'btn-error',
+        color === 'info' && 'btn-info',
         color === 'primary' && 'btn-primary',
         size === 'xs' && 'btn-xs',
         size === 'sm' && 'btn-sm',

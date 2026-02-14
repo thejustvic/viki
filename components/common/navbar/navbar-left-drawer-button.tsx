@@ -8,8 +8,8 @@ export const NavbarLeftDrawerButton = observer(() => {
 
   return (
     <Button
+      soft
       className="rounded-none rounded-r-md"
-      color="ghost"
       size="sm"
       onClick={store.setLeftDrawerToggle}
     >

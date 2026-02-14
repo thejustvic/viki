@@ -2,7 +2,6 @@ import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
 import {Form} from '@/components/daisyui/form'
 import {Input} from '@/components/daisyui/input'
-import {Link} from '@/components/daisyui/link'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {AuthResponse} from '@supabase/supabase-js'
 import {observer} from 'mobx-react-lite'
@@ -32,10 +31,6 @@ const TwError = tw.p`
   text-error
 `
 
-const TwLink = tw(Link)`
-  flex 
-  justify-center
-`
 const TwErrorWrapper = tw.div`
   p-2
   bg-info-content
@@ -102,6 +97,8 @@ export const EmailLoginForm = observer(
           >
             <Inputs register={register} isRegister={isRegister} />
             <TwSubmit
+              soft
+              color="primary"
               type="submit"
               loading={state.logging.email}
               disable={someLoad}
@@ -109,7 +106,9 @@ export const EmailLoginForm = observer(
               Submit
             </TwSubmit>
           </Form>
-          <TwLink onClick={handleLink}>{linkTitle}</TwLink>
+          <Button ghost variant="link" size="sm" onClick={handleLink}>
+            {linkTitle}
+          </Button>
           {errors.email?.message && errors.email?.message?.length > 0 && (
             <TwErrorWrapper>
               <TwError>{errors.email.message}</TwError>

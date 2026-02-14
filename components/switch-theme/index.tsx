@@ -32,7 +32,8 @@ export const SwitchTheme = observer(() => {
 
   return (
     <Button
-      color="ghost"
+      soft
+      color="info"
       shape="circle"
       onClick={toggleTheme}
       disabled={!state.theme}

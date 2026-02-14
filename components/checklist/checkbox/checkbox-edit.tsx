@@ -27,9 +27,10 @@ export const CheckboxEdit = observer(({title, id}: CheckboxProps) => {
       />
       <div className="flex gap-2 m-2">
         <Button
+          soft
+          color="info"
           shape="circle"
           size="xs"
-          className="btn-soft btn-success"
           onMouseDown={async () => {
             await updateCheckboxTitle(value, id)
             store.submitEditing()
@@ -37,18 +38,14 @@ export const CheckboxEdit = observer(({title, id}: CheckboxProps) => {
         >
           <IconCheck />
         </Button>
-        <Button
-          size="xs"
-          shape="circle"
-          className="btn-soft"
-          onMouseDown={store.cancelEditing}
-        >
+        <Button soft size="xs" shape="circle" onMouseDown={store.cancelEditing}>
           <IconCancel />
         </Button>
         <Button
+          soft
+          color="error"
           size="xs"
           shape="circle"
-          className="btn-soft btn-error"
           onMouseDown={async () => {
             await removeCheckbox(id)
             store.delete()
