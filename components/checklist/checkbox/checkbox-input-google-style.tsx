@@ -66,15 +66,12 @@ export const GoogleStyleInput = observer(() => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
-        className="shadow-sm"
+        className="shadow-sm fixed z-50 py-[10px] px-[16px]"
         style={{
-          position: 'fixed',
           left: 0,
           right: 0,
           bottom: 0,
           transform: `translateY(-${keyboardHeight}px)`,
-          zIndex: 1000,
-          padding: '10px 16px',
           boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
           transition: 'transform 0.1s ease-out'
         }}
@@ -83,10 +80,13 @@ export const GoogleStyleInput = observer(() => {
           <input
             {...register('text', {required: true})}
             className="input input-md flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
-            autoComplete="off"
+            autoComplete="one-time-code"
             type="text"
             placeholder="type..."
             style={inputStyles}
+            onClick={e => e.stopPropagation()}
+            onFocus={e => e.stopPropagation()}
+            name="my-custom-field"
           />
           <button type="submit" style={buttonStyles}>
             <IconSend />
