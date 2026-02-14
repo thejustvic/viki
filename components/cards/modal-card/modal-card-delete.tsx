@@ -8,6 +8,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
+import {isMobile} from 'react-device-detect'
 import {useForm} from 'react-hook-form'
 import {useCardsStore} from '../cards-store'
 import {useSetFocusAfterTransitionEnd} from './use-set-focus-after-transitionend'
@@ -55,7 +56,12 @@ const ModalBody = observer(() => {
       id: 'dialog-modal-delete-card',
       dep: getSearchParam('delete-card')
     },
-    () => setFocus('hiddenField'),
+    () => {
+      if (isMobile) {
+        return
+      }
+      setFocus('hiddenField')
+    },
     () => {}
   )
 
