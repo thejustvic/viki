@@ -9,6 +9,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
 import {useTeamHandlers} from './team-handlers'
 
@@ -16,9 +17,11 @@ export const ModalCreateTeam = () => {
   const updateSearchParams = useUpdateSearchParams()
   const createTeam = getSearchParam('create-team')
 
-  const goBack = () => {
-    updateSearchParams('create-team')
-  }
+  const goBack = useCallback(() => {
+    if (createTeam) {
+      updateSearchParams('create-team')
+    }
+  }, [createTeam, updateSearchParams])
 
   return (
     <Modal

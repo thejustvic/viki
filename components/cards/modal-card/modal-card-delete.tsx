@@ -7,7 +7,7 @@ import {Form} from '@/components/daisyui/form'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
-import {useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useForm} from 'react-hook-form'
 import {useCardsStore} from '../cards-store'
@@ -24,9 +24,11 @@ export const ModalCardDelete = observer(() => {
     }
   }, [])
 
-  const goBack = () => {
-    updateSearchParams('delete-card')
-  }
+  const goBack = useCallback(() => {
+    if (deleteCard) {
+      updateSearchParams('delete-card')
+    }
+  }, [deleteCard, updateSearchParams])
 
   return (
     <Modal

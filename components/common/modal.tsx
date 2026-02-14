@@ -12,7 +12,11 @@ interface Props {
 
 export const Modal = ({id, header, body, goBack, open}: Props) => {
   useGlobalKeyDown({
-    escape: goBack
+    handlers: {
+      escape: goBack
+    },
+    id,
+    active: open
   })
 
   return (

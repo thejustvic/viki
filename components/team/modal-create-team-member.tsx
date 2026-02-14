@@ -8,6 +8,7 @@ import {Input} from '@/components/daisyui/input'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
+import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
 import {useTeamMemberHandlers} from './team-member-handlers'
 import {useTeamStore} from './team-store'
@@ -16,9 +17,11 @@ export const ModalCreateTeamMember = () => {
   const updateSearchParams = useUpdateSearchParams()
   const createTeamMember = getSearchParam('create-team-member')
 
-  const goBack = () => {
-    updateSearchParams('create-team-member')
-  }
+  const goBack = useCallback(() => {
+    if (createTeamMember) {
+      updateSearchParams('create-team-member')
+    }
+  }, [createTeamMember, updateSearchParams])
 
   return (
     <Modal

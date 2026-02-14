@@ -10,15 +10,18 @@ import {useTeamStore} from '@/components/team/team-store'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
+import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
 
 export const ModalCardCreate = () => {
   const updateSearchParams = useUpdateSearchParams()
   const createCard = getSearchParam('create-card')
 
-  const goBack = () => {
-    updateSearchParams('create-card')
-  }
+  const goBack = useCallback(() => {
+    if (createCard) {
+      updateSearchParams('create-card')
+    }
+  }, [createCard, updateSearchParams])
 
   return (
     <Modal

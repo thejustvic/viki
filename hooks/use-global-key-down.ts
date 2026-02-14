@@ -1,48 +1,73 @@
-import {useEffect} from 'react'
+import {useEffect, useRef} from 'react'
 
 interface KeyboardHandlers {
   enter?: () => void
   escape?: () => void
   anyKey?: (opts: {
     key: string
-    keyCode: number
     shift: boolean
     alt: boolean
     ctrl: boolean
   }) => void
 }
 
-const keyboardHandler =
-  (handlers: KeyboardHandlers) =>
-  (e: {
-    key: string
-    keyCode: number
-    shiftKey: boolean
-    altKey: boolean
-    ctrlKey: boolean
-  }) => {
-    if (handlers.anyKey) {
-      handlers.anyKey({
-        key: e.key,
-        keyCode: e.keyCode,
-        shift: e.shiftKey,
-        alt: e.altKey,
-        ctrl: e.ctrlKey
-      })
-    }
-    if (handlers.enter && e.key === 'Enter') {
-      handlers.enter()
-    } else if (handlers.escape && e.key === 'Escape') {
-      handlers.escape()
-    }
-  }
+const modalStack: string[] = []
 
-export const useGlobalKeyDown = (handlers: KeyboardHandlers): void => {
+export const useGlobalKeyDown = ({
+  handlers,
+  id,
+  active
+}: {
+  handlers: KeyboardHandlers
+  id: string
+  active: boolean
+}): void => {
+  const handlersRef = useRef(handlers)
+
   useEffect(() => {
-    const fn = keyboardHandler(handlers)
-    document.addEventListener('keydown', fn)
-    return () => {
-      document.removeEventListener('keydown', fn)
+    handlersRef.current = handlers
+  }, [handlers])
+
+  useEffect(() => {
+    if (!active) {
+      return
     }
-  }, [])
+    modalStack.push(id)
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isTopModal = modalStack[modalStack.length - 1] === id
+      const {anyKey, enter, escape} = handlersRef.current
+
+      if (e.key === 'Escape') {
+        if (isTopModal && escape) {
+          e.preventDefault()
+          escape()
+        }
+      } else if (e.key === 'Enter') {
+        if (isTopModal && enter) {
+          enter()
+        }
+      }
+
+      if (isTopModal && anyKey) {
+        anyKey({
+          key: e.key,
+          shift: e.shiftKey,
+          alt: e.altKey,
+          ctrl: e.ctrlKey
+        })
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      const index = modalStack.indexOf(id)
+      if (index > -1) {
+        modalStack.splice(index, 1)
+      }
+
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [id, active])
 }

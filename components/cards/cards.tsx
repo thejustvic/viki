@@ -153,28 +153,9 @@ const CardBody = observer(({card, remove}: CardProps) => {
       <CardUI.Title className="flex justify-between">
         <TwText>{card.text}</TwText>
         {isMobile ? (
-          <>
-            {
-              <Button soft color="error" shape="circle" onClick={remove}>
-                <IconTrash />
-              </Button>
-            }
-          </>
+          <DeleteCardButton remove={remove} />
         ) : (
-          <>
-            {hovered.value && (
-              <Button
-                soft
-                color="error"
-                shape="circle"
-                size="sm"
-                onClick={remove}
-                className="self-start"
-              >
-                <IconTrash size={16} />
-              </Button>
-            )}
-          </>
+          <>{hovered.value && <DeleteCardButton remove={remove} />}</>
         )}
       </CardUI.Title>
       <CardUI.Actions className="justify-center">
@@ -190,6 +171,25 @@ const CardBody = observer(({card, remove}: CardProps) => {
     </div>
   )
 })
+
+interface DeleteCardButtonProps {
+  remove: () => void
+}
+
+const DeleteCardButton = ({remove}: DeleteCardButtonProps) => {
+  return (
+    <Button
+      soft
+      color="error"
+      shape="circle"
+      size="sm"
+      onClick={remove}
+      className="self-start"
+    >
+      <IconTrash size={16} />
+    </Button>
+  )
+}
 
 export const CheckAllCheckboxes = observer(() => {
   const id = String(getSearchCard())
