@@ -18,7 +18,6 @@ import tw from 'tailwind-styled-components'
 import {useTeamStore} from '../team/team-store'
 import {AddNewCard} from './add-new-card'
 import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
-import {useCardHandlers} from './cards-handlers'
 import {CardsContext, CardsStore, useCardsStore} from './cards-store'
 import {getSearchCard} from './get-search-card'
 import {Card as CardType} from './types'
@@ -111,12 +110,12 @@ const Cards = observer(() => {
 
 const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
   const {user} = useSupabase()
+  const [, store] = useCardsStore()
   const updateSearchParams = useUpdateSearchParams()
-  const {removeCard} = useCardHandlers()
 
-  const remove = async () => {
-    await removeCard(card.id)
-    updateSearchParams('card')
+  const remove = () => {
+    store.setIdCardToDelete(card.id)
+    updateSearchParams('delete-card', 'true')
   }
 
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import {useCardHandlers} from '@/components/cards/cards-handlers'
-import {useSetFocusAfterTransitionEnd} from '@/components/cards/modal-create-card/use-set-focus-after-transitionend'
+import {useSetFocusAfterTransitionEnd} from '@/components/cards/modal-card/use-set-focus-after-transitionend'
 import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
@@ -12,7 +12,7 @@ import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
 
-export const ModalCreateCard = () => {
+export const ModalCardCreate = () => {
   const updateSearchParams = useUpdateSearchParams()
   const createCard = getSearchParam('create-card')
 

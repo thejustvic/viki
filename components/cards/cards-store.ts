@@ -7,6 +7,7 @@ import type {Card} from './types'
 interface State {
   cards: SupabaseQuery<Card[]>
   searchValue: string
+  idCardToDelete: string | null
 }
 
 export class CardsStore {
@@ -16,7 +17,8 @@ export class CardsStore {
       data: null,
       error: null
     },
-    searchValue: ''
+    searchValue: '',
+    idCardToDelete: null
   }
 
   constructor() {
@@ -32,6 +34,11 @@ export class CardsStore {
       error: null
     }
     this.state.searchValue = ''
+    this.state.idCardToDelete = null
+  }
+
+  setIdCardToDelete = (id: string | null) => {
+    this.state.idCardToDelete = id
   }
 
   setCards(cards: State['cards']): void {
