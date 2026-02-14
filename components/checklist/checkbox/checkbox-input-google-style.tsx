@@ -32,7 +32,6 @@ export const GoogleStyleInput = observer(() => {
   const {insertCheckbox} = useCheckboxHandlers()
   const {register, handleSubmit, setValue} = useForm<FormInputs>()
   const cardId = getSearchCard()
-
   useEffect(() => {
     const handleVisualUpdate = () => {
       if (window.visualViewport) {
@@ -50,7 +49,6 @@ export const GoogleStyleInput = observer(() => {
       window.visualViewport?.removeEventListener('scroll', handleVisualUpdate)
     }
   }, [])
-
   const onSubmit = async (data: FormInputs) => {
     if (!cardId) {
       return
@@ -62,7 +60,6 @@ export const GoogleStyleInput = observer(() => {
       setValue('text', (e as Error).message)
     }
   }
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
@@ -80,13 +77,14 @@ export const GoogleStyleInput = observer(() => {
           <input
             {...register('text', {required: true})}
             className="input input-md flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
-            autoComplete="one-time-code"
+            autoComplete="cc-csc"
             type="text"
             placeholder="type..."
             style={inputStyles}
             onClick={e => e.stopPropagation()}
-            onFocus={e => e.stopPropagation()}
             name="my-custom-field"
+            readOnly
+            onFocus={e => e.target.removeAttribute('readOnly')}
           />
           <button type="submit" style={buttonStyles}>
             <IconSend />
