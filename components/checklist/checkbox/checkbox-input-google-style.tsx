@@ -64,7 +64,7 @@ export const GoogleStyleInput = observer(() => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
         className="shadow-sm"
         style={{
