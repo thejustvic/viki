@@ -15,7 +15,7 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
 import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
-import {GoogleStyleInput} from '@/components/checklist/checkbox/checkbox-input-google-style'
+import {InputGoogleStyle} from '@/components/checklist/checkbox/Input-google-style'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
@@ -109,8 +109,7 @@ const ChecklistTabContent = observer(() => {
       </div>
       <div className="h-[calc(100dvh-158px)]">
         <Checklist />
-        {/* <CheckboxInput /> */}
-        <GoogleStyleInput />
+        <InputGoogleStyle />
       </div>
     </Tabs.TabContent>
   )

@@ -12,7 +12,7 @@ interface FormInputs {
   q_99: string
 }
 
-export const GoogleStyleInput = observer(() => {
+export const InputGoogleStyle = observer(() => {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const {insertCheckbox} = useCheckboxHandlers()
