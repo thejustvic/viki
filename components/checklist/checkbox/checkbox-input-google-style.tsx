@@ -20,12 +20,6 @@ const buttonStyles: CSSProperties = {
   cursor: 'pointer'
 }
 
-const inputStyles: CSSProperties = {
-  width: '100%',
-  fontSize: '16px',
-  outline: 'none'
-}
-
 export const GoogleStyleInput = observer(() => {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -76,14 +70,13 @@ export const GoogleStyleInput = observer(() => {
         <div style={{position: 'relative'}}>
           <input
             {...register('text', {required: true})}
-            className="input input-md flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
-            autoComplete="off"
+            className="input input-md pr-10 flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
+            autoComplete="one-time-code"
             placeholder="type..."
-            style={inputStyles}
-            onClick={e => e.stopPropagation()}
-            name="my-custom-field"
             readOnly
+            onBlur={e => e.target.setAttribute('readonly', 'true')}
             onFocus={e => e.target.removeAttribute('readOnly')}
+            onClick={e => e.stopPropagation()}
           />
           <button type="submit" style={buttonStyles}>
             <IconSend />
