@@ -13,7 +13,7 @@ export const CheckboxEdit = observer(({title, id}: CheckboxProps) => {
   const {updateCheckboxTitle, removeCheckbox} = useCheckboxHandlers()
 
   return (
-    <div className="flex gap-2 flex-col">
+    <div className="flex gap-2 flex-col ml-5">
       <Textarea
         className="w-full min-h-10 h-10"
         onBlur={e => store.blurEditing(e.target.value, title)}
@@ -22,10 +22,11 @@ export const CheckboxEdit = observer(({title, id}: CheckboxProps) => {
         onFocus={event => {
           const position = value.length
           event.target.setSelectionRange(position, position)
+          event.target.style.height = event.target.scrollHeight + 'px'
         }}
         autoFocus
       />
-      <div className="flex gap-2 m-2">
+      <div className="flex gap-1">
         <Button
           soft
           color="info"
