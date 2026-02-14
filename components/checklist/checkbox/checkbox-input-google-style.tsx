@@ -1,23 +1,15 @@
+/* eslint-disable max-lines-per-function */
 import {getSearchCard} from '@/components/cards/get-search-card'
+import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {CSSProperties, useEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useCheckboxHandlers} from './checkbox-handlers'
 
 interface FormInputs {
-  text: string
-}
-
-const buttonStyles: CSSProperties = {
-  position: 'absolute',
-  right: '10px',
-  top: '50%',
-  transform: 'translateY(-50%)',
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer'
+  q_99: string
 }
 
 export const GoogleStyleInput = observer(() => {
@@ -29,10 +21,16 @@ export const GoogleStyleInput = observer(() => {
   useEffect(() => {
     const handleVisualUpdate = () => {
       if (window.visualViewport) {
-        const offset = window.innerHeight - window.visualViewport.height
-        setKeyboardHeight(offset > 0 ? offset : 0)
+        const viewportHeight = window.visualViewport.height
+        const windowHeight = window.innerHeight
+
+        const offset = windowHeight - viewportHeight
+        const actualKeyboardHeight = offset > 100 ? offset : 0
+
+        setKeyboardHeight(actualKeyboardHeight)
+
         if (containerRef.current) {
-          containerRef.current.style.bottom = `${offset}px`
+          containerRef.current.style.transform = `translateY(-${actualKeyboardHeight}px)`
         }
       }
     }
@@ -48,10 +46,10 @@ export const GoogleStyleInput = observer(() => {
       return
     }
     try {
-      await insertCheckbox({title: data.text, cardId})
-      setValue('text', '')
+      await insertCheckbox({title: data.q_99, cardId})
+      setValue('q_99', '')
     } catch (e) {
-      setValue('text', (e as Error).message)
+      setValue('q_99', (e as Error).message)
     }
   }
   return (
@@ -67,20 +65,39 @@ export const GoogleStyleInput = observer(() => {
           transition: 'transform 0.1s ease-out'
         }}
       >
-        <div style={{position: 'relative'}} className="pointer-events-none">
+        <div className="relative pointer-events-none">
+          <div
+            style={{
+              opacity: 0,
+              position: 'absolute',
+              height: 0,
+              overflow: 'hidden'
+            }}
+          >
+            <input type="text" tabIndex={-1} />
+            <input type="password" tabIndex={-1} />
+          </div>
           <input
-            {...register('text', {required: true})}
-            className="input input-md pr-10 flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary pointer-events-auto"
-            autoComplete="one-time-code"
+            {...register('q_99', {required: true})}
+            className="input input-md pr-20 flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary pointer-events-auto"
+            autoComplete="off"
             placeholder="type..."
             readOnly
+            type="search"
             onBlur={e => e.target.setAttribute('readonly', 'true')}
             onFocus={e => e.target.removeAttribute('readOnly')}
             onClick={e => e.stopPropagation()}
+            id="q_99"
           />
-          <button type="submit" style={buttonStyles}>
+          <Button
+            soft
+            size="sm"
+            type="submit"
+            onClick={e => e.stopPropagation()}
+            className="absolute right-1 top-1 pointer-events-auto"
+          >
             <IconSend />
-          </button>
+          </Button>
         </div>
       </div>
     </Form>
