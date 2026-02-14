@@ -77,8 +77,7 @@ export const GoogleStyleInput = observer(() => {
           <input
             {...register('text', {required: true})}
             className="input input-md flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
-            autoComplete="cc-csc"
-            type="text"
+            autoComplete="off"
             placeholder="type..."
             style={inputStyles}
             onClick={e => e.stopPropagation()}
