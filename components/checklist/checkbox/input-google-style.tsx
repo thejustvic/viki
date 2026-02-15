@@ -22,8 +22,8 @@ export const InputGoogleStyle = observer(() => {
     const handleVisualUpdate = () => {
       if (window.visualViewport) {
         const offset = window.innerHeight - window.visualViewport.height
-        // 60px threshold to ignore small changes (e.g. the appearance of the URL bar)
-        setKeyboardHeight(offset > 60 ? offset : 0)
+        // 100px threshold to ignore small changes
+        setKeyboardHeight(offset > 100 ? offset : 0)
       }
     }
 
@@ -43,21 +43,20 @@ export const InputGoogleStyle = observer(() => {
       await insertCheckbox({title: data.q_99, cardId})
       setValue('q_99', '')
     } catch (e) {
-      console.error(e)
+      setValue('q_99', (e as Error).message)
     }
   }
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
-        className="fixed z-50 py-[10px] px-[16px] bg-base-100 border-t border-base-300 left-0 right-0 bottom-0"
+        className="shadow-sm fixed z-50 py-[10px] px-[16px] bg-base-100 border-t border-base-300 left-0 right-0 bottom-0"
         style={{
           transform: `translateY(-${keyboardHeight}px)`,
-          transition: 'transform 0.15s cubic-bezier(0, 0, 0.2, 1)',
-          boxShadow: '0 -4px 10px rgba(0,0,0,0.05)'
+          transition: 'transform 0.15s cubic-bezier(0, 0, 0.2, 1)'
         }}
       >
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative">
           <Input
             {...register('q_99', {required: true})}
             inputClassName="pr-14 w-full focus:outline-none focus:border-primary"
