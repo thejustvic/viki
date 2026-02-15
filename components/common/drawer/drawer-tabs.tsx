@@ -15,7 +15,7 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
 import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
-import {InputGoogleStyle} from '@/components/checklist/checkbox/Input-google-style'
+import {InputGoogleStyle} from '@/components/checklist/checkbox/input-google-style'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
