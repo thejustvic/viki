@@ -33,10 +33,10 @@
   --border: 1px;
   --depth: 0;
   --noise: 0;
-  --text-shadow: none;
+  --text-shadow: 0 1px 1px rgba(0, 0, 0, 2);
 }
 
 @plugin "daisyui/theme" {
   name: 'dark';
-  --text-shadow: 0 1.2px 1.2px rgba(0, 0, 0, 0.8);
+  --text-shadow: 0 1px 1px rgba(0, 0, 0, 2);
 }

@@ -131,7 +131,7 @@ const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
 
 const TwText = tw.div`
   line-clamp-3
-  text-base-content/90
+  text-[#c0cada]/90
   drop-shadow-[var(--text-shadow)]
 `
 
