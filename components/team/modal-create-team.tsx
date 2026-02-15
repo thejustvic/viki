@@ -39,7 +39,7 @@ const ModalHeader = () => {
 }
 
 interface FormInputs {
-  name: string
+  teamName69: string
 }
 
 const Data = observer(() => {
@@ -54,7 +54,7 @@ const Data = observer(() => {
       id: 'dialog-modal-create-team',
       dep: getSearchParam('create-team')
     },
-    () => setFocus('name'),
+    () => setFocus('teamName69'),
     () => reset()
   )
 
@@ -66,7 +66,7 @@ const Data = observer(() => {
     await insertTeam({
       owner_id: user.id,
       data: {
-        name: data.name
+        name: data.teamName69
       }
     })
     updateSearchParams('create-team')
@@ -80,7 +80,7 @@ const Data = observer(() => {
       <Input
         label="name"
         inputClassName="w-full"
-        {...register('name', {
+        {...register('teamName69', {
           required: true
         })}
       />

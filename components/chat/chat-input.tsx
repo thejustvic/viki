@@ -15,7 +15,7 @@ const TwInput = tw(Input)`
 `
 
 interface FormInputs {
-  text: string
+  chatInput69: string
 }
 
 export const ChatInput = observer(() => {
@@ -28,10 +28,10 @@ export const ChatInput = observer(() => {
       return
     }
     try {
-      await insertMessage({text: data.text, cardId})
-      setValue('text', '')
+      await insertMessage({text: data.chatInput69, cardId})
+      setValue('chatInput69', '')
     } catch (e) {
-      setValue('text', (e as Error).message)
+      setValue('chatInput69', (e as Error).message)
     }
   }
 
@@ -42,7 +42,7 @@ export const ChatInput = observer(() => {
     >
       <TwInput
         inputClassName="w-full focus:outline-none focus:border-primary"
-        {...register('text', {
+        {...register('chatInput69', {
           required: true
         })}
         id="r_69"

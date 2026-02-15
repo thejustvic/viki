@@ -45,7 +45,7 @@ const ModalBody = () => (
 )
 
 interface FormInputs {
-  text: string
+  createCard69: string
 }
 
 const Text = observer(() => {
@@ -61,15 +61,15 @@ const Text = observer(() => {
       id: 'dialog-modal-create-card',
       dep: getSearchParam('create-card')
     },
-    () => setFocus('text'),
-    () => resetField('text')
+    () => setFocus('createCard69'),
+    () => resetField('createCard69')
   )
 
   const onSubmit = async (data: FormInputs) => {
-    if (!state.currentTeamId || !data.text.trim()) {
+    if (!state.currentTeamId || !data.createCard69.trim()) {
       return
     }
-    await insertCard(data.text, state.currentTeamId)
+    await insertCard(data.createCard69, state.currentTeamId)
     updateSearchParams('create-card')
   }
 
@@ -85,7 +85,7 @@ const Text = observer(() => {
       <Textarea
         size="md"
         className="w-full"
-        {...register('text', {
+        {...register('createCard69', {
           required: true
         })}
         onKeyDown={handleKeyDown}

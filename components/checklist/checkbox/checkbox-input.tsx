@@ -8,7 +8,7 @@ import {useForm} from 'react-hook-form'
 import {useCheckboxHandlers} from './checkbox-handlers'
 
 interface FormInputs {
-  text: string
+  checkboxInput69: string
 }
 
 export const CheckboxInput = observer(() => {
@@ -21,10 +21,10 @@ export const CheckboxInput = observer(() => {
       return
     }
     try {
-      await insertCheckbox({title: data.text, cardId})
-      setValue('text', '')
+      await insertCheckbox({title: data.checkboxInput69, cardId})
+      setValue('checkboxInput69', '')
     } catch (e) {
-      setValue('text', (e as Error).message)
+      setValue('checkboxInput69', (e as Error).message)
     }
   }
 
@@ -35,7 +35,7 @@ export const CheckboxInput = observer(() => {
     >
       <Input
         inputClassName="flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary"
-        {...register('text', {
+        {...register('checkboxInput69', {
           required: true
         })}
       />
