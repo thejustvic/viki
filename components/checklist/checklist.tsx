@@ -42,16 +42,28 @@ const Checkboxes = observer(() => {
   return (
     <PerfectScrollbar>
       <div className="flex flex-col h-[calc(100dvh-180px)]">
-        {state.checklists.data?.get(id)?.map(checkbox => {
-          return (
-            <CheckboxComponent
-              key={checkbox.id}
-              id={checkbox.id}
-              checked={checkbox.is_completed}
-              title={checkbox.title}
-            />
-          )
-        })}
+        {state.checklists.data
+          ?.get(id)
+          ?.slice()
+          ?.sort((a, b) => {
+            return (
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+            )
+          })
+          ?.sort((a, b) => {
+            return Number(a.is_completed) - Number(b.is_completed)
+          })
+          ?.map(checkbox => {
+            return (
+              <CheckboxComponent
+                key={checkbox.id}
+                id={checkbox.id}
+                checked={checkbox.is_completed}
+                title={checkbox.title}
+              />
+            )
+          })}
       </div>
     </PerfectScrollbar>
   )
