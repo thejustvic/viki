@@ -2,7 +2,6 @@
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
-import {Input} from '@/components/daisyui/input'
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useEffect, useState} from 'react'
@@ -18,16 +17,18 @@ export const InputGoogleStyle = observer(() => {
   const {insertCheckbox} = useCheckboxHandlers()
   const {register, handleSubmit, setValue} = useForm<FormInputs>()
   const cardId = getSearchCard()
-
   useEffect(() => {
     const handleVisualUpdate = () => {
       if (window.visualViewport) {
-        const offset = window.innerHeight - window.visualViewport.height
-        // 100px threshold to ignore small changes
-        setKeyboardHeight(offset > 100 ? offset : 0)
+        const viewportHeight = window.visualViewport.height
+        const windowHeight = window.innerHeight
+
+        const offset = windowHeight - viewportHeight
+        const actualKeyboardHeight = offset > 100 ? offset : 0
+
+        setKeyboardHeight(actualKeyboardHeight)
       }
     }
-
     window.visualViewport?.addEventListener('resize', handleVisualUpdate)
     window.visualViewport?.addEventListener('scroll', handleVisualUpdate)
     return () => {
@@ -35,7 +36,6 @@ export const InputGoogleStyle = observer(() => {
       window.visualViewport?.removeEventListener('scroll', handleVisualUpdate)
     }
   }, [])
-
   const onSubmit = async (data: FormInputs) => {
     if (!cardId) {
       return
@@ -47,16 +47,16 @@ export const InputGoogleStyle = observer(() => {
       setValue('q_99', (e as Error).message)
     }
   }
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
-        className="shadow-sm fixed z-50 py-[10px] px-[16px] pointer-events-none"
+        className="fixed z-50 py-[10px] px-[16px] pointer-events-none"
         style={{
           left: 0,
           right: 0,
           bottom: 0,
           transform: `translateY(-${keyboardHeight}px)`,
+          boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
           transition: 'transform 0.1s ease-out'
         }}
       >
@@ -72,25 +72,26 @@ export const InputGoogleStyle = observer(() => {
             <input type="text" tabIndex={-1} />
             <input type="password" tabIndex={-1} />
           </div>
-          <Input
+          <input
             {...register('q_99', {required: true})}
-            inputClassName="pr-14 w-full focus:outline-none focus:border-primary pointer-events-auto"
-            autoComplete="one-time-code" // aggressive autofill disabling for iOS
+            className="input input-md pr-20 flex-1 flex-shrink w-full min-h-10 h-10 focus:outline-none focus:border-primary pointer-events-auto"
+            autoComplete="off"
             placeholder="type..."
-            type="search"
-            id="q_99"
             readOnly
+            type="search"
             onBlur={e => e.target.setAttribute('readonly', 'true')}
             onFocus={e => e.target.removeAttribute('readOnly')}
             onClick={e => e.stopPropagation()}
+            id="q_99"
           />
           <Button
             soft
             size="sm"
             type="submit"
-            className="absolute right-1 top-1 h-[32px] min-h-[32px] pointer-events-auto"
+            onClick={e => e.stopPropagation()}
+            className="absolute right-1 top-1 pointer-events-auto"
           >
-            <IconSend size={18} />
+            <IconSend />
           </Button>
         </div>
       </div>
