@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
@@ -50,26 +51,44 @@ export const InputGoogleStyle = observer(() => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <div
-        className="shadow-sm fixed z-50 py-[10px] px-[16px] bg-base-100 border-t border-base-300 left-0 right-0 bottom-0"
+        className="shadow-sm fixed z-50 py-[10px] px-[16px] pointer-events-none"
         style={{
+          left: 0,
+          right: 0,
+          bottom: 0,
           transform: `translateY(-${keyboardHeight}px)`,
-          transition: 'transform 0.15s cubic-bezier(0, 0, 0.2, 1)'
+          transition: 'transform 0.1s ease-out'
         }}
       >
-        <div className="relative">
+        <div className="relative pointer-events-none">
+          <div
+            style={{
+              opacity: 0,
+              position: 'absolute',
+              height: 0,
+              overflow: 'hidden'
+            }}
+          >
+            <input type="text" tabIndex={-1} />
+            <input type="password" tabIndex={-1} />
+          </div>
           <Input
             {...register('q_99', {required: true})}
-            inputClassName="pr-14 w-full focus:outline-none focus:border-primary"
+            inputClassName="pr-14 w-full focus:outline-none focus:border-primary pointer-events-auto"
             autoComplete="one-time-code" // aggressive autofill disabling for iOS
             placeholder="type..."
             type="search"
             id="q_99"
+            readOnly
+            onBlur={e => e.target.setAttribute('readonly', 'true')}
+            onFocus={e => e.target.removeAttribute('readOnly')}
+            onClick={e => e.stopPropagation()}
           />
           <Button
             soft
             size="sm"
             type="submit"
-            className="absolute right-1 top-1 h-[32px] min-h-[32px]"
+            className="absolute right-1 top-1 h-[32px] min-h-[32px] pointer-events-auto"
           >
             <IconSend size={18} />
           </Button>
