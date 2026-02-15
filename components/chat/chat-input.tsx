@@ -46,7 +46,8 @@ export const ChatInput = observer(() => {
           required: true
         })}
         id="r_69"
-        autoComplete="off"
+        placeholder="type some message..."
+        type="search"
       />
       <Button ghost variant="link" type="submit" className="p-0 px-2">
         <IconSend />
