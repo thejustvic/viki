@@ -14,6 +14,7 @@ import {IconTrash} from '@tabler/icons-react'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren, useMemo} from 'react'
 import {isMobile} from 'react-device-detect'
+import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {useTeamStore} from '../team/team-store'
 import {AddNewCard} from './add-new-card'
@@ -128,9 +129,8 @@ const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
   )
 })
 
-const TwText = tw.span`
-  h-12
-  line-clamp-2
+const TwText = tw.div`
+  line-clamp-3
   text-base-content/90
   drop-shadow-[var(--text-shadow)]
 `
@@ -149,13 +149,17 @@ const CardBody = observer(({card, remove}: CardProps) => {
   }
 
   return (
-    <div onMouseEnter={hovered.turnOn} onMouseLeave={hovered.turnOff}>
+    <div
+      className="flex flex-col flex-1 justify-between"
+      onMouseEnter={hovered.turnOn}
+      onMouseLeave={hovered.turnOff}
+    >
       <CardUI.Title className="flex justify-between">
         <TwText>{card.text}</TwText>
         {isMobile ? (
           <DeleteCardButton remove={remove} />
         ) : (
-          <>{hovered.value && <DeleteCardButton remove={remove} />}</>
+          <DeleteCardButton remove={remove} visible={hovered.value} />
         )}
       </CardUI.Title>
       <CardUI.Actions className="justify-center">
@@ -174,16 +178,17 @@ const CardBody = observer(({card, remove}: CardProps) => {
 
 interface DeleteCardButtonProps {
   remove: () => void
+  visible?: boolean
 }
 
-const DeleteCardButton = ({remove}: DeleteCardButtonProps) => {
+const DeleteCardButton = ({remove, visible = true}: DeleteCardButtonProps) => {
   return (
     <Button
       soft
       shape="circle"
       size="sm"
       onClick={remove}
-      className="self-start"
+      className={twJoin(visible ? 'opacity-100' : 'opacity-0', 'self-start')}
     >
       <IconTrash size={16} />
     </Button>
