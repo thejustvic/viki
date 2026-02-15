@@ -16,6 +16,8 @@ import tw from 'tailwind-styled-components'
 
 import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
 import {InputGoogleStyle} from '@/components/checklist/checkbox/input-google-style'
+import {Button} from '@/components/daisyui/button'
+import {IconArrowBarLeft} from '@tabler/icons-react'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
@@ -29,8 +31,28 @@ const CardVisual = dynamic(() => import('@/components/cards/card-visual'), {
   )
 })
 
+const CloseRightDrawer = observer(() => {
+  const [, store] = useGlobalStore()
+  const closeRightDrawer = () => {
+    store.setRightDrawerClosed()
+  }
+  return (
+    <div className="flex w-10 items-center text-lg normal-case">
+      <Button
+        soft
+        className="rounded-none rounded-l-md h-10"
+        size="xs"
+        onClick={closeRightDrawer}
+      >
+        <IconArrowBarLeft size={16} />
+      </Button>
+    </div>
+  )
+})
+
 export const TabsComponent = observer(() => {
   const [state] = useGlobalStore()
+
   return (
     <div
       className="h-full border border-y-0 border-base-300/50 bg-base-300/30"
@@ -38,6 +60,7 @@ export const TabsComponent = observer(() => {
     >
       <Drag drawer="right" />
       <Tabs className={twJoin('flex justify-between')}>
+        {isMobile && <CloseRightDrawer />}
         <InfoTab />
         <ChecklistTab />
         {isMobile && <ChatTab />}

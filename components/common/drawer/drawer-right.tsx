@@ -5,21 +5,19 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {isMobile} from 'react-device-detect'
-import {useSwipeable} from 'react-swipeable'
 import {TabsComponent} from './drawer-tabs'
 import {DrawerContentWrapper} from './drawer-wrapper'
 
 export const DrawerRight = observer(({children}: PropsWithChildren) => {
   const [state, store] = useGlobalStore()
   const {user} = useSupabase()
-  const {handleRightSwipe, handleLeftSwipe} = useSwipeableHandlers()
-
   useRightDrawerOpenState()
-
-  const rightSwipeHandlers = useSwipeable({
-    onSwipedRight: handleRightSwipe,
-    onSwipedLeft: handleLeftSwipe
-  })
+  // disable swipe
+  // const {handleRightSwipe, handleLeftSwipe} = useSwipeableHandlers()
+  // const rightSwipeHandlers = useSwipeable({
+  //   onSwipedRight: handleRightSwipe,
+  //   onSwipedLeft: handleLeftSwipe
+  // })
 
   return (
     <Drawer
@@ -30,7 +28,7 @@ export const DrawerRight = observer(({children}: PropsWithChildren) => {
       side={user && state.rightDrawerOpen ? <RightDrawerSide /> : null}
       onClickOverlay={store.setRightDrawerClosed}
       contentClassName="h-dvh"
-      {...rightSwipeHandlers}
+      // {...rightSwipeHandlers} // disable swipe
     >
       {children}
     </Drawer>
