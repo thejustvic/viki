@@ -29,7 +29,7 @@ import {
 const TwContainer = tw.div`
   flex
   gap-8
-  m-8
+  p-8
   flex-wrap
   justify-center
   md:justify-start
@@ -180,7 +180,6 @@ const DeleteCardButton = ({remove}: DeleteCardButtonProps) => {
   return (
     <Button
       soft
-      color="error"
       shape="circle"
       size="sm"
       onClick={remove}

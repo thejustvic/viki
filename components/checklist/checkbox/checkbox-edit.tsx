@@ -13,7 +13,7 @@ export const CheckboxEdit = observer(({title, id}: CheckboxProps) => {
   const {updateCheckboxTitle, removeCheckbox} = useCheckboxHandlers()
 
   return (
-    <div className="flex gap-2 flex-col ml-5">
+    <div className="flex gap-2 flex-col ml-8">
       <Textarea
         className="w-full min-h-10 h-10"
         onBlur={e => store.blurEditing(e.target.value, title)}

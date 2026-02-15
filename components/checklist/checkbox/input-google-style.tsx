@@ -25,6 +25,7 @@ const TwContainer = tw.div`
   bottom-0 
   right-0
   shadow-sm
+  bg-base-200
 `
 
 /* 
@@ -82,12 +83,12 @@ export const InputGoogleStyle = observer(() => {
           }
         }
       >
-        <div className="relative">
+        <div className="relative shadow-sm">
           <Input
             {...register('q_99', {required: true})}
             inputClassName="pr-16 w-full focus:outline-none focus:border-primary"
             autoComplete="off"
-            placeholder="type..."
+            placeholder="type some stuff..."
             type="search"
             id="q_99"
           />

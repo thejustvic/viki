@@ -54,7 +54,7 @@ ChatBubble.Message = ({
       className={twJoin(
         'chat-bubble touch-manipulation px-2 pb-4',
         className,
-        color === 'primary' && 'bg-base-300',
+        color === 'primary' && 'bg-base-300/50',
         color === 'secondary' && 'bg-base-200'
       )}
       {...props}

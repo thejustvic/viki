@@ -54,7 +54,7 @@ export default function CardVisual({
       <BaseBox position={[5, 1, -6]} args={[1, 2, 1]} color="red" />
       <BaseBox position={[5, 1, -4]} args={[1, 3, 1]} color="orange" />
 
-      <BaseCharacter position={[0, 1, 0]} args={[0.5]} isLocked={isLocked} />
+      <BaseCharacter position={[-0.2, 1, 1]} args={[0.5]} isLocked={isLocked} />
 
       <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
     </BaseScene>

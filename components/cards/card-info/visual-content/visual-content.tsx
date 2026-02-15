@@ -7,7 +7,7 @@ import {CardVisual} from '../../types'
 import {ShowData} from '../card-info'
 import {useCardInfoStore} from '../card-info-store'
 
-const TwRadio = tw.div`flex gap-1 items-center justify-between w-[90px] bg-base-300 p-2 rounded cursor-pointer`
+const TwRadio = tw.div`flex gap-1 items-center justify-between w-[90px] bg-base-200 p-2 rounded cursor-pointer`
 
 const cardVisual: CardVisual = ['winter', 'spring']
 

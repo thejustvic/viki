@@ -80,7 +80,7 @@ const MessageDropdown = ({
       className="chat-image"
     >
       <UserImage src={author_image} shape="circle" />
-      <Dropdown.Menu className="shadow-lg bg-base-200 px-2 py-0">
+      <Dropdown.Menu className="shadow-lg bg-base-300/90 px-2 py-0">
         {author_email}
         <div className="flex items-start gap-1">
           <time className="text-xs break-words w-[150px]">

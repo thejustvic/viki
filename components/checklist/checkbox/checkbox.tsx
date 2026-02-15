@@ -27,7 +27,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
 
   return (
     <>
-      <label className="fieldset-label">
+      <label className="fieldset-label py-2 px-4 rounded-box hover:bg-accent/20">
         <input
           type="checkbox"
           checked={props.checked}

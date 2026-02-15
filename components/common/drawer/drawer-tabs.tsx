@@ -23,7 +23,9 @@ import {Loader} from '../loader'
 const CardVisual = dynamic(() => import('@/components/cards/card-visual'), {
   ssr: false,
   loading: () => (
-    <Loader className="flex justify-center mt-8 w-full text-violet-400" />
+    <div className="flex justify-center w-full items-center h-[calc(100dvh-70px)]">
+      <Loader className="text-violet-400" />
+    </div>
   )
 })
 
@@ -31,7 +33,7 @@ export const TabsComponent = observer(() => {
   const [state] = useGlobalStore()
   return (
     <div
-      className="h-full border border-y-0 border-base-300 bg-base-100"
+      className="h-full border border-y-0 border-base-300/50 bg-base-300/30"
       style={isMobile ? {} : {width: state.rightDrawerWidth}}
     >
       <Drag drawer="right" />
@@ -98,19 +100,15 @@ const ChecklistTabContent = observer(() => {
   return (
     <Tabs.TabContent>
       <div className="shadow-sm">
-        <div className="flex gap-1 p-4">
-          {state.checklists.data?.get(id)?.length ? (
-            <>
-              <CheckAllCheckboxes />
-              <CardChecklistProgress id={id} />
-            </>
-          ) : null}
-        </div>
+        {state.checklists.data?.get(id)?.length ? (
+          <div className="flex gap-1 p-4 h-full bg-primary/8">
+            <CheckAllCheckboxes />
+            <CardChecklistProgress id={id} />
+          </div>
+        ) : null}
       </div>
-      <div className="h-[calc(100dvh-158px)]">
-        <Checklist />
-        <InputGoogleStyle />
-      </div>
+      <Checklist />
+      <InputGoogleStyle />
     </Tabs.TabContent>
   )
 })
@@ -136,7 +134,7 @@ const ChatTab = observer(() => {
 const ChatTabContent = () => {
   return (
     <Tabs.TabContent>
-      <div className="flex h-[calc(100dvh-41px)]">
+      <div className="flex h-[calc(100dvh-68px)]">
         <ChatWrapper />
       </div>
     </Tabs.TabContent>
@@ -167,7 +165,7 @@ const VisualTabContent = observer(() => {
   const [cardInfoState] = useCardInfoStore()
 
   return (
-    <Tabs.TabContent className="h-full">
+    <Tabs.TabContent>
       <div className="flex relative">
         <CardVisual
           checklist={cardChecklistState.checklists.data?.get(id) ?? []}

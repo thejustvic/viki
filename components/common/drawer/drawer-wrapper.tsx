@@ -20,7 +20,7 @@ export const DrawerWrapper = observer(({children}: Props) => {
       <DrawerRight>
         <Navbar />
         <PerfectScrollbar
-          className="h-dvh"
+          className="h-dvh bg-base-300/20"
           style={{height: `calc(100% - ${headerHeight})`}}
         >
           {children}

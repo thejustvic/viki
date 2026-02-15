@@ -1,3 +1,4 @@
+import {headerHeight} from '@/utils/const'
 import {HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
@@ -10,7 +11,7 @@ export const Tabs = ({children, className, ...props}: Props) => {
   return (
     <div
       role="tablist"
-      className={twJoin('tabs tabs-lift', className)}
+      className={twJoin('tabs tabs-box', className)}
       {...props}
     >
       {children}
@@ -31,8 +32,9 @@ Tabs.Tab = ({label, groupName, className, checked, ...props}: PropsTab) => {
       name={groupName}
       checked={checked}
       role="tab"
-      className={twJoin('tab', className)}
+      className={twJoin('tab h-[42px] my-2', className)}
       aria-label={label}
+      style={{height: headerHeight}}
       {...props}
     />
   )
@@ -40,7 +42,13 @@ Tabs.Tab = ({label, groupName, className, checked, ...props}: PropsTab) => {
 
 Tabs.TabContent = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('tab-content', className)} {...props}>
+    <div
+      className={twJoin(
+        'tab-content bg-base-100/50 border-base-300/50',
+        className
+      )}
+      {...props}
+    >
       {children}
     </div>
   )

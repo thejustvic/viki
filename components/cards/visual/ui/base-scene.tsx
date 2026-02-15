@@ -30,14 +30,14 @@ interface BasicSceneProps {
 
 const BasicScene = ({children, isLocked}: BasicSceneProps) => {
   return (
-    <div style={{height: 'calc(100vh - 41px)', width: '100vw'}}>
+    <div style={{height: 'calc(100vh - 70px)', width: '100vw'}}>
       {!isMobile && (
         <>
           {!isLocked.value ? (
             <Button
               soft
               color="info"
-              className="m-2 absolute z-10"
+              className="h-14 m-2 absolute z-10"
               id="enter-btn"
             >
               Enter First Person With Movement by WASD keys and spacebar

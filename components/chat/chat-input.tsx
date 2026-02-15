@@ -45,6 +45,8 @@ export const ChatInput = observer(() => {
         {...register('text', {
           required: true
         })}
+        id="r_69"
+        autoComplete="off"
       />
       <Button ghost variant="link" type="submit" className="p-0 px-2">
         <IconSend />

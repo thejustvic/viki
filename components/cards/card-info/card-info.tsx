@@ -3,6 +3,7 @@
 import {useCardHandlers} from '@/components/cards/cards-handlers'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Loader} from '@/components/common/loader'
+import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
 import {UserImage} from '@/components/common/user-image'
 import {Menu} from '@/components/daisyui/menu'
 import {Textarea} from '@/components/daisyui/textarea'
@@ -32,9 +33,6 @@ const TwLoading = tw(Loader)`
 `
 
 const TwMenu = tw(Menu)`
-  bg-base-100
-  text-base-content
-  overflow-y-auto
   p-2
   flex-nowrap
   relative
@@ -70,15 +68,17 @@ export const CardInfo = observer(() => {
   )
 })
 
-const CardInfoBody = observer(() => (
-  <div className="flex flex-col gap-2">
-    <Creator />
-    <Time />
-    <Text />
-    <Cover />
-    <Visual />
-  </div>
-))
+const CardInfoBody = () => (
+  <PerfectScrollbar>
+    <div className="flex flex-col gap-2 h-[calc(100dvh-86px)]">
+      <Creator />
+      <Time />
+      <Text />
+      <Cover />
+      <Visual />
+    </div>
+  </PerfectScrollbar>
+)
 
 const Visual = () => {
   const [state] = useCardInfoStore()
@@ -106,7 +106,7 @@ const Cover = observer(() => {
   )
 })
 
-const TwRadio = tw.div`flex gap-1 items-center justify-between w-[120px] bg-base-300 p-2 rounded cursor-pointer`
+const TwRadio = tw.div`flex gap-1 items-center justify-between w-[120px] bg-base-200 p-2 rounded cursor-pointer`
 const bgImages: CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
 
 const CoverData = observer(() => {

@@ -11,7 +11,7 @@ const TwMenu = tw.div`
   border
   border-y-0
   border-base-300
-  bg-base-200
+  bg-base-300/70
   text-base-content
   flex
   flex-col
