@@ -281,7 +281,10 @@ const CardBody = observer(({card, remove, dragListeners}: CardProps) => {
       <CardUI.Title className="flex justify-between">
         <TwText>{card.text}</TwText>
         {isMobile ? (
-          <DeleteCardButton remove={remove} />
+          <div className="flex gap-1 self-start">
+            <DragCardButton dragListeners={dragListeners} />
+            <DeleteCardButton remove={remove} />
+          </div>
         ) : (
           <div className="flex gap-1 self-start">
             <DragCardButton
