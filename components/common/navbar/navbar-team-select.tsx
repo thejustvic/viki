@@ -97,12 +97,13 @@ export const NavbarTeamSelect = observer(() => {
   }
 
   return (
-    <div className="flex items-center">
-      <div>team:</div>
+    <div className="flex flex-col items-center">
       <TwMenu>
         <li>
           <details ref={ref}>
-            <summary>{state.currentTeam.data?.name}</summary>
+            <summary className="truncate">
+              {state.currentTeam.data?.name}
+            </summary>
             <ul>
               <MyTeams
                 setId={setId}
@@ -125,9 +126,9 @@ const TwMenu = tw.ul`
   menu 
   menu-horizontal 
   bg-base-200 
-  rounded-box 
-  gap-2 
+  rounded-box
   items-center
+  p-0
 `
 
 const MyTeams = observer(
@@ -147,7 +148,7 @@ const MyTeams = observer(
     return (
       <li>
         <details open>
-          <summary className="truncate">my teams</summary>
+          <summary>my teams</summary>
           <ul>
             {teamState.myTeams.data?.map(team => {
               const currentTeamIdEqual =

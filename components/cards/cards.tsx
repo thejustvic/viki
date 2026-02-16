@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 'use client'
 
 import {CardChecklistProgress} from '@/components/cards/card-checklist/card-checklist-progress'
@@ -10,15 +11,19 @@ import {useBoolean} from '@/hooks/use-boolean'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {IconTrash} from '@tabler/icons-react'
+import {DragDropProvider} from '@dnd-kit/react'
+import {isSortable, useSortable} from '@dnd-kit/react/sortable'
+import {IconDragDrop2, IconTrash} from '@tabler/icons-react'
+import {generateKeyBetween} from 'fractional-indexing'
 import {observer, useLocalObservable} from 'mobx-react-lite'
-import {PropsWithChildren, useMemo} from 'react'
+import {PropsWithChildren, RefObject, useMemo, useRef, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {useTeamStore} from '../team/team-store'
 import {AddNewCard} from './add-new-card'
 import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
+import {useCardHandlers} from './cards-handlers'
 import {CardsContext, CardsStore, useCardsStore} from './cards-store'
 import {getSearchCard} from './get-search-card'
 import {Card as CardType} from './types'
@@ -62,6 +67,7 @@ const Cards = observer(() => {
   const {supabase, user} = useSupabase()
   const [state, store] = useCardsStore()
   const cardId = getSearchCard()
+  const {updateCardPosition} = useCardHandlers()
 
   const [, cardChecklistStore] = useCardChecklistStore()
 
@@ -96,9 +102,45 @@ const Cards = observer(() => {
 
   return (
     <>
-      {store.searchedCards().map(card => (
-        <Card card={card} key={card.id} active={cardId === card.id} />
-      ))}
+      <DragDropProvider
+        onDragEnd={async event => {
+          const {source, target} = event.operation
+
+          if (!cards || !source || !target) {
+            return
+          }
+
+          if (isSortable(source)) {
+            const newIndex = source.sortable.index
+            const oldIndex = source.sortable.initialIndex
+            if (oldIndex !== newIndex) {
+              let prevPos, nextPos
+              if (newIndex > oldIndex) {
+                // move down: place AFTER target
+                prevPos = cards[newIndex].position
+                nextPos = cards[newIndex + 1]?.position || null
+              } else {
+                // move up: place BEFORE target
+                prevPos = cards[newIndex - 1]?.position || null
+                nextPos = cards[newIndex].position
+              }
+              const newPosition = generateKeyBetween(prevPos, nextPos)
+              await updateCardPosition(newPosition, String(source.id))
+            }
+          }
+        }}
+      >
+        {store.searchedCards().map((card, index) => (
+          <SortableCard
+            key={card.id}
+            id={card.id}
+            index={index}
+            card={card}
+            active={cardId === card.id}
+          />
+        ))}
+      </DragDropProvider>
+
       {state.cards?.data && state.cards.data.length >= 0 ? (
         <AddNewCard />
       ) : null}
@@ -106,25 +148,62 @@ const Cards = observer(() => {
   )
 })
 
-const Card = observer(({card, active}: {card: CardType; active: boolean}) => {
-  const {user} = useSupabase()
-  const [, store] = useCardsStore()
-  const updateSearchParams = useUpdateSearchParams()
-
-  const remove = () => {
-    store.setIdCardToDelete(card.id)
-    updateSearchParams('delete-card', 'true')
-  }
+const SortableCard = ({
+  id,
+  index,
+  card,
+  active
+}: {
+  id: string
+  index: number
+  card: CardType
+  active: boolean
+}) => {
+  const [element, setElement] = useState<Element | null>(null)
+  const handleRef = useRef<HTMLButtonElement | null>(null)
+  const {isDragging} = useSortable({id, index, element, handle: handleRef})
 
   return (
-    <ParallaxCardContainer
-      bgImage={card.bg_image}
-      active={active}
-      my={user?.id === card.author_id}
-      cardNodeBody={<CardBody card={card} remove={remove} />}
-    />
+    <div
+      ref={setElement}
+      className={twJoin(isDragging ? 'opacity-70' : 'opacity-100')}
+    >
+      <Card card={card} active={active} handleRef={handleRef} />
+    </div>
   )
-})
+}
+
+const Card = observer(
+  ({
+    card,
+    active,
+    handleRef
+  }: {
+    card: CardType
+    active: boolean
+    handleRef: RefObject<HTMLButtonElement | null>
+  }) => {
+    const {user} = useSupabase()
+    const [, store] = useCardsStore()
+    const updateSearchParams = useUpdateSearchParams()
+
+    const remove = () => {
+      store.setIdCardToDelete(card.id)
+      updateSearchParams('delete-card', 'true')
+    }
+
+    return (
+      <ParallaxCardContainer
+        bgImage={card.bg_image}
+        active={active}
+        my={user?.id === card.author_id}
+        cardNodeBody={
+          <CardBody card={card} remove={remove} handleRef={handleRef} />
+        }
+      />
+    )
+  }
+)
 
 const TwText = tw.div`
   line-clamp-3
@@ -135,9 +214,10 @@ const TwText = tw.div`
 interface CardProps {
   card: CardType
   remove: () => void
+  handleRef: RefObject<HTMLButtonElement | null>
 }
 
-const CardBody = observer(({card, remove}: CardProps) => {
+const CardBody = observer(({card, remove, handleRef}: CardProps) => {
   const updateSearchParams = useUpdateSearchParams()
   const hovered = useBoolean(false)
 
@@ -156,7 +236,10 @@ const CardBody = observer(({card, remove}: CardProps) => {
         {isMobile ? (
           <DeleteCardButton remove={remove} />
         ) : (
-          <DeleteCardButton remove={remove} visible={hovered.value} />
+          <div className="flex gap-1 self-start">
+            <DragCardButton handleRef={handleRef} visible={hovered.value} />
+            <DeleteCardButton remove={remove} visible={hovered.value} />
+          </div>
         )}
       </CardUI.Title>
       <CardUI.Actions className="justify-center">
@@ -189,6 +272,27 @@ const DeleteCardButton = ({remove, visible = true}: DeleteCardButtonProps) => {
     >
       <IconTrash size={16} />
     </Button>
+  )
+}
+
+interface DragCardButtonProps {
+  handleRef: RefObject<HTMLButtonElement | null>
+  visible?: boolean
+}
+
+const DragCardButton = ({handleRef, visible = true}: DragCardButtonProps) => {
+  return (
+    <div className="tooltip tooltip-info" data-tip="drag to sort">
+      <Button
+        handleRef={handleRef}
+        soft
+        shape="circle"
+        size="sm"
+        className={twJoin(visible ? 'opacity-100' : 'opacity-0', 'self-start')}
+      >
+        <IconDragDrop2 size={16} />
+      </Button>
+    </div>
   )
 }
 

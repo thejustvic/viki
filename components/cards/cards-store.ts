@@ -46,12 +46,15 @@ export class CardsStore {
   }
 
   handleUpdate = (oldCard: Card, newCard: Card): void => {
-    const cards = this.state.cards.data?.map(card => {
-      if (card.id === oldCard.id) {
-        return newCard
-      }
-      return card
-    })
+    const cards = this.state.cards.data
+      ?.map(card => {
+        if (card.id === oldCard.id) {
+          return newCard
+        }
+        return card
+      })
+      ?.sort((a, b) => a.position.localeCompare(b.position))
+
     if (cards) {
       this.setCards({
         ...this.state.cards,

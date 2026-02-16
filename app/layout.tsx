@@ -1,6 +1,5 @@
 import '@/scss/app.scss'
 
-import {ModalCardCreate} from '@/components/cards/modal-card/modal-card-create'
 import GlobalProvider from '@/components/global-provider/global-provider'
 import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
@@ -56,7 +55,6 @@ export default async function RootLayout({children}: PropsWithChildren) {
 const Modals = () => {
   return (
     <>
-      <ModalCardCreate />
       <ModalTeam />
       <ModalCreateTeam />
       <ModalCreateTeamMember />

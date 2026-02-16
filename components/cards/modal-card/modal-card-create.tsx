@@ -9,9 +9,11 @@ import {Textarea} from '@/components/daisyui/textarea'
 import {useTeamStore} from '@/components/team/team-store'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
+import {generateKeyBetween} from 'fractional-indexing'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
+import {useCardsStore} from '../cards-store'
 
 export const ModalCardCreate = () => {
   const updateSearchParams = useUpdateSearchParams()
@@ -49,6 +51,7 @@ interface FormInputs {
 }
 
 const Text = observer(() => {
+  const [cardsStore] = useCardsStore()
   const [state] = useTeamStore()
 
   const updateSearchParams = useUpdateSearchParams()
@@ -69,7 +72,11 @@ const Text = observer(() => {
     if (!state.currentTeamId || !data.createCard69.trim()) {
       return
     }
-    await insertCard(data.createCard69, state.currentTeamId)
+    const cards = cardsStore.cards.data
+    const lastPosition = cards?.[cards.length - 1]?.position || null
+    const newPosition = generateKeyBetween(lastPosition, null)
+
+    await insertCard(data.createCard69, state.currentTeamId, newPosition)
     updateSearchParams('create-card')
   }
 

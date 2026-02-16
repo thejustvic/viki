@@ -25,6 +25,7 @@ export type Database = {
           bg_image: string | null
           created_at: string
           id: string
+          position: string
           selected_visual: string
           team_id: string
           text: string
@@ -39,6 +40,7 @@ export type Database = {
           bg_image?: string | null
           created_at?: string
           id?: string
+          position: string
           selected_visual?: string
           team_id: string
           text: string
@@ -53,6 +55,7 @@ export type Database = {
           bg_image?: string | null
           created_at?: string
           id?: string
+          position?: string
           selected_visual?: string
           team_id?: string
           text?: string

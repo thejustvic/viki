@@ -1,4 +1,4 @@
-import {PropsWithChildren} from 'react'
+import {PropsWithChildren, RefObject} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 interface Props
@@ -12,9 +12,11 @@ interface Props
   disable?: boolean
   ghost?: boolean
   soft?: boolean
+  handleRef?: RefObject<HTMLButtonElement | null>
 }
 
 export const Button = ({
+  handleRef,
   soft,
   ghost,
   color,
@@ -29,6 +31,7 @@ export const Button = ({
 }: Props) => {
   return (
     <button
+      ref={handleRef}
       className={twJoin(
         'btn',
         soft && 'btn-soft',

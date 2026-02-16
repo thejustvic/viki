@@ -3,8 +3,13 @@ import type {Card} from './types'
 
 interface Handlers {
   removeCard: (id: Card['id']) => Promise<void>
-  insertCard: (text: string, teamId: string) => Promise<void>
+  insertCard: (
+    text: string,
+    teamId: string,
+    newPosition: string
+  ) => Promise<void>
   updateCard: (text: string, cardId: string) => Promise<void>
+  updateCardPosition: (position: string, cardId: string) => Promise<void>
   updateCardVisual: (visual: string, cardId: string) => Promise<void>
   updateCardBgImage: (bgImage: string, cardId: string) => Promise<void>
   updateCardBaubleColorCompleted: (
@@ -32,7 +37,11 @@ export const useCardHandlers = (): Handlers => {
     await supabase.from('cards').delete().eq('id', id)
   }
 
-  const insertCard = async (text: string, teamId: string): Promise<void> => {
+  const insertCard = async (
+    text: string,
+    teamId: string,
+    newPosition: string
+  ): Promise<void> => {
     if (!user) {
       throw Error('You must provide a user object!')
     }
@@ -40,7 +49,8 @@ export const useCardHandlers = (): Handlers => {
       text,
       author_id: user.id,
       author_email: user.email || '',
-      team_id: teamId
+      team_id: teamId,
+      position: newPosition // (e.g. "a00015")
     })
   }
 
@@ -52,6 +62,21 @@ export const useCardHandlers = (): Handlers => {
       .from('cards')
       .update({
         text
+      })
+      .eq('id', cardId)
+  }
+
+  const updateCardPosition = async (
+    position: string,
+    cardId: string
+  ): Promise<void> => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    await supabase
+      .from('cards')
+      .update({
+        position
       })
       .eq('id', cardId)
   }
@@ -150,6 +175,7 @@ export const useCardHandlers = (): Handlers => {
     removeCard,
     insertCard,
     updateCard,
+    updateCardPosition,
     updateCardVisual,
     updateCardBgImage,
     updateCardBaubleColorCompleted,

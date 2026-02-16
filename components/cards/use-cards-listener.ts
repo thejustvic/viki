@@ -16,7 +16,11 @@ const getMyCards = (
     throw new Error('Current team ID is required!')
   }
 
-  return supabase.from('cards').select().eq('team_id', currentTeamId)
+  return supabase
+    .from('cards')
+    .select()
+    .eq('team_id', currentTeamId)
+    .order('position', {ascending: true})
 }
 
 // Check if card exists in current team
