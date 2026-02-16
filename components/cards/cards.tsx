@@ -11,12 +11,10 @@ import {useBoolean} from '@/hooks/use-boolean'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {DragDropProvider} from '@dnd-kit/react'
-import {isSortable, useSortable} from '@dnd-kit/react/sortable'
 import {IconDragDrop2, IconTrash} from '@tabler/icons-react'
 import {generateKeyBetween} from 'fractional-indexing'
 import {observer, useLocalObservable} from 'mobx-react-lite'
-import {PropsWithChildren, RefObject, useMemo, useRef, useState} from 'react'
+import {PropsWithChildren, useMemo} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
@@ -31,6 +29,24 @@ import {
   useCardsListener,
   useCheckCardExistInCurrentTeam
 } from './use-cards-listener'
+
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import {SyntheticListenerMap} from '@dnd-kit/core/dist/hooks/utilities'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable
+} from '@dnd-kit/sortable'
+import {CSS} from '@dnd-kit/utilities'
 
 export default function CardsProvider({children}: PropsWithChildren) {
   const store = useLocalObservable(() => new CardsStore())
@@ -69,6 +85,13 @@ const Cards = observer(() => {
   const cardId = getSearchCard()
   const {updateCardPosition} = useCardHandlers()
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  )
+
   const [, cardChecklistStore] = useCardChecklistStore()
 
   const cards = state.cards.data
@@ -100,42 +123,72 @@ const Cards = observer(() => {
     return <div className="text-error">{state.cards.error.message}</div>
   }
 
+  const items = store.searchedCards()
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const {active, over} = event
+
+    if (!cards || !active || !over) {
+      return
+    }
+
+    if (active.id === over.id) {
+      return
+    }
+
+    const oldIndex = cards.findIndex(c => c.id === active.id)
+    const newIndex = cards.findIndex(c => c.id === over.id)
+
+    let prevPos, nextPos
+
+    if (newIndex < oldIndex) {
+      // UPWARDS: move BEFORE the 'over' element
+      prevPos = cards[newIndex - 1]?.position || null
+      nextPos = cards[newIndex]?.position || null
+    } else {
+      // Move DOWN: go AFTER the 'over' element
+      prevPos = cards[newIndex]?.position || null
+      nextPos = cards[newIndex + 1]?.position || null
+    }
+
+    try {
+      const newPosition = generateKeyBetween(prevPos, nextPos)
+
+      const reordered = arrayMove(cards, oldIndex, newIndex)
+      const finalData = reordered.map((card, idx) =>
+        idx === newIndex ? {...card, position: newPosition} : card
+      )
+
+      store.setCards({
+        loading: false,
+        data: finalData,
+        error: null
+      })
+
+      await updateCardPosition(newPosition, String(active.id))
+    } catch (err) {
+      console.error('error key generation:', err)
+    }
+  }
+
   return (
     <>
-      <DragDropProvider
-        onDragEnd={async event => {
-          const {source, target} = event.operation
-
-          if (!cards || !source || !target) {
-            return
-          }
-
-          if (isSortable(source)) {
-            const newIndex = source.sortable.index
-            const oldIndex = source.sortable.initialIndex
-            if (oldIndex !== newIndex) {
-              const remainingCards = cards.filter(
-                c => String(c.id) !== String(source.id)
-              )
-              const prevPos = remainingCards[newIndex - 1]?.position || null
-              const nextPos = remainingCards[newIndex]?.position || null
-              const newPosition = generateKeyBetween(prevPos, nextPos)
-              await updateCardPosition(newPosition, String(source.id))
-            }
-          }
-        }}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        {store.searchedCards().map((card, index) => (
-          <SortableCard
-            key={card.id}
-            id={card.id}
-            index={index}
-            card={card}
-            active={cardId === card.id}
-          />
-        ))}
-      </DragDropProvider>
-
+        <SortableContext items={items}>
+          {store.searchedCards().map(card => (
+            <SortableComp
+              key={card.id}
+              id={card.id}
+              card={card}
+              active={cardId === card.id}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
       {state.cards?.data && state.cards.data.length >= 0 ? (
         <AddNewCard />
       ) : null}
@@ -143,27 +196,26 @@ const Cards = observer(() => {
   )
 })
 
-const SortableCard = ({
+function SortableComp({
   id,
-  index,
   card,
   active
 }: {
   id: string
-  index: number
   card: CardType
   active: boolean
-}) => {
-  const [element, setElement] = useState<Element | null>(null)
-  const handleRef = useRef<HTMLButtonElement | null>(null)
-  const {isDragging} = useSortable({id, index, element, handle: handleRef})
+}) {
+  const {attributes, listeners, setNodeRef, transform, transition} =
+    useSortable({id})
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  }
 
   return (
-    <div
-      ref={setElement}
-      className={twJoin(isDragging ? 'opacity-70' : 'opacity-100')}
-    >
-      <Card card={card} active={active} handleRef={handleRef} />
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <Card card={card} active={active} dragListeners={listeners} />
     </div>
   )
 }
@@ -172,11 +224,11 @@ const Card = observer(
   ({
     card,
     active,
-    handleRef
+    dragListeners
   }: {
     card: CardType
     active: boolean
-    handleRef: RefObject<HTMLButtonElement | null>
+    dragListeners: SyntheticListenerMap | undefined
   }) => {
     const {user} = useSupabase()
     const [, store] = useCardsStore()
@@ -193,7 +245,7 @@ const Card = observer(
         active={active}
         my={user?.id === card.author_id}
         cardNodeBody={
-          <CardBody card={card} remove={remove} handleRef={handleRef} />
+          <CardBody card={card} remove={remove} dragListeners={dragListeners} />
         }
       />
     )
@@ -209,10 +261,10 @@ const TwText = tw.div`
 interface CardProps {
   card: CardType
   remove: () => void
-  handleRef: RefObject<HTMLButtonElement | null>
+  dragListeners: SyntheticListenerMap | undefined
 }
 
-const CardBody = observer(({card, remove, handleRef}: CardProps) => {
+const CardBody = observer(({card, remove, dragListeners}: CardProps) => {
   const updateSearchParams = useUpdateSearchParams()
   const hovered = useBoolean(false)
 
@@ -229,13 +281,13 @@ const CardBody = observer(({card, remove, handleRef}: CardProps) => {
       <CardUI.Title className="flex justify-between">
         <TwText>{card.text}</TwText>
         {isMobile ? (
-          <div className="flex gap-1 self-start">
-            <DragCardButton handleRef={handleRef} />
-            <DeleteCardButton remove={remove} />
-          </div>
+          <DeleteCardButton remove={remove} />
         ) : (
           <div className="flex gap-1 self-start">
-            <DragCardButton handleRef={handleRef} visible={hovered.value} />
+            <DragCardButton
+              dragListeners={dragListeners}
+              visible={hovered.value}
+            />
             <DeleteCardButton remove={remove} visible={hovered.value} />
           </div>
         )}
@@ -274,15 +326,18 @@ const DeleteCardButton = ({remove, visible = true}: DeleteCardButtonProps) => {
 }
 
 interface DragCardButtonProps {
-  handleRef: RefObject<HTMLButtonElement | null>
+  dragListeners: SyntheticListenerMap | undefined
   visible?: boolean
 }
 
-const DragCardButton = ({handleRef, visible = true}: DragCardButtonProps) => {
+const DragCardButton = ({
+  dragListeners,
+  visible = true
+}: DragCardButtonProps) => {
   return (
     <div className="tooltip tooltip-info" data-tip="drag to sort">
       <Button
-        handleRef={handleRef}
+        {...dragListeners}
         soft
         shape="circle"
         size="sm"
