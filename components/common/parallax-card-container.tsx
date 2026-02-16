@@ -1,5 +1,6 @@
 import {Card} from '@/components/daisyui/card'
 import {CSSProperties, ReactElement} from 'react'
+import {isMobile, isTablet} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
 import {ClassNameValue, twJoin} from 'tailwind-merge'
 
@@ -12,6 +13,9 @@ interface Props {
 }
 
 export const ParallaxCardContainer = (props: Props) => {
+  if (isMobile || isTablet) {
+    return <CardComp {...props} disableTransform />
+  }
   return (
     <Hover
       perspective={800}
