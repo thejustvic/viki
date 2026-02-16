@@ -114,16 +114,11 @@ const Cards = observer(() => {
             const newIndex = source.sortable.index
             const oldIndex = source.sortable.initialIndex
             if (oldIndex !== newIndex) {
-              let prevPos, nextPos
-              if (newIndex > oldIndex) {
-                // move down: place AFTER target
-                prevPos = cards[newIndex].position
-                nextPos = cards[newIndex + 1]?.position || null
-              } else {
-                // move up: place BEFORE target
-                prevPos = cards[newIndex - 1]?.position || null
-                nextPos = cards[newIndex].position
-              }
+              const remainingCards = cards.filter(
+                c => String(c.id) !== String(source.id)
+              )
+              const prevPos = remainingCards[newIndex - 1]?.position || null
+              const nextPos = remainingCards[newIndex]?.position || null
               const newPosition = generateKeyBetween(prevPos, nextPos)
               await updateCardPosition(newPosition, String(source.id))
             }
@@ -234,7 +229,10 @@ const CardBody = observer(({card, remove, handleRef}: CardProps) => {
       <CardUI.Title className="flex justify-between">
         <TwText>{card.text}</TwText>
         {isMobile ? (
-          <DeleteCardButton remove={remove} />
+          <div className="flex gap-1 self-start">
+            <DragCardButton handleRef={handleRef} />
+            <DeleteCardButton remove={remove} />
+          </div>
         ) : (
           <div className="flex gap-1 self-start">
             <DragCardButton handleRef={handleRef} visible={hovered.value} />
