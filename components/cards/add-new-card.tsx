@@ -10,10 +10,8 @@ import tw from 'tailwind-styled-components'
 const TwAdd = tw(Button)`
   shadow-md 
   border-0
-  rounded-2xl
-  w-[288px]
-  h-[142px]
-  md:w-[190px]
+  rounded-xl
+  h-full
 `
 
 export const AddNewCard = () => {

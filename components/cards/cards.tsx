@@ -27,20 +27,19 @@ import {
   useCheckCardExistInCurrentTeam
 } from './use-cards-listener'
 
-const TwContainer = tw.div`
-  flex
-  gap-8
-  p-8
-  flex-wrap
-  justify-center
-  md:justify-start
-`
-
 export default function CardsProvider({children}: PropsWithChildren) {
   const store = useLocalObservable(() => new CardsStore())
 
   return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
 }
+
+const TwContainer = tw.div`
+  grid 
+  gap-4 
+  p-4  
+  max-[425px]:grid-cols-2
+  grid-cols-[repeat(auto-fill,_minmax(min(190px,100%),_1fr))]
+`
 
 export const CardsList = observer(() => {
   const {supabase, user} = useSupabase()
@@ -88,9 +87,7 @@ const Cards = observer(() => {
   if (state.cards.loading) {
     return Array(3)
       .fill(null)
-      .map((_el, inx) => (
-        <div key={inx} className="skeleton w-[288px] h-[142px] md:w-[190px]" />
-      ))
+      .map((_el, inx) => <div key={inx} className="skeleton h-[142px]" />)
   }
 
   if (state.cards.error) {

@@ -34,10 +34,8 @@ const CardComp = (props: Props) => {
   const translateZ: CSSProperties = !disableTransform ? transform : {}
 
   const cardClassName: ClassNameValue = twJoin(
-    `shadow-md 
-    w-[288px]
-    h-[142px] 
-    md:w-[190px] 
+    `shadow-md
+    h-[142px]
     transform-3d 
     bg-no-repeat
     bg-center
