@@ -5,6 +5,7 @@ import Hover from 'react-parallax-tilt'
 import {ClassNameValue, twJoin} from 'tailwind-merge'
 
 interface Props {
+  disableParallax?: boolean
   disableTransform?: boolean
   active?: boolean
   my?: boolean
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export const ParallaxCardContainer = (props: Props) => {
-  if (isMobile || isTablet) {
+  if (isMobile || isTablet || props.disableParallax) {
     return <CardComp {...props} disableTransform />
   }
   return (

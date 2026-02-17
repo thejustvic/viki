@@ -8,6 +8,7 @@ import {Tab, Theme} from './types'
 
 interface State {
   theme: Theme
+  isCardDragging: boolean
   leftDrawerOpen: boolean
   rightDrawerOpen: boolean
   drawerOpenByHover: boolean
@@ -28,6 +29,7 @@ interface State {
 export class GlobalStore {
   state: State = {
     theme: 'dark',
+    isCardDragging: false,
     leftDrawerOpen: false,
     rightDrawerOpen: false,
     drawerOpenByHover: false,
@@ -69,6 +71,10 @@ export class GlobalStore {
 
   updateTheme = (newTheme: Theme): void => {
     this.setTheme(newTheme)
+  }
+
+  updateCardDragging = (value: boolean) => {
+    this.state.isCardDragging = value
   }
 
   setLastCardId = (cardId: State['lastCardId']): void => {
