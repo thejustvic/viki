@@ -42,18 +42,24 @@ export class CardsStore {
   }
 
   setCards(cards: State['cards']): void {
-    this.state.cards = cards
+    // sort fractional index
+    const sorted = cards?.data?.toSorted((a, b) =>
+      a.position < b.position ? -1 : a.position > b.position ? 1 : 0
+    )
+
+    this.state.cards = {
+      ...cards,
+      data: sorted || []
+    }
   }
 
   handleUpdate = (oldCard: Card, newCard: Card): void => {
-    const cards = this.state.cards.data
-      ?.map(card => {
-        if (card.id === oldCard.id) {
-          return newCard
-        }
-        return card
-      })
-      ?.sort((a, b) => a.position.localeCompare(b.position))
+    const cards = this.state.cards.data?.map(card => {
+      if (card.id === oldCard.id) {
+        return newCard
+      }
+      return card
+    })
 
     if (cards) {
       this.setCards({
