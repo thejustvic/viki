@@ -122,7 +122,7 @@ const Cards = observer(() => {
     }
 
     return cards.map(card => card.id)
-  }, [cards, cardsCount])
+  }, [cardsCount])
 
   useCardChecklistListener({
     cardIds,
