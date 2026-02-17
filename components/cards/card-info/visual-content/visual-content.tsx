@@ -28,6 +28,7 @@ export const VisualContent = observer(() => {
             <TwRadio key={visual} onClick={() => updateCardVisual(visual, id)}>
               <div>{visual}</div>
               <input
+                disabled={!state.my}
                 type="radio"
                 name="radio-visual"
                 className="radio"
@@ -168,22 +169,26 @@ const ChooseBaubleTextColorData = observer(() => {
   )
 })
 
-const ColorPicker = ({
-  color = '#ff0000',
-  label = 'Color',
-  onChange
-}: {
-  color?: string
-  label?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}) => {
-  return (
-    <Input
-      type="color"
-      defaultValue={color}
-      inputClassName="p-0 h-10 w-25 cursor-pointer"
-      label={label}
-      onChange={onChange}
-    />
-  )
-}
+const ColorPicker = observer(
+  ({
+    color = '#ff0000',
+    label = 'Color',
+    onChange
+  }: {
+    color?: string
+    label?: string
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  }) => {
+    const [state] = useCardInfoStore()
+    return (
+      <Input
+        disabled={!state.my}
+        type="color"
+        defaultValue={color}
+        inputClassName="p-0 h-10 w-25 cursor-pointer"
+        label={label}
+        onChange={onChange}
+      />
+    )
+  }
+)

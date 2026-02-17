@@ -6,12 +6,14 @@ import type {User} from '@supabase/supabase-js'
 import {makeAutoObservable, observable} from 'mobx'
 
 interface State {
+  my: boolean | undefined
   card: SupabaseQuery<Card>
   cardCreator: FetchQuery<User>
 }
 
 export class CardInfoStore {
   state: State = {
+    my: undefined,
     card: {
       loading: false,
       data: null,
@@ -45,6 +47,10 @@ export class CardInfoStore {
 
   setCard = (card: State['card']): void => {
     this.state.card = card
+  }
+
+  setMy = (value: boolean) => {
+    this.state.my = value
   }
 
   setCardCreator = (cardCreator: State['cardCreator']): void => {

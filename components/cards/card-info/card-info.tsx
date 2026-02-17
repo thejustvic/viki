@@ -125,6 +125,7 @@ const CoverData = observer(() => {
           <TwRadio key={image} onClick={() => updateCardBgImage(image, id)}>
             <div>{image}</div>
             <input
+              disabled={!state.my}
               type="radio"
               name="radio-cover"
               className="radio"
@@ -202,7 +203,13 @@ const TextData = observer(() => {
 
   return (
     <div className="flex-1">
-      <Textarea size="md" value={text} onChange={onChange} className="w-full" />
+      <Textarea
+        size="md"
+        value={text}
+        onChange={onChange}
+        className="w-full"
+        disable={!state.my}
+      />
     </div>
   )
 })

@@ -297,14 +297,17 @@ const Card = observer(
       updateSearchParams('delete-card', 'true')
     }
 
+    const my = user?.id === card.author_id
+
     return (
       <ParallaxCardContainer
         disableParallax={disableParallax}
         bgImage={card.bg_image}
         active={active}
-        my={user?.id === card.author_id}
+        my={my}
         cardNodeBody={
           <CardBody
+            my={my}
             card={card}
             remove={remove}
             dragListeners={dragListeners}
@@ -323,6 +326,7 @@ const TwText = tw.div`
 `
 
 interface CardProps {
+  my?: boolean
   card: CardType
   remove: () => void
   dragListeners: SyntheticListenerMap | undefined
@@ -330,7 +334,7 @@ interface CardProps {
 }
 
 const CardBody = observer(
-  ({card, remove, dragListeners, dragAttributes}: CardProps) => {
+  ({my, card, remove, dragListeners, dragAttributes}: CardProps) => {
     const updateSearchParams = useUpdateSearchParams()
     const hovered = useBoolean(false)
 
@@ -346,23 +350,27 @@ const CardBody = observer(
       >
         <CardUI.Title className="flex justify-between">
           <TwText>{card.text}</TwText>
-          {isMobile ? (
-            <div className="flex gap-1 self-start">
-              <DragCardButton
-                dragListeners={dragListeners}
-                dragAttributes={dragAttributes}
-              />
-              <DeleteCardButton remove={remove} />
-            </div>
-          ) : (
-            <div className="flex gap-1 self-start">
-              <DragCardButton
-                dragListeners={dragListeners}
-                dragAttributes={dragAttributes}
-                visible={hovered.value}
-              />
-              <DeleteCardButton remove={remove} visible={hovered.value} />
-            </div>
+          {my && (
+            <>
+              {isMobile ? (
+                <div className="flex gap-1 self-start">
+                  <DragCardButton
+                    dragListeners={dragListeners}
+                    dragAttributes={dragAttributes}
+                  />
+                  <DeleteCardButton remove={remove} />
+                </div>
+              ) : (
+                <div className="flex gap-1 self-start">
+                  <DragCardButton
+                    dragListeners={dragListeners}
+                    dragAttributes={dragAttributes}
+                    visible={hovered.value}
+                  />
+                  <DeleteCardButton remove={remove} visible={hovered.value} />
+                </div>
+              )}
+            </>
           )}
         </CardUI.Title>
         <CardUI.Actions className="justify-center">

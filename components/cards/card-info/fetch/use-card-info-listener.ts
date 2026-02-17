@@ -94,6 +94,9 @@ export const useCardInfoListener = ({
       data: userData,
       error: userError
     })
+    if (user) {
+      store.setMy(user.id === authorId)
+    }
   }, [userData, userError, userLoading, data, loading, error])
 
   useSupabaseListener(supabase, cardId, store)
