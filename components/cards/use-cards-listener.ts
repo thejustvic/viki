@@ -30,13 +30,16 @@ export const useCheckCardExistInCurrentTeam = (): void => {
   const updateSearchParams = useUpdateSearchParams()
   const cardId = getSearchCard()
 
-  const cardExists = useCallback(() => {
-    const card = cardState.cards?.data?.find(p => p.id === cardId)
-    return card ? card.team_id === teamState.currentTeamId : false
-  }, [cardState.cards?.data, cardId, teamState.currentTeamId])
+  const cardExists = useCallback(
+    (cardId: string) => {
+      const card = cardState.cards?.data?.find(p => p.id === cardId)
+      return card?.team_id === teamState.currentTeamId
+    },
+    [cardState.cards?.data, cardId, teamState.currentTeamId]
+  )
 
   useEffect(() => {
-    if (cardId && cardState.cards?.data && !cardExists()) {
+    if (cardId && cardState.cards?.data?.length && !cardExists(cardId)) {
       updateSearchParams('card')
     }
   }, [cardExists, updateSearchParams])
