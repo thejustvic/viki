@@ -4,11 +4,12 @@ import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
+import {Card} from '../cards/types'
 import {Tab, Theme} from './types'
 
 interface State {
   theme: Theme
-  isCardDragging: boolean
+  draggingCard: Card | undefined
   leftDrawerOpen: boolean
   rightDrawerOpen: boolean
   drawerOpenByHover: boolean
@@ -29,7 +30,7 @@ interface State {
 export class GlobalStore {
   state: State = {
     theme: 'dark',
-    isCardDragging: false,
+    draggingCard: undefined,
     leftDrawerOpen: false,
     rightDrawerOpen: false,
     drawerOpenByHover: false,
@@ -73,8 +74,8 @@ export class GlobalStore {
     this.setTheme(newTheme)
   }
 
-  updateCardDragging = (value: boolean) => {
-    this.state.isCardDragging = value
+  updateDraggingCard = (value: Card | undefined) => {
+    this.state.draggingCard = value
   }
 
   setLastCardId = (cardId: State['lastCardId']): void => {
