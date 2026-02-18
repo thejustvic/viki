@@ -7,7 +7,6 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {isMobile} from 'react-device-detect'
-import {useSwipeable} from 'react-swipeable'
 
 export const DrawerLeft = observer(({children}: PropsWithChildren) => {
   useLeftDrawerOpenState()
@@ -18,9 +17,10 @@ export const DrawerLeft = observer(({children}: PropsWithChildren) => {
     store.setLeftDrawerClosed()
   }
 
-  const leftSwipeHandlers = useSwipeable({
-    onSwipedLeft: () => store.setLeftDrawerClosed()
-  })
+  // disable swipe
+  // const leftSwipeHandlers = useSwipeable({
+  //   onSwipedLeft: () => store.setLeftDrawerClosed()
+  // })
 
   const leftDrawerOpen = () => {
     if (user) {
@@ -45,7 +45,7 @@ export const DrawerLeft = observer(({children}: PropsWithChildren) => {
       side={user && state.leftDrawerOpen ? <LeftDrawerSide /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
       contentClassName="h-dvh"
-      {...leftSwipeHandlers}
+      // {...leftSwipeHandlers} // disable swipe
     >
       {children}
     </Drawer>
