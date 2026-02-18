@@ -80,7 +80,7 @@ const CardInfoBody = () => (
   </PerfectScrollbar>
 )
 
-const Visual = () => {
+const Visual = observer(() => {
   const [state] = useCardInfoStore()
 
   return (
@@ -91,7 +91,7 @@ const Visual = () => {
       prefix={'visual:'}
     />
   )
-}
+})
 
 const Cover = observer(() => {
   const [state] = useCardInfoStore()
