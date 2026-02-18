@@ -61,7 +61,7 @@ export default [{
         }],
 
         "no-console": ["error", {
-            allow: ["table", "error", "time", "timeEnd"],
+            allow: ["table", "error", "warn", "time", "timeEnd"],
         }],
 
         "func-style": ["error", "declaration", {
