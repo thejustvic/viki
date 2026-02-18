@@ -59,7 +59,9 @@ const NavStart = () => {
 
 const NavCenter = () => {
   return (
-    <Nav.Center className={twJoin('font-mono text-lg', isMobile && 'ml-4')}>
+    <Nav.Center
+      className={twJoin('font-mono text-lg w-full', isMobile && 'ml-4')}
+    >
       <Search />
     </Nav.Center>
   )
@@ -69,7 +71,7 @@ const Search = observer(() => {
   const [state, store] = useCardsStore()
 
   return (
-    <label className="input input-info border-none">
+    <label className="input input-info border-none w-full">
       <IconSearch />
       <input
         type="search"
