@@ -22,14 +22,14 @@ export const useCheckboxDragHandlers = (): Handlers => {
   const handleDragStart = (event: DragStartEvent): void => {
     const {active} = event
     const idCheckbox = String(active.id)
-    const checklist = store.getCheckboxes(id) || []
+    const checklist = store.getCheckboxesCompleted(id) || []
     const checkbox = checklist.find(c => c.id === idCheckbox)
     globalStore.updateDraggingCheckbox(checkbox)
   }
 
   const handleDragEnd = async (event: DragEndEvent): Promise<void> => {
     try {
-      const checklist = store.getCheckboxes(id)
+      const checklist = store.getCheckboxesCompleted(id)
       const position = getPosition(checklist, event)
       if (!position || !checklist) {
         return
@@ -41,11 +41,11 @@ export const useCheckboxDragHandlers = (): Handlers => {
       const finalData = reordered.map((checkbox, idx) =>
         idx === newIndex ? {...checkbox, position: newPosition} : checkbox
       )
-
       const checklistMap = state.checklists.data
       // create a new Map instance for reactivity
       const updatedMap = new Map(checklistMap)
-      updatedMap.set(id, finalData)
+      const notCompleted = store.getCheckboxesNotCompleted(id) || []
+      updatedMap.set(id, [...finalData, ...notCompleted])
 
       store.setChecklists({
         ...state.checklists,
@@ -71,6 +71,15 @@ const getPosition = (
   if (!checkboxes || !active || !over) {
     return null
   }
+  console.table(
+    checkboxes.map(c => {
+      return {
+        pos: c.position,
+        text: c.title
+      }
+    })
+  )
+
   if (active.id === over.id) {
     return null
   }

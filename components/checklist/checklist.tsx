@@ -71,7 +71,7 @@ const Checkboxes = observer(() => {
       </TwState>
     )
   }
-  if (!store.getCheckboxes(id)) {
+  if (!store.getAllCheckboxes(id)) {
     return (
       <TwState>
         <div className="text-info">type some stuff</div>
@@ -81,17 +81,18 @@ const Checkboxes = observer(() => {
 
   return (
     <PerfectScrollbar>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="flex flex-col h-[calc(100dvh-180px)]">
+      <div className="flex flex-col h-[calc(100dvh-180px)]">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
           <SortableContextContainer />
           <DragOverlayContainer />
-        </div>
-      </DndContext>
+        </DndContext>
+        <CheckboxesNotCompleted />
+      </div>
     </PerfectScrollbar>
   )
 })
@@ -99,7 +100,7 @@ const Checkboxes = observer(() => {
 const SortableContextContainer = observer(() => {
   const [, store] = useCardChecklistStore()
   const id = String(getSearchCard())
-  const items = store.getCheckboxes(id)
+  const items = store.getCheckboxesCompleted(id)
 
   return (
     <SortableContext items={items || []} strategy={verticalListSortingStrategy}>
@@ -112,6 +113,21 @@ const SortableContextContainer = observer(() => {
       ))}
     </SortableContext>
   )
+})
+
+const CheckboxesNotCompleted = observer(() => {
+  const [, store] = useCardChecklistStore()
+  const id = String(getSearchCard())
+  const items = store.getCheckboxesNotCompleted(id)
+
+  return items?.map(checkbox => (
+    <CheckboxComponent
+      key={checkbox.id}
+      id={checkbox.id}
+      checked={checkbox.is_completed}
+      title={checkbox.title}
+    />
+  ))
 })
 
 const DragOverlayContainer = observer(() => {

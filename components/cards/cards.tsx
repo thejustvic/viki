@@ -167,7 +167,7 @@ export const CheckAllCheckboxes = observer(() => {
   const [state, store] = useCardChecklistStore()
   const {updateAllCheckboxIsCompleted} = useCheckboxHandlers()
   const isAllCompleted = state.progress.get(id) === 100
-  const checkboxIds = store.getCheckboxes(id)?.map(c => c.id)
+  const checkboxIds = store.getAllCheckboxes(id)?.map(c => c.id)
 
   return (
     <div className="tooltip tooltip-info" data-tip="all">
