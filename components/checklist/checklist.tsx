@@ -3,7 +3,7 @@ import {getSearchCard} from '@/components/cards/get-search-card'
 import {CheckboxComponent} from '@/components/checklist/checkbox/checkbox'
 import {Checkbox} from '@/components/checklist/types'
 import {Loader} from '@/components/common/loader'
-import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
+import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {
   closestCenter,
   defaultDropAnimationSideEffects,
@@ -15,6 +15,11 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core'
+import {
+  restrictToFirstScrollableAncestor,
+  restrictToParentElement,
+  restrictToVerticalAxis
+} from '@dnd-kit/modifiers'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -80,9 +85,14 @@ const Checkboxes = observer(() => {
   }
 
   return (
-    <PerfectScrollbar>
-      <div className="flex flex-col h-[calc(100dvh-180px)]">
+    <div className="flex flex-col h-[calc(100dvh-180px)]">
+      <SimpleScrollbar>
         <DndContext
+          modifiers={[
+            restrictToVerticalAxis,
+            restrictToParentElement,
+            restrictToFirstScrollableAncestor
+          ]}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
@@ -92,8 +102,8 @@ const Checkboxes = observer(() => {
           <DragOverlayContainer />
         </DndContext>
         <CheckboxesCompleted />
-      </div>
-    </PerfectScrollbar>
+      </SimpleScrollbar>
+    </div>
   )
 })
 

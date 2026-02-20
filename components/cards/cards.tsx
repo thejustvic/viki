@@ -14,6 +14,10 @@ import {
   useSensors
 } from '@dnd-kit/core'
 import {
+  restrictToFirstScrollableAncestor,
+  restrictToWindowEdges
+} from '@dnd-kit/modifiers'
+import {
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable
@@ -73,6 +77,7 @@ export const Cards = observer(() => {
   return (
     <>
       <DndContext
+        modifiers={[restrictToWindowEdges, restrictToFirstScrollableAncestor]}
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}

@@ -1,7 +1,6 @@
 import {Loader} from '@/components/common/loader'
-import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
+import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {observer} from 'mobx-react-lite'
-import {useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
 
 import {Button} from '@/components/daisyui/button'
@@ -12,22 +11,13 @@ import {useTeamMemberHandlers} from './team-member-handlers'
 import {useTeamStore} from './team-store'
 
 export const Team = observer(() => {
-  const [scrollEl, setScrollEl] = useState<HTMLElement>()
-  const [state] = useTeamStore()
-
-  useEffect(() => {
-    if (scrollEl) {
-      scrollEl.scrollTop = scrollEl.scrollHeight
-    }
-  }, [state.currentTeam.data, scrollEl])
-
   return (
-    <PerfectScrollbar containerRef={setScrollEl}>
+    <SimpleScrollbar>
       <TeamMembers />
       <div className="flex pt-2">
         <AddTeamMember />
       </div>
-    </PerfectScrollbar>
+    </SimpleScrollbar>
   )
 })
 

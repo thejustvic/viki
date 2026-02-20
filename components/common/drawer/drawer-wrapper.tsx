@@ -3,7 +3,7 @@
 import {DrawerLeft} from '@/components/common/drawer/drawer-left'
 import {DrawerRight} from '@/components/common/drawer/drawer-right'
 import {Navbar} from '@/components/common/navbar/navbar'
-import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
+import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {headerHeight} from '@/utils/const'
 import {observer} from 'mobx-react-lite'
 import {ReactNode} from 'react'
@@ -19,12 +19,12 @@ export const DrawerWrapper = observer(({children}: Props) => {
     <DrawerLeft>
       <DrawerRight>
         <Navbar />
-        <PerfectScrollbar
-          className="h-dvh bg-base-300/20"
+        <div
+          className="bg-base-300/20"
           style={{height: `calc(100% - ${headerHeight})`}}
         >
-          {children}
-        </PerfectScrollbar>
+          <SimpleScrollbar>{children}</SimpleScrollbar>
+        </div>
       </DrawerRight>
     </DrawerLeft>
   )

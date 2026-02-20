@@ -1,4 +1,5 @@
 import '@/scss/app.scss'
+import 'simplebar-react/dist/simplebar.min.css'
 
 import GlobalProvider from '@/components/global-provider/global-provider'
 import {ModalCreateTeam} from '@/components/team/modal-create-team'

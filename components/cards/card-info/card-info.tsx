@@ -3,7 +3,7 @@
 import {useCardHandlers} from '@/components/cards/cards-handlers'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Loader} from '@/components/common/loader'
-import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
+import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {UserImage} from '@/components/common/user-image'
 import {Menu} from '@/components/daisyui/menu'
 import {Textarea} from '@/components/daisyui/textarea'
@@ -69,15 +69,15 @@ export const CardInfo = observer(() => {
 })
 
 const CardInfoBody = () => (
-  <PerfectScrollbar>
-    <div className="flex flex-col gap-2 h-[calc(100dvh-86px)]">
+  <div className="flex flex-col gap-2 h-[calc(100dvh-86px)]">
+    <SimpleScrollbar>
       <Creator />
       <Time />
       <Text />
       <Cover />
       <Visual />
-    </div>
-  </PerfectScrollbar>
+    </SimpleScrollbar>
+  </div>
 )
 
 const Visual = observer(() => {

@@ -1,8 +1,7 @@
 import {Loader} from '@/components/common/loader'
-import {PerfectScrollbar} from '@/components/common/perfect-scrollbar'
+import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {useEffect, useState} from 'react'
 import tw from 'tailwind-styled-components'
 import {ChatMessage} from './chat-message'
 import {useChatStore} from './chat-store'
@@ -18,20 +17,10 @@ export const ChatBase = observer(() => {
 })
 
 const Chat = observer(() => {
-  const [scrollEl, setScrollEl] = useState<HTMLElement>()
-  const [state, store] = useChatStore()
-
-  useEffect(() => {
-    if (scrollEl && state.isNeedToUpdateScroll) {
-      scrollEl.scrollTop = scrollEl.scrollHeight
-      store.setIsNeedToUpdateScroll(false)
-    }
-  }, [state.chat.data, state.isNeedToUpdateScroll, scrollEl])
-
   return (
-    <PerfectScrollbar className="px-4" containerRef={setScrollEl}>
+    <SimpleScrollbar className="px-4">
       <Messages />
-    </PerfectScrollbar>
+    </SimpleScrollbar>
   )
 })
 
