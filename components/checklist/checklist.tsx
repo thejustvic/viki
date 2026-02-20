@@ -91,7 +91,7 @@ const Checkboxes = observer(() => {
           <SortableContextContainer />
           <DragOverlayContainer />
         </DndContext>
-        <CheckboxesNotCompleted />
+        <CheckboxesCompleted />
       </div>
     </PerfectScrollbar>
   )
@@ -100,7 +100,7 @@ const Checkboxes = observer(() => {
 const SortableContextContainer = observer(() => {
   const [, store] = useCardChecklistStore()
   const id = String(getSearchCard())
-  const items = store.getCheckboxesCompleted(id)
+  const items = store.getCheckboxesNotCompleted(id)
 
   return (
     <SortableContext items={items || []} strategy={verticalListSortingStrategy}>
@@ -115,10 +115,10 @@ const SortableContextContainer = observer(() => {
   )
 })
 
-const CheckboxesNotCompleted = observer(() => {
+const CheckboxesCompleted = observer(() => {
   const [, store] = useCardChecklistStore()
   const id = String(getSearchCard())
-  const items = store.getCheckboxesNotCompleted(id)
+  const items = store.getCheckboxesCompleted(id)
 
   return items?.map(checkbox => (
     <CheckboxComponent

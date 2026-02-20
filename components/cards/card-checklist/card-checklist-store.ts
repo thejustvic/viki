@@ -58,7 +58,7 @@ export class CardChecklistStore {
       this.state.checklists.data
         ?.get(cardId)
         ?.slice()
-        ?.filter(c => !c.is_completed)
+        ?.filter(c => c.is_completed)
         // sort fractional index
         ?.toSorted((a, b) =>
           a.position < b.position ? -1 : a.position > b.position ? 1 : 0
@@ -71,7 +71,7 @@ export class CardChecklistStore {
       this.state.checklists.data
         ?.get(cardId)
         ?.slice()
-        ?.filter(c => c.is_completed)
+        ?.filter(c => !c.is_completed)
         // sort fractional index
         ?.toSorted((a, b) =>
           a.position < b.position ? -1 : a.position > b.position ? 1 : 0
