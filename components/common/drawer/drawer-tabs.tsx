@@ -118,12 +118,12 @@ const ChecklistTab = observer(() => {
 })
 
 const ChecklistTabContent = observer(() => {
-  const [state] = useCardChecklistStore()
+  const [, store] = useCardChecklistStore()
   const id = String(getSearchCard())
   return (
     <Tabs.TabContent>
       <div className="shadow-sm">
-        {state.checklists.data?.get(id)?.length ? (
+        {store.getCheckboxes(id)?.length ? (
           <div className="flex gap-1 p-4 h-full bg-primary/8">
             <CheckAllCheckboxes />
             <CardChecklistProgress id={id} />
@@ -184,14 +184,14 @@ const VisualTab = observer(() => {
 
 const VisualTabContent = observer(() => {
   const id = String(getSearchCard())
-  const [cardChecklistState] = useCardChecklistStore()
+  const [, cardChecklistStore] = useCardChecklistStore()
   const [cardInfoState] = useCardInfoStore()
 
   return (
     <Tabs.TabContent>
       <div className="flex relative">
         <CardVisual
-          checklist={cardChecklistState.checklists.data?.get(id) ?? []}
+          checklist={cardChecklistStore.getCheckboxes(id) ?? []}
           cardInfoState={cardInfoState.card}
         />
       </div>

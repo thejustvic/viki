@@ -6,6 +6,10 @@ import {
   useCheckboxStore
 } from '@/components/checklist/checkbox/checkbox-store'
 import {Checkbox} from '@/components/checklist/types'
+import {Button} from '@/components/daisyui/button'
+import {DraggableAttributes} from '@dnd-kit/core'
+import {SyntheticListenerMap} from '@dnd-kit/core/dist/hooks/utilities'
+import {IconGripVertical} from '@tabler/icons-react'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
@@ -14,6 +18,8 @@ export interface CheckboxProps extends PropsWithChildren {
   checked: Checkbox['is_completed']
   id: Checkbox['id']
   title: Checkbox['title']
+  dragListeners?: SyntheticListenerMap | undefined
+  dragAttributes?: DraggableAttributes
 }
 
 const CheckboxBase = observer((props: CheckboxProps) => {
@@ -28,6 +34,13 @@ const CheckboxBase = observer((props: CheckboxProps) => {
   return (
     <>
       <label className="fieldset-label py-2 px-4 rounded-box hover:bg-accent/20">
+        {!props.checked && (
+          <DragCheckboxButton
+            dragListeners={props.dragListeners}
+            dragAttributes={props.dragAttributes}
+          />
+        )}
+
         <input
           type="checkbox"
           checked={props.checked}
@@ -58,6 +71,28 @@ const CheckboxBase = observer((props: CheckboxProps) => {
     </>
   )
 })
+
+interface DragCheckboxButtonProps {
+  dragAttributes?: DraggableAttributes
+  dragListeners: SyntheticListenerMap | undefined
+}
+
+const DragCheckboxButton = ({
+  dragAttributes,
+  dragListeners
+}: DragCheckboxButtonProps) => {
+  return (
+    <Button
+      {...dragAttributes}
+      {...dragListeners}
+      soft
+      shape="circle"
+      size="sm"
+    >
+      <IconGripVertical size={12} />
+    </Button>
+  )
+}
 
 export const CheckboxComponent = (props: CheckboxProps) => {
   const store = useLocalObservable(() => new CheckboxStore())

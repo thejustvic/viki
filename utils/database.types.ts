@@ -84,6 +84,7 @@ export type Database = {
           created_at: string
           id: string
           is_completed: boolean
+          position: string
           title: string
         }
         Insert: {
@@ -92,6 +93,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_completed?: boolean
+          position: string
           title: string
         }
         Update: {
@@ -100,6 +102,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_completed?: boolean
+          position?: string
           title?: string
         }
         Relationships: [

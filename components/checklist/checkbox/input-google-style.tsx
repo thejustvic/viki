@@ -1,9 +1,11 @@
 /* eslint-disable max-lines-per-function */
+import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Input} from '@/components/daisyui/input'
 import {IconSend} from '@tabler/icons-react'
+import {generateKeyBetween} from 'fractional-indexing'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
@@ -36,6 +38,7 @@ const TwContainer = tw.div`
 
 export const InputGoogleStyle = observer(() => {
   // const [keyboardHeight, setKeyboardHeight] = useState(0)
+  const [, store] = useCardChecklistStore()
   const {insertCheckbox} = useCheckboxHandlers()
   const {register, handleSubmit, setValue} = useForm<FormInputs>()
   const cardId = getSearchCard()
@@ -63,7 +66,10 @@ export const InputGoogleStyle = observer(() => {
       return
     }
     try {
-      await insertCheckbox({title: data.q_99, cardId})
+      const checklists = store.getCheckboxes(cardId)
+      const lastPosition = checklists?.[checklists.length - 1]?.position || null
+      const newPosition = generateKeyBetween(lastPosition, null)
+      await insertCheckbox({title: data.q_99, cardId, newPosition})
       setValue('q_99', '')
     } catch (e) {
       setValue('q_99', (e as Error).message)

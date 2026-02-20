@@ -1,5 +1,6 @@
 'use client'
 
+import {Checkbox} from '@/components/checklist/types'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
@@ -10,6 +11,7 @@ import {Tab, Theme} from './types'
 interface State {
   theme: Theme
   draggingCard: Card | undefined
+  draggingCheckbox: Checkbox | undefined
   leftDrawerOpen: boolean
   rightDrawerOpen: boolean
   drawerOpenByHover: boolean
@@ -31,6 +33,7 @@ export class GlobalStore {
   state: State = {
     theme: 'dark',
     draggingCard: undefined,
+    draggingCheckbox: undefined,
     leftDrawerOpen: false,
     rightDrawerOpen: false,
     drawerOpenByHover: false,
@@ -76,6 +79,10 @@ export class GlobalStore {
 
   updateDraggingCard = (value: Card | undefined) => {
     this.state.draggingCard = value
+  }
+
+  updateDraggingCheckbox = (value: Checkbox | undefined) => {
+    this.state.draggingCheckbox = value
   }
 
   setLastCardId = (cardId: State['lastCardId']): void => {

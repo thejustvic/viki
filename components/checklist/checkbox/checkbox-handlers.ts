@@ -8,11 +8,17 @@ interface Handlers {
   removeCheckbox: (id: Checkbox['id']) => Promise<void>
   insertCheckbox: ({
     cardId,
-    title
+    title,
+    newPosition
   }: {
     cardId: Checkbox['card_id']
     title: Checkbox['title']
+    newPosition: Checkbox['position']
   }) => Promise<void>
+  updateCheckboxPosition: (
+    position: Checkbox['title'],
+    checkboxId: Checkbox['id']
+  ) => Promise<void>
   updateCheckboxTitle: (
     text: Checkbox['title'],
     CheckboxId: Checkbox['id']
@@ -36,7 +42,8 @@ export const useCheckboxHandlers = (): Handlers => {
 
   const insertCheckbox: Handlers['insertCheckbox'] = async ({
     cardId,
-    title
+    title,
+    newPosition
   }) => {
     if (!user) {
       throw Error('You must log in first!')
@@ -44,8 +51,24 @@ export const useCheckboxHandlers = (): Handlers => {
     await supabase.from('checklist').insert({
       author_id: user.id,
       card_id: cardId,
-      title
+      title,
+      position: newPosition // (e.g. "a00015")
     })
+  }
+
+  const updateCheckboxPosition = async (
+    position: string,
+    checkboxId: string
+  ): Promise<void> => {
+    if (!user) {
+      throw Error('You must provide a user object!')
+    }
+    await supabase
+      .from('checklist')
+      .update({
+        position
+      })
+      .eq('id', checkboxId)
   }
 
   const updateCheckboxTitle: Handlers['updateCheckboxTitle'] = async (
@@ -87,6 +110,7 @@ export const useCheckboxHandlers = (): Handlers => {
   return {
     removeCheckbox,
     insertCheckbox,
+    updateCheckboxPosition,
     updateCheckboxTitle,
     updateCheckboxIsCompleted,
     updateAllCheckboxIsCompleted

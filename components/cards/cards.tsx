@@ -164,10 +164,10 @@ const SortableContainer = ({
 
 export const CheckAllCheckboxes = observer(() => {
   const id = String(getSearchCard())
-  const [state] = useCardChecklistStore()
+  const [state, store] = useCardChecklistStore()
   const {updateAllCheckboxIsCompleted} = useCheckboxHandlers()
   const isAllCompleted = state.progress.get(id) === 100
-  const checkboxIds = state.checklists.data?.get(id)?.map(c => c.id)
+  const checkboxIds = store.getCheckboxes(id)?.map(c => c.id)
 
   return (
     <div className="tooltip tooltip-info" data-tip="all">

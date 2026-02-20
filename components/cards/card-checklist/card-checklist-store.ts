@@ -41,8 +41,23 @@ export class CardChecklistStore {
     this.state.checklists = checklist
   }
 
+  getCheckboxes = (cardId: string) => {
+    return (
+      this.state.checklists.data
+        ?.get(cardId)
+        ?.slice()
+        // sort fractional index
+        ?.toSorted((a, b) =>
+          a.position < b.position ? -1 : a.position > b.position ? 1 : 0
+        )
+        ?.sort((a, b) => {
+          return Number(a.is_completed) - Number(b.is_completed)
+        })
+    )
+  }
+
   setProgress = (id: string): void => {
-    const data = this.state.checklists.data?.get(id)
+    const data = this.getCheckboxes(id)
     if (!Array.isArray(data)) {
       console.error('Expected an array, but found:', data)
       return
