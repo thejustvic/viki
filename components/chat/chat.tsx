@@ -1,5 +1,4 @@
 import {Loader} from '@/components/common/loader'
-import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
@@ -17,11 +16,7 @@ export const ChatBase = observer(() => {
 })
 
 const Chat = observer(() => {
-  return (
-    <SimpleScrollbar className="px-4">
-      <Messages />
-    </SimpleScrollbar>
-  )
+  return <Messages />
 })
 
 const TwState = tw.div`
@@ -67,7 +62,7 @@ const MessageList = observer(() => {
   const userEmail = user?.email
 
   return (
-    <div className="flex flex-col gap-2 h-[54px]">
+    <div className="flex flex-col gap-2 px-4">
       {state.chat.data?.map(message => {
         return (
           <ChatMessage
