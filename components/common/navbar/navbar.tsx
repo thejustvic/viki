@@ -118,7 +118,7 @@ const AvatarDropdown = observer(() => {
   return (
     <Dropdown placements={['end']} hover>
       <UserImage src={user.user_metadata?.avatar_url} />
-      <Dropdown.Menu className="shadow-lg bg-base-200">
+      <Dropdown.Menu className="shadow-lg bg-base-200 gap-4">
         {cardId && <LabelShowLeftMenu />}
         {isMobile && (
           <div className="flex gap-1 items-center">
