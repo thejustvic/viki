@@ -157,7 +157,7 @@ const ChatTab = observer(() => {
 const ChatTabContent = () => {
   return (
     <Tabs.TabContent>
-      <div className="flex h-[calc(100dvh-68px)]">
+      <div className="h-[calc(100dvh-68px)]">
         <ChatWrapper />
       </div>
     </Tabs.TabContent>

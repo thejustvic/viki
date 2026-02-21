@@ -2,6 +2,7 @@ import {Loader} from '@/components/common/loader'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
+import {SimpleScrollbar} from '../common/simple-scrollbar'
 import {ChatMessage} from './chat-message'
 import {useChatStore} from './chat-store'
 import {useUsersWhoReacted} from './reactions/use-users-who-reacted'
@@ -62,16 +63,18 @@ const MessageList = observer(() => {
   const userEmail = user?.email
 
   return (
-    <div className="flex flex-col gap-2 px-4">
-      {state.chat.data?.map(message => {
-        return (
-          <ChatMessage
-            key={message.id}
-            message={message}
-            my={message.author_email === userEmail}
-          />
-        )
-      })}
-    </div>
+    <SimpleScrollbar>
+      <div className="flex flex-col gap-2 px-4">
+        {state.chat.data?.map(message => {
+          return (
+            <ChatMessage
+              key={message.id}
+              message={message}
+              my={message.author_email === userEmail}
+            />
+          )
+        })}
+      </div>
+    </SimpleScrollbar>
   )
 })
