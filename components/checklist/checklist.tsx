@@ -151,11 +151,13 @@ const DragOverlayContainer = observer(() => {
       }}
     >
       {state.draggingCheckbox ? (
-        <CheckboxComponent
-          id={state.draggingCheckbox.id}
-          checked={state.draggingCheckbox.is_completed}
-          title={state.draggingCheckbox.title}
-        />
+        <div className="bg-info/10">
+          <CheckboxComponent
+            id={state.draggingCheckbox.id}
+            checked={state.draggingCheckbox.is_completed}
+            title={state.draggingCheckbox.title}
+          />
+        </div>
       ) : null}
     </DragOverlay>
   )
