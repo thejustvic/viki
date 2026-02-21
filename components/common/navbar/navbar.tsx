@@ -128,7 +128,7 @@ const AvatarDropdown = observer(() => {
         )}
         <Button
           soft
-          color="error"
+          color="info"
           onClick={handleLogout}
           disable={state.logging.logout}
           loading={state.logging.logout}
