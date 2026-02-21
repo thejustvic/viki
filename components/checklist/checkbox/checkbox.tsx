@@ -34,13 +34,6 @@ const CheckboxBase = observer((props: CheckboxProps) => {
   return (
     <>
       <label className="fieldset-label py-2 px-4 rounded-box hover:bg-accent/20">
-        {!props.checked && (
-          <DragCheckboxButton
-            dragListeners={props.dragListeners}
-            dragAttributes={props.dragAttributes}
-          />
-        )}
-
         <input
           type="checkbox"
           checked={props.checked}
@@ -48,15 +41,20 @@ const CheckboxBase = observer((props: CheckboxProps) => {
           onChange={() => updateCheckboxIsCompleted(!props.checked, props.id)}
         />
         <div
-          className={twJoin(props.checked && 'line-through')}
+          className={twJoin('flex-1', props.checked && 'line-through')}
           onClick={store.startEditing}
         >
           <span className="break-words">{props.title}</span>
         </div>
+        {!props.checked && (
+          <DragCheckboxButton
+            dragListeners={props.dragListeners}
+            dragAttributes={props.dragAttributes}
+          />
+        )}
       </label>
-
       {state.unsavedTitle && (
-        <div className="text-accent text-xs m-2">
+        <div className="text-accent text-xs m-2 px-10">
           You didn't save last changes.{' '}
           <span className="link" onClick={store.startEditing}>
             See changes
@@ -86,10 +84,10 @@ const DragCheckboxButton = ({
       {...dragAttributes}
       {...dragListeners}
       soft
-      shape="circle"
+      shape="square"
       size="sm"
     >
-      <IconGripVertical size={12} />
+      <IconGripVertical size={14} />
     </Button>
   )
 }
