@@ -15,14 +15,17 @@ import {PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 export interface CheckboxProps extends PropsWithChildren {
-  checked: Checkbox['is_completed']
-  id: Checkbox['id']
-  title: Checkbox['title']
+  checkbox: Checkbox
   dragListeners?: SyntheticListenerMap | undefined
   dragAttributes?: DraggableAttributes
 }
 
 const CheckboxBase = observer((props: CheckboxProps) => {
+  const {
+    checkbox: {id, title, is_completed},
+    dragListeners,
+    dragAttributes
+  } = props
   const [state, store] = useCheckboxStore()
 
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
@@ -36,20 +39,20 @@ const CheckboxBase = observer((props: CheckboxProps) => {
       <label className="fieldset-label py-2 px-4 rounded-box hover:bg-accent/20">
         <input
           type="checkbox"
-          checked={props.checked}
+          checked={is_completed}
           className="checkbox"
-          onChange={() => updateCheckboxIsCompleted(!props.checked, props.id)}
+          onChange={() => updateCheckboxIsCompleted(!is_completed, id)}
         />
         <div
-          className={twJoin('flex-1', props.checked && 'line-through')}
+          className={twJoin('flex-1', is_completed && 'line-through')}
           onClick={store.startEditing}
         >
-          <span className="break-words">{props.title}</span>
+          <span className="break-words">{title}</span>
         </div>
-        {!props.checked && (
+        {!is_completed && (
           <DragCheckboxButton
-            dragListeners={props.dragListeners}
-            dragAttributes={props.dragAttributes}
+            dragListeners={dragListeners}
+            dragAttributes={dragAttributes}
           />
         )}
       </label>

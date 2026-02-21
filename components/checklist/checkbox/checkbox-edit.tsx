@@ -7,54 +7,61 @@ import {CheckboxProps} from './checkbox'
 import {useCheckboxHandlers} from './checkbox-handlers'
 import {useCheckboxStore} from './checkbox-store'
 
-export const CheckboxEdit = observer(({title, id}: CheckboxProps) => {
-  const [state, store] = useCheckboxStore()
-  const [value, setValue] = useState(state.unsavedTitle || title || '')
-  const {updateCheckboxTitle, removeCheckbox} = useCheckboxHandlers()
+export const CheckboxEdit = observer(
+  ({checkbox: {id, title}}: CheckboxProps) => {
+    const [state, store] = useCheckboxStore()
+    const [value, setValue] = useState(state.unsavedTitle || title || '')
+    const {updateCheckboxTitle, removeCheckbox} = useCheckboxHandlers()
 
-  return (
-    <div className="flex gap-2 flex-col ml-8">
-      <Textarea
-        className="w-full min-h-10 h-10"
-        onBlur={e => store.blurEditing(e.target.value, title)}
-        value={state.unsavedTitle || value}
-        onChange={e => setValue(e.target.value)}
-        onFocus={event => {
-          const position = value.length
-          event.target.setSelectionRange(position, position)
-          event.target.style.height = event.target.scrollHeight + 'px'
-        }}
-        autoFocus
-      />
-      <div className="flex gap-1">
-        <Button
-          soft
-          color="info"
-          shape="circle"
-          size="xs"
-          onMouseDown={async () => {
-            await updateCheckboxTitle(value, id)
-            store.submitEditing()
+    return (
+      <div className="flex gap-2 flex-col ml-8">
+        <Textarea
+          className="w-full min-h-10 h-10"
+          onBlur={e => store.blurEditing(e.target.value, title)}
+          value={state.unsavedTitle || value}
+          onChange={e => setValue(e.target.value)}
+          onFocus={event => {
+            const position = value.length
+            event.target.setSelectionRange(position, position)
+            event.target.style.height = event.target.scrollHeight + 'px'
           }}
-        >
-          <IconCheck />
-        </Button>
-        <Button soft size="xs" shape="circle" onMouseDown={store.cancelEditing}>
-          <IconCancel />
-        </Button>
-        <Button
-          soft
-          color="error"
-          size="xs"
-          shape="circle"
-          onMouseDown={async () => {
-            await removeCheckbox(id)
-            store.delete()
-          }}
-        >
-          <IconTrash />
-        </Button>
+          autoFocus
+        />
+        <div className="flex gap-1">
+          <Button
+            soft
+            color="info"
+            shape="circle"
+            size="xs"
+            onMouseDown={async () => {
+              await updateCheckboxTitle(value, id)
+              store.submitEditing()
+            }}
+          >
+            <IconCheck />
+          </Button>
+          <Button
+            soft
+            size="xs"
+            shape="circle"
+            onMouseDown={store.cancelEditing}
+          >
+            <IconCancel />
+          </Button>
+          <Button
+            soft
+            color="error"
+            size="xs"
+            shape="circle"
+            onMouseDown={async () => {
+              await removeCheckbox(id)
+              store.delete()
+            }}
+          >
+            <IconTrash />
+          </Button>
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  }
+)

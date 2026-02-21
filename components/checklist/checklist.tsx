@@ -110,16 +110,12 @@ const Checkboxes = observer(() => {
 const SortableContextContainer = observer(() => {
   const [, store] = useCardChecklistStore()
   const id = String(getSearchCard())
-  const items = store.getCheckboxesNotCompleted(id)
+  const items = store.getCheckboxesNotCompleted(id) ?? []
 
   return (
-    <SortableContext items={items || []} strategy={verticalListSortingStrategy}>
-      {items?.map(checkbox => (
-        <SortableContainer
-          key={checkbox.id}
-          id={checkbox.id}
-          checkbox={checkbox}
-        />
+    <SortableContext items={items} strategy={verticalListSortingStrategy}>
+      {items.map(checkbox => (
+        <SortableContainer key={checkbox.id} checkbox={checkbox} />
       ))}
     </SortableContext>
   )
@@ -131,12 +127,7 @@ const CheckboxesCompleted = observer(() => {
   const items = store.getCheckboxesCompleted(id)
 
   return items?.map(checkbox => (
-    <CheckboxComponent
-      key={checkbox.id}
-      id={checkbox.id}
-      checked={checkbox.is_completed}
-      title={checkbox.title}
-    />
+    <CheckboxComponent key={checkbox.id} checkbox={checkbox} />
   ))
 })
 
@@ -152,26 +143,16 @@ const DragOverlayContainer = observer(() => {
     >
       {state.draggingCheckbox ? (
         <div className="bg-info/10">
-          <CheckboxComponent
-            id={state.draggingCheckbox.id}
-            checked={state.draggingCheckbox.is_completed}
-            title={state.draggingCheckbox.title}
-          />
+          <CheckboxComponent checkbox={state.draggingCheckbox} />
         </div>
       ) : null}
     </DragOverlay>
   )
 })
 
-const SortableContainer = ({
-  id,
-  checkbox
-}: {
-  id: string
-  checkbox: Checkbox
-}) => {
+const SortableContainer = ({checkbox}: {checkbox: Checkbox}) => {
   const {attributes, listeners, setNodeRef, transform, transition, isDragging} =
-    useSortable({id})
+    useSortable({id: checkbox.id})
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -182,10 +163,7 @@ const SortableContainer = ({
   return (
     <div ref={setNodeRef} style={style}>
       <CheckboxComponent
-        key={checkbox.id}
-        id={checkbox.id}
-        checked={checkbox.is_completed}
-        title={checkbox.title}
+        checkbox={checkbox}
         dragListeners={listeners}
         dragAttributes={attributes}
       />
