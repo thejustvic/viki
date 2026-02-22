@@ -3,19 +3,16 @@
 import {Button} from '@/components/daisyui/button'
 import {Link} from '@/components/daisyui/link'
 import {useBoolean} from '@/hooks/use-boolean'
-import {cardHeight} from '@/utils/const'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
-import {useEffect} from 'react'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import './style.scss'
 
 const TwCarousel = tw.div`
-  flex 
-  items-center 
-  justify-center 
-  flex-1
+  flex
+  justify-center
+  items-center
 `
 const TwScene = tw.div`
   scene
@@ -39,6 +36,8 @@ const TwCard = tw.div`
   bg-base-300 
   shadow-2xl 
   rounded-2xl 
+  h-[142px] 
+  w-[190px] 
   carousel__cell 
   transform-3d
 `
@@ -59,7 +58,6 @@ const TwLink = tw.div`
   justify-center
 `
 
-// 3D Rotation Logic
 const carousel: KeenSliderPlugin = slider => {
   const z = 280
   function rotate() {
@@ -78,57 +76,67 @@ const carousel: KeenSliderPlugin = slider => {
   slider.on('detailsChanged', rotate)
 }
 
-// Animation Config
-const animation = {duration: 8000, easing: (t: number) => t}
+const autoplayPlugin: KeenSliderPlugin = slider => {
+  let timeout: ReturnType<typeof setTimeout>
+  let mouseOver = false
+
+  function clear() {
+    clearTimeout(timeout)
+  }
+
+  function next() {
+    clear()
+    if (mouseOver) {
+      return
+    }
+    timeout = setTimeout(() => {
+      slider.next()
+    }, 1200)
+  }
+
+  const onMouseOver = () => {
+    mouseOver = true
+    clear()
+  }
+  const onMouseOut = () => {
+    mouseOver = false
+    next()
+  }
+
+  slider.on('created', () => {
+    slider.container.addEventListener('mouseover', onMouseOver)
+    slider.container.addEventListener('mouseout', onMouseOut)
+    next()
+  })
+  slider.on('animationEnded', next)
+  slider.on('updated', next)
+  slider.on('destroyed', () => {
+    clear()
+    slider.container.removeEventListener('mouseover', onMouseOver)
+    slider.container.removeEventListener('mouseout', onMouseOut)
+  })
+}
+
+// the coefficient 1.2 determines the strength of the "bounce"
+const easeOutBack = (t: number) => {
+  const s = 1.2
+  return --t * t * ((s + 1) * t + s) + 1
+}
 
 export const TechStackCarousel = () => {
-  const mouseOver = useBoolean(false)
-
-  const [sliderRef, sliderInstance] = useKeenSlider<HTMLDivElement>(
+  const [sliderRef] = useKeenSlider<HTMLDivElement>(
     {
       loop: true,
       selector: '.carousel__cell',
       renderMode: 'custom',
       mode: 'free-snap',
-      created(s) {
-        s.moveToIdx(5, true, animation)
-
-        s.container.addEventListener('mouseover', () =>
-          mouseOver.setValue(true)
-        )
-        s.container.addEventListener('mouseout', () =>
-          mouseOver.setValue(false)
-        )
-      },
-      updated(s) {
-        if (!mouseOver.value) {
-          s.moveToIdx(s.track.details.abs + 5, true, animation)
-        }
-      },
-      animationEnded(s) {
-        if (!mouseOver.value) {
-          s.moveToIdx(s.track.details.abs + 5, true, animation)
-        }
-      }
+      defaultAnimation: {duration: 1200, easing: easeOutBack}
     },
-    [carousel]
+    [carousel, autoplayPlugin]
   )
 
-  useEffect(() => {
-    if (!sliderInstance.current) {
-      return
-    }
-
-    const container = sliderInstance.current.container
-
-    return () => {
-      container.removeEventListener('mouseover', () => mouseOver.setValue(true))
-      container.removeEventListener('mouseout', () => mouseOver.setValue(false))
-    }
-  }, [sliderInstance])
-
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden h-[500px]">
       <TwTechStack>Project Tech Stack</TwTechStack>
       <TwCarousel>
         <TwScene>
@@ -146,7 +154,7 @@ export const TechStackCarousel = () => {
 const Card = ({card}: {card: CardProps}) => {
   const hovered = useBoolean(false)
   return (
-    <TwCard style={{height: cardHeight}}>
+    <TwCard>
       <TwCardInner
         style={{transform: 'translateZ(20px)'}}
         onMouseEnter={hovered.turnOn}
