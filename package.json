@@ -49,7 +49,7 @@
     "@eslint/js": "^9.20.0",
     "@supabase/postgrest-js": "2.93.2",
     "@svgr/webpack": "8.1.0",
-    "@tailwindcss/postcss": "^4.0.5",
+    "@tailwindcss/postcss": "^4.2.0",
     "@types/eslint-config-prettier": "6.11.3",
     "@types/node": "22.13.1",
     "@types/react": "19.2.2",
@@ -72,7 +72,7 @@
     "sass": "~1.84.0",
     "supabase": "2.67.3",
     "tailwind-merge": "3.0.1",
-    "tailwindcss": "4.0.5",
+    "tailwindcss": "4.2.0",
     "ts-essentials": "10.0.4",
     "typescript": "5.7.3"
   },
