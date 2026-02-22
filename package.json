@@ -38,8 +38,8 @@
     "react-hook-form": "7.71.2",
     "react-parallax-tilt": "1.7.319",
     "react-swipeable": "7.0.2",
-    "server-only": "0.0.1",
     "simplebar-react": "3.3.2",
+    "tailwind-merge": "3.5.0",
     "tailwind-styled-components": "2.2.0",
     "three": "0.183.1"
   },
@@ -69,8 +69,8 @@
     "postcss-import": "16.1.1",
     "prettier": "3.8.1",
     "sass": "~1.97.3",
+    "server-only": "0.0.1",
     "supabase": "2.76.12",
-    "tailwind-merge": "3.5.0",
     "tailwindcss": "4.2.0",
     "ts-essentials": "10.1.1",
     "typescript": "5.9.3"
