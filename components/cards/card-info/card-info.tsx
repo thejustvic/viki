@@ -69,13 +69,15 @@ export const CardInfo = observer(() => {
 })
 
 const CardInfoBody = () => (
-  <div className="flex flex-col gap-2 h-[calc(100dvh-86px)]">
+  <div className="h-[calc(100dvh-90px)]">
     <SimpleScrollbar>
-      <Creator />
-      <Time />
-      <Text />
-      <Cover />
-      <Visual />
+      <div className="flex flex-col gap-2">
+        <Creator />
+        <Time />
+        <Text />
+        <Cover />
+        <Visual />
+      </div>
     </SimpleScrollbar>
   </div>
 )

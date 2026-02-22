@@ -30,7 +30,7 @@ interface BasicSceneProps {
 
 const BasicScene = ({children, isLocked}: BasicSceneProps) => {
   return (
-    <div style={{height: 'calc(100vh - 70px)', width: '100vw'}}>
+    <div style={{height: 'calc(100vh - 74px)', width: '100vw'}}>
       {!isMobile && (
         <>
           {!isLocked.value ? (
@@ -50,7 +50,11 @@ const BasicScene = ({children, isLocked}: BasicSceneProps) => {
         </>
       )}
 
-      <Canvas shadows camera={{fov: 50, position: [-0.2, -1, 5]}}>
+      <Canvas
+        shadows
+        camera={{fov: 50, position: [-0.2, -1, 5]}}
+        className="rounded-md"
+      >
         <Lights />
 
         <Physics gravity={[0, -9.8, 0]}>

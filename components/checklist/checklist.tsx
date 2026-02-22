@@ -134,6 +134,7 @@ const CheckboxesCompleted = observer(() => {
         className="cursor-pointer"
         type="radio"
         name="my-accordion-completed-checkboxes"
+        onChange={() => {}}
         onClick={show.toggle}
         checked={show.value}
       />
