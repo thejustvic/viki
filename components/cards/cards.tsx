@@ -25,6 +25,7 @@ import {
 import {CSS} from '@dnd-kit/utilities'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
+import {createPortal} from 'react-dom'
 import {useGlobalStore} from '../global-provider/global-store'
 import {AddNewCard} from './add-new-card'
 import {Card} from './card'
@@ -84,7 +85,7 @@ export const Cards = observer(() => {
         onDragEnd={handleDragEnd}
       >
         <SortableContextContainer />
-        <DragOverlayContainer />
+        {createPortal(<DragOverlayContainer />, document.body)}
       </DndContext>
       <AddNewCardButton />
     </>
