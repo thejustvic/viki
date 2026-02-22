@@ -124,7 +124,7 @@ const ChecklistTabContent = observer(() => {
     <Tabs.TabContent>
       <div className="shadow-sm">
         {store.getAllCheckboxes(id)?.length ? (
-          <div className="flex gap-1 p-4 h-full bg-primary/8">
+          <div className="flex gap-3 py-4 px-3 h-full bg-primary/8">
             <CheckAllCheckboxes />
             <CardChecklistProgress id={id} />
           </div>

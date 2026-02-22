@@ -7,6 +7,7 @@ import {
 } from '@/components/checklist/checkbox/checkbox-store'
 import {Checkbox} from '@/components/checklist/types'
 import {Button} from '@/components/daisyui/button'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {DraggableAttributes} from '@dnd-kit/core'
 import {SyntheticListenerMap} from '@dnd-kit/core/dist/hooks/utilities'
 import {IconGripVertical} from '@tabler/icons-react'
@@ -26,6 +27,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
     dragListeners,
     dragAttributes
   } = props
+  const [globalState] = useGlobalStore()
   const [state, store] = useCheckboxStore()
 
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
@@ -36,26 +38,24 @@ const CheckboxBase = observer((props: CheckboxProps) => {
 
   return (
     <>
-      <label className="fieldset-label py-2 px-4 rounded-box hover:bg-accent/20">
+      <div className="flex items-center gap-3 py-1 px-3 rounded-box hover:bg-accent/20">
         <input
           type="checkbox"
           checked={is_completed}
           className="checkbox"
           onChange={() => updateCheckboxIsCompleted(!is_completed, id)}
         />
-        <div
-          className={twJoin('flex-1', is_completed && 'line-through')}
-          onClick={store.startEditing}
-        >
-          <span className="break-words">{title}</span>
+        <div className="flex-1" onClick={store.startEditing}>
+          <span className="break-words text-base-content/60">{title}</span>
         </div>
         {!is_completed && (
           <DragCheckboxButton
+            isDragging={Boolean(globalState.draggingCheckbox)}
             dragListeners={dragListeners}
             dragAttributes={dragAttributes}
           />
         )}
-      </label>
+      </div>
       {state.unsavedTitle && (
         <div className="text-accent text-xs m-2 px-10">
           You didn't save last changes.{' '}
@@ -74,11 +74,13 @@ const CheckboxBase = observer((props: CheckboxProps) => {
 })
 
 interface DragCheckboxButtonProps {
+  isDragging?: boolean
   dragAttributes?: DraggableAttributes
   dragListeners: SyntheticListenerMap | undefined
 }
 
 const DragCheckboxButton = ({
+  isDragging,
   dragAttributes,
   dragListeners
 }: DragCheckboxButtonProps) => {
@@ -89,6 +91,7 @@ const DragCheckboxButton = ({
       soft
       shape="square"
       size="sm"
+      className={twJoin(isDragging && 'cursor-grabbing')}
     >
       <IconGripVertical size={14} />
     </Button>

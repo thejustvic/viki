@@ -28,6 +28,7 @@ export const useCheckboxDragHandlers = (): Handlers => {
   }
 
   const handleDragEnd = async (event: DragEndEvent): Promise<void> => {
+    globalStore.updateDraggingCheckbox(undefined)
     try {
       const checklist = store.getCheckboxesNotCompleted(id)
       const position = getPosition(checklist, event)

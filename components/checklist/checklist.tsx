@@ -4,6 +4,7 @@ import {CheckboxComponent} from '@/components/checklist/checkbox/checkbox'
 import {Checkbox} from '@/components/checklist/types'
 import {Loader} from '@/components/common/loader'
 import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
+import {useBoolean} from '@/hooks/use-boolean'
 import {
   closestCenter,
   defaultDropAnimationSideEffects,
@@ -123,12 +124,29 @@ const SortableContextContainer = observer(() => {
 
 const CheckboxesCompleted = observer(() => {
   const [, store] = useCardChecklistStore()
+  const show = useBoolean(false)
   const id = String(getSearchCard())
-  const items = store.getCheckboxesCompleted(id)
+  const items = store.getCheckboxesCompleted(id) ?? []
 
-  return items?.map(checkbox => (
-    <CheckboxComponent key={checkbox.id} checkbox={checkbox} />
-  ))
+  return (
+    <div className="collapse collapse-arrow bg-base-100 focus:outline-none rounded-b-none">
+      <input
+        className="cursor-pointer"
+        type="radio"
+        name="my-accordion-completed-checkboxes"
+        onClick={show.toggle}
+        checked={show.value}
+      />
+      <div className="collapse-title text-base-content/50 font-semibold px-12">
+        checked items
+      </div>
+      <div className="collapse-content p-0">
+        {items.map(checkbox => (
+          <CheckboxComponent key={checkbox.id} checkbox={checkbox} />
+        ))}
+      </div>
+    </div>
+  )
 })
 
 const DragOverlayContainer = observer(() => {
@@ -142,7 +160,7 @@ const DragOverlayContainer = observer(() => {
       }}
     >
       {state.draggingCheckbox ? (
-        <div className="bg-info/10">
+        <div className="bg-info/10 cursor-grabbing">
           <CheckboxComponent checkbox={state.draggingCheckbox} />
         </div>
       ) : null}

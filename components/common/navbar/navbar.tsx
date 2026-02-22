@@ -14,6 +14,7 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSearch} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useRouter} from 'next/navigation'
+import {useId} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
@@ -69,11 +70,12 @@ const NavCenter = () => {
 
 const Search = observer(() => {
   const [state, store] = useCardsStore()
-
+  const id = useId()
   return (
     <label className="input input-info border-none w-full">
       <IconSearch />
       <input
+        name={id}
         type="search"
         placeholder="Search"
         onChange={e => store.setSearchValue(e.target.value)}

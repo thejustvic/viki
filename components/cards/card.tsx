@@ -14,6 +14,7 @@ import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
+import {useGlobalStore} from '../global-provider/global-store'
 import {useCardsStore} from './cards-store'
 import {Card as CardType} from './types'
 
@@ -64,7 +65,7 @@ export const Card = observer(
 
 const TwText = tw.div`
   line-clamp-3
-  text-[#c0cada]/90
+  text-base-content/50
   drop-shadow-[var(--text-shadow)]
 `
 
@@ -78,6 +79,7 @@ interface CardProps {
 
 const CardBody = observer(
   ({my, card, remove, dragListeners, dragAttributes}: CardProps) => {
+    const [state] = useGlobalStore()
     const updateSearchParams = useUpdateSearchParams()
     const hovered = useBoolean(false)
 
@@ -87,14 +89,22 @@ const CardBody = observer(
 
     return (
       <div
-        className="flex flex-col flex-1 justify-between"
-        onMouseEnter={hovered.turnOn}
+        className={twJoin(
+          state.draggingCard && 'cursor-grabbing',
+          'flex flex-col flex-1 justify-between'
+        )}
+        onMouseOver={() => {
+          if (!hovered.value) {
+            hovered.turnOn()
+          }
+        }}
         onMouseLeave={hovered.turnOff}
       >
         <CardUI.Title className="flex justify-between">
           <TwText>{card.text}</TwText>
           {my && (
             <CardActionButtons
+              isDragging={Boolean(state.draggingCard)}
               hovered={hovered.value}
               remove={remove}
               dragListeners={dragListeners}
@@ -118,6 +128,7 @@ const CardBody = observer(
 )
 
 interface CardActionButtonsProps {
+  isDragging?: boolean
   hovered?: boolean
   remove: () => void
   dragListeners: SyntheticListenerMap | undefined
@@ -125,6 +136,7 @@ interface CardActionButtonsProps {
 }
 
 const CardActionButtons = ({
+  isDragging,
   dragListeners,
   dragAttributes,
   remove,
@@ -135,6 +147,7 @@ const CardActionButtons = ({
       {isMobile ? (
         <div className="flex gap-1 self-start">
           <DragCardButton
+            isDragging={isDragging}
             dragListeners={dragListeners}
             dragAttributes={dragAttributes}
           />
@@ -143,6 +156,7 @@ const CardActionButtons = ({
       ) : (
         <div className="flex gap-1 self-start">
           <DragCardButton
+            isDragging={isDragging}
             dragListeners={dragListeners}
             dragAttributes={dragAttributes}
             visible={hovered}
@@ -159,7 +173,11 @@ interface DeleteCardButtonProps {
   visible?: boolean
 }
 
-const DeleteCardButton = ({remove, visible = true}: DeleteCardButtonProps) => {
+const DeleteCardButton = ({
+  remove,
+
+  visible = true
+}: DeleteCardButtonProps) => {
   return (
     <Button
       soft
@@ -177,22 +195,37 @@ interface DragCardButtonProps {
   dragAttributes?: DraggableAttributes
   dragListeners: SyntheticListenerMap | undefined
   visible?: boolean
+  isDragging?: boolean
 }
 
 const DragCardButton = ({
   dragAttributes,
   dragListeners,
-  visible = true
+  visible = true,
+  isDragging
 }: DragCardButtonProps) => {
   return (
-    <div className="tooltip tooltip-info" data-tip="drag to sort">
+    <div
+      className={twJoin(
+        !isDragging && visible && 'tooltip tooltip-top tooltip-info'
+      )}
+    >
+      {!isDragging && visible && (
+        <div className="tooltip-content px-[4px] py-[1px]">
+          <p className="text-xs">drag to sort</p>
+        </div>
+      )}
       <Button
         {...dragAttributes}
         {...dragListeners}
         soft
         shape="circle"
         size="sm"
-        className={twJoin(visible ? 'opacity-100' : 'opacity-0', 'self-start')}
+        className={twJoin(
+          visible ? 'opacity-100' : 'opacity-0',
+          'self-start',
+          isDragging && 'cursor-grabbing'
+        )}
       >
         <IconDragDrop2 size={16} />
       </Button>
