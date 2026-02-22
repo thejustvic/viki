@@ -2,6 +2,7 @@
 
 import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
+import {cardHeight} from '@/utils/const'
 import {
   closestCenter,
   defaultDropAnimationSideEffects,
@@ -43,7 +44,9 @@ export default function CardsProvider({children}: PropsWithChildren) {
 const CardsSkeleton = () => {
   return Array(3)
     .fill(null)
-    .map((_el, inx) => <div key={inx} className="skeleton h-[142px]" />)
+    .map((_el, inx) => (
+      <div key={inx} className="skeleton" style={{height: cardHeight}} />
+    ))
 }
 
 export const Cards = observer(() => {

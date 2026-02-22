@@ -65,8 +65,8 @@ export const Card = observer(
 
 const TwText = tw.div`
   line-clamp-3
-  text-base-content/50
-  drop-shadow-[var(--text-shadow)]
+  text-base-content/60
+  drop-shadow-xl/25
 `
 
 interface CardProps {

@@ -3,6 +3,7 @@
 import {Button} from '@/components/daisyui/button'
 import {Link} from '@/components/daisyui/link'
 import {useBoolean} from '@/hooks/use-boolean'
+import {cardHeight} from '@/utils/const'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
 import {useEffect} from 'react'
@@ -38,8 +39,6 @@ const TwCard = tw.div`
   bg-base-300 
   shadow-2xl 
   rounded-2xl 
-  h-[142px] 
-  w-[190px] 
   carousel__cell 
   transform-3d
 `
@@ -147,7 +146,7 @@ export const TechStackCarousel = () => {
 const Card = ({card}: {card: CardProps}) => {
   const hovered = useBoolean(false)
   return (
-    <TwCard>
+    <TwCard style={{height: cardHeight}}>
       <TwCardInner
         style={{transform: 'translateZ(20px)'}}
         onMouseEnter={hovered.turnOn}

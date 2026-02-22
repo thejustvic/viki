@@ -1,4 +1,5 @@
 import {Card} from '@/components/daisyui/card'
+import {cardHeight} from '@/utils/const'
 import {CSSProperties, ReactElement} from 'react'
 import {isMobile, isTablet} from 'react-device-detect'
 import Hover from 'react-parallax-tilt'
@@ -39,12 +40,13 @@ const CardComp = (props: Props) => {
   const translateZ: CSSProperties = !disableTransform ? transform : {}
 
   const cardClassName: ClassNameValue = twJoin(
-    `shadow-md
-    h-[142px]
-    transform-3d 
-    bg-no-repeat
-    bg-center
-    bg-cover`,
+    `
+      shadow-md
+      transform-3d 
+      bg-no-repeat
+      bg-center
+      bg-cover
+    `,
     active && 'border-solid border-accent',
     my ? 'bg-base-300/50' : 'bg-accent-content/50'
   )
@@ -54,7 +56,8 @@ const CardComp = (props: Props) => {
   }
 
   const cardStyle: CSSProperties = {
-    backgroundImage: bgImage ? getBgImageUrl() : 'none'
+    backgroundImage: bgImage ? getBgImageUrl() : 'none',
+    height: cardHeight
   }
 
   return (
