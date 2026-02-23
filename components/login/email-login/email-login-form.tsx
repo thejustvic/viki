@@ -16,8 +16,6 @@ const TwTitle = tw(Card.Title)`
 
 const TwBody = tw(Card.Body)`
   pt-0 
-  pb-4
-  justify-between
 `
 
 const TwSubmit = tw(Button)`
@@ -96,6 +94,11 @@ export const EmailLoginForm = observer(
             className={'flex flex-col gap-8'}
           >
             <Inputs register={register} isRegister={isRegister} />
+            {errors.email?.message && errors.email?.message?.length > 0 && (
+              <TwErrorWrapper>
+                <TwError>{errors.email.message}</TwError>
+              </TwErrorWrapper>
+            )}
             <TwSubmit
               soft
               color="primary"
@@ -109,11 +112,6 @@ export const EmailLoginForm = observer(
           <Button ghost variant="link" size="sm" onClick={handleLink}>
             {linkTitle}
           </Button>
-          {errors.email?.message && errors.email?.message?.length > 0 && (
-            <TwErrorWrapper>
-              <TwError>{errors.email.message}</TwError>
-            </TwErrorWrapper>
-          )}
         </TwBody>
       </div>
     )

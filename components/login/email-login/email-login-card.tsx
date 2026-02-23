@@ -8,7 +8,7 @@ import {useEmailLoginStore} from './email-login-store'
 
 const TwLoginCardInner = tw.div<{$rotate: boolean}>` 
   w-[300px]
-  h-[360px] 
+  min-h-[400px]
   duration-700
   bg-base-100
   perspective-distant
@@ -17,9 +17,6 @@ const TwLoginCardInner = tw.div<{$rotate: boolean}>`
 `
 
 const TwCardSide = tw.div`
-  absolute 
-  w-full 
-  h-full
   backface-hidden
   transform-3d
 `
@@ -29,9 +26,7 @@ const TwCardLogin = tw(TwCardSide)`rotate-y-0`
 const TwCardRegister = tw(TwCardSide)`rotate-y-180`
 
 const TwCard = tw.div`
-  w-full
-  h-full
-  flex-shrink-0
+  shrink-0
   max-w-sm
   shadow-lg
   bg-base-100
