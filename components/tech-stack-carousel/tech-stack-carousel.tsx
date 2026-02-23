@@ -28,7 +28,7 @@ const TwTechStack = tw.h1`
   font-mono 
   text-2xl 
   pointer-events-none 
-  drop-shadow-2xl 
+  drop-shadow-xl/25 
   truncate
 `
 const TwCard = tw.div`
@@ -51,11 +51,13 @@ const TwImage = tw.div`
   items-center 
   justify-center 
   flex-1
+  drop-shadow-xl/25
 `
 const TwLink = tw.div`
   flex 
   items-center 
   justify-center
+  drop-shadow-xl/25
 `
 
 const carousel: KeenSliderPlugin = slider => {
@@ -156,7 +158,7 @@ const Card = ({card}: {card: CardProps}) => {
   return (
     <TwCard>
       <TwCardInner
-        style={{transform: 'translateZ(20px)'}}
+        style={{transform: 'translateZ(30px)'}}
         onMouseEnter={hovered.turnOn}
         onMouseLeave={hovered.turnOff}
       >
@@ -203,7 +205,7 @@ const stack: CardProps[] = [
     href: 'https://supabase.com/docs'
   },
   {
-    name: 'Tailwind4',
+    name: 'Tailwind',
     logo: 'https://static.cdnlogo.com/logos/t/58/tailwind-css.svg',
     href: 'https://tailwindcss.com/blog/tailwindcss-v4'
   },
@@ -218,12 +220,12 @@ const stack: CardProps[] = [
     href: 'https://www.typescriptlang.org/'
   },
   {
-    name: 'React19.2',
+    name: 'React',
     logo: 'https://static.cdnlogo.com/logos/r/63/react.svg',
     href: 'https://react.dev'
   },
   {
-    name: 'Next16',
+    name: 'Next',
     logo: '/nextjs.svg',
     href: 'https://nextjs.org/docs/app/getting-started'
   },
