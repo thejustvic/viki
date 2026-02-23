@@ -4,6 +4,7 @@ import {Hero} from '@/components/daisyui/hero'
 import EmailLoginProvider from '@/components/login/email-login/email-login-provider'
 import {LoginProviders} from '@/components/login/login-provider'
 import tw from 'tailwind-styled-components'
+import {AuthView} from '../global-provider/types'
 import {EmailLoginCard} from './email-login/email-login-card'
 
 export const TwLogin = tw.div`
@@ -31,11 +32,11 @@ const TwOr = tw.p`
   justify-center
 `
 
-export const Login = () => {
+export const Login = ({cookieAuthView}: {cookieAuthView: AuthView}) => {
   return (
     <Hero>
       <TwHeroContent>
-        <EmailLoginProvider>
+        <EmailLoginProvider cookieAuthView={cookieAuthView}>
           <EmailLoginCard />
         </EmailLoginProvider>
         <TwProviderLogin>
