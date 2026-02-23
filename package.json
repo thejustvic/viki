@@ -44,6 +44,7 @@
     "three": "0.183.1"
   },
   "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "4.6.0",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "^10.0.1",
     "@supabase/postgrest-js": "2.97.0",
@@ -60,7 +61,6 @@
     "daisyui": "5.5.19",
     "eslint": "10.0.1",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-unused-imports": "4.4.1",
     "globals": "^17.3.0",
     "husky": "^9.1.7",

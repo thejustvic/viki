@@ -1,8 +1,8 @@
+import eslintComments from "@eslint-community/eslint-plugin-eslint-comments";
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
-import eslintComments from "eslint-plugin-eslint-comments";
 import unusedImports from "eslint-plugin-unused-imports";
 import globals from "globals";
 import path from "node:path";
