@@ -19,7 +19,7 @@ const TwDot = tw.div`
   transform
   -translate-x-1/2
   -translate-y-1/2
-  border-1
+  border
   border-white
 `
 

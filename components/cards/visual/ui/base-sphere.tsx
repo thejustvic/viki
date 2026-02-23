@@ -2,14 +2,13 @@ import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-hand
 import {Checkbox} from '@/components/checklist/types'
 import {Sphere} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
+import {easing} from 'maath'
 import {useEffect, useMemo, useRef} from 'react'
-import * as THREE from 'three'
-import {CanvasTexture, RepeatWrapping} from 'three'
+import {CanvasTexture, Group, RepeatWrapping} from 'three'
 import {createTextTexture} from '../utils/create-text-texture'
 
-import {easing} from 'maath'
-
 interface BaseBoxProps {
+  shouldShrink: boolean
   position: [number, number, number]
   radius?: number
   sphereColor: string
@@ -17,13 +16,10 @@ interface BaseBoxProps {
   text: string
   textOffsetX: number
   checkbox?: Checkbox
-  visible: boolean
-  onUnmounted: () => void
 }
 
 export const BaseSphere = ({
-  visible,
-  onUnmounted,
+  shouldShrink,
   text,
   textOffsetX,
   position,
@@ -32,23 +28,19 @@ export const BaseSphere = ({
   textColor = '#ffffff',
   checkbox
 }: BaseBoxProps) => {
-  const groupRef = useRef<THREE.Group>(null)
+  const groupRef = useRef<Group>(null)
 
   useFrame((_state, delta) => {
     if (groupRef.current === null) {
       return
     }
-    // 1. Calculate target (1 if entering, 0 if shrinking to unmount)
-    const target = visible ? 1 : 0
-    // 2. Animate scale smoothly
-    // 0.2 is the smoothTime (in seconds). Increase it for a slower shrink.
-    easing.damp3(groupRef.current.scale, [target, target, target], 0.2, delta)
-    // 3. The Unmount Trigger
-    // Only unmount if we are meant to be hidden AND shrink is finished
-    if (!visible && groupRef.current.scale.x < 0.1) {
-      groupRef.current.scale.set(0, 0, 0) // Clean reset
-      onUnmounted() // SIGNAL THE PARENT TO FINALLY DELETE
-    }
+    const targetScale = shouldShrink ? 0 : 1
+    easing.damp3(
+      groupRef.current.scale,
+      [targetScale, targetScale, targetScale],
+      0.25,
+      delta
+    )
   })
 
   const texture: CanvasTexture = useMemo(() => {

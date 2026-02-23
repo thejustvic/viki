@@ -1,6 +1,5 @@
 import {useBoolean} from '@/hooks/use-boolean'
 import {Sky} from '@react-three/drei'
-import {useEffect} from 'react'
 import {Checkbox} from '../checklist/types'
 import {CardInfoStore} from './card-info/card-info-store'
 import {TreeModel} from './visual/components/tree-model'
@@ -17,36 +16,10 @@ export default function CardVisual({
   cardInfoState: CardInfoStore['state']['card']
 }) {
   const isLocked = useBoolean(false)
-  useEffect(() => {
-    if (cardInfoState.data === null) {
-      return
-    }
-
-    localStorage.setItem(
-      'sphere-bg-color-completed',
-      cardInfoState.data.bauble_color_completed || ''
-    )
-    localStorage.setItem(
-      'sphere-bg-color-not-completed',
-      cardInfoState.data.bauble_color_not_completed || ''
-    )
-
-    localStorage.setItem(
-      'sphere-text-color-completed',
-      cardInfoState.data.bauble_text_color_completed || ''
-    )
-    localStorage.setItem(
-      'sphere-text-color-not-completed',
-      cardInfoState.data.bauble_text_color_not_completed || ''
-    )
-  }, [cardInfoState])
 
   return (
     <BaseScene isLocked={isLocked}>
-      <ConeWithSpheres
-        active={cardInfoState?.data !== null}
-        checklist={checklist}
-      />
+      <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />
 
       <TreeModel position={[0, -1, -10]} scale={0.3} />
 

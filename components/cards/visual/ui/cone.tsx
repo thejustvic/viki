@@ -1,6 +1,8 @@
+/* eslint-disable max-lines-per-function */
 import {Cone} from '@react-three/drei'
-import {useEffect, useMemo, useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Checkbox} from '../../card-checklist/types'
+import {CardInfoStore} from '../../card-info/card-info-store'
 import {BaseSphere} from './base-sphere'
 
 type Position = [number, number, number]
@@ -39,7 +41,7 @@ const generateNonOverlappingPoints = ({
   minRequiredDistance: number // minimum center-to-center distance required
 }): SphereData[] => {
   const points: SphereData[] = []
-  const maxAttemptsPerPoint = 100 // prevent infinite loops if cone is full
+  const maxAttemptsPerPoint = 1000 // prevent infinite loops if cone is full
   let attempts = 0
 
   while (points.length < count && attempts < count * maxAttemptsPerPoint) {
@@ -87,85 +89,116 @@ const generateNonOverlappingPoints = ({
 }
 
 export const ConeWithSpheres = ({
-  active,
-  checklist
+  checklist,
+  cardInfoState
 }: {
-  active: boolean
   checklist: Checkbox[]
+  cardInfoState: CardInfoStore['state']['card']
 }) => {
-  // shouldRender controls PHYSICAL presence in the scene
-  const [shouldRender, setShouldRender] = useState(active)
-
-  // when active becomes true, mount it immediately
-  useEffect(() => {
-    if (active) {
-      setShouldRender(true)
-    }
-  }, [active])
+  const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
+  const [shouldShrink, updateShouldShrink] = useState(false)
+  const [cardData, updateCardData] = useState<{
+    card: CardInfoStore['state']['card']['data']
+    checklist: Checkbox[]
+  }>({
+    card: cardInfoState.data,
+    checklist: checklist
+  })
 
   // define core dimensions for calculations
   const coneHeight = 6.4
   const coneRadius = 2
   const sphereRadius = 0.2
 
-  const numberOfSpheres = checklist?.length ?? 0
-
   // the minimum distance between centers must be at least twice the sphere radius
   const minRequiredDistance = sphereRadius * 2.1
 
-  const spherePositions: SphereData[] = useMemo(() => {
-    return generateNonOverlappingPoints({
-      numberOfSpheres,
-      coneRadius,
-      coneHeight,
-      minRequiredDistance
-    })
-  }, [numberOfSpheres, coneRadius, coneHeight, minRequiredDistance])
+  useEffect(() => {
+    if (!cardData) {
+      return
+    }
+    let isCancelled = false
+
+    const runSequence = async () => {
+      //shrink spheres
+      updateShouldShrink(true)
+
+      //wait
+      await new Promise(res => setTimeout(res, 500))
+      if (isCancelled) {
+        return
+      }
+
+      //update positions
+      updateCardData({
+        card: cardInfoState.data,
+        checklist: checklist
+      })
+      const newData = generateNonOverlappingPoints({
+        numberOfSpheres: checklist.length ?? 0,
+        coneRadius,
+        coneHeight,
+        minRequiredDistance
+      })
+      updateSpherePositions(newData)
+
+      //grow spheres
+      updateShouldShrink(false)
+    }
+
+    runSequence()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [
+    cardInfoState.data,
+    checklist,
+    coneRadius,
+    coneHeight,
+    minRequiredDistance
+  ])
 
   // define the position for the whole group in the scene
   const groupScenePosition: Position = [0.3, 4.2, -9.8]
 
   return (
-    // group everything together to move the assembly easily
-    shouldRender && (
-      <group position={groupScenePosition}>
-        {/* the cone is at relative to the parent group */}
-        {/* 'as const' is used on args to satisfy TS tuple requirements */}
-        <Cone args={[coneRadius, coneHeight, 32] as const}>
-          {/* change opacity to see the cone*/}
-          <meshStandardMaterial color="hotpink" transparent opacity={0} />
-        </Cone>
-        <Spheres
-          spherePositions={spherePositions}
-          checklist={checklist}
-          setShouldRender={setShouldRender}
-          active={active}
-        />
-      </group>
-    )
+    <group position={groupScenePosition}>
+      {/* the cone is at relative to the parent group */}
+      {/* 'as const' is used on args to satisfy TS tuple requirements */}
+      <Cone args={[coneRadius, coneHeight, 32] as const}>
+        {/* change opacity to see the cone*/}
+        <meshStandardMaterial color="hotpink" transparent opacity={0} />
+      </Cone>
+      <Spheres
+        cardData={cardData.card}
+        spherePositions={spherePositions}
+        checklist={cardData.checklist}
+        shouldShrink={shouldShrink}
+      />
+    </group>
   )
 }
 
 const Spheres = ({
+  cardData,
+  shouldShrink,
   spherePositions,
-  checklist,
-  setShouldRender,
-  active
+  checklist
 }: {
+  cardData: CardInfoStore['state']['card']['data']
+  shouldShrink: boolean
   spherePositions: SphereData[]
   checklist: Checkbox[]
-  setShouldRender: (shouldRender: boolean) => void
-  active: boolean
 }) => {
-  const sphereBgColorCompleted =
-    localStorage.getItem('sphere-bg-color-completed') || '#00ff00'
+  const sphereBgColorCompleted = cardData?.bauble_color_completed || '#00ff00'
   const sphereBgColorNotCompleted =
-    localStorage.getItem('sphere-bg-color-not-completed') || '#ff0000'
+    cardData?.bauble_color_not_completed || '#ff0000'
 
   const sphereTextColorCompleted =
-    localStorage.getItem('sphere-text-color-completed') || '#ffffff'
+    cardData?.bauble_text_color_completed || '#ffffff'
   const sphereTextColorNotCompleted =
-    localStorage.getItem('sphere-text-color-not-completed') || '#ffffff'
+    cardData?.bauble_text_color_not_completed || '#ffffff'
 
   return spherePositions.map((data, index) => {
     const {position, theta} = data
@@ -177,9 +210,8 @@ const Spheres = ({
 
     return (
       <BaseSphere
-        visible={active}
-        onUnmounted={() => setShouldRender(false)}
         key={index}
+        shouldShrink={shouldShrink}
         position={position}
         text={text}
         checkbox={checkbox}
