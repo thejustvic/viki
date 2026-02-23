@@ -41,7 +41,7 @@ export class CardChecklistStore {
     this.state.checklists = checklist
   }
 
-  getAllCheckboxes = (cardId: string) => {
+  getAllCheckboxes = (cardId: string): Checkbox[] | undefined => {
     return (
       this.state.checklists.data
         ?.get(cardId)
@@ -53,7 +53,7 @@ export class CardChecklistStore {
     )
   }
 
-  getCheckboxesCompleted = (cardId: string) => {
+  getCheckboxesCompleted = (cardId: string): Checkbox[] | undefined => {
     return (
       this.state.checklists.data
         ?.get(cardId)
@@ -66,7 +66,7 @@ export class CardChecklistStore {
     )
   }
 
-  getCheckboxesNotCompleted = (cardId: string) => {
+  getCheckboxesNotCompleted = (cardId: string): Checkbox[] | undefined => {
     return (
       this.state.checklists.data
         ?.get(cardId)
@@ -143,7 +143,7 @@ export class CardChecklistStore {
     }
 
     // Get the existing checklist array or create a new one if the key doesn't exist
-    const existingChecklist = checklistMap.get(cardId) || []
+    const existingChecklist = checklistMap.get(cardId) ?? []
 
     // Create a new Map instance to maintain reactivity
     const updatedMap = new Map(checklistMap)

@@ -10,7 +10,7 @@ import {useCheckboxStore} from './checkbox-store'
 export const CheckboxEdit = observer(
   ({checkbox: {id, title}}: CheckboxProps) => {
     const [state, store] = useCheckboxStore()
-    const [value, setValue] = useState(state.unsavedTitle || title || '')
+    const [value, setValue] = useState(state.unsavedTitle ?? title ?? '')
     const {updateCheckboxTitle, removeCheckbox} = useCheckboxHandlers()
 
     return (
@@ -18,7 +18,7 @@ export const CheckboxEdit = observer(
         <Textarea
           className="w-full min-h-10 h-10"
           onBlur={e => store.blurEditing(e.target.value, title)}
-          value={state.unsavedTitle || value}
+          value={state.unsavedTitle ?? value}
           onChange={e => setValue(e.target.value)}
           onFocus={event => {
             const position = value.length

@@ -5,7 +5,7 @@ import {CheckAllCheckboxes} from '@/components/cards/cards'
 import {getSearchCard} from '@/components/cards/get-search-card'
 
 import {Checklist} from '@/components/checklist/checklist'
-import {Drag} from '@/components/common/drag/drag'
+import {DragDrawerSide} from '@/components/common/drag-drawer-side/drag-drawer-side'
 import {ChatWrapper} from '@/components/common/drawer-menu'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global-provider/global-store'
@@ -58,7 +58,7 @@ export const TabsComponent = observer(() => {
       className="h-full border border-y-0 border-base-300/50 bg-base-300/30"
       style={isMobile ? {} : {width: state.rightDrawerWidth}}
     >
-      <Drag drawer="right" />
+      <DragDrawerSide drawer="right" />
       <Tabs className={twJoin('flex justify-between')}>
         {isMobile && <CloseRightDrawer />}
         <InfoTab />

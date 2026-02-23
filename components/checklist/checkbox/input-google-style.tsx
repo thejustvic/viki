@@ -67,7 +67,7 @@ export const InputGoogleStyle = observer(() => {
     }
     try {
       const checklists = store.getCheckboxesNotCompleted(cardId)
-      const lastPosition = checklists?.[checklists.length - 1]?.position || null
+      const lastPosition = checklists?.[checklists.length - 1]?.position ?? null
       const newPosition = generateKeyBetween(lastPosition, null)
       await insertCheckbox({title: data.q_99, cardId, newPosition})
       setValue('q_99', '')

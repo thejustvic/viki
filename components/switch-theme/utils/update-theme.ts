@@ -22,5 +22,5 @@ export const updateTheme = async (props: Props): Promise<string> => {
     .select()
     .maybeSingle()
 
-  return data?.theme || 'dark'
+  return data?.theme ?? 'dark'
 }

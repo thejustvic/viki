@@ -1,6 +1,6 @@
 'use client'
 
-import {useDragHandlers} from '@/components/common/drag/drag-handlers'
+import {useDragDrawerSideHandlers} from '@/components/common/drag-drawer-side/drag-drawer-side-handlers'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
@@ -10,10 +10,10 @@ export interface DragProps {
   drawer: 'left' | 'right'
 }
 
-export const Drag = observer(({drawer}: DragProps) => {
+export const DragDrawerSide = observer(({drawer}: DragProps) => {
   const [, store] = useGlobalStore()
   const {handleMouseDown, handleMouseUp, handleMouseMove, mouseDown, mouseX} =
-    useDragHandlers({drawer})
+    useDragDrawerSideHandlers({drawer})
 
   useEffect(() => {
     if (!mouseDown.value) {

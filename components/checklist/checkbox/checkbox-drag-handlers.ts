@@ -22,7 +22,7 @@ export const useCheckboxDragHandlers = (): Handlers => {
   const handleDragStart = (event: DragStartEvent): void => {
     const {active} = event
     const idCheckbox = String(active.id)
-    const checklist = store.getCheckboxesNotCompleted(id) || []
+    const checklist = store.getCheckboxesNotCompleted(id) ?? []
     const checkbox = checklist.find(c => c.id === idCheckbox)
     globalStore.updateDraggingCheckbox(checkbox)
   }
@@ -45,7 +45,7 @@ export const useCheckboxDragHandlers = (): Handlers => {
       const checklistMap = state.checklists.data
       // create a new Map instance for reactivity
       const updatedMap = new Map(checklistMap)
-      const completed = store.getCheckboxesCompleted(id) || []
+      const completed = store.getCheckboxesCompleted(id) ?? []
       updatedMap.set(id, [...finalData, ...completed])
 
       store.setChecklists({
@@ -82,12 +82,12 @@ const getPosition = (
 
   if (newIndex < oldIndex) {
     // UPWARDS: move BEFORE the 'over' element
-    prevPos = checkboxes[newIndex - 1]?.position || null
-    nextPos = checkboxes[newIndex]?.position || null
+    prevPos = checkboxes[newIndex - 1]?.position ?? null
+    nextPos = checkboxes[newIndex]?.position ?? null
   } else {
     // Move DOWN: go AFTER the 'over' element
-    prevPos = checkboxes[newIndex]?.position || null
-    nextPos = checkboxes[newIndex + 1]?.position || null
+    prevPos = checkboxes[newIndex]?.position ?? null
+    nextPos = checkboxes[newIndex + 1]?.position ?? null
   }
 
   if (prevPos === nextPos && prevPos !== null) {

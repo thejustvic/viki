@@ -66,7 +66,7 @@ export class ArrUtil {
   }
 
   public static last<T>(array?: ArrayLike<T>): T | undefined {
-    return array && array[array.length - 1]
+    return array?.[array.length - 1]
   }
 
   public static intersection<T>(x: T[], y: T[]): T[] {

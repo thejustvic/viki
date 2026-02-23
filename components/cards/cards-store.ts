@@ -49,7 +49,7 @@ export class CardsStore {
 
     this.state.cards = {
       ...cards,
-      data: sorted || []
+      data: sorted ?? []
     }
   }
 

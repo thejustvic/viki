@@ -49,7 +49,7 @@ export class CardInfoStore {
     this.state.card = card
   }
 
-  setMy = (value: boolean) => {
+  setMy = (value: boolean): void => {
     this.state.my = value
   }
 

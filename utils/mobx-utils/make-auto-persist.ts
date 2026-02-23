@@ -1,7 +1,11 @@
 import {reaction, set, toJS} from 'mobx'
 
-export const makeAutoPersist = <T extends {state: any}>(
-  _this: T,
+interface HasState<S> {
+  state: S
+}
+
+export const makeAutoPersist = <S>(
+  _this: HasState<S>,
   name: string
 ): (() => void) => {
   if (typeof window === 'undefined' || !window?.localStorage) {
@@ -11,10 +15,10 @@ export const makeAutoPersist = <T extends {state: any}>(
   try {
     const storedJson = window.localStorage.getItem(name)
     if (storedJson) {
-      const parsed = JSON.parse(storedJson)
+      const parsed = JSON.parse(storedJson) as {state: S}
 
       if (parsed?.state) {
-        set(_this.state, parsed.state)
+        set(_this.state as object, parsed.state as object)
       }
     }
   } catch (err) {
@@ -25,7 +29,7 @@ export const makeAutoPersist = <T extends {state: any}>(
 
   const disposer = reaction(
     () => toJS(_this.state),
-    state => {
+    (state: S) => {
       try {
         window.localStorage.setItem(name, JSON.stringify({state}))
       } catch (err) {

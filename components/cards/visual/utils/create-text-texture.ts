@@ -38,7 +38,7 @@ export const createTextTexture = ({
   let line = ''
   const lines: string[] = []
 
-  let wordIndex = 0
+  let wordIndex: number
 
   // pass 1: determine line breaks and check for line limit
   for (wordIndex = 0; wordIndex < words.length; wordIndex++) {

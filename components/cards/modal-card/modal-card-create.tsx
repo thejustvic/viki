@@ -73,7 +73,7 @@ const Text = observer(() => {
       return
     }
     const cards = cardsStore.cards.data
-    const lastPosition = cards?.[cards.length - 1]?.position || null
+    const lastPosition = cards?.[cards.length - 1]?.position ?? null
     const newPosition = generateKeyBetween(lastPosition, null)
 
     await insertCard(data.createCard69, state.currentTeamId, newPosition)
@@ -83,7 +83,7 @@ const Text = observer(() => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      handleSubmit(onSubmit)()
+      void handleSubmit(onSubmit)()
     }
   }
 

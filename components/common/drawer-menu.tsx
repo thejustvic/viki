@@ -1,7 +1,7 @@
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {ChatBase} from '@/components/chat/chat'
 import {ChatInput} from '@/components/chat/chat-input'
-import {Drag} from '@/components/common/drag/drag'
+import {DragDrawerSide} from '@/components/common/drag-drawer-side/drag-drawer-side'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
@@ -24,7 +24,7 @@ export const DrawerMenu = observer(() => {
 
   return (
     <TwMenu style={isMobile ? {} : {width: state.leftDrawerWidth}}>
-      <Drag drawer="left" />
+      <DragDrawerSide drawer="left" />
       <ChatWrapper />
     </TwMenu>
   )

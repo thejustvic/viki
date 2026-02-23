@@ -71,12 +71,12 @@ const getPosition = (cards: CardType[] | null, event: DragEndEvent) => {
 
   if (newIndex < oldIndex) {
     // UPWARDS: move BEFORE the 'over' element
-    prevPos = cards[newIndex - 1]?.position || null
-    nextPos = cards[newIndex]?.position || null
+    prevPos = cards[newIndex - 1]?.position ?? null
+    nextPos = cards[newIndex]?.position ?? null
   } else {
     // Move DOWN: go AFTER the 'over' element
-    prevPos = cards[newIndex]?.position || null
-    nextPos = cards[newIndex + 1]?.position || null
+    prevPos = cards[newIndex]?.position ?? null
+    nextPos = cards[newIndex + 1]?.position ?? null
   }
 
   if (prevPos === nextPos && prevPos !== null) {

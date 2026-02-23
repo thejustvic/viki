@@ -113,17 +113,17 @@ const ChooseBaubleColorData = observer(() => {
       <ColorPicker
         color={state.card.data.bauble_color_not_completed}
         label="not checked"
-        onChange={e => {
+        onChange={async e => {
           const color = e.target.value
-          updateCardBaubleColorNotCompleted(color, id)
+          await updateCardBaubleColorNotCompleted(color, id)
         }}
       />
       <ColorPicker
         color={state.card.data.bauble_color_completed}
         label="checked"
-        onChange={e => {
+        onChange={async e => {
           const color = e.target.value
-          updateCardBaubleColorCompleted(color, id)
+          await updateCardBaubleColorCompleted(color, id)
         }}
       />
     </div>
@@ -152,17 +152,17 @@ const ChooseBaubleTextColorData = observer(() => {
       <ColorPicker
         color={state.card.data.bauble_text_color_not_completed}
         label="not checked"
-        onChange={e => {
+        onChange={async e => {
           const color = e.target.value
-          updateCardBaubleTextColorNotCompleted(color, id)
+          await updateCardBaubleTextColorNotCompleted(color, id)
         }}
       />
       <ColorPicker
         color={state.card.data.bauble_text_color_completed}
         label="checked"
-        onChange={e => {
+        onChange={async e => {
           const color = e.target.value
-          updateCardBaubleTextColorCompleted(color, id)
+          await updateCardBaubleTextColorCompleted(color, id)
         }}
       />
     </div>

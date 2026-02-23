@@ -48,7 +48,7 @@ export const useCardHandlers = (): Handlers => {
     await supabase.from('cards').insert({
       text,
       author_id: user.id,
-      author_email: user.email || '',
+      author_email: user.email ?? '',
       team_id: teamId,
       position: newPosition // (e.g. "a00015")
     })

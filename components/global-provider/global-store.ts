@@ -77,11 +77,11 @@ export class GlobalStore {
     this.setTheme(newTheme)
   }
 
-  updateDraggingCard = (value: Card | undefined) => {
+  updateDraggingCard = (value: Card | undefined): void => {
     this.state.draggingCard = value
   }
 
-  updateDraggingCheckbox = (value: Checkbox | undefined) => {
+  updateDraggingCheckbox = (value: Checkbox | undefined): void => {
     this.state.draggingCheckbox = value
   }
 

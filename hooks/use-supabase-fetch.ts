@@ -51,7 +51,7 @@ export const useSupabaseFetch = <T>(
         setResult({
           loading: false,
           data: res.error ? null : (res.data as T),
-          error: res.error || null
+          error: res.error ?? null
         })
       } catch (e: unknown) {
         if (ignore || (e instanceof Error && e.name === 'AbortError')) {

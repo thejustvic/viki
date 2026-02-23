@@ -28,7 +28,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
 
   const cookieStore = await cookies()
   const cookieTheme = cookieStore.get('theme')?.value
-  const theme = serverProfile?.theme || cookieTheme
+  const theme = serverProfile?.theme ?? cookieTheme
   const currentTeamId = serverProfile?.current_team_id ?? null
 
   return (

@@ -75,14 +75,10 @@ const generateNonOverlappingPoints = ({
     }
   }
 
-  // log in dev only
-  if (process.env.NODE_ENV !== 'production') {
-    if (points.length < count) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `could only place ${points.length} spheres without overlap after maximum attempts.`
-      )
-    }
+  if (points.length < count) {
+    console.warn(
+      `could only place ${points.length} spheres without overlap after maximum attempts.`
+    )
   }
 
   return points
@@ -146,7 +142,7 @@ export const ConeWithSpheres = ({
       updateShouldShrink(false)
     }
 
-    runSequence()
+    void runSequence()
 
     return () => {
       isCancelled = true
@@ -191,14 +187,14 @@ const Spheres = ({
   spherePositions: SphereData[]
   checklist: Checkbox[]
 }) => {
-  const sphereBgColorCompleted = cardData?.bauble_color_completed || '#00ff00'
+  const sphereBgColorCompleted = cardData?.bauble_color_completed ?? '#00ff00'
   const sphereBgColorNotCompleted =
-    cardData?.bauble_color_not_completed || '#ff0000'
+    cardData?.bauble_color_not_completed ?? '#ff0000'
 
   const sphereTextColorCompleted =
-    cardData?.bauble_text_color_completed || '#ffffff'
+    cardData?.bauble_text_color_completed ?? '#ffffff'
   const sphereTextColorNotCompleted =
-    cardData?.bauble_text_color_not_completed || '#ffffff'
+    cardData?.bauble_text_color_not_completed ?? '#ffffff'
 
   return spherePositions.map((data, index) => {
     const {position, theta} = data
@@ -206,7 +202,7 @@ const Spheres = ({
 
     const checkbox = checklist?.[index]
     const isCompleted = checkbox?.is_completed
-    const text = checkbox?.title || ''
+    const text = checkbox?.title ?? ''
 
     return (
       <BaseSphere

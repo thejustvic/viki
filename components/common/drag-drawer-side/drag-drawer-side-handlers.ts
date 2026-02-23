@@ -1,7 +1,7 @@
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {useCallback, useState} from 'react'
-import {DragProps} from './drag'
+import {DragProps} from './drag-drawer-side'
 
 interface Handlers {
   handleMouseDown: (event: React.MouseEvent) => void
@@ -15,7 +15,7 @@ interface Handlers {
   }
 }
 
-export const useDragHandlers = ({drawer}: DragProps): Handlers => {
+export const useDragDrawerSideHandlers = ({drawer}: DragProps): Handlers => {
   const mouseDown = useBoolean(false)
   const [state] = useGlobalStore()
   const [mouseX, setMouseX] = useState({
