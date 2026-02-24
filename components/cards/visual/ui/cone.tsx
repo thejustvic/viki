@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import {ArrUtil} from '@/utils/arr-util'
 import {Cone} from '@react-three/drei'
 import {useEffect, useState} from 'react'
 import {Checkbox} from '../../card-checklist/types'
@@ -116,30 +117,39 @@ export const ConeWithSpheres = ({
     let isCancelled = false
 
     const runSequence = async () => {
-      //shrink spheres
-      updateShouldShrink(true)
+      const notEqualButSameLength =
+        ArrUtil.areListsNotEqual(checklist, cardData.checklist) &&
+        checklist.length === cardData.checklist.length
 
-      //wait
-      await new Promise(res => setTimeout(res, 500))
-      if (isCancelled) {
-        return
+      if (!notEqualButSameLength) {
+        //shrink spheres
+        updateShouldShrink(true)
+
+        //wait
+        await new Promise(res => setTimeout(res, 500))
+        if (isCancelled) {
+          return
+        }
       }
 
-      //update positions
+      //updates
       updateCardData({
         card: cardInfoState.data,
         checklist: checklist
       })
-      const newData = generateNonOverlappingPoints({
-        numberOfSpheres: checklist.length ?? 0,
-        coneRadius,
-        coneHeight,
-        minRequiredDistance
-      })
-      updateSpherePositions(newData)
 
-      //grow spheres
-      updateShouldShrink(false)
+      if (!notEqualButSameLength) {
+        const newData = generateNonOverlappingPoints({
+          numberOfSpheres: checklist.length ?? 0,
+          coneRadius,
+          coneHeight,
+          minRequiredDistance
+        })
+        updateSpherePositions(newData)
+
+        //grow spheres
+        updateShouldShrink(false)
+      }
     }
 
     void runSequence()
