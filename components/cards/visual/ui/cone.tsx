@@ -49,7 +49,8 @@ const generateNonOverlappingPoints = ({
     attempts++
 
     // 1. generate a candidate random point
-    const h_frac = Math.random()
+    const topThreshold = 0.2 // e.g. 0.2 to remove the top 20% of cone
+    const h_frac = (1 - Math.sqrt(Math.random())) * (1 - topThreshold)
     const theta = randomRange(0, Math.PI * 2)
     const sphereY = -coneHeight / 2 + h_frac * coneHeight
     const currentRadius = coneRadius * (1 - h_frac)
@@ -92,6 +93,7 @@ export const ConeWithSpheres = ({
   coneRadius,
   sphereRadius,
   minRequiredDistance,
+  dynamicConeX,
   dynamicConeY
 }: {
   checklist: Checkbox[]
@@ -100,6 +102,7 @@ export const ConeWithSpheres = ({
   coneRadius: number
   sphereRadius: number
   minRequiredDistance: number
+  dynamicConeX: number
   dynamicConeY: number
 }) => {
   const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
@@ -169,7 +172,7 @@ export const ConeWithSpheres = ({
   ])
 
   // define the position for the whole group in the scene
-  const groupScenePosition: Position = [0.25, dynamicConeY, -10]
+  const groupScenePosition: Position = [dynamicConeX, dynamicConeY, -10]
 
   return (
     <group position={groupScenePosition}>

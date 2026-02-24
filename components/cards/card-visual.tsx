@@ -21,11 +21,9 @@ export default function CardVisual({
   const baseRadius = 1
   const baseScale = 0.15
   const referenceCount = 15
-
   const scaleFactor = Math.sqrt(
     Math.max(referenceCount, checklist.length) / referenceCount
   )
-
   const coneHeight = baseHeight * scaleFactor
   const coneRadius = baseRadius * scaleFactor
   const dynamicTreeScale = baseScale * scaleFactor
@@ -33,7 +31,6 @@ export default function CardVisual({
   const baseTreeScale = 0.15
   const treeGroundY = -0.1
   const scaleDiff = dynamicTreeScale - baseTreeScale
-
   // Correction (The bigger the tree, the lower we lower the center)
   // If it "jumps", we need to subtract the height
   // Try a factor of 5 to 15 depending on the model
@@ -47,7 +44,9 @@ export default function CardVisual({
   // Since the object grows from the center, we raise its center by half the height
   const dynamicConeY = coneGroundY + coneHeight / 2
 
-  const sphereRadius = scaleFactor > 1.2 ? 0.2 : 0.15
+  const dynamicConeX = scaleFactor > 1.3 ? 0.3 : 0.1
+
+  const sphereRadius = 0.15
   const minRequiredDistance = sphereRadius * 3
 
   return (
@@ -57,6 +56,7 @@ export default function CardVisual({
         cardInfoState={cardInfoState}
         coneHeight={coneHeight}
         coneRadius={coneRadius}
+        dynamicConeX={dynamicConeX}
         dynamicConeY={dynamicConeY}
         sphereRadius={sphereRadius}
         minRequiredDistance={minRequiredDistance}
