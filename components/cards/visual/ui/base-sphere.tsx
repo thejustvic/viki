@@ -10,7 +10,7 @@ import {createTextTexture} from '../utils/create-text-texture'
 interface BaseBoxProps {
   shouldShrink: boolean
   position: [number, number, number]
-  radius?: number
+  radius: number
   sphereColor: string
   textColor: string
   text: string
@@ -23,7 +23,7 @@ export const BaseSphere = ({
   text,
   textOffsetX,
   position,
-  radius = 0.2,
+  radius,
   sphereColor = '#ff0000',
   textColor = '#ffffff',
   checkbox

@@ -87,10 +87,20 @@ const generateNonOverlappingPoints = ({
 
 export const ConeWithSpheres = ({
   checklist,
-  cardInfoState
+  cardInfoState,
+  coneHeight,
+  coneRadius,
+  sphereRadius,
+  minRequiredDistance,
+  dynamicConeY
 }: {
   checklist: Checkbox[]
   cardInfoState: CardInfoStore['state']['card']
+  coneHeight: number
+  coneRadius: number
+  sphereRadius: number
+  minRequiredDistance: number
+  dynamicConeY: number
 }) => {
   const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
@@ -101,14 +111,6 @@ export const ConeWithSpheres = ({
     card: cardInfoState.data,
     checklist: checklist
   })
-
-  // define core dimensions for calculations
-  const coneHeight = 6.4
-  const coneRadius = 2
-  const sphereRadius = 0.2
-
-  // the minimum distance between centers must be at least twice the sphere radius
-  const minRequiredDistance = sphereRadius * 2.1
 
   useEffect(() => {
     if (!cardData) {
@@ -145,6 +147,7 @@ export const ConeWithSpheres = ({
           coneHeight,
           minRequiredDistance
         })
+
         updateSpherePositions(newData)
 
         //grow spheres
@@ -166,17 +169,17 @@ export const ConeWithSpheres = ({
   ])
 
   // define the position for the whole group in the scene
-  const groupScenePosition: Position = [0.3, 4.2, -9.8]
+  const groupScenePosition: Position = [0.25, dynamicConeY, -10]
 
   return (
     <group position={groupScenePosition}>
       {/* the cone is at relative to the parent group */}
-      {/* 'as const' is used on args to satisfy TS tuple requirements */}
       <Cone args={[coneRadius, coneHeight, 32] as const}>
         {/* change opacity to see the cone*/}
         <meshStandardMaterial color="hotpink" transparent opacity={0} />
       </Cone>
       <Spheres
+        radius={sphereRadius}
         cardData={cardData.card}
         spherePositions={spherePositions}
         checklist={cardData.checklist}
@@ -187,11 +190,13 @@ export const ConeWithSpheres = ({
 }
 
 const Spheres = ({
+  radius,
   cardData,
   shouldShrink,
   spherePositions,
   checklist
 }: {
+  radius: number
   cardData: CardInfoStore['state']['card']['data']
   shouldShrink: boolean
   spherePositions: SphereData[]
@@ -217,6 +222,7 @@ const Spheres = ({
     return (
       <BaseSphere
         key={index}
+        radius={radius}
         shouldShrink={shouldShrink}
         position={position}
         text={text}
