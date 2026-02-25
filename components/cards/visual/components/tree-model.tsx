@@ -4,10 +4,9 @@ import {Suspense} from 'react'
 
 interface ThreeModelProps {
   scale: number
-  position: [number, number, number]
 }
 
-export const TreeModel = ({scale, position}: ThreeModelProps) => {
+export const TreeModel = ({scale}: ThreeModelProps) => {
   const {scene} = useGLTF('/christmas_tree.glb')
 
   scene.traverse(node => {
@@ -19,13 +18,7 @@ export const TreeModel = ({scale, position}: ThreeModelProps) => {
     <Suspense fallback={null}>
       {/* "hull" for complex shapes, "cuboid" for boxes, etc. */}
       <RigidBody colliders="hull" type="fixed">
-        <primitive
-          object={scene}
-          scale={scale}
-          position={position}
-          castShadow
-          receiveShadow
-        />
+        <primitive object={scene} scale={scale} castShadow receiveShadow />
       </RigidBody>
     </Suspense>
   )

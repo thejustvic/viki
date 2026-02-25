@@ -1,9 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import {ArrUtil} from '@/utils/arr-util'
 import {Cone} from '@react-three/drei'
-import {useEffect, useState} from 'react'
+import {useFrame} from '@react-three/fiber'
+import {easing} from 'maath'
+import {useEffect, useRef, useState} from 'react'
+import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
+import {TreeModel} from '../components/tree-model'
 import {BaseSphere} from './base-sphere'
 
 type Position = [number, number, number]
@@ -88,23 +92,12 @@ const generateNonOverlappingPoints = ({
 
 export const ConeWithSpheres = ({
   checklist,
-  cardInfoState,
-  coneHeight,
-  coneRadius,
-  sphereRadius,
-  minRequiredDistance,
-  dynamicConeX,
-  dynamicConeY
+  cardInfoState
 }: {
   checklist: Checkbox[]
   cardInfoState: CardInfoStore['state']['card']
-  coneHeight: number
-  coneRadius: number
-  sphereRadius: number
-  minRequiredDistance: number
-  dynamicConeX: number
-  dynamicConeY: number
 }) => {
+  const treeRef = useRef<Group>(null)
   const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
   const [cardData, updateCardData] = useState<{
@@ -114,6 +107,30 @@ export const ConeWithSpheres = ({
     card: cardInfoState.data,
     checklist: checklist
   })
+
+  const baseHeight = 3.2
+  const baseRadius = 1
+  const baseScale = 0.15
+  const referenceCount = 15
+  const scaleFactor = Math.sqrt(
+    Math.max(referenceCount, checklist.length) / referenceCount
+  )
+  const coneHeight = baseHeight * scaleFactor
+  const coneRadius = baseRadius * scaleFactor
+  const dynamicTreeScale = baseScale * scaleFactor
+  const baseTreeScale = 0.15
+  const treeGroundY = -0.1
+  const scaleDiff = dynamicTreeScale - baseTreeScale
+  // If tree "jumps", need to subtract the height
+  // Try a factor of 5 to 15 depending on the model
+  const heightCorrection = scaleDiff * 5
+  const dynamicTreeY = treeGroundY - heightCorrection
+  const coneGroundY = 1
+  // Since the object grows from the center, raise its center by half the height
+  const dynamicConeY = coneGroundY + coneHeight / 2
+  const dynamicConeX = scaleFactor > 1.3 ? 0.25 : 0.15
+  const sphereRadius = 0.15
+  const minRequiredDistance = sphereRadius * 3
 
   useEffect(() => {
     if (!cardData) {
@@ -129,20 +146,17 @@ export const ConeWithSpheres = ({
       if (!notEqualButSameLength) {
         //shrink spheres
         updateShouldShrink(true)
-
         //wait
         await new Promise(res => setTimeout(res, 500))
         if (isCancelled) {
           return
         }
       }
-
       //updates
       updateCardData({
         card: cardInfoState.data,
         checklist: checklist
       })
-
       if (!notEqualButSameLength) {
         const newData = generateNonOverlappingPoints({
           numberOfSpheres: checklist.length ?? 0,
@@ -150,14 +164,11 @@ export const ConeWithSpheres = ({
           coneHeight,
           minRequiredDistance
         })
-
         updateSpherePositions(newData)
-
         //grow spheres
         updateShouldShrink(false)
       }
     }
-
     void runSequence()
 
     return () => {
@@ -171,24 +182,39 @@ export const ConeWithSpheres = ({
     minRequiredDistance
   ])
 
-  // define the position for the whole group in the scene
-  const groupScenePosition: Position = [dynamicConeX, dynamicConeY, -10]
+  useFrame((_state, delta) => {
+    if (treeRef.current) {
+      easing.damp3(
+        treeRef.current.scale,
+        [dynamicTreeScale, dynamicTreeScale, dynamicTreeScale],
+        0.25,
+        delta
+      )
+      easing.damp(treeRef.current.position, 'y', dynamicTreeY, 0.25, delta)
+    }
+  })
 
   return (
-    <group position={groupScenePosition}>
-      {/* the cone is at relative to the parent group */}
-      <Cone args={[coneRadius, coneHeight, 32] as const}>
-        {/* change opacity to see the cone*/}
-        <meshStandardMaterial color="hotpink" transparent opacity={0} />
-      </Cone>
-      <Spheres
-        radius={sphereRadius}
-        cardData={cardData.card}
-        spherePositions={spherePositions}
-        checklist={cardData.checklist}
-        shouldShrink={shouldShrink}
-      />
-    </group>
+    <>
+      <group position={[dynamicConeX, dynamicConeY, -10]}>
+        {/* the cone is at relative to the parent group */}
+        <Cone args={[coneRadius, coneHeight, 32] as const}>
+          {/* change opacity to see the cone*/}
+          <meshStandardMaterial color="hotpink" transparent opacity={0} />
+        </Cone>
+        <Spheres
+          radius={sphereRadius}
+          cardData={cardData.card}
+          spherePositions={spherePositions}
+          checklist={cardData.checklist}
+          shouldShrink={shouldShrink}
+        />
+      </group>
+      <group ref={treeRef} position={[0, treeGroundY, -10]} scale={baseScale}>
+        {/* IMPORTANT: Here scale should be 1 because it is controlled by the group above */}
+        <TreeModel scale={1} />
+      </group>
+    </>
   )
 }
 
