@@ -45,8 +45,10 @@ const CheckboxBase = observer((props: CheckboxProps) => {
           className="checkbox"
           onChange={() => updateCheckboxIsCompleted(!is_completed, id)}
         />
-        <div className="flex-1" onClick={store.startEditing}>
-          <span className="break-words text-base-content/60">{title}</span>
+        <div className="flex-1 min-w-0" onClick={store.startEditing}>
+          <span className="wrap-break-words wrap-anywhere text-base-content/60">
+            {title}
+          </span>
         </div>
         {!is_completed && (
           <DragCheckboxButton

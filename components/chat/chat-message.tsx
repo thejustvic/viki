@@ -32,7 +32,7 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
       <MessageDropdown my={my} message={message} />
       <ChatBubble.Message
         color={my ? undefined : undefined}
-        className="break-words relative"
+        className="wrap-break-words wrap-anywhere relative"
         onDoubleClick={handlePutHeart}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -83,7 +83,7 @@ const MessageDropdown = ({
       <Dropdown.Menu className="shadow-lg bg-base-300/90 px-2 py-0">
         {author_email}
         <div className="flex items-start gap-1">
-          <time className="text-xs break-words w-[150px]">
+          <time className="text-xs wrap-break-words wrap-anywhere w-[150px]">
             {timeDistance} on {time}
           </time>
           {my && (
