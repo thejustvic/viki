@@ -115,9 +115,11 @@ const SortableContextContainer = observer(() => {
 
   return (
     <SortableContext items={items} strategy={verticalListSortingStrategy}>
-      {items.map(checkbox => (
-        <SortableContainer key={checkbox.id} checkbox={checkbox} />
-      ))}
+      <div className="pb-1">
+        {items.map(checkbox => (
+          <SortableContainer key={checkbox.id} checkbox={checkbox} />
+        ))}
+      </div>
     </SortableContext>
   )
 })
@@ -127,6 +129,10 @@ const CheckboxesCompleted = observer(() => {
   const show = useBoolean(false)
   const id = String(getSearchCard())
   const items = store.getCheckboxesCompleted(id) ?? []
+
+  if (items.length === 0) {
+    return
+  }
 
   return (
     <div className="collapse collapse-arrow bg-base-100 focus:outline-none rounded-b-none">
@@ -142,9 +148,11 @@ const CheckboxesCompleted = observer(() => {
         checked items
       </div>
       <div className="collapse-content p-0">
-        {items.map(checkbox => (
-          <CheckboxComponent key={checkbox.id} checkbox={checkbox} />
-        ))}
+        <div className="pb-1">
+          {items.map(checkbox => (
+            <CheckboxComponent key={checkbox.id} checkbox={checkbox} />
+          ))}
+        </div>
       </div>
     </div>
   )
