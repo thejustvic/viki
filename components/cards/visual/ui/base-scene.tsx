@@ -52,7 +52,7 @@ const BasicScene = ({children, isLocked}: BasicSceneProps) => {
 
       <Canvas
         shadows
-        camera={{fov: 50, position: [-0.2, -1, 5]}}
+        camera={{fov: 50, position: [-0.1, -1.8, 5]}}
         className="rounded-md"
       >
         <Lights />
