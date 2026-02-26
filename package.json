@@ -73,6 +73,7 @@
     "server-only": "0.0.1",
     "supabase": "2.76.12",
     "tailwindcss": "4.2.0",
+    "three-stdlib": "2.36.1",
     "ts-essentials": "10.1.1",
     "typescript": "5.9.3"
   },
