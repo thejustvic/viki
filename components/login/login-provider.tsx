@@ -92,29 +92,33 @@ export const LoginProviders = observer(() => {
         checked={tabGroup === 'anonymously'}
       />
       <Tabs.TabContent className="h-[120px]">
-        <div className="flex gap-2 flex-col">
-          <Button
-            soft
-            color="primary"
-            className="join-item"
-            onClick={handleAnonymouslyLogin}
-            loading={state.logging.anonymously}
-            disable={someLoad || !captchaToken}
-          >
-            Anonymously
-          </Button>
-          <Turnstile
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''}
-            onSuccess={token => {
-              setCaptchaToken(token)
-            }}
-            as="aside"
-            options={{
-              theme: state.theme === 'light' ? 'light' : 'dark',
-              size: 'normal'
-            }}
-          />
-        </div>
+        {tabGroup === 'anonymously' && (
+          <>
+            <div className="flex gap-2 flex-col">
+              <Button
+                soft
+                color="primary"
+                className="join-item"
+                onClick={handleAnonymouslyLogin}
+                loading={state.logging.anonymously}
+                disable={someLoad || !captchaToken}
+              >
+                Anonymously
+              </Button>
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''}
+                onSuccess={token => {
+                  setCaptchaToken(token)
+                }}
+                as="aside"
+                options={{
+                  theme: state.theme === 'light' ? 'light' : 'dark',
+                  size: 'normal'
+                }}
+              />
+            </div>
+          </>
+        )}
       </Tabs.TabContent>
     </Tabs>
   )
