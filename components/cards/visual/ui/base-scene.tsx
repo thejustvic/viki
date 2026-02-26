@@ -30,7 +30,11 @@ interface BasicSceneProps {
   children: React.ReactNode
 }
 
+type CameraPosition = [x: number, y: number, z: number]
+
 const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
+  const winterCameraPosition: CameraPosition = [-0.1, -1.2, 5]
+  const springCameraPosition: CameraPosition = [-0.1, 1.2, 5]
   return (
     <div style={{height: 'calc(100vh - 74px)', width: '100vw'}}>
       {!isMobile && (
@@ -54,7 +58,13 @@ const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
 
       <Canvas
         shadows
-        camera={{fov: 50, position: [-0.1, -1.8, 5]}}
+        camera={{
+          fov: 50,
+          position:
+            selectedVisual === 'winter'
+              ? winterCameraPosition
+              : springCameraPosition
+        }}
         className="rounded-md"
       >
         <Lights />
