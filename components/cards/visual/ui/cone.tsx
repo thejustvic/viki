@@ -108,7 +108,7 @@ export const ConeWithSpheres = ({
     checklist: checklist
   })
 
-  const baseHeight = 3.2
+  const baseHeight = 2.5
   const baseRadius = 1
   const baseScale = 0.15
   const referenceCount = 15
@@ -119,16 +119,12 @@ export const ConeWithSpheres = ({
   const coneRadius = baseRadius * scaleFactor
   const dynamicTreeScale = baseScale * scaleFactor
   const baseTreeScale = 0.15
-  const treeGroundY = -0.1
+  const treeGroundY = 0.5
   const scaleDiff = dynamicTreeScale - baseTreeScale
-  // If tree "jumps", need to subtract the height
-  // Try a factor of 5 to 15 depending on the model
-  const heightCorrection = scaleDiff * 5
-  const dynamicTreeY = treeGroundY - heightCorrection
-  const coneGroundY = 1
+  const dynamicTreeY = treeGroundY - scaleDiff
+  const coneGroundY = 1.2
   // Since the object grows from the center, raise its center by half the height
-  const dynamicConeY = coneGroundY + coneHeight / 2
-  const dynamicConeX = scaleFactor > 1.3 ? 0.25 : 0.15
+  const dynamicConeY = coneGroundY + scaleDiff + coneHeight / 2
   const sphereRadius = 0.15
   const minRequiredDistance = sphereRadius * 3
 
@@ -196,7 +192,7 @@ export const ConeWithSpheres = ({
 
   return (
     <>
-      <group position={[dynamicConeX, dynamicConeY, -10]}>
+      <group position={[0, dynamicConeY, -10]}>
         {/* the cone is at relative to the parent group */}
         <Cone args={[coneRadius, coneHeight, 32] as const}>
           {/* change opacity to see the cone*/}
@@ -211,8 +207,7 @@ export const ConeWithSpheres = ({
         />
       </group>
       <group ref={treeRef} position={[0, treeGroundY, -10]} scale={baseScale}>
-        {/* IMPORTANT: Here scale should be 1 because it is controlled by the group above */}
-        <TreeModel scale={1} />
+        <TreeModel />
       </group>
     </>
   )
