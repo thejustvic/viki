@@ -13,7 +13,9 @@ type TabGroup = 'authProviders' | 'anonymously'
 export const LoginProviders = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase} = useSupabase()
-  const [captchaToken, setCaptchaToken] = useState<string>()
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(
+    undefined
+  )
   const [tabGroup, setTabGroup] = useState<TabGroup>('authProviders')
 
   useEffect(() => {
@@ -55,7 +57,10 @@ export const LoginProviders = observer(() => {
     <Tabs className="w-[310px] justify-around">
       <Tabs.Tab
         value="authProviders"
-        onChange={({target: {value}}) => setTabGroup(value as TabGroup)}
+        onChange={({target: {value}}) => {
+          setTabGroup(value as TabGroup)
+          setCaptchaToken(undefined)
+        }}
         label="Auth Providers"
         groupName="tabGroup"
         checked={tabGroup === 'authProviders'}
@@ -103,7 +108,7 @@ export const LoginProviders = observer(() => {
                 loading={state.logging.anonymously}
                 disable={someLoad || !captchaToken}
               >
-                Anonymously
+                Enter Anonymously
               </Button>
               <Turnstile
                 siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''}
