@@ -1,6 +1,6 @@
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {useFrame, useThree} from '@react-three/fiber'
-import {BallCollider, RapierRigidBody, RigidBody} from '@react-three/rapier'
+import {CapsuleCollider, RapierRigidBody, RigidBody} from '@react-three/rapier'
 import {RefObject, useMemo, useRef} from 'react'
 import {Vector3} from 'three'
 import {usePlayerControls} from '../utils/helpers'
@@ -96,11 +96,11 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
       lockRotations
       position={props.position ?? [0, 2, 0]}
     >
-      <mesh castShadow>
+      <mesh castShadow scale={[1, 2, 1]}>
         <sphereGeometry args={[radius]} />
         <meshStandardMaterial color="#FFFF00" />
       </mesh>
-      <BallCollider args={[radius]} />
+      <CapsuleCollider args={[radius * 1, radius]} />
     </RigidBody>
   )
 }

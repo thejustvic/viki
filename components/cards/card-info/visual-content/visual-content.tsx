@@ -3,13 +3,13 @@ import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {CardVisual} from '../../types'
+import {CardVisualType} from '../../types'
 import {ShowData} from '../card-info'
 import {useCardInfoStore} from '../card-info-store'
 
 const TwRadio = tw.div`flex gap-1 items-center justify-between w-[90px] bg-base-200 p-2 rounded cursor-pointer`
 
-const cardVisual: CardVisual = ['winter', 'spring']
+const cardVisual: CardVisualType = ['winter', 'spring']
 
 export const VisualContent = observer(() => {
   const [state] = useCardInfoStore()

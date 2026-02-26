@@ -5,6 +5,7 @@ import {Canvas} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
+import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
 import {Snowfall} from './base-snowfall'
@@ -25,10 +26,11 @@ const TwDot = tw.div`
 
 interface BasicSceneProps {
   isLocked: BooleanHookState
+  selectedVisual: CardVisualType[number]
   children: React.ReactNode
 }
 
-const BasicScene = ({children, isLocked}: BasicSceneProps) => {
+const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
   return (
     <div style={{height: 'calc(100vh - 74px)', width: '100vw'}}>
       {!isMobile && (
@@ -61,7 +63,8 @@ const BasicScene = ({children, isLocked}: BasicSceneProps) => {
           {children}
           <Floor color="white" />
         </Physics>
-        <Snowfall />
+
+        {selectedVisual === 'winter' && <Snowfall />}
 
         {/* Environment map for realistic reflections */}
         <Environment preset="sunset" />

@@ -2,10 +2,12 @@ import {useBoolean} from '@/hooks/use-boolean'
 import {Sky} from '@react-three/drei'
 import {Checkbox} from '../checklist/types'
 import {CardInfoStore} from './card-info/card-info-store'
+import {CardVisualType} from './types'
 import BaseBox from './visual/ui/base-box'
 import {BaseCharacter} from './visual/ui/base-character'
 import BaseScene from './visual/ui/base-scene'
 import {ConeWithSpheres} from './visual/ui/cone'
+import {Tulip} from './visual/ui/tulip'
 
 export default function CardVisual({
   checklist,
@@ -15,10 +17,17 @@ export default function CardVisual({
   cardInfoState: CardInfoStore['state']['card']
 }) {
   const isLocked = useBoolean(false)
+  const selectedVisual = cardInfoState.data
+    ?.selected_visual as unknown as CardVisualType[number]
 
   return (
-    <BaseScene isLocked={isLocked}>
-      <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />
+    <BaseScene isLocked={isLocked} selectedVisual={selectedVisual}>
+      {selectedVisual === 'spring' && (
+        <Tulip checklist={checklist} cardInfoState={cardInfoState} />
+      )}
+      {selectedVisual === 'winter' && (
+        <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />
+      )}
 
       <BaseBox position={[5, 1, -8]} args={[1, 1, 1]} color="green" />
       <BaseBox position={[5, 1, -6]} args={[1, 2, 1]} color="red" />
