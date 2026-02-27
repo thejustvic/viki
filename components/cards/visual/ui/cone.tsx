@@ -108,23 +108,25 @@ export const ConeWithSpheres = ({
     checklist: checklist
   })
 
-  const baseHeight = 2.5
-  const baseRadius = 1
-  const baseScale = 0.15
   const referenceCount = 15
   const scaleFactor = Math.sqrt(
     Math.max(referenceCount, checklist.length) / referenceCount
   )
-  const coneHeight = baseHeight * scaleFactor
-  const coneRadius = baseRadius * scaleFactor
-  const dynamicTreeScale = baseScale * scaleFactor
-  const baseTreeScale = 0.15
+
   const treeGroundY = 0.5
-  const scaleDiff = dynamicTreeScale - baseTreeScale
-  const dynamicTreeY = treeGroundY - scaleDiff
+  const baseTreeScale = 0.15
+  const dynamicTreeScale = baseTreeScale * scaleFactor
+  const scaleTreeDiff = dynamicTreeScale - baseTreeScale
+  const dynamicTreeY = treeGroundY - scaleTreeDiff
+
   const coneGroundY = 1.2
-  // Since the object grows from the center, raise its center by half the height
-  const dynamicConeY = coneGroundY + scaleDiff + coneHeight / 2
+  const baseConeHeight = 2.5
+  const baseConeRadius = 1
+  const coneHeight = baseConeHeight * scaleFactor
+  const coneRadius = baseConeRadius * scaleFactor
+  // Since the cone object grows from the center, raise its center by half the height
+  const dynamicConeY = coneGroundY + scaleTreeDiff + coneHeight / 2
+
   const sphereRadius = 0.15
   const minRequiredDistance = sphereRadius * 3
 
@@ -206,7 +208,11 @@ export const ConeWithSpheres = ({
           shouldShrink={shouldShrink}
         />
       </group>
-      <group ref={treeRef} position={[0, treeGroundY, -10]} scale={baseScale}>
+      <group
+        ref={treeRef}
+        position={[0, treeGroundY, -10]}
+        scale={baseTreeScale}
+      >
         <TreeModel />
       </group>
     </>
