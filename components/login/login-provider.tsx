@@ -2,20 +2,20 @@
 import {Button} from '@/components/daisyui/button'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {Turnstile} from '@marsidev/react-turnstile'
 import {observer} from 'mobx-react-lite'
 import {useEffect, useState} from 'react'
 import {Tabs} from '../daisyui/tabs'
+import {Captcha} from './captcha/captcha'
+import {useCaptchaStore} from './captcha/captcha-store'
+import {EmailLoginCard} from './email-login/email-login-card'
 
-type TabGroup = 'authProviders' | 'anonymously'
+type TabGroup = 'authProviders' | 'anonymously' | 'email'
 
 // Supabase auth needs to be triggered client-side
 export const LoginProviders = observer(() => {
+  const [captchaState, captchaStore] = useCaptchaStore()
   const [state, store] = useGlobalStore()
   const {supabase} = useSupabase()
-  const [captchaToken, setCaptchaToken] = useState<string | undefined>(
-    undefined
-  )
   const [tabGroup, setTabGroup] = useState<TabGroup>('authProviders')
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const LoginProviders = observer(() => {
     store.setLogging('anonymously')
     const {error} = await supabase.auth.signInAnonymously({
       options: {
-        captchaToken
+        captchaToken: captchaState.captchaToken
       }
     })
 
@@ -59,7 +59,7 @@ export const LoginProviders = observer(() => {
         value="authProviders"
         onChange={({target: {value}}) => {
           setTabGroup(value as TabGroup)
-          setCaptchaToken(undefined)
+          captchaStore.setCaptchaToken(undefined)
         }}
         label="Auth Providers"
         groupName="tabGroup"
@@ -91,7 +91,10 @@ export const LoginProviders = observer(() => {
       </Tabs.TabContent>
       <Tabs.Tab
         value="anonymously"
-        onChange={({target: {value}}) => setTabGroup(value as TabGroup)}
+        onChange={({target: {value}}) => {
+          setTabGroup(value as TabGroup)
+          captchaStore.setCaptchaToken(undefined)
+        }}
         label="Anonymously"
         groupName="tabGroup"
         checked={tabGroup === 'anonymously'}
@@ -106,22 +109,30 @@ export const LoginProviders = observer(() => {
                 className="join-item"
                 onClick={handleAnonymouslyLogin}
                 loading={state.logging.anonymously}
-                disable={someLoad || !captchaToken}
+                disable={someLoad || !captchaState.captchaToken}
               >
                 Enter Anonymously
               </Button>
-              <Turnstile
-                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''}
-                onSuccess={token => {
-                  setCaptchaToken(token)
-                }}
-                as="aside"
-                options={{
-                  theme: state.theme === 'light' ? 'light' : 'dark',
-                  size: 'normal'
-                }}
-              />
+              <Captcha />
             </div>
+          </>
+        )}
+      </Tabs.TabContent>
+      <Tabs.Tab
+        value="email"
+        onChange={({target: {value}}) => {
+          setTabGroup(value as TabGroup)
+          captchaStore.setCaptchaToken(undefined)
+        }}
+        label="Email"
+        groupName="tabGroup"
+        checked={tabGroup === 'email'}
+      />
+      <Tabs.TabContent>
+        {tabGroup === 'email' && (
+          <>
+            <EmailLoginCard />
+            <Captcha />
           </>
         )}
       </Tabs.TabContent>

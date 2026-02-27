@@ -7,6 +7,7 @@ import {AuthResponse} from '@supabase/supabase-js'
 import {observer} from 'mobx-react-lite'
 import {SubmitHandler, useForm, UseFormRegister} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
+import {useCaptchaStore} from '../captcha/captcha-store'
 
 const TwTitle = tw(Card.Title)`
   flex 
@@ -63,18 +64,20 @@ export const EmailLoginForm = observer(
       handleSubmit,
       formState: {errors}
     } = useForm<FormValues>()
-
+    const [captchaState, captchaStore] = useCaptchaStore()
     const [state, store] = useGlobalStore()
     const onSubmit: SubmitHandler<FormValues> = async data => {
       store.setLogging('email')
       const {
-        data: {user},
+        data: {session},
         error
       } = await handleAuth(data)
-      if (user) {
+      if (session) {
+        captchaStore.setCaptchaToken(undefined)
         store.setLoggingOff()
       }
       if (error) {
+        captchaStore.setCaptchaToken(undefined)
         store.setLoggingOff()
         setError(
           'email',
@@ -104,7 +107,7 @@ export const EmailLoginForm = observer(
               color="primary"
               type="submit"
               loading={state.logging.email}
-              disable={someLoad}
+              disable={someLoad || !captchaState.captchaToken}
             >
               Submit
             </TwSubmit>

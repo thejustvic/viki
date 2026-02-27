@@ -1,5 +1,5 @@
 import {AuthView} from '@/components/global-provider/types'
-import {Login, TwLogin} from '@/components/login/login'
+import {Login} from '@/components/login/login'
 import {TechStackCarousel} from '@/components/tech-stack-carousel/tech-stack-carousel'
 import {cookies} from 'next/headers'
 import {Suspense} from 'react'
@@ -11,10 +11,10 @@ export default async function Page() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <TwLogin>
+      <div className="flex flex-col gap-4">
         <Login cookieAuthView={cookieAuthView as AuthView} />
         <TechStackCarousel />
-      </TwLogin>
+      </div>
     </Suspense>
   )
 }
