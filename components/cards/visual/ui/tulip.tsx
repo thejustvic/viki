@@ -4,10 +4,11 @@ import {ArrUtil} from '@/utils/arr-util'
 import {Circle} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useMemo, useRef, useState} from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
+import {LawnInstances} from '../components/lawn-instances'
 import {TulipModel} from '../components/tulip-model'
 
 interface Point {
@@ -87,7 +88,7 @@ export const Tulip = ({
   )
   const fieldRadius = baseRadius * scaleFactor
 
-  const tulipRadius = 2
+  const tulipRadius = 3
   const minRequiredDistance = tulipRadius * 2
 
   useEffect(() => {
@@ -133,11 +134,28 @@ export const Tulip = ({
     }
   }, [cardInfoState.data, checklist, fieldRadius, minRequiredDistance])
 
+  const lawnPositions = useMemo(() => {
+    const positions: [x: number, y: number, z: number][] = []
+    const squareSize = 20 - 0.25 // -0.25 for little overlap each other
+
+    // fill a square area that is guaranteed to be larger than a circle
+    const gridSteps = Math.ceil((fieldRadius * 2) / squareSize)
+    const offset = (gridSteps * squareSize) / 2
+
+    for (let i = 0; i <= gridSteps; i++) {
+      for (let j = 0; j <= gridSteps; j++) {
+        positions.push([i * squareSize - offset, 0, j * squareSize - offset])
+      }
+    }
+
+    return positions
+  }, [fieldRadius])
+
   useFrame((_state, delta) => {
     if (fieldRef.current === null) {
       return
     }
-    const targetScale = shouldShrink ? 0.2 : 1
+    const targetScale = shouldShrink ? 0.5 : 1
     easing.damp3(
       fieldRef.current.scale,
       [targetScale, targetScale, targetScale],
@@ -147,16 +165,18 @@ export const Tulip = ({
   })
 
   return (
-    <group scale={0.1} position={[0, 0.5, -7]}>
-      <group ref={fieldRef}>
+    <group scale={0.1} position={[0, 0, -3]}>
+      <group ref={fieldRef} scale={0.5}>
         <Circle
-          args={[fieldRadius + 10, 64]}
+          args={[fieldRadius, 64]}
           rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, 0.5, 0]}
+          position={[0, 2, 0]}
           receiveShadow
         >
-          <meshStandardMaterial color="#2d5a27" />
+          {/* change opacity to see the circle */}
+          <meshStandardMaterial color="#2d5a27" transparent opacity={0} />
         </Circle>
+        <LawnInstances positions={lawnPositions} />
       </group>
       <Tulips
         cardData={cardData.card}
@@ -235,7 +255,7 @@ const TulipComponent = ({
           updateCheckboxIsCompleted(!checkbox.is_completed, checkbox.id)
         }
       }}
-      position={[point.x, -0.7, point.z]}
+      position={[point.x, 0, point.z]}
       scale={0}
     >
       <TulipModel color={color} />

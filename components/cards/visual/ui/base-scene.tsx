@@ -1,8 +1,14 @@
 import {Button} from '@/components/daisyui/button'
 import {BooleanHookState} from '@/hooks/use-boolean'
-import {Environment, Loader, PointerLockControls} from '@react-three/drei'
-import {Canvas} from '@react-three/fiber'
+import {
+  Environment,
+  Loader,
+  PointerLockControls,
+  StatsGl
+} from '@react-three/drei'
+import {Canvas, useFrame, useThree} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
+import {useMemo} from 'react'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 import {CardVisualType} from '../../types'
@@ -33,8 +39,15 @@ interface BasicSceneProps {
 type CameraPosition = [x: number, y: number, z: number]
 
 const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
-  const winterCameraPosition: CameraPosition = [-0.1, -1.2, 5]
-  const springCameraPosition: CameraPosition = [-0.1, 1.2, 5]
+  const cameraPosition = useMemo(() => {
+    const winterCameraPosition: CameraPosition = [-0.1, -0.7, 5]
+    const springCameraPosition: CameraPosition = [-0.1, 3.7, 5]
+
+    return selectedVisual === 'winter'
+      ? winterCameraPosition
+      : springCameraPosition
+  }, [selectedVisual])
+
   return (
     <div style={{height: 'calc(100vh - 74px)', width: '100vw'}}>
       {!isMobile && (
@@ -60,22 +73,16 @@ const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
         shadows
         camera={{
           fov: 50,
-          position:
-            selectedVisual === 'winter'
-              ? winterCameraPosition
-              : springCameraPosition
+          position: cameraPosition
         }}
         className="rounded-md"
       >
         <Lights />
-
         <Physics gravity={[0, -9.8, 0]}>
           {children}
           <Floor color="white" />
         </Physics>
-
         {selectedVisual === 'winter' && <Snowfall />}
-
         {/* Environment map for realistic reflections */}
         <Environment preset="sunset" />
 
@@ -84,11 +91,39 @@ const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
           onLock={isLocked.turnOn}
           onUnlock={isLocked.turnOff}
         />
+        {process.env.NODE_ENV === 'development' && (
+          <>
+            <StatsGl />
+            <InfoLogger />
+          </>
+        )}
       </Canvas>
       <Loader />
       {!isMobile && <TwDot />}
     </div>
   )
+}
+
+// write in the browser console: window.logStats = true
+const InfoLogger = () => {
+  const {gl} = useThree()
+
+  useFrame(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (window.logStats) {
+      const stats = {
+        'Polygons (Triangles)': gl.info.render.triangles,
+        'Vertices (Points)': gl.info.render.points,
+        'Draw Calls': gl.info.render.calls
+      }
+      console.table(stats)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.logStats = false
+    }
+  })
+  return null
 }
 
 export default BasicScene
