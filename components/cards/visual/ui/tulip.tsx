@@ -1,5 +1,4 @@
 /* eslint-disable max-lines-per-function */
-import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {ArrUtil} from '@/utils/arr-util'
 import {Circle} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
@@ -9,7 +8,7 @@ import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
 import {LawnInstances} from '../components/lawn-instances'
-import {TulipModel} from '../components/tulip-model'
+import {TulipInstances} from '../components/tulip-instances'
 
 interface Point {
   x: number
@@ -71,7 +70,9 @@ export const Tulip = ({
   cardInfoState: CardInfoStore['state']['card']
 }) => {
   const fieldRef = useRef<Group>(null)
-  const [tulipPositions, updateTulipPositions] = useState<Point[]>([])
+  const [positions, updatePositions] = useState<
+    [x: number, y: number, z: number][]
+  >([])
   const [shouldShrink, updateShouldShrink] = useState(false)
   const [cardData, updateCardData] = useState<{
     card: CardInfoStore['state']['card']['data']
@@ -116,13 +117,17 @@ export const Tulip = ({
         card: cardInfoState.data,
         checklist: checklist
       })
+
       if (!notEqualButSameLength) {
         const newData = generateNonOverlappingPoints({
           numberOfTulips: checklist.length ?? 0,
           fieldRadius,
           minRequiredDistance
         })
-        updateTulipPositions(newData)
+
+        const positions = calcPositions(newData)
+        updatePositions(positions)
+
         //grow
         updateShouldShrink(false)
       }
@@ -133,6 +138,15 @@ export const Tulip = ({
       isCancelled = true
     }
   }, [cardInfoState.data, checklist, fieldRadius, minRequiredDistance])
+
+  const calcPositions = (newData: Point[]) => {
+    const positions: [x: number, y: number, z: number][] = []
+
+    newData.forEach(point => {
+      positions.push([point.x, 0, point.z])
+    })
+    return positions
+  }
 
   const lawnPositions = useMemo(() => {
     const positions: [x: number, y: number, z: number][] = []
@@ -173,92 +187,19 @@ export const Tulip = ({
           position={[0, 2, 0]}
           receiveShadow
         >
-          {/* change opacity to see the circle */}
           <meshStandardMaterial color="#2d5a27" transparent opacity={0} />
         </Circle>
         <LawnInstances positions={lawnPositions} />
       </group>
-      <Tulips
-        cardData={cardData.card}
-        tulipPositions={tulipPositions}
+      <TulipInstances
         checklist={cardData.checklist}
+        positions={positions}
         shouldShrink={shouldShrink}
-      />
-    </group>
-  )
-}
-
-const Tulips = ({
-  cardData,
-  tulipPositions,
-  checklist,
-  shouldShrink
-}: {
-  cardData: CardInfoStore['state']['card']['data']
-  shouldShrink: boolean
-  tulipPositions: Point[]
-  checklist: Checkbox[]
-}) => {
-  const colorCompleted = cardData?.bauble_color_completed ?? '#00ff00'
-  const colorNotCompleted = cardData?.bauble_color_not_completed ?? '#ff0000'
-
-  return tulipPositions.map((point, index) => {
-    const checkbox = checklist?.[index]
-    const isCompleted = checkbox?.is_completed
-
-    return (
-      <TulipComponent
-        key={index}
-        shouldShrink={shouldShrink}
-        checkbox={checkbox}
-        point={point}
-        color={isCompleted ? colorCompleted : colorNotCompleted}
-      />
-    )
-  })
-}
-
-const TulipComponent = ({
-  color,
-  shouldShrink,
-  checkbox,
-  point
-}: {
-  color: string
-  shouldShrink: boolean
-  checkbox?: Checkbox
-  point: Point
-}) => {
-  const groupRef = useRef<Group>(null)
-  const {updateCheckboxIsCompleted} = useCheckboxHandlers()
-
-  useFrame((_state, delta) => {
-    if (groupRef.current === null) {
-      return
-    }
-    const targetScale = shouldShrink ? 0 : 1
-    easing.damp3(
-      groupRef.current.scale,
-      [targetScale, targetScale, targetScale],
-      0.25,
-      delta
-    )
-  })
-
-  return (
-    <group
-      ref={groupRef}
-      onClick={event => {
-        // prevent click from bleeding through to objects behind
-        event.stopPropagation()
-        if (checkbox) {
-          updateCheckboxIsCompleted(!checkbox.is_completed, checkbox.id)
+        colorCompleted={cardData?.card?.bauble_color_completed ?? '#00ff00'}
+        colorNotCompleted={
+          cardData?.card?.bauble_color_not_completed ?? '#ff0000'
         }
-      }}
-      position={[point.x, 0, point.z]}
-      scale={0}
-    >
-      <TulipModel color={color} />
+      />
     </group>
   )
 }
