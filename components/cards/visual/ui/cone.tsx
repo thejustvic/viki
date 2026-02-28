@@ -113,13 +113,13 @@ export const ConeWithSpheres = ({
     Math.max(referenceCount, checklist.length) / referenceCount
   )
 
-  const treeGroundY = 0.5
+  const treeGroundY = 0
   const baseTreeScale = 0.15
   const dynamicTreeScale = baseTreeScale * scaleFactor
   const scaleTreeDiff = dynamicTreeScale - baseTreeScale
   const dynamicTreeY = treeGroundY - scaleTreeDiff
 
-  const coneGroundY = 1.2
+  const coneGroundY = 0.7
   const baseConeHeight = 2.5
   const baseConeRadius = 1
   const coneHeight = baseConeHeight * scaleFactor
@@ -194,10 +194,10 @@ export const ConeWithSpheres = ({
 
   return (
     <>
-      <group position={[0, dynamicConeY, -10]}>
+      <group position={[0, dynamicConeY, -5]}>
         {/* the cone is at relative to the parent group */}
         <Cone args={[coneRadius, coneHeight, 32] as const}>
-          {/* change opacity to see the cone*/}
+          {/* change opacity to see the cone */}
           <meshStandardMaterial color="hotpink" transparent opacity={0} />
         </Cone>
         <Spheres
@@ -210,7 +210,7 @@ export const ConeWithSpheres = ({
       </group>
       <group
         ref={treeRef}
-        position={[0, treeGroundY, -10]}
+        position={[0, treeGroundY, -5]}
         scale={baseTreeScale}
       >
         <TreeModel />

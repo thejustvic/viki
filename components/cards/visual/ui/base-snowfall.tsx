@@ -2,10 +2,10 @@ import {useFrame} from '@react-three/fiber'
 import {useEffect, useMemo, useRef} from 'react'
 import {Euler, InstancedMesh, Object3D, Quaternion} from 'three'
 
-const NUM_SNOWFLAKES = 5000
-const SCENE_WIDTH = 50
+const NUM_SNOWFLAKES = 1000
+const SCENE_WIDTH = 15
 const SNOW_RESET_Y = -5
-const SNOW_START_Y_MAX = 30
+const SNOW_START_Y_MAX = 15
 const SCENE_BOTTOM = -5
 
 export interface SnowflakeMeta {
