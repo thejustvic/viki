@@ -1,11 +1,10 @@
 import {RigidBody} from '@react-three/rapier'
 
 export const Floor = ({color = 'white'}) => {
-  // a HUGE static block below the world
   return (
-    <RigidBody type="fixed" colliders="cuboid" position={[0, 0, 0]}>
-      <mesh receiveShadow>
-        <boxGeometry args={[1000, 1, 1000]} />
+    <RigidBody type="fixed" colliders="cuboid" position={[0, -0.01, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[100, 100]} />
         <meshStandardMaterial color={color} />
       </mesh>
     </RigidBody>
