@@ -37,11 +37,15 @@ export const DrawerLeft = observer(({children}: PropsWithChildren) => {
     }
   }
 
+  if (isMobile) {
+    return children
+  }
+
   return (
     <Drawer
       id="left-drawer"
       open={leftDrawerOpen()}
-      mobile={isMobile || state.drawerOpenByHover}
+      mobile={state.drawerOpenByHover}
       side={user && state.leftDrawerOpen ? <LeftDrawerSide /> : null}
       onClickOverlay={onLeftDrawerClickOverlay}
       contentClassName="h-dvh"
