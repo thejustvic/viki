@@ -1,5 +1,5 @@
 /* eslint-disable max-lines-per-function */
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 
 export interface Vector2 {
   x: number
@@ -14,15 +14,26 @@ interface JoystickProps {
 
 const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
   const [stickPos, setStickPos] = useState<Vector2>({x: 0, y: 0})
+  const activeTouchId = useRef<number | null>(null)
 
   const handleStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
+      const touch = e.changedTouches[0]
+      activeTouchId.current = touch.identifier
+
       const rect = e.currentTarget.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
 
       const handleMove = (moveEvent: TouchEvent) => {
-        const touch = moveEvent.touches[0]
+        const touch = Array.from(moveEvent.touches).find(
+          t => t.identifier === activeTouchId.current
+        )
+
+        if (!touch) {
+          return
+        }
+
         let dx = touch.clientX - centerX
         let dy = touch.clientY - centerY
 
@@ -50,11 +61,18 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
         }
       }
 
-      const handleEnd = () => {
-        setStickPos({x: 0, y: 0})
-        onUpdate({x: 0, y: 0})
-        window.removeEventListener('touchmove', handleMove)
-        window.removeEventListener('touchend', handleEnd)
+      const handleEnd = (endEvent: TouchEvent) => {
+        const touch = Array.from(endEvent.changedTouches).find(
+          t => t.identifier === activeTouchId.current
+        )
+
+        if (touch) {
+          activeTouchId.current = null
+          setStickPos({x: 0, y: 0})
+          onUpdate({x: 0, y: 0})
+          window.removeEventListener('touchmove', handleMove)
+          window.removeEventListener('touchend', handleEnd)
+        }
       }
 
       window.addEventListener('touchmove', handleMove)
