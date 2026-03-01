@@ -1,20 +1,17 @@
+/* eslint-disable max-lines-per-function */
 import {Button} from '@/components/daisyui/button'
 import {BooleanHookState} from '@/hooks/use-boolean'
-import {
-  Environment,
-  Loader,
-  PointerLockControls,
-  StatsGl
-} from '@react-three/drei'
+import {Environment, Loader, StatsGl} from '@react-three/drei'
 import {Canvas, useFrame, useThree} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
-import {useMemo} from 'react'
+import {RefObject, useMemo} from 'react'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
 import {Snowfall} from './base-snowfall'
+import {DualJoysticks, Vector2} from './joystick'
 
 const TwDot = tw.div`
   absolute
@@ -31,14 +28,22 @@ const TwDot = tw.div`
 `
 
 interface BasicSceneProps {
-  isLocked: BooleanHookState
   selectedVisual: CardVisualType[number]
   children: React.ReactNode
+  moveData: RefObject<Vector2>
+  lookData: RefObject<Vector2>
+  isLocked: BooleanHookState
 }
 
 type CameraPosition = [x: number, y: number, z: number]
 
-const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
+const BasicScene = ({
+  children,
+  selectedVisual,
+  moveData,
+  lookData,
+  isLocked
+}: BasicSceneProps) => {
   const cameraPosition = useMemo(() => {
     const winterCameraPosition: CameraPosition = [-0.1, -0.7, 5]
     const springCameraPosition: CameraPosition = [-0.1, 3.7, 5]
@@ -49,10 +54,13 @@ const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
   }, [selectedVisual])
 
   return (
-    <div style={{height: 'calc(100vh - 74px)', width: '100vw'}}>
+    <div
+      className="relative overflow-hidden"
+      style={{height: 'calc(100vh - 74px)', width: '100vw'}}
+    >
       {!isMobile && (
         <>
-          {!isLocked.value ? (
+          {isLocked.value ? (
             <Button
               soft
               color="info"
@@ -69,28 +77,35 @@ const BasicScene = ({children, selectedVisual, isLocked}: BasicSceneProps) => {
         </>
       )}
 
+      {isMobile && (
+        <>
+          <DualJoysticks
+            onMove={v => (moveData.current = v)}
+            onLook={v => (lookData.current = v)}
+          />
+        </>
+      )}
+
       <Canvas
         shadows
         camera={{
           fov: 50,
           position: cameraPosition
         }}
-        className="rounded-md"
+        className="rounded-md relative"
       >
         <Lights />
+
         <Physics gravity={[0, -9.8, 0]}>
           {children}
           <Floor color="white" />
         </Physics>
+
         {selectedVisual === 'winter' && <Snowfall />}
+
         {/* Environment map for realistic reflections */}
         <Environment preset="sunset" />
 
-        <PointerLockControls
-          selector="#enter-btn"
-          onLock={isLocked.turnOn}
-          onUnlock={isLocked.turnOff}
-        />
         {process.env.NODE_ENV === 'development' && (
           <>
             <StatsGl />
