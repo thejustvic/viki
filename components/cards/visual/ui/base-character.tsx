@@ -68,16 +68,28 @@ export const useCharacterLogic = (
         ? -moveData.current.y
         : Number(backward) - Number(forward)
 
+    const inputLength = Math.sqrt(inputX * inputX + inputZ * inputZ)
+
     v.front.set(0, 0, inputZ)
     v.side.set(inputX, 0, 0)
 
     v.direction
       .subVectors(v.front, v.side)
       .normalize()
-      .multiplyScalar(SPEED)
+      .multiplyScalar(SPEED * Math.min(inputLength, 1))
       .applyEuler(camera.rotation)
 
     const currentVelocity = body.linvel()
+
+    body.setLinvel(
+      {
+        x: v.direction.x,
+        y: isFlying.current ? v.direction.y : currentVelocity.y,
+        z: v.direction.z
+      },
+      true
+    )
+
     const time = state.clock.getElapsedTime()
     if (jump && !jumpPressed.current) {
       const timeSinceLastJump = time - lastJumpTime.current
