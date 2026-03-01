@@ -17,10 +17,12 @@ import {
 
 const TwContainer = tw.div`
   grid 
+  grid-cols-[repeat(auto-fill,_minmax(min(190px,100%),_1fr))]
   gap-4 
   p-4  
   max-[425px]:grid-cols-2
-  grid-cols-[repeat(auto-fill,_minmax(min(190px,100%),_1fr))]
+  max-[425px]:gap-2
+  max-[425px]:p-2
 `
 
 export const CardsList = observer(() => {
