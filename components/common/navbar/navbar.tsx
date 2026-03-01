@@ -1,6 +1,5 @@
 'use client'
 
-import {useCardsStore} from '@/components/cards/cards-store'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {UserImage} from '@/components/common/user-image'
 import {Button} from '@/components/daisyui/button'
@@ -11,15 +10,14 @@ import {useGlobalStore} from '@/components/global-provider/global-store'
 import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
-import {IconSearch} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useRouter} from 'next/navigation'
-import {useId} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
 import {NavbarOpenTeamButton} from './navbar-open-team-button'
 import {NavbarRightDrawerButton} from './navbar-right-drawer-button'
+import {NavbarSearch} from './navbar-search'
 import {NavbarTeamSelect} from './navbar-team-select'
 
 export const Navbar = observer(() => {
@@ -63,28 +61,10 @@ const NavCenter = () => {
     <Nav.Center
       className={twJoin('font-mono text-lg w-full', isMobile && 'ml-4')}
     >
-      <Search />
+      <NavbarSearch />
     </Nav.Center>
   )
 }
-
-const Search = observer(() => {
-  const [state, store] = useCardsStore()
-  const id = useId()
-  return (
-    <label className="input input-info border-none w-full">
-      <IconSearch />
-      <input
-        name={id}
-        type="search"
-        placeholder="Search"
-        onChange={e => store.setSearchValue(e.target.value)}
-        value={state.searchValue}
-        className="truncate"
-      />
-    </label>
-  )
-})
 
 const NavEnd = () => {
   return (
