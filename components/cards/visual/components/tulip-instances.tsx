@@ -3,7 +3,7 @@ import {Checkbox} from '@/components/checklist/types'
 import {Merged, useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useMemo, useRef} from 'react'
+import {useEffect, useMemo, useRef} from 'react'
 import type {Group, Mesh, MeshStandardMaterial} from 'three'
 import type {GLTF} from 'three-stdlib'
 
@@ -97,11 +97,21 @@ const Tulip = ({
   const groupRef = useRef<Group>(null)
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
 
+  useEffect(() => {
+    if (materials.mFlowerTulip) {
+      materials.mFlowerTulip.map = null
+
+      materials.mFlowerTulip.metalness = 0.7 // 0 - not metal
+      materials.mFlowerTulip.roughness = 0.7 // 1 - matte (standard for mesh)
+
+      materials.mFlowerTulip.needsUpdate = true
+    }
+  }, [materials])
+
   useFrame((_state, delta) => {
     if (!groupRef.current) {
       return
     }
-
     const targetScale = shouldShrink ? 0 : 1
 
     easing.damp3(
