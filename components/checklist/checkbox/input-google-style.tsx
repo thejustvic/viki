@@ -92,7 +92,7 @@ export const InputGoogleStyle = observer(() => {
         <div className="relative shadow-sm">
           <Input
             {...register('q_99', {required: true})}
-            inputClassName="pr-16 w-full focus:outline-none focus:border-primary"
+            inputClassName="pr-16 w-full border-base-content/10 focus:outline-none focus:border-primary/50"
             autoComplete="off"
             placeholder="type some stuff..."
             type="search"

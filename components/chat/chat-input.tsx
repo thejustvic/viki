@@ -41,7 +41,7 @@ export const ChatInput = observer(() => {
       className="flex justify-between p-2"
     >
       <TwInput
-        inputClassName="w-full focus:outline-none focus:border-primary"
+        inputClassName="w-full border-base-content/10 focus:outline-none focus:border-primary/50"
         {...register('chatInput69', {
           required: true
         })}

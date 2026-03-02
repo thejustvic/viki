@@ -7,7 +7,6 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {IconSearch} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useId} from 'react'
-import {SimpleScrollbar} from '../simple-scrollbar'
 
 export const NavbarSearch = observer(() => {
   const open = useBoolean(false)
@@ -39,19 +38,19 @@ export const NavbarSearch = observer(() => {
   }
   return (
     <div className="flex flex-col relative w-full" onBlur={open.turnOff}>
-      <label className="input input-info border-none w-full input-sm">
-        <IconSearch />
-        <Input
-          autoFocus
-          name={id}
-          type="search"
-          placeholder="Search cards by name"
-          onChange={e => store.setSearchValue(e.target.value)}
-          value={state.searchValue}
-          inputClassName="input-sm"
-        />
-      </label>
-      <div className="absolute -bottom-1 left-0 right-0">
+      <div className="absolute left-2 top-2 z-10">
+        <IconSearch size={16} />
+      </div>
+      <Input
+        inputClassName="px-8 w-full input-sm focus:outline-none focus:border-info/50"
+        placeholder="Search cards by name"
+        type="search"
+        name={id}
+        autoFocus
+        onChange={e => store.setSearchValue(e.target.value)}
+        value={state.searchValue}
+      />
+      <div className="absolute bottom-0 left-0 right-0">
         <CardsList />
       </div>
     </div>
@@ -64,22 +63,20 @@ const CardsList = observer(() => {
   const updateSearchParams = useUpdateSearchParams()
 
   return (
-    <div className="h-[250px] absolute w-full bg-info-content/75 rounded-b-lg">
-      <SimpleScrollbar>
-        <div className="flex flex-col cursor-pointer">
-          {cards.map(card => (
-            <div
-              key={card.id}
-              className="truncate text-base-content/70 text-sm px-13 py-1 hover:bg-info/50"
-              onMouseDown={() => {
-                updateSearchParams('card', card.id)
-              }}
-            >
-              {card.text}
-            </div>
-          ))}
-        </div>
-      </SimpleScrollbar>
+    <div className="h-auto max-h-[250px] overflow-y-auto absolute w-full bg-info-content/75 rounded-b-lg">
+      <div className="flex flex-col cursor-pointer">
+        {cards.map(card => (
+          <div
+            key={card.id}
+            className="truncate text-base-content/70 text-sm px-8 py-1 hover:bg-info/50"
+            onMouseDown={() => {
+              updateSearchParams('card', card.id)
+            }}
+          >
+            {card.text}
+          </div>
+        ))}
+      </div>
     </div>
   )
 })

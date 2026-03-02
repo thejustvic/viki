@@ -2,8 +2,7 @@ import {HTMLProps, PropsWithChildren, useId} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 interface Props
-  extends PropsWithChildren,
-    React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  extends PropsWithChildren, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: HTMLProps<HTMLElement>['className']
 }
 
@@ -25,7 +24,7 @@ export const Textarea = ({
       id={textareaId}
       disabled={disable}
       className={twJoin(
-        'textarea focus:outline-none focus:border-primary',
+        'textarea focus:outline-none border-base-content/10 focus:border-primary/50',
         className,
         size === 'xs' && 'textarea-xs',
         size === 'sm' && 'textarea-sm',
