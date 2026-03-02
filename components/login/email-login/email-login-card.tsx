@@ -1,5 +1,6 @@
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import {isSafari} from 'react-device-detect'
 import Tilt from 'react-parallax-tilt'
 import tw from 'tailwind-styled-components'
 import {useCaptchaStore} from '../captcha/captcha-store'
@@ -36,6 +37,18 @@ const TwCard = tw.div`
 export const EmailLoginCard = observer(() => {
   const [state] = useEmailLoginStore()
   const isLogin = state.view === 'login'
+
+  if (isSafari) {
+    return isLogin ? (
+      <TwCard>
+        <Login />
+      </TwCard>
+    ) : (
+      <TwCard>
+        <Register />
+      </TwCard>
+    )
+  }
 
   return (
     <Tilt
