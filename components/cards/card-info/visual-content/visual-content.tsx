@@ -3,7 +3,7 @@ import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {CardVisualType} from '../../types'
+import {Card, CardVisualType} from '../../types'
 import {ShowData} from '../card-info'
 import {useCardInfoStore} from '../card-info-store'
 
@@ -65,12 +65,54 @@ const Content = observer(() => {
 })
 
 const SpringContent = () => {
-  return 'coming soon'
+  return <ChooseTulipColor />
 }
 
 const WinterContent = () => {
   return <ChooseBaubleColor />
 }
+
+const ChooseTulipColor = observer(() => {
+  const [state] = useCardInfoStore()
+
+  return (
+    <div className="mt-4 flex flex-col gap-2">
+      <ShowData
+        loading={state.card.loading}
+        error={state.card.error?.message}
+        data={
+          <ChooseColorData
+            colorCompleted="tulip_color_completed"
+            colorNotCompleted="tulip_color_not_completed"
+          />
+        }
+        prefix={'tulip color:'}
+      />
+      <ShowData
+        loading={state.card.loading}
+        error={state.card.error?.message}
+        data={
+          <ChooseColorData
+            colorCompleted="tulip_plate_color_completed"
+            colorNotCompleted="tulip_plate_color_not_completed"
+          />
+        }
+        prefix={'plate color:'}
+      />
+      <ShowData
+        loading={state.card.loading}
+        error={state.card.error?.message}
+        data={
+          <ChooseColorData
+            colorCompleted="tulip_plate_text_color_completed"
+            colorNotCompleted="tulip_plate_text_color_not_completed"
+          />
+        }
+        prefix={'plate text color:'}
+      />
+    </div>
+  )
+})
 
 const ChooseBaubleColor = observer(() => {
   const [state] = useCardInfoStore()
@@ -80,104 +122,82 @@ const ChooseBaubleColor = observer(() => {
       <ShowData
         loading={state.card.loading}
         error={state.card.error?.message}
-        data={<ChooseBaubleColorData />}
+        data={
+          <ChooseColorData
+            colorCompleted="bauble_color_completed"
+            colorNotCompleted="bauble_color_not_completed"
+          />
+        }
         prefix={'bauble color:'}
       />
       <ShowData
         loading={state.card.loading}
         error={state.card.error?.message}
-        data={<ChooseBaubleTextColorData />}
+        data={
+          <ChooseColorData
+            colorCompleted="bauble_text_color_completed"
+            colorNotCompleted="bauble_text_color_not_completed"
+          />
+        }
         prefix={'text color on bauble:'}
       />
     </div>
   )
 })
 
-const ChooseBaubleColorData = observer(() => {
-  const [state] = useCardInfoStore()
-  const {updateCardBaubleColorCompleted, updateCardBaubleColorNotCompleted} =
-    useCardHandlers()
-  const id = String(getSearchCard())
+const ChooseColorData = observer(
+  ({
+    colorCompleted,
+    colorNotCompleted
+  }: {
+    colorCompleted: keyof Card
+    colorNotCompleted: keyof Card
+  }) => {
+    const [state] = useCardInfoStore()
+    const {updateColor} = useCardHandlers()
+    const id = String(getSearchCard())
 
-  if (!state.card.data) {
-    return null
+    if (!state.card.data) {
+      return null
+    }
+    if (
+      !state.card.data[colorNotCompleted] ||
+      !state.card.data[colorCompleted]
+    ) {
+      return null
+    }
+    return (
+      <div className="flex gap-2 flex-wrap ">
+        <ColorPicker
+          color={state.card.data[colorNotCompleted]}
+          label="not checked"
+          onBlur={async e => {
+            const color = e.target.value
+            await updateColor(id, colorNotCompleted, color)
+          }}
+        />
+        <ColorPicker
+          color={state.card.data[colorCompleted]}
+          label="checked"
+          onBlur={async e => {
+            const color = e.target.value
+            await updateColor(id, colorCompleted, color)
+          }}
+        />
+      </div>
+    )
   }
-  if (
-    !state.card.data.bauble_color_not_completed ||
-    !state.card.data.bauble_color_completed
-  ) {
-    return null
-  }
-  return (
-    <div className="flex gap-2 flex-wrap ">
-      <ColorPicker
-        color={state.card.data.bauble_color_not_completed}
-        label="not checked"
-        onChange={async e => {
-          const color = e.target.value
-          await updateCardBaubleColorNotCompleted(color, id)
-        }}
-      />
-      <ColorPicker
-        color={state.card.data.bauble_color_completed}
-        label="checked"
-        onChange={async e => {
-          const color = e.target.value
-          await updateCardBaubleColorCompleted(color, id)
-        }}
-      />
-    </div>
-  )
-})
-
-const ChooseBaubleTextColorData = observer(() => {
-  const [state] = useCardInfoStore()
-  const {
-    updateCardBaubleTextColorCompleted,
-    updateCardBaubleTextColorNotCompleted
-  } = useCardHandlers()
-  const id = String(getSearchCard())
-
-  if (!state.card.data) {
-    return null
-  }
-  if (
-    !state.card.data.bauble_text_color_not_completed ||
-    !state.card.data.bauble_text_color_completed
-  ) {
-    return null
-  }
-  return (
-    <div className="flex gap-2 flex-wrap ">
-      <ColorPicker
-        color={state.card.data.bauble_text_color_not_completed}
-        label="not checked"
-        onChange={async e => {
-          const color = e.target.value
-          await updateCardBaubleTextColorNotCompleted(color, id)
-        }}
-      />
-      <ColorPicker
-        color={state.card.data.bauble_text_color_completed}
-        label="checked"
-        onChange={async e => {
-          const color = e.target.value
-          await updateCardBaubleTextColorCompleted(color, id)
-        }}
-      />
-    </div>
-  )
-})
+)
 
 const ColorPicker = observer(
   ({
     color = '#ff0000',
     label = 'Color',
-    onChange
+    onBlur
   }: {
     color?: string
     label?: string
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
   }) => {
     const [state] = useCardInfoStore()
     return (
@@ -187,7 +207,7 @@ const ColorPicker = observer(
         defaultValue={color}
         inputClassName="p-0 h-10 w-25 cursor-pointer"
         label={label}
-        onChange={onChange}
+        onBlur={onBlur}
       />
     )
   }

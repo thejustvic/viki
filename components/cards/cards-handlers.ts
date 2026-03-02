@@ -12,21 +12,10 @@ interface Handlers {
   updateCardPosition: (position: string, cardId: string) => Promise<void>
   updateCardVisual: (visual: string, cardId: string) => Promise<void>
   updateCardBgImage: (bgImage: string, cardId: string) => Promise<void>
-  updateCardBaubleColorCompleted: (
-    color: string,
-    cardId: string
-  ) => Promise<void>
-  updateCardBaubleColorNotCompleted: (
-    color: string,
-    cardId: string
-  ) => Promise<void>
-  updateCardBaubleTextColorCompleted: (
-    color: string,
-    cardId: string
-  ) => Promise<void>
-  updateCardBaubleTextColorNotCompleted: (
-    color: string,
-    cardId: string
+  updateColor: (
+    cardId: string,
+    name: keyof Card,
+    color: string
   ) => Promise<void>
 }
 
@@ -111,62 +100,19 @@ export const useCardHandlers = (): Handlers => {
       .eq('id', cardId)
   }
 
-  const updateCardBaubleColorCompleted = async (
-    color: string,
-    cardId: string
+  const updateColor = async (
+    cardId: string,
+    name: keyof Card,
+    color: string
   ): Promise<void> => {
     if (!user) {
       throw Error('You must provide a user object!')
     }
-    await supabase
-      .from('cards')
-      .update({
-        bauble_color_completed: color
-      })
-      .eq('id', cardId)
-  }
 
-  const updateCardBaubleColorNotCompleted = async (
-    color: string,
-    cardId: string
-  ): Promise<void> => {
-    if (!user) {
-      throw Error('You must provide a user object!')
-    }
     await supabase
       .from('cards')
       .update({
-        bauble_color_not_completed: color
-      })
-      .eq('id', cardId)
-  }
-
-  const updateCardBaubleTextColorCompleted = async (
-    color: string,
-    cardId: string
-  ): Promise<void> => {
-    if (!user) {
-      throw Error('You must provide a user object!')
-    }
-    await supabase
-      .from('cards')
-      .update({
-        bauble_text_color_completed: color
-      })
-      .eq('id', cardId)
-  }
-
-  const updateCardBaubleTextColorNotCompleted = async (
-    color: string,
-    cardId: string
-  ): Promise<void> => {
-    if (!user) {
-      throw Error('You must provide a user object!')
-    }
-    await supabase
-      .from('cards')
-      .update({
-        bauble_text_color_not_completed: color
+        [name]: color
       })
       .eq('id', cardId)
   }
@@ -178,9 +124,6 @@ export const useCardHandlers = (): Handlers => {
     updateCardPosition,
     updateCardVisual,
     updateCardBgImage,
-    updateCardBaubleColorCompleted,
-    updateCardBaubleColorNotCompleted,
-    updateCardBaubleTextColorCompleted,
-    updateCardBaubleTextColorNotCompleted
+    updateColor
   }
 }

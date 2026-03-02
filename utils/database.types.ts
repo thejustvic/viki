@@ -29,6 +29,12 @@ export type Database = {
           selected_visual: string
           team_id: string
           text: string
+          tulip_color_completed: string
+          tulip_color_not_completed: string
+          tulip_plate_color_completed: string
+          tulip_plate_color_not_completed: string
+          tulip_plate_text_color_completed: string
+          tulip_plate_text_color_not_completed: string
         }
         Insert: {
           author_email: string
@@ -44,6 +50,12 @@ export type Database = {
           selected_visual?: string
           team_id: string
           text: string
+          tulip_color_completed?: string
+          tulip_color_not_completed?: string
+          tulip_plate_color_completed?: string
+          tulip_plate_color_not_completed?: string
+          tulip_plate_text_color_completed?: string
+          tulip_plate_text_color_not_completed?: string
         }
         Update: {
           author_email?: string
@@ -59,6 +71,12 @@ export type Database = {
           selected_visual?: string
           team_id?: string
           text?: string
+          tulip_color_completed?: string
+          tulip_color_not_completed?: string
+          tulip_plate_color_completed?: string
+          tulip_plate_color_not_completed?: string
+          tulip_plate_text_color_completed?: string
+          tulip_plate_text_color_not_completed?: string
         }
         Relationships: [
           {

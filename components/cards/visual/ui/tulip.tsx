@@ -195,9 +195,9 @@ export const Tulip = ({
         checklist={cardData.checklist}
         positions={positions}
         shouldShrink={shouldShrink}
-        colorCompleted={cardData?.card?.bauble_color_completed ?? '#00ff00'}
+        colorCompleted={cardData?.card?.tulip_color_completed ?? '#00ff00'}
         colorNotCompleted={
-          cardData?.card?.bauble_color_not_completed ?? '#ff0000'
+          cardData?.card?.tulip_color_not_completed ?? '#ff0000'
         }
       />
     </group>
