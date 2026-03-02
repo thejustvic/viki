@@ -49,7 +49,7 @@ const CardComp = (props: Props) => {
       bg-cover
     `,
     active && 'border-solid border-accent',
-    my ? 'bg-base-300/50' : 'bg-accent-content/50'
+    my ? 'bg-base-300/20' : 'bg-accent-content/20'
   )
 
   const getBgImageUrl = () => {

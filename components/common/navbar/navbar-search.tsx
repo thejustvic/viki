@@ -24,8 +24,13 @@ export const NavbarSearch = observer(() => {
 
   if (!open.value) {
     return (
-      <Button onClick={open.turnOn} className="w-full" soft size="sm">
-        <div className="text-base-content/30 flex gap-2 items-center">
+      <Button
+        onClick={open.turnOn}
+        className="w-full border-base-content/10"
+        size="sm"
+        soft
+      >
+        <div className="text-base-content/30 flex gap-2 items-center ">
           <IconSearch />
           Search
         </div>
@@ -46,7 +51,7 @@ export const NavbarSearch = observer(() => {
           inputClassName="input-sm"
         />
       </label>
-      <div className="absolute bottom-0 left-0 right-0">
+      <div className="absolute -bottom-1 left-0 right-0">
         <CardsList />
       </div>
     </div>
@@ -59,7 +64,7 @@ const CardsList = observer(() => {
   const updateSearchParams = useUpdateSearchParams()
 
   return (
-    <div className="h-[250px] absolute w-full bg-primary/10 rounded-b-lg">
+    <div className="h-[250px] absolute w-full bg-info-content/75 rounded-b-lg">
       <SimpleScrollbar>
         <div className="flex flex-col cursor-pointer">
           {cards.map(card => (
