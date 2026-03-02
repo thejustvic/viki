@@ -3,34 +3,14 @@
 import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {cardHeight} from '@/utils/const'
-import {
-  closestCenter,
-  defaultDropAnimationSideEffects,
-  DndContext,
-  DragOverlay,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors
-} from '@dnd-kit/core'
-import {
-  restrictToFirstScrollableAncestor,
-  restrictToWindowEdges
-} from '@dnd-kit/modifiers'
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable
-} from '@dnd-kit/sortable'
+import {defaultDropAnimationSideEffects, DragOverlay} from '@dnd-kit/core'
+import {SortableContext, useSortable} from '@dnd-kit/sortable'
 import {CSS} from '@dnd-kit/utilities'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
-import {createPortal} from 'react-dom'
 import {useGlobalStore} from '../global-provider/global-store'
 import {AddNewCard} from './add-new-card'
 import {Card} from './card'
-import {useCardDragHandlers} from './cards-drag-handlers'
 import {CardsContext, CardsStore, useCardsStore} from './cards-store'
 import {getSearchCard} from './get-search-card'
 import {Card as CardType} from './types'
@@ -41,7 +21,7 @@ export default function CardsProvider({children}: PropsWithChildren) {
   return <CardsContext.Provider value={store}>{children}</CardsContext.Provider>
 }
 
-const CardsSkeleton = () => {
+export const CardsSkeleton = () => {
   return Array(3)
     .fill(null)
     .map((_el, inx) => (
@@ -49,53 +29,7 @@ const CardsSkeleton = () => {
     ))
 }
 
-export const Cards = observer(() => {
-  const [state] = useCardsStore()
-  const {handleDragStart, handleDragEnd} = useCardDragHandlers()
-
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 8
-      }
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 300,
-        tolerance: 8
-      }
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates
-    })
-  )
-
-  if (state.cards.loading) {
-    return <CardsSkeleton />
-  }
-
-  if (state.cards.error) {
-    return <div className="text-error">{state.cards.error.message}</div>
-  }
-
-  return (
-    <>
-      <DndContext
-        modifiers={[restrictToWindowEdges, restrictToFirstScrollableAncestor]}
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContextContainer />
-        {createPortal(<DragOverlayContainer />, document.body)}
-      </DndContext>
-      <AddNewCardButton />
-    </>
-  )
-})
-
-const AddNewCardButton = observer(() => {
+export const AddNewCardButton = observer(() => {
   const [state] = useCardsStore()
   return (
     <>
@@ -106,7 +40,7 @@ const AddNewCardButton = observer(() => {
   )
 })
 
-const SortableContextContainer = observer(() => {
+export const SortableContextContainer = observer(() => {
   const [, store] = useCardsStore()
   const cardId = getSearchCard()
   const items = store.searchedCards()
@@ -124,7 +58,7 @@ const SortableContextContainer = observer(() => {
   )
 })
 
-const DragOverlayContainer = observer(() => {
+export const DragOverlayContainer = observer(() => {
   const [state] = useGlobalStore()
   return (
     <DragOverlay

@@ -69,6 +69,7 @@ const CardsList = observer(() => {
         <div className="flex flex-col cursor-pointer">
           {cards.map(card => (
             <div
+              key={card.id}
               className="truncate text-base-content/70 text-sm px-13 py-1 hover:bg-info/50"
               onMouseDown={() => {
                 updateSearchParams('card', card.id)

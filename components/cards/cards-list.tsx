@@ -4,16 +4,21 @@ import {useCardChecklistStore} from '@/components/cards/card-checklist/card-chec
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import dynamic from 'next/dynamic'
 import {useMemo} from 'react'
 import tw from 'tailwind-styled-components'
 import {useTeamStore} from '../team/team-store'
 import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
-import {Cards} from './cards'
 import {useCardsStore} from './cards-store'
 import {
   useCardsListener,
   useCheckCardExistInCurrentTeam
 } from './use-cards-listener'
+
+const CardNoSSR = dynamic(
+  () => import('./draggable-cards').then(mod => mod.Cards),
+  {ssr: false}
+)
 
 const TwContainer = tw.div`
   grid 
@@ -56,7 +61,7 @@ export const CardsList = observer(() => {
 
   return (
     <TwContainer>
-      <Cards />
+      <CardNoSSR />
     </TwContainer>
   )
 })
