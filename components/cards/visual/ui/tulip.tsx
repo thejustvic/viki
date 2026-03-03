@@ -1,6 +1,5 @@
 /* eslint-disable max-lines-per-function */
 import {ArrUtil} from '@/utils/arr-util'
-import {Circle} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
 import {useEffect, useMemo, useRef, useState} from 'react'
@@ -35,14 +34,9 @@ const generateNonOverlappingPoints = ({
     while (!found && attempts < maxAttempts) {
       attempts++
 
-      // 1. generate a random point within a circle (Polar coordinates)
-      const angle = Math.random() * Math.PI * 2
-      // using sqrt to distribute evenly in a circle
-      const radius = Math.sqrt(Math.random()) * fieldRadius
-
       const newPoint: Point = {
-        x: Math.cos(angle) * radius,
-        z: Math.sin(angle) * radius
+        x: (Math.random() * 2 - 1) * fieldRadius,
+        z: (Math.random() * 2 - 1) * fieldRadius
       }
 
       // 2. check the distance to all existing points
@@ -153,7 +147,6 @@ export const Tulip = ({
     const positions: [x: number, y: number, z: number][] = []
     const squareSize = 20 - 0.25 // -0.25 for little overlap each other
 
-    // fill a square area that is guaranteed to be larger than a circle
     const gridSteps = Math.ceil((fieldRadius * 2) / squareSize)
     const offset = (gridSteps * squareSize) / 2
 
@@ -182,14 +175,10 @@ export const Tulip = ({
   return (
     <group scale={0.1} position={[0, 0, -3]}>
       <group ref={fieldRef} scale={0.5}>
-        <Circle
-          args={[fieldRadius, 64]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, 2, 0]}
-          receiveShadow
-        >
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 10, 0]}>
+          <planeGeometry args={[fieldRadius * 2, fieldRadius * 2]} />
           <meshStandardMaterial color="#2d5a27" transparent opacity={0} />
-        </Circle>
+        </mesh>
         <LawnInstances positions={lawnPositions} />
       </group>
       <TulipInstances
