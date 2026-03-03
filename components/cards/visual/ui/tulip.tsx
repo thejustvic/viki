@@ -7,6 +7,7 @@ import {useEffect, useMemo, useRef, useState} from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
+import {Card} from '../../types'
 import {LawnInstances} from '../components/lawn-instances'
 import {TulipInstances} from '../components/tulip-instances'
 
@@ -75,7 +76,7 @@ export const Tulip = ({
   >([])
   const [shouldShrink, updateShouldShrink] = useState(false)
   const [cardData, updateCardData] = useState<{
-    card: CardInfoStore['state']['card']['data']
+    card: Card | null
     checklist: Checkbox[]
   }>({
     card: cardInfoState.data,
@@ -192,13 +193,10 @@ export const Tulip = ({
         <LawnInstances positions={lawnPositions} />
       </group>
       <TulipInstances
+        card={cardData.card}
         checklist={cardData.checklist}
         positions={positions}
         shouldShrink={shouldShrink}
-        colorCompleted={cardData?.card?.tulip_color_completed ?? '#00ff00'}
-        colorNotCompleted={
-          cardData?.card?.tulip_color_not_completed ?? '#ff0000'
-        }
       />
     </group>
   )

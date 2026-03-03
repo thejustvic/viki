@@ -47,7 +47,9 @@ export const BaseSphere = ({
     return createTextTexture({
       text,
       color: textColor,
-      bgColor: sphereColor
+      bgColor: sphereColor,
+      fontSize: 24,
+      maxWidth: 160
     })
   }, [text, textColor, sphereColor])
 

@@ -1,11 +1,20 @@
+/* eslint-disable max-lines-per-function */
+
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {Checkbox} from '@/components/checklist/types'
-import {Merged, useGLTF} from '@react-three/drei'
+import {Merged, Plane, useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
 import {useEffect, useMemo, useRef} from 'react'
-import type {Group, Mesh, MeshStandardMaterial} from 'three'
+import {
+  type CanvasTexture,
+  type Group,
+  type Mesh,
+  type MeshStandardMaterial
+} from 'three'
 import type {GLTF} from 'three-stdlib'
+import {Card} from '../../types'
+import {createTextTexture} from '../utils/create-text-texture'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -22,18 +31,16 @@ type GLTFResult = GLTF & {
 
 interface Props {
   positions: [x: number, y: number, z: number][]
+  card: Card | null
   checklist: Checkbox[]
   shouldShrink: boolean
-  colorCompleted: string
-  colorNotCompleted: string
 }
 
 export const TulipInstances = ({
   positions,
+  card,
   checklist,
-  shouldShrink,
-  colorCompleted,
-  colorNotCompleted
+  shouldShrink
 }: Props) => {
   const {nodes, materials} = useGLTF(
     '/tulip_flower.glb'
@@ -55,15 +62,31 @@ export const TulipInstances = ({
           {positions.map((position, index) => {
             const checkbox = checklist?.[index]
             const isCompleted = checkbox?.is_completed
+            const text = checkbox?.title ?? ''
             return (
               <Tulip
                 key={index}
                 position={position}
-                color={isCompleted ? colorCompleted : colorNotCompleted}
+                color={
+                  isCompleted
+                    ? (card?.tulip_color_completed ?? '')
+                    : (card?.tulip_color_not_completed ?? '')
+                }
+                plateColor={
+                  isCompleted
+                    ? (card?.tulip_plate_color_completed ?? '')
+                    : (card?.tulip_plate_color_not_completed ?? '')
+                }
+                plateTextColor={
+                  isCompleted
+                    ? (card?.tulip_plate_text_color_completed ?? '')
+                    : (card?.tulip_plate_text_color_not_completed ?? '')
+                }
                 checkbox={checkbox}
                 materials={materials}
                 models={models}
                 shouldShrink={shouldShrink}
+                text={text}
               />
             )
           })}
@@ -76,6 +99,8 @@ export const TulipInstances = ({
 interface TulipProps {
   position: [x: number, y: number, z: number]
   color: string
+  plateColor: string
+  plateTextColor: string
   materials: {
     mFlowerBodyTulip: MeshStandardMaterial
     mFlowerTulip: MeshStandardMaterial
@@ -84,15 +109,19 @@ interface TulipProps {
   models: any
   shouldShrink: boolean
   checkbox: Checkbox
+  text: string
 }
 
 const Tulip = ({
   position,
   color,
+  plateColor,
+  plateTextColor,
   materials,
   models,
   shouldShrink,
-  checkbox
+  checkbox,
+  text
 }: TulipProps) => {
   const groupRef = useRef<Group>(null)
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
@@ -122,6 +151,16 @@ const Tulip = ({
     )
   })
 
+  const texture: CanvasTexture = useMemo(() => {
+    return createTextTexture({
+      text,
+      color: plateTextColor,
+      bgColor: plateColor,
+      fontSize: 48,
+      maxWidth: 440
+    })
+  }, [text, plateTextColor, plateColor])
+
   return (
     <group
       scale={0}
@@ -146,6 +185,14 @@ const Tulip = ({
         color={color}
         castShadow
       />
+      <Plane args={[2, 2]} position={[0, 8, 2]}>
+        <meshStandardMaterial
+          map={texture} // The texture now contains the background color and text color
+          metalness={0.5}
+          roughness={0.5}
+          // color property MUST be absent if using a textured map for the main color
+        />
+      </Plane>
       {/* 
           <models.FlowerPot // this is the model for a flower pot
             material={materials.EnvironmentAmbientLight}

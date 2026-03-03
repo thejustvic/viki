@@ -3,11 +3,15 @@ import {CanvasTexture, LinearFilter} from 'three'
 export const createTextTexture = ({
   text,
   color = '#000000',
-  bgColor = '#ffffff'
+  bgColor = '#ffffff',
+  fontSize,
+  maxWidth
 }: {
   text: string
   color?: string
   bgColor?: string
+  fontSize: number
+  maxWidth: number
 }): CanvasTexture => {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
@@ -23,9 +27,7 @@ export const createTextTexture = ({
   context.fillStyle = bgColor
   context.fillRect(0, 0, size, size)
 
-  const fontSize = 24
   const padding = 260
-  const maxWidth = 160
   const lineHeight = fontSize * 1.4
   const MAX_TEXT_LINES_TO_DISPLAY = 6
 
