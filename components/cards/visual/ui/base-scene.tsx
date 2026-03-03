@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import {Button} from '@/components/daisyui/button'
 import {BooleanHookState} from '@/hooks/use-boolean'
-import {Environment, Loader, StatsGl} from '@react-three/drei'
+import {AdaptiveDpr, Environment, Loader, StatsGl} from '@react-three/drei'
 import {Canvas, useFrame, useThree} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {RefObject, useMemo} from 'react'
@@ -46,7 +46,7 @@ const BasicScene = ({
 }: BasicSceneProps) => {
   const cameraPosition = useMemo(() => {
     const winterCameraPosition: CameraPosition = [-0.1, -0.7, 5]
-    const springCameraPosition: CameraPosition = [-0.1, 3.7, 5]
+    const springCameraPosition: CameraPosition = [-0.1, 1.7, 5]
 
     return selectedVisual === 'winter'
       ? winterCameraPosition
@@ -87,13 +87,17 @@ const BasicScene = ({
       )}
 
       <Canvas
-        shadows
+        shadows={!isMobile}
         camera={{
           fov: 50,
           position: cameraPosition
         }}
         className="rounded-md relative"
+        gl={{logarithmicDepthBuffer: true, antialias: false}}
+        dpr={[1, 1.5]}
       >
+        {isMobile && <AdaptiveDpr pixelated />}
+
         <Lights />
 
         <Physics gravity={[0, -9.8, 0]}>
