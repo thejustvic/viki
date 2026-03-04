@@ -184,6 +184,7 @@ const VisualTab = observer(() => {
 
 const VisualTabContent = observer(() => {
   const id = String(getSearchCard())
+  const [globalState] = useGlobalStore()
   const [, cardChecklistStore] = useCardChecklistStore()
   const [cardInfoState] = useCardInfoStore()
 
@@ -191,6 +192,7 @@ const VisualTabContent = observer(() => {
     <Tabs.TabContent>
       <div className="flex relative">
         <CardVisual
+          playerSize={globalState.playerSize}
           checklist={cardChecklistStore.getAllCheckboxes(id) ?? []}
           cardInfoState={cardInfoState.card}
         />

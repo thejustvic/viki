@@ -5,12 +5,16 @@ import {Checkbox} from '@/components/checklist/types'
 import {Center, Merged, RoundedBox, Text3D, useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useEffect, useMemo, useRef, useState} from 'react'
-import {type Group, type Mesh, type MeshStandardMaterial} from 'three'
+import {useEffect, useMemo, useRef} from 'react'
+import {
+  DoubleSide,
+  Shape,
+  type Group,
+  type Mesh,
+  type MeshStandardMaterial
+} from 'three'
 import type {GLTF} from 'three-stdlib'
 import {Card} from '../../types'
-
-import {useCallback} from 'react'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -193,32 +197,35 @@ interface TextWithBgProps {
   plateBgColor: string
 }
 
-type BoxArgs = [width: number, height: number, depth: number]
-
 const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
-  const [boxArgs, setBoxArgs] = useState<BoxArgs>([0, 0, 0])
-
   const wrappedText = useMemo(() => wrapText(text, 24), [text])
 
-  const handleCentered = useCallback(
-    ({width, height}: {width: number; height: number}) => {
-      const padding = 0.2
+  const envelopeShape = useMemo(() => {
+    const shape = new Shape()
+    const width = 4 // width as in RoundedBox
+    const height = 1.2 // valve height (distance from top to spout)
 
-      const newArgs: BoxArgs = [width + padding, height + padding, 0.02]
+    shape.moveTo(-width / 2, 0) // upper left corner
+    shape.lineTo(width / 2, 0) // upper right corner
+    shape.lineTo(0, -height) // triangle nose (center bottom)
+    shape.lineTo(-width / 2, 0) // closing
+    return shape
+  }, [])
 
-      setBoxArgs(prev => {
-        if (prev[0] === newArgs[0] && prev[1] === newArgs[1]) {
-          return prev
-        }
-        return newArgs
-      })
-    },
-    []
-  )
+  const heartShape = useMemo(() => {
+    const shape = new Shape()
+    const x = 0,
+      y = 0
+    // draw a heart using Bezier curves
+    shape.moveTo(x, y)
+    shape.bezierCurveTo(x - 0.2, y + 0.2, x - 0.5, y, x, y - 0.5)
+    shape.bezierCurveTo(x + 0.5, y, x + 0.2, y + 0.2, x, y)
+    return shape
+  }, [])
 
   return (
-    <group position={[0, 2, 2]}>
-      <Center onCentered={handleCentered}>
+    <group scale={1} position={[0, 2.5, 2]} rotation={[-Math.PI / 6, 0, 0]}>
+      <Center>
         <Text3D
           font={'/OpenSans_Regular.json'}
           size={0.2}
@@ -231,11 +238,22 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
           <meshStandardMaterial color={plateTextColor} />
         </Text3D>
       </Center>
-      {boxArgs[0] > 0 && (
-        <RoundedBox args={boxArgs} radius={0.02} position={[0, 0, -0.1]}>
-          <meshStandardMaterial color={plateBgColor} />
-        </RoundedBox>
-      )}
+      <RoundedBox args={[4, 2, 0.02]} radius={0.02} position={[0, 0, -0.3]}>
+        <meshStandardMaterial color={plateBgColor} />
+      </RoundedBox>
+      <mesh position={[0, 1, -0.28]}>
+        <shapeGeometry args={[envelopeShape]} />
+        <meshStandardMaterial
+          color={plateBgColor}
+          side={DoubleSide}
+          emissive={plateBgColor}
+          emissiveIntensity={-0.5}
+        />
+      </mesh>
+      <mesh position={[1.5, -0.3, -0.26]} scale={1}>
+        <shapeGeometry args={[heartShape]} />
+        <meshStandardMaterial color="#ff6beb" />
+      </mesh>
     </group>
   )
 }

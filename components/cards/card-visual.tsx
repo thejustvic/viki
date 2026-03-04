@@ -4,7 +4,7 @@ import {useRef} from 'react'
 import {isMobile} from 'react-device-detect'
 import {Checkbox} from '../checklist/types'
 import {CardInfoStore} from './card-info/card-info-store'
-import {CardVisualType} from './types'
+import {CardVisualType, PlayerSizeType} from './types'
 import {BaseCharacter} from './visual/ui/base-character'
 import BaseScene from './visual/ui/base-scene'
 import {ConeWithSpheres} from './visual/ui/cone'
@@ -13,9 +13,11 @@ import {Tulip} from './visual/ui/tulip'
 type Vector2 = {x: number; y: number}
 
 export default function CardVisual({
+  playerSize,
   checklist,
   cardInfoState
 }: {
+  playerSize: PlayerSizeType[number]
   checklist: Checkbox[]
   cardInfoState: CardInfoStore['state']['card']
 }) {
@@ -34,7 +36,11 @@ export default function CardVisual({
       lookData={lookData}
     >
       {selectedVisual === 'spring' && (
-        <Tulip checklist={checklist} cardInfoState={cardInfoState} />
+        <Tulip
+          checklist={checklist}
+          cardInfoState={cardInfoState}
+          playerSize={playerSize}
+        />
       )}
       {selectedVisual === 'winter' && (
         <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />

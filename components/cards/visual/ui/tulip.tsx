@@ -6,7 +6,7 @@ import {useEffect, useMemo, useRef, useState} from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
-import {Card} from '../../types'
+import {Card, PlayerSizeType} from '../../types'
 import {LawnInstances} from '../components/lawn-instances'
 import {TulipInstances} from '../components/tulip-instances'
 
@@ -58,9 +58,11 @@ const generateNonOverlappingPoints = ({
 }
 
 export const Tulip = ({
+  playerSize,
   checklist,
   cardInfoState
 }: {
+  playerSize: PlayerSizeType[number]
   checklist: Checkbox[]
   cardInfoState: CardInfoStore['state']['card']
 }) => {
@@ -172,8 +174,10 @@ export const Tulip = ({
     )
   })
 
+  const scale = useMemo(() => getScale(playerSize), [playerSize])
+
   return (
-    <group scale={1} position={[0, 0, -3]}>
+    <group scale={scale} position={[0, 0, -3]}>
       <group ref={fieldRef} scale={0.5}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 10, 0]}>
           <planeGeometry args={[fieldRadius * 2, fieldRadius * 2]} />
@@ -189,4 +193,18 @@ export const Tulip = ({
       />
     </group>
   )
+}
+
+const getScale = (playerSize: PlayerSizeType[number]) => {
+  switch (playerSize) {
+    case 'human': {
+      return 0.1
+    }
+    case 'mouse': {
+      return 1
+    }
+    default: {
+      return 0.1
+    }
+  }
 }

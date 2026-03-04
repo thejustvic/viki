@@ -5,7 +5,7 @@ import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
-import {Card} from '../cards/types'
+import {Card, PlayerSizeType} from '../cards/types'
 import {Tab, Theme} from './types'
 
 interface State {
@@ -27,6 +27,7 @@ interface State {
     anonymously: boolean
     logout: boolean
   }
+  playerSize: PlayerSizeType[number]
 }
 
 export class GlobalStore {
@@ -48,7 +49,8 @@ export class GlobalStore {
       google: false,
       anonymously: false,
       logout: false
-    }
+    },
+    playerSize: 'human'
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -59,6 +61,10 @@ export class GlobalStore {
     if (serverTheme) {
       this.setTheme(serverTheme)
     }
+  }
+
+  setPlayerSize = (playerSize: PlayerSizeType[number]) => {
+    this.state.playerSize = playerSize
   }
 
   setRightDrawerWidth = (rightDrawerWidth: State['rightDrawerWidth']): void => {

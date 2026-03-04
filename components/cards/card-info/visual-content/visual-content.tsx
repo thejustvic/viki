@@ -1,9 +1,10 @@
 import {Input} from '@/components/daisyui/input'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {Card, CardVisualType} from '../../types'
+import {Card, CardVisualType, PlayerSizeType} from '../../types'
 import {ShowData} from '../card-info'
 import {useCardInfoStore} from '../card-info-store'
 
@@ -65,12 +66,53 @@ const Content = observer(() => {
 })
 
 const SpringContent = () => {
-  return <ChooseTulipColor />
+  return (
+    <>
+      <ChoosePlayerSize />
+      <ChooseTulipColor />
+    </>
+  )
 }
 
-const WinterContent = () => {
-  return <ChooseBaubleColor />
-}
+const ChoosePlayerSize = observer(() => {
+  const [state] = useCardInfoStore()
+  return (
+    <ShowData
+      loading={state.card.loading}
+      error={state.card.error?.message}
+      data={<PlayerSize />}
+      prefix={'player size:'}
+    />
+  )
+})
+
+const playerSizes: PlayerSizeType = ['human', 'mouse']
+
+const PlayerSize = observer(() => {
+  const [state, store] = useGlobalStore()
+
+  return (
+    <div className="flex flex-col gap-1">
+      {playerSizes.map(playerSize => {
+        return (
+          <TwRadio
+            key={playerSize}
+            onClick={() => store.setPlayerSize(playerSize)}
+          >
+            <div>{playerSize}</div>
+            <input
+              type="radio"
+              name="radio-player-size"
+              className="radio"
+              checked={state?.playerSize === playerSize}
+              readOnly
+            />
+          </TwRadio>
+        )
+      })}
+    </div>
+  )
+})
 
 const ChooseTulipColor = observer(() => {
   const [state] = useCardInfoStore()
@@ -113,6 +155,10 @@ const ChooseTulipColor = observer(() => {
     </div>
   )
 })
+
+const WinterContent = () => {
+  return <ChooseBaubleColor />
+}
 
 const ChooseBaubleColor = observer(() => {
   const [state] = useCardInfoStore()

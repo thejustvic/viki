@@ -7,3 +7,5 @@ export type Message = Tables<'messages'>
 export type CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
 
 export type CardVisualType = ['winter', 'spring']
+
+export type PlayerSizeType = ['human', 'mouse']
