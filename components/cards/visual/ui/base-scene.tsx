@@ -97,7 +97,7 @@ const BasicScene = ({
         gl={{logarithmicDepthBuffer: true, antialias: false}}
         dpr={[1, 1.5]}
       >
-        {isMobile && <AdaptiveDpr pixelated />}
+        <AdaptiveDpr pixelated />
 
         <Lights />
 

@@ -14,7 +14,7 @@ import {
   type MeshStandardMaterial
 } from 'three'
 import type {GLTF} from 'three-stdlib'
-import {Card} from '../../types'
+import {PositionsProps} from '../ui/tulip'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -30,18 +30,12 @@ type GLTFResult = GLTF & {
 }
 
 interface Props {
-  positions: [x: number, y: number, z: number][]
-  card: Card | null
+  positions: PositionsProps[]
   checklist: Checkbox[]
   shouldShrink: boolean
 }
 
-export const TulipInstances = ({
-  positions,
-  card,
-  checklist,
-  shouldShrink
-}: Props) => {
+export const TulipInstances = ({positions, checklist, shouldShrink}: Props) => {
   const {nodes, materials} = useGLTF(
     '/tulip_flower.glb'
   ) as unknown as GLTFResult
@@ -61,32 +55,14 @@ export const TulipInstances = ({
         <>
           {positions.map((position, index) => {
             const checkbox = checklist?.[index]
-            const isCompleted = checkbox?.is_completed
-            const text = checkbox?.title ?? ''
             return (
               <Tulip
                 key={index}
                 position={position}
-                color={
-                  isCompleted
-                    ? (card?.tulip_color_completed ?? '')
-                    : (card?.tulip_color_not_completed ?? '')
-                }
-                plateColor={
-                  isCompleted
-                    ? (card?.tulip_plate_color_completed ?? '')
-                    : (card?.tulip_plate_color_not_completed ?? '')
-                }
-                plateTextColor={
-                  isCompleted
-                    ? (card?.tulip_plate_text_color_completed ?? '')
-                    : (card?.tulip_plate_text_color_not_completed ?? '')
-                }
                 checkbox={checkbox}
                 materials={materials}
                 models={models}
                 shouldShrink={shouldShrink}
-                text={text}
               />
             )
           })}
@@ -97,10 +73,7 @@ export const TulipInstances = ({
 }
 
 interface TulipProps {
-  position: [x: number, y: number, z: number]
-  color: string
-  plateColor: string
-  plateTextColor: string
+  position: PositionsProps
   materials: {
     mFlowerBodyTulip: MeshStandardMaterial
     mFlowerTulip: MeshStandardMaterial
@@ -109,19 +82,14 @@ interface TulipProps {
   models: any
   shouldShrink: boolean
   checkbox: Checkbox
-  text: string
 }
 
 const Tulip = ({
   position,
-  color,
-  plateColor,
-  plateTextColor,
   materials,
   models,
   shouldShrink,
-  checkbox,
-  text
+  checkbox
 }: TulipProps) => {
   const groupRef = useRef<Group>(null)
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
@@ -155,7 +123,7 @@ const Tulip = ({
     <group
       scale={0}
       ref={groupRef}
-      position={position}
+      position={position.position}
       onClick={event => {
         // prevent click from bleeding through to objects behind
         event.stopPropagation()
@@ -172,13 +140,13 @@ const Tulip = ({
       <models.FlowerTulip
         rotation={[-Math.PI / 2, 0, 0]}
         material={materials.mFlowerTulip}
-        color={color}
+        color={position.color}
         castShadow
       />
       <TextWithBg
-        text={text}
-        plateTextColor={plateTextColor}
-        plateBgColor={plateColor}
+        text={position.text}
+        plateTextColor={position.plateTextColor}
+        plateBgColor={position.plateColor}
       />
       {/* 
           <models.FlowerPot // this is the model for a flower pot
@@ -198,8 +166,6 @@ interface TextWithBgProps {
 }
 
 const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
-  const wrappedText = useMemo(() => wrapText(text, 24), [text])
-
   const envelopeShape = useMemo(() => {
     const shape = new Shape()
     const width = 4 // width as in RoundedBox
@@ -233,8 +199,10 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
           bevelEnabled
           bevelSize={0.01}
           bevelThickness={0.01}
+          curveSegments={1}
+          bevelSegments={1}
         >
-          {wrappedText}
+          {text}
           <meshStandardMaterial color={plateTextColor} />
         </Text3D>
       </Center>
@@ -258,7 +226,7 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
   )
 }
 
-const wrapText = (str: string, width: number): string => {
+export const wrapText = (str: string, width: number): string => {
   const words = str.replace(/\n/g, ' ').split(' ')
   const lines: string[] = []
   let currentLine = ''
