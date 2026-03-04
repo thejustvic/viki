@@ -11,7 +11,6 @@ import {SwitchTheme} from '@/components/switch-theme'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {useRouter} from 'next/navigation'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
@@ -84,13 +83,11 @@ const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase, user} = useSupabase()
   const cardId = getSearchCard()
-  const route = useRouter()
 
   const handleLogout = async () => {
     store.setLogging('logout')
     await supabase.auth.signOut()
-    store.setLoggingOff()
-    route.push('/login')
+    window.location.href = '/login'
   }
 
   if (!user) {
