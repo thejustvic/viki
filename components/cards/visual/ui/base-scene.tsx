@@ -87,6 +87,7 @@ const BasicScene = ({
       )}
 
       <Canvas
+        flat
         shadows={!isMobile}
         camera={{
           fov: 50,

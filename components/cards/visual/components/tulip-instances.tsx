@@ -2,19 +2,15 @@
 
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {Checkbox} from '@/components/checklist/types'
-import {Merged, Plane, useGLTF} from '@react-three/drei'
+import {Center, Merged, RoundedBox, Text3D, useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useEffect, useMemo, useRef} from 'react'
-import {
-  type CanvasTexture,
-  type Group,
-  type Mesh,
-  type MeshStandardMaterial
-} from 'three'
+import {useEffect, useMemo, useRef, useState} from 'react'
+import {type Group, type Mesh, type MeshStandardMaterial} from 'three'
 import type {GLTF} from 'three-stdlib'
 import {Card} from '../../types'
-import {createTextTexture} from '../utils/create-text-texture'
+
+import {useCallback} from 'react'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -151,16 +147,6 @@ const Tulip = ({
     )
   })
 
-  const texture: CanvasTexture = useMemo(() => {
-    return createTextTexture({
-      text,
-      color: plateTextColor,
-      bgColor: plateColor,
-      fontSize: 48,
-      maxWidth: 440
-    })
-  }, [text, plateTextColor, plateColor])
-
   return (
     <group
       scale={0}
@@ -185,14 +171,11 @@ const Tulip = ({
         color={color}
         castShadow
       />
-      <Plane args={[2, 2]} position={[0, 8, 2]}>
-        <meshStandardMaterial
-          map={texture} // The texture now contains the background color and text color
-          metalness={0.5}
-          roughness={0.5}
-          // color property MUST be absent if using a textured map for the main color
-        />
-      </Plane>
+      <TextWithBg
+        text={text}
+        plateTextColor={plateTextColor}
+        plateBgColor={plateColor}
+      />
       {/* 
           <models.FlowerPot // this is the model for a flower pot
             material={materials.EnvironmentAmbientLight}
@@ -202,4 +185,107 @@ const Tulip = ({
       */}
     </group>
   )
+}
+
+interface TextWithBgProps {
+  text: string
+  plateTextColor: string
+  plateBgColor: string
+}
+
+type BoxArgs = [width: number, height: number, depth: number]
+
+const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
+  const [boxArgs, setBoxArgs] = useState<BoxArgs>([0, 0, 0])
+
+  const wrappedText = useMemo(() => wrapText(text, 24), [text])
+
+  const handleCentered = useCallback(
+    ({width, height}: {width: number; height: number}) => {
+      const padding = 0.2
+
+      const newArgs: BoxArgs = [width + padding, height + padding, 0.02]
+
+      setBoxArgs(prev => {
+        if (prev[0] === newArgs[0] && prev[1] === newArgs[1]) {
+          return prev
+        }
+        return newArgs
+      })
+    },
+    []
+  )
+
+  return (
+    <group position={[0, 2, 2]}>
+      <Center onCentered={handleCentered}>
+        <Text3D
+          font={'/OpenSans_Regular.json'}
+          size={0.2}
+          height={0.02}
+          bevelEnabled
+          bevelSize={0.01}
+          bevelThickness={0.01}
+        >
+          {wrappedText}
+          <meshStandardMaterial color={plateTextColor} />
+        </Text3D>
+      </Center>
+      {boxArgs[0] > 0 && (
+        <RoundedBox args={boxArgs} radius={0.02} position={[0, 0, -0.1]}>
+          <meshStandardMaterial color={plateBgColor} />
+        </RoundedBox>
+      )}
+    </group>
+  )
+}
+
+const wrapText = (str: string, width: number): string => {
+  const words = str.replace(/\n/g, ' ').split(' ')
+  const lines: string[] = []
+  let currentLine = ''
+
+  for (const word of words) {
+    // if the word itself is longer than the limit, we cut it forcibly
+    if (word.length > width) {
+      // add what managed to collect to the current line
+      if (currentLine) {
+        lines.push(currentLine.trim())
+      }
+
+      // split a long word into parts by width
+      const wordChunks = word.match(new RegExp(`.{1,${width}}`, 'g')) || []
+
+      // add all parts except the last one to separate lines
+      const lastChunk = wordChunks.pop()
+      lines.push(...wordChunks)
+      currentLine = lastChunk + ' ' // the last piece becomes the beginning of a new line
+      continue
+    }
+
+    // check if the word fits in the current line (+1 for a space)
+    if ((currentLine + word).length <= width) {
+      currentLine += word + ' '
+    } else {
+      // if it doesn't fit - close the line and start a new one
+      lines.push(currentLine.trim())
+      currentLine = word + ' '
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine.trim())
+  }
+
+  // limit to 4 lines with ellipsis
+  if (lines.length > 4) {
+    let lastLine = lines[3]
+    // if the string is too long to add "...", trim it a bit
+    if (lastLine.length > width - 3) {
+      lastLine = lastLine.slice(0, width - 3)
+    }
+    return [...lines.slice(0, 3), lastLine + '...'].join('\n')
+  }
+
+  return lines.join('\n')
 }

@@ -138,7 +138,7 @@ export const Tulip = ({
     const positions: [x: number, y: number, z: number][] = []
 
     newData.forEach(point => {
-      positions.push([point.x, 0, point.z])
+      positions.push([point.x, -1, point.z])
     })
     return positions
   }
@@ -173,7 +173,7 @@ export const Tulip = ({
   })
 
   return (
-    <group scale={0.1} position={[0, 0, -3]}>
+    <group scale={1} position={[0, 0, -3]}>
       <group ref={fieldRef} scale={0.5}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 10, 0]}>
           <planeGeometry args={[fieldRadius * 2, fieldRadius * 2]} />
