@@ -61,11 +61,10 @@ export const Modal = ({
 const Close = () => {
   return (
     <Button
-      soft
+      ghost
       size="sm"
       shape="circle"
-      className="absolute right-2 top-2"
-      color="info"
+      className="absolute right-2 top-2 text-info/50"
     >
       <IconCircleX />
     </Button>

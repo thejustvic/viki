@@ -15,17 +15,17 @@ export const CardChecklistProgress = observer(({id}: {id: string}) => {
   }, [state.checklists.data])
 
   return (
-    <div className="flex w-full items-center">
-      <div className="flex-1 bg-info-content h-[6px] relative my-[8px] rounded-sm">
+    <div className="flex flex-1 gap-2 items-center">
+      <div className="relative flex-1 h-1 bg-info-content rounded-sm">
         <div
           className={twJoin(
-            'h-full rounded-sm min-w-[8px] transition-[width] duration-300',
+            'h-full rounded-sm min-w-2 transition-[width] duration-300',
             state.progress.get(id) === 100 ? 'bg-success' : 'bg-info'
           )}
           style={{width: (state.progress.get(id) ?? 0) + '%'}}
         />
       </div>
-      <div className={twJoin('w-[48px] text-xs text-center')}>
+      <div className={twJoin('text-xs text-center')}>
         {state.progressText.get(id) ?? '0/0'}
       </div>
     </div>
