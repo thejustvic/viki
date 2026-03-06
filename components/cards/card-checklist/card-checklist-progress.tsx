@@ -16,7 +16,7 @@ export const CardChecklistProgress = observer(({id}: {id: string}) => {
 
   return (
     <div className="flex flex-1 gap-2 items-center">
-      <div className="relative flex-1 h-1 bg-info-content rounded-sm">
+      <div className="relative flex-1 h-1.5 bg-info-content rounded-sm">
         <div
           className={twJoin(
             'h-full rounded-sm min-w-2 transition-[width] duration-300',
