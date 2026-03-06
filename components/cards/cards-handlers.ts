@@ -1,4 +1,5 @@
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
+import {PostgrestSingleResponse} from '@supabase/postgrest-js'
 import type {Card} from './types'
 
 interface Handlers {
@@ -7,7 +8,7 @@ interface Handlers {
     text: string,
     teamId: string,
     newPosition: string
-  ) => Promise<void>
+  ) => Promise<PostgrestSingleResponse<Card>>
   updateCard: (text: string, cardId: string) => Promise<void>
   updateCardPosition: (position: string, cardId: string) => Promise<void>
   updateCardVisual: (visual: string, cardId: string) => Promise<void>
@@ -30,17 +31,22 @@ export const useCardHandlers = (): Handlers => {
     text: string,
     teamId: string,
     newPosition: string
-  ): Promise<void> => {
+  ): Promise<PostgrestSingleResponse<Card>> => {
     if (!user) {
       throw Error('You must provide a user object!')
     }
-    await supabase.from('cards').insert({
-      text,
-      author_id: user.id,
-      author_email: user.email ?? '',
-      team_id: teamId,
-      position: newPosition // (e.g. "a00015")
-    })
+    const data = await supabase
+      .from('cards')
+      .insert({
+        text,
+        author_id: user.id,
+        author_email: user.email ?? '',
+        team_id: teamId,
+        position: newPosition // (e.g. "a00015")
+      })
+      .select()
+      .single()
+    return data
   }
 
   const updateCard = async (text: string, cardId: string): Promise<void> => {

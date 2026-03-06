@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 'use client'
 
 import {useCardHandlers} from '@/components/cards/cards-handlers'
@@ -7,13 +8,28 @@ import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
 import {useTeamStore} from '@/components/team/team-store'
+import {useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {generateKeyBetween} from 'fractional-indexing'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
+import tw from 'tailwind-styled-components'
 import {useCardsStore} from '../cards-store'
+
+const TwError = tw.p`
+  w-full 
+  text-xs 
+  text-center 
+  text-error
+`
+
+const TwErrorWrapper = tw.div`
+  p-2
+  bg-info-content
+  rounded-xl
+`
 
 export const ModalCardCreate = () => {
   const updateSearchParams = useUpdateSearchParams()
@@ -53,11 +69,19 @@ interface FormInputs {
 const Text = observer(() => {
   const [cardsStore] = useCardsStore()
   const [state] = useTeamStore()
+  const load = useBoolean(false)
 
   const updateSearchParams = useUpdateSearchParams()
 
   const {insertCard} = useCardHandlers()
-  const {register, handleSubmit, setFocus, resetField} = useForm<FormInputs>()
+  const {
+    register,
+    handleSubmit,
+    setFocus,
+    resetField,
+    setError,
+    formState: {errors}
+  } = useForm<FormInputs>()
 
   useSetFocusAfterTransitionEnd(
     {
@@ -72,12 +96,26 @@ const Text = observer(() => {
     if (!state.currentTeamId || !data.createCard69.trim()) {
       return
     }
+    load.turnOn()
     const cards = cardsStore.cards.data
     const lastPosition = cards?.[cards.length - 1]?.position ?? null
     const newPosition = generateKeyBetween(lastPosition, null)
-
-    await insertCard(data.createCard69, state.currentTeamId, newPosition)
-    updateSearchParams('create-card')
+    const {data: insertCardData, error} = await insertCard(
+      data.createCard69,
+      state.currentTeamId,
+      newPosition
+    )
+    if (insertCardData) {
+      load.turnOff()
+      updateSearchParams('create-card')
+    }
+    if (error) {
+      setError(
+        'createCard69',
+        {type: 'focus', message: error.message},
+        {shouldFocus: true}
+      )
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -97,7 +135,19 @@ const Text = observer(() => {
         })}
         onKeyDown={handleKeyDown}
       />
-      <Button soft color="primary" type="submit">
+      {errors.createCard69?.message &&
+        errors.createCard69?.message?.length > 0 && (
+          <TwErrorWrapper>
+            <TwError>{errors.createCard69.message}</TwError>
+          </TwErrorWrapper>
+        )}
+      <Button
+        soft
+        color="primary"
+        type="submit"
+        disable={load.value}
+        loading={load.value}
+      >
         Submit
       </Button>
     </Form>

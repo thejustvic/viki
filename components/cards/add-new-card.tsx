@@ -6,13 +6,6 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 
-import tw from 'tailwind-styled-components'
-
-const TwAdd = tw(Button)`
-  shadow-md 
-  flex-1
-`
-
 export const AddNewCard = () => {
   return <ParallaxCardContainer cardNodeBody={<CardBody />} my />
 }
@@ -34,9 +27,14 @@ const CardBody = observer(() => {
         </div>
       </CardUI.Title>
       <CardUI.Actions>
-        <TwAdd soft color="primary" onClick={onClickHandler}>
+        <Button
+          soft
+          color="primary"
+          className="flex-1"
+          onClick={onClickHandler}
+        >
           <IconSquareRoundedPlus size={24} />
-        </TwAdd>
+        </Button>
       </CardUI.Actions>
     </div>
   )
