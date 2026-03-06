@@ -38,6 +38,10 @@ export const useCharacterLogic = (
     if (!body) {
       return
     }
+    // regression logic for mouse movements (lookData)
+    // if (lookData.current.x !== 0 || lookData.current.y !== 0) {
+    //   performance.regress() // performance is from const {performance} = useThree()
+    // }
     camera.rotation.order = 'YXZ'
 
     // LOOKING
@@ -67,6 +71,11 @@ export const useCharacterLogic = (
       moveData.current.y !== 0
         ? -moveData.current.y
         : Number(backward) - Number(forward)
+
+    // reduce DPR while running or jumping
+    // if (inputX !== 0 || inputZ !== 0 || jump) {
+    //   performance.regress()
+    // }
 
     const inputLength = Math.sqrt(inputX * inputX + inputZ * inputZ)
 

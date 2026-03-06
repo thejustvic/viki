@@ -3,7 +3,7 @@ import {Button} from '@/components/daisyui/button'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
-import {AdaptiveDpr, Environment, Loader, Stats} from '@react-three/drei'
+import {Environment, Loader, Stats} from '@react-three/drei'
 import {Canvas, useFrame, useThree} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
@@ -129,11 +129,8 @@ export const BasicScene = ({
           position: cameraPosition
         }}
         className="rounded-md relative"
-        gl={{logarithmicDepthBuffer: true, antialias: false}}
-        dpr={[1, 1.5]}
+        dpr={1} // for maximum FPS
       >
-        <AdaptiveDpr pixelated />
-
         <Lights />
 
         <Physics gravity={[0, -9.8, 0]}>
