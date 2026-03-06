@@ -15,8 +15,10 @@ import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
 import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
+import {canvasContainerStyles} from '@/components/cards/visual/ui/base-scene'
 import {InputGoogleStyle} from '@/components/checklist/checkbox/input-google-style'
 import {Button} from '@/components/daisyui/button'
+import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {IconArrowBarLeft} from '@tabler/icons-react'
 import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
@@ -167,6 +169,7 @@ const ChatTabContent = () => {
 const VisualTab = observer(() => {
   const [state, store] = useGlobalStore()
   const active = state.tab === 'visual'
+  const visualTab = getSearchParam('visual-tab')
 
   return (
     <>
@@ -177,26 +180,37 @@ const VisualTab = observer(() => {
         groupName="right_drawer"
         checked={active}
       />
-      {active && <VisualTabContent />}
+      {visualTab ? (
+        <div className="grid place-items-center" style={canvasContainerStyles}>
+          see modal
+        </div>
+      ) : (
+        <>{active && !visualTab && <VisualTabContent />}</>
+      )}
     </>
   )
 })
 
-const VisualTabContent = observer(() => {
+const VisualTabContent = () => {
+  return (
+    <Tabs.TabContent>
+      <div className="flex relative">
+        <CardVisualTab />
+      </div>
+    </Tabs.TabContent>
+  )
+}
+
+export const CardVisualTab = observer(() => {
   const id = String(getSearchCard())
   const [globalState] = useGlobalStore()
   const [, cardChecklistStore] = useCardChecklistStore()
   const [cardInfoState] = useCardInfoStore()
-
   return (
-    <Tabs.TabContent>
-      <div className="flex relative">
-        <CardVisual
-          playerSize={globalState.playerSize}
-          checklist={cardChecklistStore.getAllCheckboxes(id) ?? []}
-          cardInfoState={cardInfoState.card}
-        />
-      </div>
-    </Tabs.TabContent>
+    <CardVisual
+      playerSize={globalState.playerSize}
+      checklist={cardChecklistStore.getAllCheckboxes(id) ?? []}
+      cardInfoState={cardInfoState.card}
+    />
   )
 })

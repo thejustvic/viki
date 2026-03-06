@@ -6,7 +6,7 @@ import {Checkbox} from '../checklist/types'
 import {CardInfoStore} from './card-info/card-info-store'
 import {CardVisualType, PlayerSizeType} from './types'
 import {BaseCharacter} from './visual/ui/base-character'
-import BaseScene from './visual/ui/base-scene'
+import {BasicScene} from './visual/ui/base-scene'
 import {ConeWithSpheres} from './visual/ui/cone'
 import {Tulip} from './visual/ui/tulip'
 
@@ -29,7 +29,7 @@ export default function CardVisual({
   const lookData = useRef<Vector2>({x: 0, y: 0})
 
   return (
-    <BaseScene
+    <BasicScene
       isLocked={isLocked}
       selectedVisual={selectedVisual}
       moveData={moveData}
@@ -54,6 +54,6 @@ export default function CardVisual({
         moveData={moveData}
         lookData={lookData}
       />
-    </BaseScene>
+    </BasicScene>
   )
 }

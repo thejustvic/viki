@@ -1,6 +1,14 @@
 import '@/scss/app.scss'
 import 'simplebar-react/dist/simplebar.min.css'
 
+import CardChecklistProvider from '@/components/cards/card-checklist/card-checklist-provider'
+import CardInfoProvider from '@/components/cards/card-info/card-info'
+import CardsProvider from '@/components/cards/cards'
+import {ModalCardCreate} from '@/components/cards/modal-card/modal-card-create'
+import {ModalCardDelete} from '@/components/cards/modal-card/modal-card-delete'
+import {ModalVisualTab} from '@/components/cards/visual/ui/modal-visual'
+import ChatProvider from '@/components/chat/chat-provider'
+import {DrawerWrapper} from '@/components/common/drawer/drawer-wrapper'
 import GlobalProvider from '@/components/global-provider/global-provider'
 import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
@@ -37,8 +45,16 @@ export default async function RootLayout({children}: PropsWithChildren) {
         <SupabaseProvider serverUser={serverUser} serverSession={serverSession}>
           <GlobalProvider serverTheme={theme}>
             <TeamProvider currentTeamId={currentTeamId}>
-              <Modals />
-              {children}
+              <ChatProvider>
+                <CardsProvider>
+                  <CardInfoProvider>
+                    <CardChecklistProvider>
+                      <Modals />
+                      <DrawerWrapper>{children}</DrawerWrapper>
+                    </CardChecklistProvider>
+                  </CardInfoProvider>
+                </CardsProvider>
+              </ChatProvider>
             </TeamProvider>
           </GlobalProvider>
         </SupabaseProvider>
@@ -56,9 +72,12 @@ export default async function RootLayout({children}: PropsWithChildren) {
 const Modals = () => {
   return (
     <>
+      <ModalCardCreate />
+      <ModalCardDelete />
       <ModalTeam />
       <ModalCreateTeam />
       <ModalCreateTeamMember />
+      <ModalVisualTab />
     </>
   )
 }

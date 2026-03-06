@@ -5,6 +5,7 @@ import {Button} from './button'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
+  classNameModalBox?: HTMLProps<HTMLElement>['className']
 }
 
 interface PropsModal extends Props {
@@ -22,6 +23,7 @@ export const Modal = ({
   onClickBackdrop,
   close,
   className,
+  classNameModalBox,
   children
 }: PropsModal) => {
   return (
@@ -38,7 +40,7 @@ export const Modal = ({
         role="dialog"
         className={twJoin('modal', className)}
       >
-        <div className="modal-box">
+        <div className={twJoin('modal-box', classNameModalBox)}>
           {children}
           <div className="modal-action mt-0">
             <label htmlFor={id} onClick={close}>
@@ -79,6 +81,10 @@ Modal.Header = ({children, ...props}: PropsBox) => {
   return <div {...props}>{children}</div>
 }
 
-Modal.Body = ({children, ...props}: PropsBox) => {
-  return <div {...props}>{children}</div>
+Modal.Body = ({children, className, ...props}: PropsBox) => {
+  return (
+    <div className={className} {...props}>
+      {children}
+    </div>
+  )
 }

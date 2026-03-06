@@ -1,11 +1,15 @@
 /* eslint-disable max-lines-per-function */
 import {Button} from '@/components/daisyui/button'
 import {BooleanHookState} from '@/hooks/use-boolean'
-import {AdaptiveDpr, Environment, Loader, StatsGl} from '@react-three/drei'
+import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
+import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
+import {AdaptiveDpr, Environment, Loader, Stats} from '@react-three/drei'
 import {Canvas, useFrame, useThree} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
-import {RefObject, useMemo} from 'react'
+import {IconBrowserMaximize} from '@tabler/icons-react'
+import {CSSProperties, RefObject, useMemo} from 'react'
 import {isMobile} from 'react-device-detect'
+import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
@@ -27,6 +31,11 @@ const TwDot = tw.div`
   border-white
 `
 
+export const canvasContainerStyles: CSSProperties = {
+  height: 'calc(100vh - 74px)',
+  width: '100vw'
+}
+
 interface BasicSceneProps {
   selectedVisual: CardVisualType[number]
   children: React.ReactNode
@@ -37,7 +46,7 @@ interface BasicSceneProps {
 
 type CameraPosition = [x: number, y: number, z: number]
 
-const BasicScene = ({
+export const BasicScene = ({
   children,
   selectedVisual,
   moveData,
@@ -52,23 +61,49 @@ const BasicScene = ({
       ? winterCameraPosition
       : springCameraPosition
   }, [selectedVisual])
+  const visualTab = getSearchParam('visual-tab')
+  const updateSearchParams = useUpdateSearchParams()
 
   return (
     <div
       className="relative overflow-hidden"
-      style={{height: 'calc(100vh - 74px)', width: '100vw'}}
+      style={
+        visualTab
+          ? {
+              height: '100%',
+              width: '100%',
+              minWidth: 0,
+              minHeight: 0
+            }
+          : canvasContainerStyles
+      }
     >
       {!isMobile && (
         <>
           {isLocked.value ? (
-            <Button
-              soft
-              color="info"
-              className="h-14 m-2 absolute z-10"
-              id="enter-btn"
-            >
-              Enter First Person With Movement by WASD keys and spacebar
-            </Button>
+            <>
+              <Button
+                soft
+                color="info"
+                className={twJoin('h-14 ml-2 mt-2 absolute z-10 mr-2')}
+                id="enter-btn"
+              >
+                Enter First Person With Movement by WASD keys and spacebar
+              </Button>
+              {!visualTab && (
+                <Button
+                  soft
+                  color="info"
+                  className={twJoin(
+                    visualTab ? 'mt-2' : 'mt-18',
+                    'h-14 ml-2 absolute z-10'
+                  )}
+                  onClick={() => updateSearchParams('visual-tab', 'true')}
+                >
+                  <IconBrowserMaximize />
+                </Button>
+              )}
+            </>
           ) : (
             <div className="m-2 text-pretty absolute z-10 text-neutral-400">
               press ESC to Exit First Person
@@ -113,7 +148,7 @@ const BasicScene = ({
 
         {process.env.NODE_ENV === 'development' && (
           <>
-            <StatsGl />
+            <Stats />
             <InfoLogger />
           </>
         )}
@@ -145,5 +180,3 @@ const InfoLogger = () => {
   })
   return null
 }
-
-export default BasicScene

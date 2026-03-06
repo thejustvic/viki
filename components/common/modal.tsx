@@ -1,6 +1,6 @@
 import {Modal as ModalComponent} from '@/components/daisyui/modal'
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
-import {ReactNode} from 'react'
+import {HTMLProps, ReactNode} from 'react'
 
 interface Props {
   id: string
@@ -8,9 +8,19 @@ interface Props {
   body: ReactNode
   goBack: () => void
   open: boolean
+  classNameModalBox?: HTMLProps<HTMLElement>['className']
+  classNameBody?: HTMLProps<HTMLElement>['className']
 }
 
-export const Modal = ({id, header, body, goBack, open}: Props) => {
+export const Modal = ({
+  id,
+  header,
+  body,
+  goBack,
+  open,
+  classNameModalBox,
+  classNameBody
+}: Props) => {
   useGlobalKeyDown({
     handlers: {
       escape: goBack
@@ -26,11 +36,14 @@ export const Modal = ({id, header, body, goBack, open}: Props) => {
       backdrop
       close={goBack}
       onClickBackdrop={goBack}
+      classNameModalBox={classNameModalBox}
     >
       <ModalComponent.Header className="font-bold text-base-content/80">
         {header}
       </ModalComponent.Header>
-      <ModalComponent.Body>{body}</ModalComponent.Body>
+      <ModalComponent.Body className={classNameBody}>
+        {body}
+      </ModalComponent.Body>
     </ModalComponent>
   )
 }
