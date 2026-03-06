@@ -8,7 +8,6 @@ import {ModalCardCreate} from '@/components/cards/modal-card/modal-card-create'
 import {ModalCardDelete} from '@/components/cards/modal-card/modal-card-delete'
 import {ModalVisualTab} from '@/components/cards/visual/ui/modal-visual'
 import ChatProvider from '@/components/chat/chat-provider'
-import {DrawerWrapper} from '@/components/common/drawer/drawer-wrapper'
 import GlobalProvider from '@/components/global-provider/global-provider'
 import {ModalCreateTeam} from '@/components/team/modal-create-team'
 import {ModalCreateTeamMember} from '@/components/team/modal-create-team-member'
@@ -50,7 +49,7 @@ export default async function RootLayout({children}: PropsWithChildren) {
                   <CardInfoProvider>
                     <CardChecklistProvider>
                       <Modals />
-                      <DrawerWrapper>{children}</DrawerWrapper>
+                      {children}
                     </CardChecklistProvider>
                   </CardInfoProvider>
                 </CardsProvider>
