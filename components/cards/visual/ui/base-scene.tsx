@@ -129,7 +129,7 @@ export const BasicScene = ({
           position: cameraPosition
         }}
         className="rounded-md relative"
-        dpr={1} // for maximum FPS
+        dpr={selectedVisual === 'winter' ? 1.5 : 1} // 1 for maximum FPS
       >
         <Lights />
 
