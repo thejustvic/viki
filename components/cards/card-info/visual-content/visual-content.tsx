@@ -81,7 +81,8 @@ const ChoosePlayerSize = observer(() => {
       loading={state.card.loading}
       error={state.card.error?.message}
       data={<PlayerSize />}
-      prefix={'player size:'}
+      prefix={'user size'}
+      className="items-center"
     />
   )
 })
@@ -92,7 +93,7 @@ const PlayerSize = observer(() => {
   const [state, store] = useGlobalStore()
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex gap-1 flex-wrap">
       {playerSizes.map(playerSize => {
         return (
           <TwRadio
@@ -128,7 +129,8 @@ const ChooseTulipColor = observer(() => {
             colorNotCompleted="tulip_color_not_completed"
           />
         }
-        prefix={'tulip color:'}
+        prefix={'tulip color'}
+        className="items-center"
       />
       <ShowData
         loading={state.card.loading}
@@ -139,7 +141,8 @@ const ChooseTulipColor = observer(() => {
             colorNotCompleted="tulip_plate_color_not_completed"
           />
         }
-        prefix={'plate color:'}
+        prefix={'envelope color'}
+        className="items-center"
       />
       <ShowData
         loading={state.card.loading}
@@ -150,7 +153,8 @@ const ChooseTulipColor = observer(() => {
             colorNotCompleted="tulip_plate_text_color_not_completed"
           />
         }
-        prefix={'plate text color:'}
+        prefix={'color of text on envelope'}
+        className="items-center"
       />
     </div>
   )
@@ -174,7 +178,8 @@ const ChooseBaubleColor = observer(() => {
             colorNotCompleted="bauble_color_not_completed"
           />
         }
-        prefix={'bauble color:'}
+        prefix={'bauble color'}
+        className="items-center"
       />
       <ShowData
         loading={state.card.loading}
@@ -185,7 +190,8 @@ const ChooseBaubleColor = observer(() => {
             colorNotCompleted="bauble_text_color_not_completed"
           />
         }
-        prefix={'text color on bauble:'}
+        prefix={'color of text on bauble'}
+        className="items-center"
       />
     </div>
   )
@@ -213,7 +219,7 @@ const ChooseColorData = observer(
       return null
     }
     return (
-      <div className="flex gap-2 flex-wrap ">
+      <div className="flex gap-2 flex-wrap flex-1">
         <ColorPicker
           color={state.card.data[colorNotCompleted]}
           label="not checked"

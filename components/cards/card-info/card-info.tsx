@@ -12,7 +12,8 @@ import {useInput} from '@/hooks/use-input'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {format} from 'date-fns'
 import {observer, useLocalObservable} from 'mobx-react-lite'
-import {PropsWithChildren, ReactNode, useEffect} from 'react'
+import {HTMLProps, PropsWithChildren, ReactNode, useEffect} from 'react'
+import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 import {useCardsStore} from '../cards-store'
 import {CardBgImages} from '../types'
@@ -90,7 +91,7 @@ const Visual = observer(() => {
       loading={state.card.loading}
       error={state.card.error?.message}
       data={<VisualContent />}
-      prefix={'visual:'}
+      prefix={'visual'}
     />
   )
 })
@@ -103,7 +104,7 @@ const Cover = observer(() => {
       loading={state.card.loading}
       error={state.card.error?.message}
       data={<CoverData />}
-      prefix={'cover:'}
+      prefix={'cover'}
     />
   )
 })
@@ -149,7 +150,7 @@ const Time = observer(() => {
       loading={state.card.loading}
       error={state.card.error?.message}
       data={<TimeData />}
-      prefix={'time:'}
+      prefix={'time'}
     />
   )
 })
@@ -175,7 +176,7 @@ const Text = observer(() => {
       loading={state.card.loading}
       error={state.card.error?.message}
       data={<TextData />}
-      prefix={'content:'}
+      prefix={'content'}
     />
   )
 })
@@ -241,24 +242,26 @@ const Creator = observer(() => {
       loading={cardCreatorState.cardCreator.loading}
       error={cardCreatorState.cardCreator.error?.message}
       data={<CreatorData />}
-      prefix={'creator:'}
+      prefix={'creator'}
     />
   )
 })
 
 export const ShowData = ({
+  className,
   loading,
   error,
   data,
   prefix
 }: {
+  className?: HTMLProps<HTMLElement>['className']
   loading: boolean
   error: string | undefined
   data: ReactNode
   prefix: string
 }) => {
   return (
-    <div className="flex">
+    <div className={twJoin(className, 'flex')}>
       <span className="w-20 pr-2">{prefix}</span>
       {loading ? (
         <div className="flex justify-center w-full">
