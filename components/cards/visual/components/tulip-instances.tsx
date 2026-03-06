@@ -14,7 +14,8 @@ import {
   type MeshStandardMaterial
 } from 'three'
 import type {GLTF} from 'three-stdlib'
-import {PositionsProps} from '../ui/tulip'
+import {Card} from '../../types'
+import {PositionType} from '../ui/tulip'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -30,12 +31,18 @@ type GLTFResult = GLTF & {
 }
 
 interface Props {
-  positions: PositionsProps[]
+  positions: PositionType[]
+  card: Card | null
   checklist: Checkbox[]
   shouldShrink: boolean
 }
 
-export const TulipInstances = ({positions, checklist, shouldShrink}: Props) => {
+export const TulipInstances = ({
+  positions,
+  checklist,
+  card,
+  shouldShrink
+}: Props) => {
   const {nodes, materials} = useGLTF(
     '/tulip_flower.glb'
   ) as unknown as GLTFResult
@@ -55,10 +62,28 @@ export const TulipInstances = ({positions, checklist, shouldShrink}: Props) => {
         <>
           {positions.map((position, index) => {
             const checkbox = checklist?.[index]
+            const isCompleted = checkbox?.is_completed
+            const text = checkbox?.title ?? ''
             return (
               <Tulip
                 key={index}
                 position={position}
+                color={
+                  isCompleted
+                    ? (card?.tulip_color_completed ?? '')
+                    : (card?.tulip_color_not_completed ?? '')
+                }
+                plateColor={
+                  isCompleted
+                    ? (card?.tulip_plate_color_completed ?? '')
+                    : (card?.tulip_plate_color_not_completed ?? '')
+                }
+                plateTextColor={
+                  isCompleted
+                    ? (card?.tulip_plate_text_color_completed ?? '')
+                    : (card?.tulip_plate_text_color_not_completed ?? '')
+                }
+                text={text}
                 checkbox={checkbox}
                 materials={materials}
                 models={models}
@@ -73,7 +98,7 @@ export const TulipInstances = ({positions, checklist, shouldShrink}: Props) => {
 }
 
 interface TulipProps {
-  position: PositionsProps
+  position: PositionType
   materials: {
     mFlowerBodyTulip: MeshStandardMaterial
     mFlowerTulip: MeshStandardMaterial
@@ -82,6 +107,10 @@ interface TulipProps {
   models: any
   shouldShrink: boolean
   checkbox: Checkbox
+  color: string
+  plateColor: string
+  plateTextColor: string
+  text: string
 }
 
 const Tulip = ({
@@ -89,7 +118,11 @@ const Tulip = ({
   materials,
   models,
   shouldShrink,
-  checkbox
+  checkbox,
+  color,
+  plateColor,
+  plateTextColor,
+  text
 }: TulipProps) => {
   const groupRef = useRef<Group>(null)
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
@@ -123,7 +156,7 @@ const Tulip = ({
     <group
       scale={0}
       ref={groupRef}
-      position={position.position}
+      position={position}
       onClick={event => {
         // prevent click from bleeding through to objects behind
         event.stopPropagation()
@@ -140,13 +173,13 @@ const Tulip = ({
       <models.FlowerTulip
         rotation={[-Math.PI / 2, 0, 0]}
         material={materials.mFlowerTulip}
-        color={position.color}
+        color={color}
         castShadow
       />
       <TextWithBg
-        text={position.text}
-        plateTextColor={position.plateTextColor}
-        plateBgColor={position.plateColor}
+        text={text}
+        plateTextColor={plateTextColor}
+        plateBgColor={plateColor}
       />
       {/* 
           <models.FlowerPot // this is the model for a flower pot
@@ -166,6 +199,8 @@ interface TextWithBgProps {
 }
 
 const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
+  const wrappedText = useMemo(() => wrapText(text, 24), [text])
+
   const envelopeShape = useMemo(() => {
     const shape = new Shape()
     const width = 4 // width as in RoundedBox
@@ -202,7 +237,7 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
           curveSegments={1}
           bevelSegments={1}
         >
-          {text}
+          {wrappedText}
           <meshStandardMaterial color={plateTextColor} />
         </Text3D>
       </Center>

@@ -8,12 +8,14 @@ import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
 import {Card, PlayerSizeType} from '../../types'
 import {LawnInstances} from '../components/lawn-instances'
-import {TulipInstances, wrapText} from '../components/tulip-instances'
+import {TulipInstances} from '../components/tulip-instances'
 
 interface Point {
   x: number
   z: number
 }
+
+export type PositionType = [x: number, y: number, z: number]
 
 const generateNonOverlappingPoints = ({
   numberOfTulips,
@@ -58,7 +60,7 @@ const generateNonOverlappingPoints = ({
 }
 
 export interface PositionsProps {
-  position: [x: number, y: number, z: number]
+  position: PositionType
   text: string
   color: string
   plateColor: string
@@ -75,7 +77,7 @@ export const Tulip = ({
   cardInfoState: CardInfoStore['state']['card']
 }) => {
   const fieldRef = useRef<Group>(null)
-  const [positions, updatePositions] = useState<PositionsProps[]>([])
+  const [positions, updatePositions] = useState<PositionType[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
   const [cardData, updateCardData] = useState<{
     card: Card | null
@@ -143,31 +145,16 @@ export const Tulip = ({
   }, [cardInfoState.data, checklist, fieldRadius, minRequiredDistance])
 
   const calcPositions = (newData: Point[]) => {
-    const positions: PositionsProps[] = []
+    const positions: PositionType[] = []
 
-    newData.forEach((point, index) => {
-      const checkbox = checklist?.[index]
-      const isCompleted = checkbox?.is_completed
-      const text = checkbox?.title ?? ''
-      positions.push({
-        position: [point.x, -1.3, point.z],
-        text: wrapText(text, 24),
-        color: isCompleted
-          ? (cardData.card?.tulip_color_completed ?? '')
-          : (cardData.card?.tulip_color_not_completed ?? ''),
-        plateColor: isCompleted
-          ? (cardData.card?.tulip_plate_color_completed ?? '')
-          : (cardData.card?.tulip_plate_color_not_completed ?? ''),
-        plateTextColor: isCompleted
-          ? (cardData.card?.tulip_plate_text_color_completed ?? '')
-          : (cardData.card?.tulip_plate_text_color_not_completed ?? '')
-      })
+    newData.forEach(point => {
+      positions.push([point.x, -1.3, point.z])
     })
     return positions
   }
 
   const lawnPositions = useMemo(() => {
-    const positions: [x: number, y: number, z: number][] = []
+    const positions: PositionType[] = []
     const squareSize = 20 - 0.25 // -0.25 for little overlap each other
 
     const gridSteps = Math.ceil((fieldRadius * 2) / squareSize)
@@ -210,6 +197,7 @@ export const Tulip = ({
         checklist={cardData.checklist}
         positions={positions}
         shouldShrink={shouldShrink}
+        card={cardData.card}
       />
     </group>
   )
