@@ -9,9 +9,11 @@
     "googleusercontent",
     "postgrest",
     "rootscrollgutter",
+    "spacebar",
     "Swipeable",
     "tabler",
-    "turbopack"
+    "turbopack",
+    "WASD"
   ],
   "eslint.problems.shortenToSingleLine": true,
   "tailwindCSS.experimental.classRegex": [
