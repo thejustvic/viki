@@ -11,7 +11,7 @@ export default async function Page() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="flex flex-col gap-4 bg-base-300/20">
+      <div className="flex flex-col gap-4">
         <Login cookieAuthView={cookieAuthView as AuthView} />
         <TechStackCarousel />
       </div>
