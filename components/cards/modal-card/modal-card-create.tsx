@@ -7,16 +7,13 @@ import {Modal} from '@/components/common/modal'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
-import {useTeamStore} from '@/components/team/team-store'
 import {useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
-import {generateKeyBetween} from 'fractional-indexing'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
-import {useCardsStore} from '../cards-store'
 
 const TwError = tw.p`
   w-full 
@@ -67,8 +64,6 @@ interface FormInputs {
 }
 
 const Text = observer(() => {
-  const [cardsStore] = useCardsStore()
-  const [state] = useTeamStore()
   const load = useBoolean(false)
 
   const updateSearchParams = useUpdateSearchParams()
@@ -93,23 +88,17 @@ const Text = observer(() => {
   )
 
   const onSubmit = async (data: FormInputs) => {
-    if (!state.currentTeamId || !data.createCard69.trim()) {
+    if (!data.createCard69.trim()) {
       return
     }
     load.turnOn()
-    const cards = cardsStore.cards.data
-    const lastPosition = cards?.[cards.length - 1]?.position ?? null
-    const newPosition = generateKeyBetween(lastPosition, null)
-    const {data: insertCardData, error} = await insertCard(
-      data.createCard69,
-      state.currentTeamId,
-      newPosition
-    )
+    const {data: insertCardData, error} = await insertCard(data.createCard69)
     if (insertCardData) {
       load.turnOff()
       updateSearchParams('create-card')
     }
     if (error) {
+      load.turnOff()
       setError(
         'createCard69',
         {type: 'focus', message: error.message},
