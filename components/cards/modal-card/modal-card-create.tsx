@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 'use client'
 
 import {useCardHandlers} from '@/components/cards/cards-handlers'
@@ -12,7 +11,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
-import {useForm} from 'react-hook-form'
+import {useForm, UseFormResetField, UseFormSetFocus} from 'react-hook-form'
 import tw from 'tailwind-styled-components'
 
 const TwError = tw.p`
@@ -63,11 +62,22 @@ interface FormInputs {
   createCard69: string
 }
 
+const useTransitionEnd = (
+  setFocus: UseFormSetFocus<FormInputs>,
+  resetField: UseFormResetField<FormInputs>
+) => {
+  useSetFocusAfterTransitionEnd(
+    {
+      id: 'dialog-modal-create-card',
+      dep: getSearchParam('create-card')
+    },
+    () => setFocus('createCard69'),
+    () => resetField('createCard69')
+  )
+}
+
 const Text = observer(() => {
-  const load = useBoolean(false)
-
   const updateSearchParams = useUpdateSearchParams()
-
   const {insertCard} = useCardHandlers()
   const {
     register,
@@ -77,15 +87,8 @@ const Text = observer(() => {
     setError,
     formState: {errors}
   } = useForm<FormInputs>()
-
-  useSetFocusAfterTransitionEnd(
-    {
-      id: 'dialog-modal-create-card',
-      dep: getSearchParam('create-card')
-    },
-    () => setFocus('createCard69'),
-    () => resetField('createCard69')
-  )
+  useTransitionEnd(setFocus, resetField)
+  const load = useBoolean(false)
 
   const onSubmit = async (data: FormInputs) => {
     if (!data.createCard69.trim()) {
