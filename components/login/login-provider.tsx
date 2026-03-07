@@ -1,26 +1,36 @@
-/* eslint-disable max-lines-per-function */
 import {Button} from '@/components/daisyui/button'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
-import {useEffect, useState} from 'react'
+import {useEffect} from 'react'
 import {Tabs} from '../daisyui/tabs'
+import {AuthTabGroup} from '../global-provider/types'
 import {Captcha} from './captcha/captcha'
 import {useCaptchaStore} from './captcha/captcha-store'
 import {EmailLoginCard} from './email-login/email-login-card'
 
-type TabGroup = 'authProviders' | 'anonymously' | 'email'
-
 // Supabase auth needs to be triggered client-side
 export const LoginProviders = observer(() => {
-  const [captchaState, captchaStore] = useCaptchaStore()
-  const [state, store] = useGlobalStore()
-  const {supabase} = useSupabase()
-  const [tabGroup, setTabGroup] = useState<TabGroup>('authProviders')
+  const [, store] = useGlobalStore()
 
   useEffect(() => {
     store.setLoggingOff()
   }, [])
+
+  return (
+    <Tabs className="w-[310px] justify-around">
+      <AuthProvidersTab />
+      <AnonymouslyTab />
+      <EmailTab />
+    </Tabs>
+  )
+})
+
+const AuthProvidersTab = observer(() => {
+  const [, captchaStore] = useCaptchaStore()
+  const [state, store] = useGlobalStore()
+  const {supabase} = useSupabase()
+
   const handleGitHubLogin = async () => {
     store.setLogging('github')
     await supabase.auth.signInWithOAuth({
@@ -30,6 +40,7 @@ export const LoginProviders = observer(() => {
       }
     })
   }
+
   const handleGoogleLogin = async () => {
     store.setLogging('google')
     await supabase.auth.signInWithOAuth({
@@ -39,31 +50,20 @@ export const LoginProviders = observer(() => {
       }
     })
   }
-  const handleAnonymouslyLogin = async () => {
-    store.setLogging('anonymously')
-    const {error} = await supabase.auth.signInAnonymously({
-      options: {
-        captchaToken: captchaState.captchaToken
-      }
-    })
 
-    if (!error) {
-      window.location.href = '/cards'
-    }
-  }
   const someLoad = store.checkIfSomeLoad()
 
   return (
-    <Tabs className="w-[310px] justify-around">
+    <>
       <Tabs.Tab
         value="authProviders"
         onChange={({target: {value}}) => {
-          setTabGroup(value as TabGroup)
+          store.setAuthTabGroup(value as AuthTabGroup)
           captchaStore.setCaptchaToken(undefined)
         }}
         label="Auth Providers"
         groupName="tabGroup"
-        checked={tabGroup === 'authProviders'}
+        checked={state.authTabGroup === 'authProviders'}
       />
       <Tabs.TabContent className="h-[120px]">
         <div className="join join-vertical w-full">
@@ -89,18 +89,43 @@ export const LoginProviders = observer(() => {
           </Button>
         </div>
       </Tabs.TabContent>
+    </>
+  )
+})
+
+const AnonymouslyTab = observer(() => {
+  const [captchaState, captchaStore] = useCaptchaStore()
+  const [state, store] = useGlobalStore()
+  const {supabase} = useSupabase()
+  const someLoad = store.checkIfSomeLoad()
+
+  const handleAnonymouslyLogin = async () => {
+    store.setLogging('anonymously')
+    const {error} = await supabase.auth.signInAnonymously({
+      options: {
+        captchaToken: captchaState.captchaToken
+      }
+    })
+
+    if (!error) {
+      window.location.href = '/cards'
+    }
+  }
+
+  return (
+    <>
       <Tabs.Tab
         value="anonymously"
         onChange={({target: {value}}) => {
-          setTabGroup(value as TabGroup)
+          store.setAuthTabGroup(value as AuthTabGroup)
           captchaStore.setCaptchaToken(undefined)
         }}
         label="Anonymously"
         groupName="tabGroup"
-        checked={tabGroup === 'anonymously'}
+        checked={state.authTabGroup === 'anonymously'}
       />
       <Tabs.TabContent className="h-[120px]">
-        {tabGroup === 'anonymously' && (
+        {state.authTabGroup === 'anonymously' && (
           <>
             <div className="flex gap-2 flex-col">
               <Button
@@ -118,24 +143,34 @@ export const LoginProviders = observer(() => {
           </>
         )}
       </Tabs.TabContent>
+    </>
+  )
+})
+
+const EmailTab = observer(() => {
+  const [, captchaStore] = useCaptchaStore()
+  const [state, store] = useGlobalStore()
+
+  return (
+    <>
       <Tabs.Tab
         value="email"
         onChange={({target: {value}}) => {
-          setTabGroup(value as TabGroup)
+          store.setAuthTabGroup(value as AuthTabGroup)
           captchaStore.setCaptchaToken(undefined)
         }}
         label="Email"
         groupName="tabGroup"
-        checked={tabGroup === 'email'}
+        checked={state.authTabGroup === 'email'}
       />
       <Tabs.TabContent>
-        {tabGroup === 'email' && (
+        {state.authTabGroup === 'email' && (
           <>
             <EmailLoginCard />
             <Captcha />
           </>
         )}
       </Tabs.TabContent>
-    </Tabs>
+    </>
   )
 })

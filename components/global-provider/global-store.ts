@@ -6,10 +6,11 @@ import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
 import {Card, PlayerSizeType} from '../cards/types'
-import {Tab, Theme} from './types'
+import {AuthTabGroup, Tab, Theme} from './types'
 
 interface State {
   theme: Theme
+  authTabGroup: AuthTabGroup
   draggingCard: Card | undefined
   draggingCheckbox: Checkbox | undefined
   leftDrawerOpen: boolean
@@ -33,6 +34,7 @@ interface State {
 export class GlobalStore {
   state: State = {
     theme: 'dark',
+    authTabGroup: 'authProviders',
     draggingCard: undefined,
     draggingCheckbox: undefined,
     leftDrawerOpen: false,
@@ -63,7 +65,11 @@ export class GlobalStore {
     }
   }
 
-  setPlayerSize = (playerSize: PlayerSizeType[number]) => {
+  setAuthTabGroup = (value: AuthTabGroup): void => {
+    this.state.authTabGroup = value
+  }
+
+  setPlayerSize = (playerSize: PlayerSizeType[number]): void => {
     this.state.playerSize = playerSize
   }
 
