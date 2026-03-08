@@ -1,5 +1,5 @@
-/* eslint-disable max-lines-per-function */
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
+import {useJoystickHandlers} from './joystick-handlers'
 
 export interface Vector2 {
   x: number
@@ -13,73 +13,7 @@ interface JoystickProps {
 }
 
 const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
-  const [stickPos, setStickPos] = useState<Vector2>({x: 0, y: 0})
-  const activeTouchId = useRef<number | null>(null)
-
-  const handleStart = useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      const touch = e.changedTouches[0]
-      activeTouchId.current = touch.identifier
-
-      const rect = e.currentTarget.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-
-      const handleMove = (moveEvent: TouchEvent) => {
-        const touch = Array.from(moveEvent.touches).find(
-          t => t.identifier === activeTouchId.current
-        )
-
-        if (!touch) {
-          return
-        }
-
-        let dx = touch.clientX - centerX
-        let dy = touch.clientY - centerY
-
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance > radius) {
-          dx *= radius / distance
-          dy *= radius / distance
-        }
-
-        setStickPos({x: dx, y: dy})
-
-        if (label === 'LOOK') {
-          // look around Up/Down (Y) and Left/Right (X)
-          onUpdate({
-            x: dx / radius, // change 'dx' to '-dx' here to reverse Left/Right
-            y: dy / radius // change 'dy' to '-dy' here to reverse Up/Down
-          })
-        } else {
-          // move around Forward/Backward (Y) and Left/Right (X)
-          onUpdate({
-            x: -dx / radius, //  change '-dx' to 'dx' here to reverse Left/Right
-            y: -dy / radius // change '-dy' to 'dy' here to reverse Forward/Backward
-          })
-        }
-      }
-
-      const handleEnd = (endEvent: TouchEvent) => {
-        const touch = Array.from(endEvent.changedTouches).find(
-          t => t.identifier === activeTouchId.current
-        )
-
-        if (touch) {
-          activeTouchId.current = null
-          setStickPos({x: 0, y: 0})
-          onUpdate({x: 0, y: 0})
-          window.removeEventListener('touchmove', handleMove)
-          window.removeEventListener('touchend', handleEnd)
-        }
-      }
-
-      window.addEventListener('touchmove', handleMove)
-      window.addEventListener('touchend', handleEnd)
-    },
-    [onUpdate, radius]
-  )
+  const {handleStart, stickPos} = useJoystickHandlers({label, onUpdate, radius})
 
   return (
     <div
@@ -89,7 +23,8 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
         height: `${radius * 2}px`,
         borderRadius: '50%',
         background: 'rgba(0, 0, 0, 0.2)',
-        border: '2px solid rgba(0, 0, 0, 0.3)',
+        border: '2px solid rgba(0, 0, 0, 0.1)',
+        boxShadow: '0px 0px 23px 0px rgba(0,0,0,0.5) inset',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
@@ -99,8 +34,8 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
     >
       <div
         style={{
-          width: `${radius * 0.6}px`,
-          height: `${radius * 0.6}px`,
+          width: `${radius * 1.2}px`,
+          height: `${radius * 1.2}px`,
           borderRadius: '50%',
           boxShadow: '0px 0px 23px 0px rgba(0,0,0,0.5) inset',
           background: 'grey',
