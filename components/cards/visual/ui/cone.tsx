@@ -1,9 +1,8 @@
-/* eslint-disable max-lines-per-function */
 import {ArrUtil} from '@/utils/arr-util'
 import {Cone} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useEffect, useRef, useState} from 'react'
+import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
@@ -90,24 +89,7 @@ const generateNonOverlappingPoints = ({
   return points
 }
 
-export const ConeWithSpheres = ({
-  checklist,
-  cardInfoState
-}: {
-  checklist: Checkbox[]
-  cardInfoState: CardInfoStore['state']['card']
-}) => {
-  const treeRef = useRef<Group>(null)
-  const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
-  const [shouldShrink, updateShouldShrink] = useState(false)
-  const [cardData, updateCardData] = useState<{
-    card: CardInfoStore['state']['card']['data']
-    checklist: Checkbox[]
-  }>({
-    card: cardInfoState.data,
-    checklist: checklist
-  })
-
+const getBaseConstant = (checklist: Checkbox[]) => {
   const referenceCount = 15
   const scaleFactor = Math.sqrt(
     Math.max(referenceCount, checklist.length) / referenceCount
@@ -130,6 +112,46 @@ export const ConeWithSpheres = ({
   const sphereRadius = 0.15
   const minRequiredDistance = sphereRadius * 3
 
+  return {
+    referenceCount,
+    scaleFactor,
+    treeGroundY,
+    baseTreeScale,
+    dynamicTreeScale,
+    scaleTreeDiff,
+    dynamicTreeY,
+    coneGroundY,
+    baseConeHeight,
+    baseConeRadius,
+    coneHeight,
+    coneRadius,
+    dynamicConeY,
+    sphereRadius,
+    minRequiredDistance
+  }
+}
+
+const useMainSequence = ({
+  updateShouldShrink,
+  updateSpherePositions,
+  updateCardData,
+  cardData,
+  checklist,
+  cardInfoState,
+  coneRadius,
+  coneHeight,
+  minRequiredDistance
+}: {
+  updateShouldShrink: Dispatch<SetStateAction<boolean>>
+  updateSpherePositions: Dispatch<SetStateAction<SphereData[]>>
+  updateCardData: Dispatch<SetStateAction<CardDataProps>>
+  cardData: CardDataProps
+  checklist: Checkbox[]
+  cardInfoState: CardInfoStore['state']['card']
+  coneRadius: number
+  coneHeight: number
+  minRequiredDistance: number
+}) => {
   useEffect(() => {
     if (!cardData) {
       return
@@ -140,7 +162,6 @@ export const ConeWithSpheres = ({
       const notEqualButSameLength =
         ArrUtil.areListsNotEqual(checklist, cardData.checklist) &&
         checklist.length === cardData.checklist.length
-
       if (!notEqualButSameLength) {
         //shrink spheres
         updateShouldShrink(true)
@@ -179,7 +200,51 @@ export const ConeWithSpheres = ({
     coneHeight,
     minRequiredDistance
   ])
+}
 
+interface CardDataProps {
+  card: CardInfoStore['state']['card']['data']
+  checklist: Checkbox[]
+}
+
+interface ConeWithSpheresProps {
+  checklist: Checkbox[]
+  cardInfoState: CardInfoStore['state']['card']
+}
+
+export const ConeWithSpheres = ({
+  checklist,
+  cardInfoState
+}: ConeWithSpheresProps) => {
+  const treeRef = useRef<Group>(null)
+  const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
+  const [shouldShrink, updateShouldShrink] = useState(false)
+  const [cardData, updateCardData] = useState<CardDataProps>({
+    card: cardInfoState.data,
+    checklist: checklist
+  })
+  const {
+    treeGroundY,
+    baseTreeScale,
+    dynamicTreeScale,
+    dynamicTreeY,
+    coneHeight,
+    coneRadius,
+    dynamicConeY,
+    sphereRadius,
+    minRequiredDistance
+  } = getBaseConstant(checklist)
+  useMainSequence({
+    updateShouldShrink,
+    updateSpherePositions,
+    updateCardData,
+    cardData,
+    checklist,
+    cardInfoState,
+    coneRadius,
+    coneHeight,
+    minRequiredDistance
+  })
   useFrame((_state, delta) => {
     if (treeRef.current) {
       easing.damp3(
@@ -195,7 +260,6 @@ export const ConeWithSpheres = ({
   return (
     <>
       <group position={[0, dynamicConeY, -5]}>
-        {/* the cone is at relative to the parent group */}
         <Cone args={[coneRadius, coneHeight, 32] as const}>
           {/* change opacity to see the cone */}
           <meshStandardMaterial color="hotpink" transparent opacity={0} />
