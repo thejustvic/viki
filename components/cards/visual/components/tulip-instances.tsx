@@ -1,11 +1,9 @@
-/* eslint-disable max-lines-per-function */
-
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {Checkbox} from '@/components/checklist/types'
 import {Center, Merged, RoundedBox, Text3D, useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useEffect, useMemo, useRef} from 'react'
+import {useLayoutEffect, useMemo, useRef} from 'react'
 import {
   DoubleSide,
   Shape,
@@ -113,6 +111,24 @@ interface TulipProps {
   text: string
 }
 
+const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
+  useLayoutEffect(() => {
+    if (material) {
+      material.alphaMap = material.map // texture is now responsible for transparency of details
+      material.map = null // removing the gradient color map
+
+      // setting the "visual transmission" of color:
+      material.metalness = 0.1 // 0 - not metal
+      material.roughness = 0.5 // 1 - matte (standard for mesh)
+
+      material.transparent = true
+      material.opacity = 0.8
+
+      material.needsUpdate = true
+    }
+  }, [material])
+}
+
 const Tulip = ({
   position,
   materials,
@@ -124,19 +140,9 @@ const Tulip = ({
   plateTextColor,
   text
 }: TulipProps) => {
-  const groupRef = useRef<Group>(null)
+  useCustomTulipMaterial(materials.mFlowerTulip)
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
-
-  useEffect(() => {
-    if (materials.mFlowerTulip) {
-      materials.mFlowerTulip.map = null
-
-      materials.mFlowerTulip.metalness = 0.7 // 0 - not metal
-      materials.mFlowerTulip.roughness = 0.7 // 1 - matte (standard for mesh)
-
-      materials.mFlowerTulip.needsUpdate = true
-    }
-  }, [materials])
+  const groupRef = useRef<Group>(null)
 
   useFrame((_state, delta) => {
     if (!groupRef.current) {
@@ -226,7 +232,7 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
 
   return (
     <group scale={1} position={[0, 2.5, 2]} rotation={[-Math.PI / 6, 0, 0]}>
-      <Center>
+      <Center key={wrappedText}>
         <Text3D
           font={'/OpenSans_Regular.json'}
           size={0.2}
