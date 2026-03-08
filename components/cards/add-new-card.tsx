@@ -7,7 +7,9 @@ import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 
 export const AddNewCard = () => {
-  return <ParallaxCardContainer cardNodeBody={<CardBody />} my />
+  return (
+    <ParallaxCardContainer bgImage="matrix" cardNodeBody={<CardBody />} my />
+  )
 }
 
 const CardBody = observer(() => {
@@ -23,7 +25,7 @@ const CardBody = observer(() => {
     <div className="flex flex-col flex-1 justify-between">
       <CardUI.Title>
         <div className="text-base-content/50 drop-shadow-xl/25">
-          add new one
+          push the button below to add a new card
         </div>
       </CardUI.Title>
       <CardUI.Actions>
