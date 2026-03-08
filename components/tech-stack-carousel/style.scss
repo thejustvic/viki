@@ -1,7 +1,7 @@
 .scene {
   position: relative;
   width: 200px;
-  height: 0px; // angle of inclination towards the observer
+  height: 200px; // angle of inclination towards the observer
   perspective: 300px; // fov angle
 
   .carousel.keen-slider {

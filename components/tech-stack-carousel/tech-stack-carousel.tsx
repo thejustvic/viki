@@ -33,9 +33,9 @@ const TwTechStack = tw.h1`
 `
 const TwCard = tw.div`
   p-4 
-  bg-base-300 
-  shadow-2xl 
-  rounded-2xl 
+  bg-base-300
+  shadow-xl 
+  rounded-2xl
   h-[142px] 
   w-[190px] 
   carousel__cell 
@@ -138,7 +138,7 @@ export const TechStackCarousel = () => {
   )
 
   return (
-    <div>
+    <div className="overflow-hidden h-[320px]">
       <TwTechStack>Project Tech Stack</TwTechStack>
       <TwCarousel>
         <TwScene>
