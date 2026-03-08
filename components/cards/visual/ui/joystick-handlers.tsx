@@ -1,15 +1,8 @@
-/* eslint-disable max-lines-per-function */
 import React, {useCallback, useRef, useState} from 'react'
 
 export interface Vector2 {
   x: number
   y: number
-}
-
-interface JoystickProps {
-  label: string
-  onUpdate: (v: Vector2) => void
-  radius: number
 }
 
 interface Handlers {
@@ -35,7 +28,6 @@ export const useJoystickHandlers = ({
     (e: React.TouchEvent<HTMLDivElement>) => {
       const touch = e.changedTouches[0]
       activeTouchId.current = touch.identifier
-
       const rect = e.currentTarget.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
@@ -44,23 +36,17 @@ export const useJoystickHandlers = ({
         const touch = Array.from(moveEvent.touches).find(
           t => t.identifier === activeTouchId.current
         )
-
         if (!touch) {
           return
         }
-
         let dx = touch.clientX - centerX
         let dy = touch.clientY - centerY
-
         const distance = Math.sqrt(dx * dx + dy * dy)
-
         if (distance > radius) {
           dx *= radius / distance
           dy *= radius / distance
         }
-
         setStickPos({x: dx, y: dy})
-
         if (label === 'LOOK') {
           // look around Up/Down (Y) and Left/Right (X)
           onUpdate({
@@ -80,7 +66,6 @@ export const useJoystickHandlers = ({
         const touch = Array.from(endEvent.changedTouches).find(
           t => t.identifier === activeTouchId.current
         )
-
         if (touch) {
           activeTouchId.current = null
           setStickPos({x: 0, y: 0})
@@ -89,7 +74,6 @@ export const useJoystickHandlers = ({
           window.removeEventListener('touchend', handleEnd)
         }
       }
-
       window.addEventListener('touchmove', handleMove)
       window.addEventListener('touchend', handleEnd)
     },
