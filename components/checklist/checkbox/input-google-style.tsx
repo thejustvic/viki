@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {Button} from '@/components/daisyui/button'
@@ -21,7 +20,7 @@ const TwContainer = tw.div`
   py-[10px] 
   px-[16px] 
   transition-transform 
-  duration-[100ms] 
+  duration-100 
   ease-out 
   left-0 
   bottom-0 
@@ -37,30 +36,11 @@ const TwContainer = tw.div`
 */
 
 export const InputGoogleStyle = observer(() => {
-  // const [keyboardHeight, setKeyboardHeight] = useState(0)
   const [, store] = useCardChecklistStore()
   const {insertCheckbox} = useCheckboxHandlers()
   const {register, handleSubmit, setValue} = useForm<FormInputs>()
   const cardId = getSearchCard()
-  // useEffect(() => {
-  //   const handleVisualUpdate = () => {
-  //     if (window.visualViewport) {
-  //       const viewportHeight = window.visualViewport.height
-  //       const windowHeight = window.innerHeight
 
-  //       const offset = windowHeight - viewportHeight
-  //       const actualKeyboardHeight = offset > 100 ? offset : 0
-
-  //       setKeyboardHeight(actualKeyboardHeight)
-  //     }
-  //   }
-  //   window.visualViewport?.addEventListener('resize', handleVisualUpdate)
-  //   window.visualViewport?.addEventListener('scroll', handleVisualUpdate)
-  //   return () => {
-  //     window.visualViewport?.removeEventListener('resize', handleVisualUpdate)
-  //     window.visualViewport?.removeEventListener('scroll', handleVisualUpdate)
-  //   }
-  // }, [])
   const onSubmit = async (data: FormInputs) => {
     if (!cardId) {
       return
@@ -77,18 +57,7 @@ export const InputGoogleStyle = observer(() => {
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      {/* 
-          hide transform:translateY until i figure out 
-          how to prevent mobile view from shifting up when 
-          the keyboard appears
-      */}
-      <TwContainer
-        style={
-          {
-            // transform: `translateY(-${keyboardHeight}px)`,
-          }
-        }
-      >
+      <TwContainer>
         <div className="relative shadow-sm">
           <Input
             {...register('q_99', {required: true})}
