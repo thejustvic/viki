@@ -1,8 +1,14 @@
-/* eslint-disable max-lines-per-function */
 import {ArrUtil} from '@/utils/arr-util'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useEffect, useMemo, useRef, useState} from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
@@ -59,6 +65,127 @@ const generateNonOverlappingPoints = ({
   return points
 }
 
+const getLawnPosition = (fieldRadius: number) => {
+  const positions: PositionType[] = []
+  const squareSize = 20 - 0.25 // -0.25 for little overlap each other
+
+  const gridSteps = Math.ceil((fieldRadius * 2) / squareSize)
+  const offset = (gridSteps * squareSize) / 2
+
+  for (let i = 0; i <= gridSteps; i++) {
+    for (let j = 0; j <= gridSteps; j++) {
+      positions.push([i * squareSize - offset, 0, j * squareSize - offset])
+    }
+  }
+
+  return positions
+}
+
+const calcPositions = (newData: Point[]) => {
+  const positions: PositionType[] = []
+
+  newData.forEach(point => {
+    positions.push([point.x, -1.3, point.z])
+  })
+  return positions
+}
+
+const getBaseConstants = (checklist: Checkbox[]) => {
+  const baseRadius = 10
+  const referenceCount = 4
+  const scaleFactor = Math.sqrt(
+    Math.max(referenceCount, checklist.length) / referenceCount
+  )
+  const fieldRadius = baseRadius * scaleFactor
+
+  const tulipRadius = 3
+  const minRequiredDistance = tulipRadius * 2
+
+  return {
+    baseRadius,
+    referenceCount,
+    scaleFactor,
+    fieldRadius,
+    minRequiredDistance
+  }
+}
+
+const useMainSequence = ({
+  updatePositions,
+  updateShouldShrink,
+  updateCardData,
+  checklist,
+  cardData,
+  cardInfoState,
+  minRequiredDistance,
+  fieldRadius
+}: {
+  cardInfoState: CardInfoStore['state']['card']
+  checklist: Checkbox[]
+  minRequiredDistance: number
+  fieldRadius: number
+  updatePositions: Dispatch<SetStateAction<PositionType[]>>
+  updateShouldShrink: Dispatch<SetStateAction<boolean>>
+  cardData: {
+    card: Card | null
+    checklist: Checkbox[]
+  }
+  updateCardData: Dispatch<
+    SetStateAction<{
+      card: Card | null
+      checklist: Checkbox[]
+    }>
+  >
+}) => {
+  useEffect(() => {
+    if (!cardData) {
+      return
+    }
+    let isCancelled = false
+
+    const runSequence = async () => {
+      const notEqualButSameLength =
+        ArrUtil.areListsNotEqual(checklist, cardData.checklist) &&
+        checklist.length === cardData.checklist.length
+      if (!notEqualButSameLength) {
+        //shrink
+        updateShouldShrink(true)
+        //wait
+        await new Promise(res => setTimeout(res, 500))
+        if (isCancelled) {
+          return
+        }
+      }
+      //updates
+      updateCardData({
+        card: cardInfoState.data,
+        checklist: checklist
+      })
+      if (!notEqualButSameLength) {
+        const newData = generateNonOverlappingPoints({
+          numberOfTulips: checklist.length ?? 0,
+          fieldRadius,
+          minRequiredDistance
+        })
+        const positions = calcPositions(newData)
+        updatePositions(positions)
+        //grow
+        updateShouldShrink(false)
+      }
+    }
+    void runSequence()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [cardInfoState.data, checklist, fieldRadius, minRequiredDistance])
+}
+
+interface CardDataProps {
+  card: Card | null
+  checklist: Checkbox[]
+}
+
 export interface PositionsProps {
   position: PositionType
   text: string
@@ -77,98 +204,28 @@ export const Tulip = ({
   cardInfoState: CardInfoStore['state']['card']
 }) => {
   const fieldRef = useRef<Group>(null)
+  const {fieldRadius, minRequiredDistance} = getBaseConstants(checklist)
   const [positions, updatePositions] = useState<PositionType[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
-  const [cardData, updateCardData] = useState<{
-    card: Card | null
-    checklist: Checkbox[]
-  }>({
+  const [cardData, updateCardData] = useState<CardDataProps>({
     card: cardInfoState.data,
     checklist: checklist
   })
-
-  const baseRadius = 10
-  const referenceCount = 4
-  const scaleFactor = Math.sqrt(
-    Math.max(referenceCount, checklist.length) / referenceCount
+  const scale = useMemo(() => getScale(playerSize), [playerSize])
+  const lawnPositions = useMemo(
+    () => getLawnPosition(fieldRadius),
+    [fieldRadius]
   )
-  const fieldRadius = baseRadius * scaleFactor
-
-  const tulipRadius = 3
-  const minRequiredDistance = tulipRadius * 2
-
-  useEffect(() => {
-    if (!cardData) {
-      return
-    }
-    let isCancelled = false
-
-    const runSequence = async () => {
-      const notEqualButSameLength =
-        ArrUtil.areListsNotEqual(checklist, cardData.checklist) &&
-        checklist.length === cardData.checklist.length
-
-      if (!notEqualButSameLength) {
-        //shrink
-        updateShouldShrink(true)
-        //wait
-        await new Promise(res => setTimeout(res, 500))
-        if (isCancelled) {
-          return
-        }
-      }
-      //updates
-      updateCardData({
-        card: cardInfoState.data,
-        checklist: checklist
-      })
-
-      if (!notEqualButSameLength) {
-        const newData = generateNonOverlappingPoints({
-          numberOfTulips: checklist.length ?? 0,
-          fieldRadius,
-          minRequiredDistance
-        })
-
-        const positions = calcPositions(newData)
-        updatePositions(positions)
-
-        //grow
-        updateShouldShrink(false)
-      }
-    }
-    void runSequence()
-
-    return () => {
-      isCancelled = true
-    }
-  }, [cardInfoState.data, checklist, fieldRadius, minRequiredDistance])
-
-  const calcPositions = (newData: Point[]) => {
-    const positions: PositionType[] = []
-
-    newData.forEach(point => {
-      positions.push([point.x, -1.3, point.z])
-    })
-    return positions
-  }
-
-  const lawnPositions = useMemo(() => {
-    const positions: PositionType[] = []
-    const squareSize = 20 - 0.25 // -0.25 for little overlap each other
-
-    const gridSteps = Math.ceil((fieldRadius * 2) / squareSize)
-    const offset = (gridSteps * squareSize) / 2
-
-    for (let i = 0; i <= gridSteps; i++) {
-      for (let j = 0; j <= gridSteps; j++) {
-        positions.push([i * squareSize - offset, 0, j * squareSize - offset])
-      }
-    }
-
-    return positions
-  }, [fieldRadius])
-
+  useMainSequence({
+    updatePositions,
+    updateShouldShrink,
+    updateCardData,
+    checklist,
+    cardData,
+    cardInfoState,
+    minRequiredDistance,
+    fieldRadius
+  })
   useFrame((_state, delta) => {
     if (fieldRef.current === null) {
       return
@@ -181,8 +238,6 @@ export const Tulip = ({
       delta
     )
   })
-
-  const scale = useMemo(() => getScale(playerSize), [playerSize])
 
   return (
     <group scale={scale} position={[0, 0, -3]}>
