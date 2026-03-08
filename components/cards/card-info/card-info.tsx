@@ -185,7 +185,7 @@ const TextData = observer(() => {
   const {updateCard} = useCardHandlers()
   const [state] = useCardInfoStore()
   const [text, onChange] = useInput(state.card.data?.text ?? '')
-  const debounced = useDebouncedValue(text, 500)
+  const debounced = useDebouncedValue(text, 5000)
 
   useEffect(() => {
     const text = state.card.data?.text
@@ -210,6 +210,12 @@ const TextData = observer(() => {
         size="md"
         value={text}
         onChange={onChange}
+        onBlur={async () => {
+          const id = state.card.data?.id
+          if (id && text.length > 0) {
+            await updateCard(text, id)
+          }
+        }}
         className="w-full"
         disable={!state.my}
       />

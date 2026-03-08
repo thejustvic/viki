@@ -93,7 +93,7 @@ const PlayerSize = observer(() => {
   const [state, store] = useGlobalStore()
 
   return (
-    <div className="flex gap-1 flex-wrap">
+    <div className="flex flex-1 gap-1 flex-wrap">
       {playerSizes.map(playerSize => {
         return (
           <TwRadio
