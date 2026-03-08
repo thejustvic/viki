@@ -33,8 +33,12 @@ const useFirstCurrentTeamIdListener = ({
     if (currentTeamId) {
       return
     }
-    const firstMyTeamId = store.state.myTeams.data?.[0].id
+    const firstTeam = store.state.myTeams.data?.[0]
+    const firstMyTeamId = firstTeam?.id
 
+    if (firstTeam?.owner_id !== user?.id) {
+      return
+    }
     if (!firstMyTeamId) {
       return
     } else {
