@@ -23,7 +23,6 @@ const getMyCards = (
     .order('position', {ascending: true})
 }
 
-// Check if card exists in current team
 export const useCheckCardExistInCurrentTeam = (): void => {
   const [teamState] = useTeamStore()
   const [cardState] = useCardsStore()
@@ -42,10 +41,13 @@ export const useCheckCardExistInCurrentTeam = (): void => {
   )
 
   useEffect(() => {
-    if (cardId && !cardExists(cardId)) {
+    if (!cardState.cards?.data) {
+      return
+    }
+    if (cardId && cardState.cards?.data.length >= 0 && !cardExists(cardId)) {
       updateSearchParams('card')
     }
-  }, [cardExists, updateSearchParams])
+  }, [cardState.cards?.data, cardExists, updateSearchParams])
 }
 
 // Reusable Supabase Listener Hook

@@ -47,6 +47,10 @@ export class CardsStore {
       a.position < b.position ? -1 : a.position > b.position ? 1 : 0
     )
 
+    if (!sorted) {
+      return
+    }
+
     this.state.cards = {
       ...cards,
       data: sorted ?? []
