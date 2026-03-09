@@ -16,6 +16,7 @@ import {
 import {sortableKeyboardCoordinates} from '@dnd-kit/sortable'
 import {observer} from 'mobx-react-lite'
 import {createPortal} from 'react-dom'
+import {useTeamStore} from '../team/team-store'
 import {
   AddNewCardButton,
   CardsSkeleton,
@@ -26,6 +27,7 @@ import {useCardDragHandlers} from './cards-drag-handlers'
 import {useCardsStore} from './cards-store'
 
 export const Cards = observer(() => {
+  const [teamState] = useTeamStore()
   const [state] = useCardsStore()
   const {handleDragStart, handleDragEnd} = useCardDragHandlers()
 
@@ -46,12 +48,12 @@ export const Cards = observer(() => {
     })
   )
 
-  if (state.cards.loading) {
-    return <CardsSkeleton />
-  }
-
   if (state.cards.error) {
     return <div className="text-error">{state.cards.error.message}</div>
+  }
+
+  if (state.cards.loading || !teamState.currentTeamId) {
+    return <CardsSkeleton />
   }
 
   return (
