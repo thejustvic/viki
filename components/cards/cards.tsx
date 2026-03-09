@@ -9,6 +9,7 @@ import {CSS} from '@dnd-kit/utilities'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {useGlobalStore} from '../global-provider/global-store'
+import {useTeamStore} from '../team/team-store'
 import {AddNewCard} from './add-new-card'
 import {Card} from './card'
 import {CardsContext, CardsStore, useCardsStore} from './cards-store'
@@ -31,13 +32,17 @@ export const CardsSkeleton = () => {
 
 export const AddNewCardButton = observer(() => {
   const [state] = useCardsStore()
-  return (
-    <>
-      {state.cards?.data && state.cards.data.length >= 0 ? (
-        <AddNewCard />
-      ) : null}
-    </>
-  )
+  const [teamState] = useTeamStore()
+
+  if (!teamState.currentTeamId) {
+    return null
+  }
+
+  if (!state.cards.data) {
+    return null
+  }
+
+  return state.cards.data.length >= 0 ? <AddNewCard /> : null
 })
 
 export const SortableContextContainer = observer(() => {

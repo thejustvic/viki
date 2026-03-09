@@ -52,7 +52,7 @@ export const Cards = observer(() => {
     return <div className="text-error">{state.cards.error.message}</div>
   }
 
-  if (state.cards.loading || !teamState.currentTeamId) {
+  if (state.cards.loading || teamState.currentTeam.loading) {
     return <CardsSkeleton />
   }
 
