@@ -27,7 +27,7 @@ export const useMyTeamsListener = ({
   currentTeamId: string | null
 }): void => {
   const fetchMyTeams = useCallback(() => {
-    if (!user) {
+    if (!user || store.state.myTeams.data?.length) {
       return null
     }
     return getMyTeams(user, supabase)

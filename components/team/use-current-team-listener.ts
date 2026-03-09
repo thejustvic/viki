@@ -78,10 +78,7 @@ export const useCurrentTeamListener = ({
   currentTeamId: string | null
 }): void => {
   const fetchTeam = useCallback(() => {
-    if (!user) {
-      return null
-    }
-    if (!currentTeamId) {
+    if (!user || !currentTeamId) {
       return null
     }
     return getTeam(supabase, currentTeamId)
