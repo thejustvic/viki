@@ -5,6 +5,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
+import {TwCardText} from './card'
 
 export const AddNewCard = () => {
   return (
@@ -24,9 +25,7 @@ const CardBody = observer(() => {
   return (
     <div className="flex flex-col flex-1 justify-between">
       <CardUI.Title>
-        <div className="text-base-content/50 drop-shadow-xl/25">
-          push the button below to add a new card
-        </div>
+        <TwCardText>push the button below to add a new card</TwCardText>
       </CardUI.Title>
       <CardUI.Actions>
         <Button

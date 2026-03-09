@@ -63,7 +63,7 @@ export const Card = observer(
   }
 )
 
-const TwText = tw.div`
+export const TwCardText = tw.div`
   line-clamp-3
   text-base-content/50
   drop-shadow-xl/25
@@ -101,7 +101,7 @@ const CardBody = observer(
         onMouseLeave={hovered.turnOff}
       >
         <CardUI.Title className="flex justify-between">
-          <TwText>{card.text}</TwText>
+          <TwCardText>{card.text}</TwCardText>
           {my && (
             <CardActionButtons
               isDragging={Boolean(state.draggingCard)}
