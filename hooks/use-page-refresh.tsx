@@ -6,12 +6,16 @@ import {useEffect} from 'react'
 
 export const usePageRefresh = () => {
   const router = useRouter()
-  const {session: mySession, supabase} = useSupabase()
+  const {user, session: mySession, supabase} = useSupabase()
 
   useEffect(() => {
     const {
       data: {subscription}
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && user?.id === session?.user?.id) {
+        return
+      }
+
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
         router.refresh()
       }
