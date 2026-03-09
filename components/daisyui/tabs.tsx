@@ -1,13 +1,13 @@
-import {headerHeight} from '@/utils/const'
-import {HTMLProps, PropsWithChildren} from 'react'
+import {TablerIcon} from '@tabler/icons-react'
+import {ChangeEventHandler, HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
-interface Props extends PropsWithChildren {
+interface PropsWithClassName extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
 }
 
 /* name of each tab group should be unique */
-export const Tabs = ({children, className, ...props}: Props) => {
+export const Tabs = ({children, className, ...props}: PropsWithClassName) => {
   return (
     <div
       role="tablist"
@@ -19,28 +19,40 @@ export const Tabs = ({children, className, ...props}: Props) => {
   )
 }
 
-interface PropsTab extends React.InputHTMLAttributes<HTMLInputElement> {
+interface PropsTab extends PropsWithClassName {
   label: string
   groupName: string
+  value: string
+  onChange: ChangeEventHandler<HTMLInputElement>
   checked: boolean
+  icon?: TablerIcon
 }
 
-Tabs.Tab = ({label, groupName, className, checked, ...props}: PropsTab) => {
+Tabs.Tab = ({
+  label,
+  value,
+  onChange,
+  groupName,
+  className,
+  checked,
+  icon: Icon
+}: PropsTab) => {
   return (
-    <input
-      type="radio"
-      name={groupName}
-      checked={checked}
-      role="tab"
-      className={twJoin('tab h-[42px] my-2', className)}
-      aria-label={label}
-      style={{height: headerHeight}}
-      {...props}
-    />
+    <label className={twJoin('tab h-[42px] my-2', className)}>
+      <input
+        type="radio"
+        name={groupName}
+        checked={checked}
+        value={value}
+        onChange={onChange}
+      />
+      {label}
+      {Icon && <Icon className="ml-2" />}
+    </label>
   )
 }
 
-Tabs.TabContent = ({children, className, ...props}: Props) => {
+Tabs.TabContent = ({children, className, ...props}: PropsWithClassName) => {
   return (
     <div
       className={twJoin(

@@ -1,18 +1,18 @@
 import {Input} from '@/components/daisyui/input'
+import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global-provider/global-store'
+import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import tw from 'tailwind-styled-components'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {Card, CardVisualType, PlayerSizeType} from '../../types'
+import {Card, PlayerSizeType} from '../../types'
 import {ShowData} from '../card-info'
 import {useCardInfoStore} from '../card-info-store'
 
-const TwRadio = tw.div`flex gap-1 items-center justify-between w-[90px] bg-base-200 p-2 rounded cursor-pointer`
+const TwRadio = tw.div`flex gap-1 items-center justify-between w-[100px] bg-base-200 p-2 rounded cursor-pointer`
 
-const cardVisual: CardVisualType = ['winter', 'spring']
-
-export const VisualContent = observer(() => {
+const VisualContentWinter = observer(() => {
   const [state] = useCardInfoStore()
   const {updateCardVisual} = useCardHandlers()
   const id = String(getSearchCard())
@@ -21,48 +21,70 @@ export const VisualContent = observer(() => {
     return null
   }
 
+  const checked = state?.card?.data?.selected_visual === 'winter'
+
   return (
-    <div className="flex flex-col gap-2 flex-1">
-      <div className="flex gap-1">
-        {cardVisual.map(visual => {
-          return (
-            <TwRadio key={visual} onClick={() => updateCardVisual(visual, id)}>
-              <div>{visual}</div>
-              <input
-                disabled={!state.my}
-                type="radio"
-                name="radio-visual"
-                className="radio"
-                checked={state?.card?.data?.selected_visual === visual}
-                readOnly
-              />
-            </TwRadio>
-          )
-        })}
-      </div>
-      <Content />
-    </div>
+    <>
+      <Tabs.Tab
+        value="winter"
+        onChange={({target: {value}}) => {
+          updateCardVisual(value, id)
+        }}
+        label="winter"
+        groupName="tabs-visual"
+        checked={checked}
+        icon={checked ? IconCircleCheck : IconCircle}
+      />
+      <Tabs.TabContent className="p-2">
+        <WinterContent />
+      </Tabs.TabContent>
+    </>
   )
 })
 
-const Content = observer(() => {
+const VisualContentSpring = observer(() => {
+  const [state] = useCardInfoStore()
+  const {updateCardVisual} = useCardHandlers()
+  const id = String(getSearchCard())
+
+  if (!state.card.data) {
+    return null
+  }
+
+  const checked = state?.card?.data?.selected_visual === 'spring'
+
+  return (
+    <>
+      <Tabs.Tab
+        value="spring"
+        onChange={({target: {value}}) => {
+          updateCardVisual(value, id)
+        }}
+        label="spring"
+        groupName="tabs-visual"
+        checked={checked}
+        icon={checked ? IconCircleCheck : IconCircle}
+      />
+      <Tabs.TabContent className="p-2">
+        <SpringContent />
+      </Tabs.TabContent>
+    </>
+  )
+})
+
+export const VisualContent = observer(() => {
   const [state] = useCardInfoStore()
 
   if (!state.card.data) {
     return null
   }
 
-  switch (state?.card?.data?.selected_visual) {
-    case 'winter': {
-      return <WinterContent />
-    }
-    case 'spring': {
-      return <SpringContent />
-    }
-    default: {
-      return 'no content here, check another type'
-    }
-  }
+  return (
+    <Tabs className="flex flex-1 justify-around h-full">
+      <VisualContentWinter />
+      <VisualContentSpring />
+    </Tabs>
+  )
 })
 
 const SpringContent = () => {
