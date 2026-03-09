@@ -3,6 +3,7 @@ import {Card} from '@/components/daisyui/card'
 import {Form} from '@/components/daisyui/form'
 import {Input} from '@/components/daisyui/input'
 import {useGlobalStore} from '@/components/global-provider/global-store'
+import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {AuthResponse} from '@supabase/supabase-js'
 import {observer} from 'mobx-react-lite'
 import {SubmitHandler, useForm, UseFormRegister} from 'react-hook-form'
@@ -64,8 +65,10 @@ export const EmailLoginForm = observer(
       handleSubmit,
       formState: {errors}
     } = useForm<FormValues>()
-    const [captchaState, captchaStore] = useCaptchaStore()
-    const [state, store] = useGlobalStore()
+    const cloudflareNeedToReset = useBoolean(false)
+    const [, captchaStore] = useCaptchaStore()
+    const [, store] = useGlobalStore()
+
     const onSubmit: SubmitHandler<FormValues> = async data => {
       store.setLogging('email')
       const {
@@ -77,6 +80,7 @@ export const EmailLoginForm = observer(
         store.setLoggingOff()
       }
       if (error) {
+        cloudflareNeedToReset.turnOn()
         captchaStore.setCaptchaToken(undefined)
         store.setLoggingOff()
         setError(
@@ -86,7 +90,6 @@ export const EmailLoginForm = observer(
         )
       }
     }
-    const someLoad = store.checkIfSomeLoad()
 
     return (
       <div className={'transform-3d backface-hidden'}>
@@ -97,25 +100,52 @@ export const EmailLoginForm = observer(
             className={'flex flex-col gap-8'}
           >
             <Inputs register={register} isRegister={isRegister} />
+            <Buttons cloudflareNeedToReset={cloudflareNeedToReset} />
             {errors.email?.message && errors.email?.message?.length > 0 && (
               <TwErrorWrapper>
                 <TwError>{errors.email.message}</TwError>
               </TwErrorWrapper>
             )}
-            <TwSubmit
-              soft
-              color="primary"
-              type="submit"
-              loading={state.logging.email}
-              disable={someLoad || !captchaState.captchaToken}
-            >
-              Submit
-            </TwSubmit>
           </Form>
           <Button ghost variant="link" size="sm" onClick={handleLink}>
             {linkTitle}
           </Button>
         </TwBody>
+      </div>
+    )
+  }
+)
+
+const Buttons = observer(
+  ({cloudflareNeedToReset}: {cloudflareNeedToReset: BooleanHookState}) => {
+    const [captchaState, captchaStore] = useCaptchaStore()
+    const [state, store] = useGlobalStore()
+
+    const isSubmitDisable =
+      store.checkIfSomeLoad() || !captchaState.captchaToken
+
+    return (
+      <div className="join join-vertical">
+        <TwSubmit
+          soft
+          color="primary"
+          type="submit"
+          loading={state.logging.email}
+          disable={isSubmitDisable}
+          className="join-item"
+        >
+          Submit
+        </TwSubmit>
+        {cloudflareNeedToReset.value && (
+          <Button
+            type="button"
+            soft
+            className="join-item"
+            onClick={captchaStore.resetCaptcha}
+          >
+            push to reset cloudflare
+          </Button>
+        )}
       </div>
     )
   }
