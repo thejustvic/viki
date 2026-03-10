@@ -11,7 +11,6 @@ import {
 } from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
-import {CardInfoStore} from '../../card-info/card-info-store'
 import {Card, PlayerSizeType} from '../../types'
 import {LawnInstances} from '../components/lawn-instances'
 import {TulipInstances} from '../components/tulip-instances'
@@ -90,11 +89,11 @@ const calcPositions = (newData: Point[]) => {
   return positions
 }
 
-const getBaseConstants = (checklist: Checkbox[]) => {
+const getBaseConstants = (checklist: Checkbox[] | undefined) => {
   const baseRadius = 10
   const referenceCount = 4
   const scaleFactor = Math.sqrt(
-    Math.max(referenceCount, checklist.length) / referenceCount
+    Math.max(referenceCount, checklist?.length ?? 0) / referenceCount
   )
   const fieldRadius = baseRadius * scaleFactor
 
@@ -116,24 +115,24 @@ const useMainSequence = ({
   updateCardData,
   checklist,
   cardData,
-  cardInfoState,
+  card,
   minRequiredDistance,
   fieldRadius
 }: {
-  cardInfoState: CardInfoStore['state']['card']
-  checklist: Checkbox[]
+  card: Card | null
+  checklist: Checkbox[] | undefined
   minRequiredDistance: number
   fieldRadius: number
   updatePositions: Dispatch<SetStateAction<PositionType[]>>
   updateShouldShrink: Dispatch<SetStateAction<boolean>>
   cardData: {
     card: Card | null
-    checklist: Checkbox[]
+    checklist: Checkbox[] | undefined
   }
   updateCardData: Dispatch<
     SetStateAction<{
       card: Card | null
-      checklist: Checkbox[]
+      checklist: Checkbox[] | undefined
     }>
   >
 }) => {
@@ -145,8 +144,8 @@ const useMainSequence = ({
 
     const runSequence = async () => {
       const notEqualButSameLength =
-        ArrUtil.areListsNotEqual(checklist, cardData.checklist) &&
-        checklist.length === cardData.checklist.length
+        ArrUtil.areListsNotEqual(checklist ?? [], cardData.checklist ?? []) &&
+        checklist?.length === cardData.checklist?.length
       if (!notEqualButSameLength) {
         //shrink
         updateShouldShrink(true)
@@ -158,12 +157,12 @@ const useMainSequence = ({
       }
       //updates
       updateCardData({
-        card: cardInfoState.data,
+        card: card,
         checklist: checklist
       })
       if (!notEqualButSameLength) {
         const newData = generateNonOverlappingPoints({
-          numberOfTulips: checklist.length ?? 0,
+          numberOfTulips: checklist?.length ?? 0,
           fieldRadius,
           minRequiredDistance
         })
@@ -178,12 +177,12 @@ const useMainSequence = ({
     return () => {
       isCancelled = true
     }
-  }, [cardInfoState.data, checklist, fieldRadius, minRequiredDistance])
+  }, [card, checklist, fieldRadius, minRequiredDistance])
 }
 
 interface CardDataProps {
   card: Card | null
-  checklist: Checkbox[]
+  checklist: Checkbox[] | undefined
 }
 
 export interface PositionsProps {
@@ -197,18 +196,18 @@ export interface PositionsProps {
 export const Tulip = ({
   playerSize,
   checklist,
-  cardInfoState
+  card
 }: {
   playerSize: PlayerSizeType[number]
-  checklist: Checkbox[]
-  cardInfoState: CardInfoStore['state']['card']
+  checklist: Checkbox[] | undefined
+  card: Card | null
 }) => {
   const fieldRef = useRef<Group>(null)
   const {fieldRadius, minRequiredDistance} = getBaseConstants(checklist)
   const [positions, updatePositions] = useState<PositionType[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
   const [cardData, updateCardData] = useState<CardDataProps>({
-    card: cardInfoState.data,
+    card: card,
     checklist: checklist
   })
   const scale = useMemo(() => getScale(playerSize), [playerSize])
@@ -222,7 +221,7 @@ export const Tulip = ({
     updateCardData,
     checklist,
     cardData,
-    cardInfoState,
+    card,
     minRequiredDistance,
     fieldRadius
   })
@@ -238,7 +237,6 @@ export const Tulip = ({
       delta
     )
   })
-
   return (
     <group scale={scale} position={[0, 0, -3]}>
       <group ref={fieldRef} scale={0.5}>

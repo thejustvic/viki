@@ -1,7 +1,8 @@
 import {SupabaseQuery} from '@/hooks/use-supabase-fetch'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {ObjUtil} from '@/utils/obj-util'
-import {makeAutoObservable, observable} from 'mobx'
+import {makeAutoObservable, observable, toJS} from 'mobx'
+import {computedFn} from 'mobx-utils'
 import {Checkbox} from './types'
 
 interface State {
@@ -41,17 +42,22 @@ export class CardChecklistStore {
     this.state.checklists = checklist
   }
 
-  getAllCheckboxes = (cardId: string): Checkbox[] | undefined => {
+  getAllCheckboxes = computedFn((cardId: string): Checkbox[] | undefined => {
+    const data = this.state.checklists.data?.get(cardId)
+    if (!data) {
+      return undefined
+    }
+
+    const plainData = toJS(data)
+
     return (
-      this.state.checklists.data
-        ?.get(cardId)
-        ?.slice()
+      plainData
         // sort fractional index
         ?.toSorted((a, b) =>
           a.position < b.position ? -1 : a.position > b.position ? 1 : 0
         )
     )
-  }
+  })
 
   getCheckboxesCompleted = (cardId: string): Checkbox[] | undefined => {
     return (

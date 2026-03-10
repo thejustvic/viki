@@ -31,7 +31,7 @@ type GLTFResult = GLTF & {
 interface Props {
   positions: PositionType[]
   card: Card | null
-  checklist: Checkbox[]
+  checklist: Checkbox[] | undefined
   shouldShrink: boolean
 }
 
@@ -104,7 +104,7 @@ interface TulipProps {
   }
   models: any
   shouldShrink: boolean
-  checkbox: Checkbox
+  checkbox: Checkbox | undefined
   color: string
   plateColor: string
   plateTextColor: string

@@ -209,8 +209,8 @@ export const CardVisualTab = observer(() => {
   return (
     <CardVisual
       playerSize={globalState.playerSize}
-      checklist={cardChecklistStore.getAllCheckboxes(id) ?? []}
-      cardInfoState={cardInfoState.card}
+      checklist={cardChecklistStore.getAllCheckboxes(id)}
+      card={cardInfoState.card.data}
     />
   )
 })

@@ -2,7 +2,7 @@ import {Button} from '@/components/daisyui/button'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
-import {Environment, Loader} from '@react-three/drei'
+import {Environment} from '@react-three/drei'
 import {Physics} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
 import {CSSProperties, RefObject} from 'react'
@@ -78,7 +78,6 @@ export const BasicScene = ({
         </Physics>
         {selectedVisual === 'winter' && <Snowfall />}
       </Canvas>
-      <Loader />
       {!isMobile && <TwDot />}
     </div>
   )

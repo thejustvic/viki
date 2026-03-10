@@ -3,8 +3,7 @@ import {Sky} from '@react-three/drei'
 import {useRef} from 'react'
 import {isMobile} from 'react-device-detect'
 import {Checkbox} from '../checklist/types'
-import {CardInfoStore} from './card-info/card-info-store'
-import {CardVisualType, PlayerSizeType} from './types'
+import {Card, CardVisualType, PlayerSizeType} from './types'
 import {BaseCharacter} from './visual/ui/base-character'
 import {BasicScene} from './visual/ui/base-scene'
 import {ConeWithSpheres} from './visual/ui/cone'
@@ -15,15 +14,15 @@ type Vector2 = {x: number; y: number}
 export default function CardVisual({
   playerSize,
   checklist,
-  cardInfoState
+  card
 }: {
   playerSize: PlayerSizeType[number]
-  checklist: Checkbox[]
-  cardInfoState: CardInfoStore['state']['card']
+  checklist: Checkbox[] | undefined
+  card: Card | null
 }) {
   const isLocked = useBoolean(isMobile ? false : true)
-  const selectedVisual = cardInfoState.data
-    ?.selected_visual as unknown as CardVisualType[number]
+  const selectedVisual =
+    card?.selected_visual as unknown as CardVisualType[number]
 
   const moveData = useRef<Vector2>({x: 0, y: 0})
   const lookData = useRef<Vector2>({x: 0, y: 0})
@@ -36,14 +35,10 @@ export default function CardVisual({
       lookData={lookData}
     >
       {selectedVisual === 'spring' && (
-        <Tulip
-          checklist={checklist}
-          cardInfoState={cardInfoState}
-          playerSize={playerSize}
-        />
+        <Tulip checklist={checklist} card={card} playerSize={playerSize} />
       )}
       {selectedVisual === 'winter' && (
-        <ConeWithSpheres checklist={checklist} cardInfoState={cardInfoState} />
+        <ConeWithSpheres checklist={checklist} card={card} />
       )}
 
       <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />

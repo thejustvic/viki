@@ -6,6 +6,7 @@ import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react'
 import {Group} from 'three'
 import {Checkbox} from '../../card-checklist/types'
 import {CardInfoStore} from '../../card-info/card-info-store'
+import {Card} from '../../types'
 import {TreeModel} from '../components/tree-model'
 import {BaseSphere} from './base-sphere'
 
@@ -89,10 +90,10 @@ const generateNonOverlappingPoints = ({
   return points
 }
 
-const getBaseConstant = (checklist: Checkbox[]) => {
+const getBaseConstant = (checklist: Checkbox[] | undefined) => {
   const referenceCount = 15
   const scaleFactor = Math.sqrt(
-    Math.max(referenceCount, checklist.length) / referenceCount
+    Math.max(referenceCount, checklist?.length ?? 0) / referenceCount
   )
 
   const treeGroundY = 0
@@ -137,7 +138,7 @@ const useMainSequence = ({
   updateCardData,
   cardData,
   checklist,
-  cardInfoState,
+  card,
   coneRadius,
   coneHeight,
   minRequiredDistance
@@ -146,8 +147,8 @@ const useMainSequence = ({
   updateSpherePositions: Dispatch<SetStateAction<SphereData[]>>
   updateCardData: Dispatch<SetStateAction<CardDataProps>>
   cardData: CardDataProps
-  checklist: Checkbox[]
-  cardInfoState: CardInfoStore['state']['card']
+  checklist: Checkbox[] | undefined
+  card: Card | null
   coneRadius: number
   coneHeight: number
   minRequiredDistance: number
@@ -160,8 +161,8 @@ const useMainSequence = ({
 
     const runSequence = async () => {
       const notEqualButSameLength =
-        ArrUtil.areListsNotEqual(checklist, cardData.checklist) &&
-        checklist.length === cardData.checklist.length
+        ArrUtil.areListsNotEqual(checklist ?? [], cardData.checklist ?? []) &&
+        checklist?.length === cardData.checklist?.length
       if (!notEqualButSameLength) {
         //shrink spheres
         updateShouldShrink(true)
@@ -173,12 +174,12 @@ const useMainSequence = ({
       }
       //updates
       updateCardData({
-        card: cardInfoState.data,
+        card: card,
         checklist: checklist
       })
       if (!notEqualButSameLength) {
         const newData = generateNonOverlappingPoints({
-          numberOfSpheres: checklist.length ?? 0,
+          numberOfSpheres: checklist?.length ?? 0,
           coneRadius,
           coneHeight,
           minRequiredDistance
@@ -193,34 +194,25 @@ const useMainSequence = ({
     return () => {
       isCancelled = true
     }
-  }, [
-    cardInfoState.data,
-    checklist,
-    coneRadius,
-    coneHeight,
-    minRequiredDistance
-  ])
+  }, [card, checklist, coneRadius, coneHeight, minRequiredDistance])
 }
 
 interface CardDataProps {
-  card: CardInfoStore['state']['card']['data']
-  checklist: Checkbox[]
+  card: Card | null
+  checklist: Checkbox[] | undefined
 }
 
 interface ConeWithSpheresProps {
-  checklist: Checkbox[]
-  cardInfoState: CardInfoStore['state']['card']
+  checklist: Checkbox[] | undefined
+  card: Card | null
 }
 
-export const ConeWithSpheres = ({
-  checklist,
-  cardInfoState
-}: ConeWithSpheresProps) => {
+export const ConeWithSpheres = ({checklist, card}: ConeWithSpheresProps) => {
   const treeRef = useRef<Group>(null)
   const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
   const [cardData, updateCardData] = useState<CardDataProps>({
-    card: cardInfoState.data,
+    card: card,
     checklist: checklist
   })
   const {
@@ -240,7 +232,7 @@ export const ConeWithSpheres = ({
     updateCardData,
     cardData,
     checklist,
-    cardInfoState,
+    card,
     coneRadius,
     coneHeight,
     minRequiredDistance
@@ -294,7 +286,7 @@ const Spheres = ({
   cardData: CardInfoStore['state']['card']['data']
   shouldShrink: boolean
   spherePositions: SphereData[]
-  checklist: Checkbox[]
+  checklist: Checkbox[] | undefined
 }) => {
   const sphereBgColorCompleted = cardData?.bauble_color_completed ?? '#00ff00'
   const sphereBgColorNotCompleted =
