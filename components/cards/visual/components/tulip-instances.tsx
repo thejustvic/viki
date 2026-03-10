@@ -232,6 +232,10 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
 
   return (
     <group scale={1} position={[0, 2.5, 2]} rotation={[-Math.PI / 6, 0, 0]}>
+      {/* <Text fontSize={0.3} anchorX="center" anchorY="middle">
+          {wrappedText}
+          <meshStandardMaterial color={plateTextColor} />
+        </Text> */}
       <Center key={wrappedText}>
         <Text3D
           font={'/OpenSans_Regular.json'}

@@ -120,6 +120,7 @@ const Text = observer(() => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 flex-col">
       <Textarea
+        textareaId="modal-card-create"
         size="md"
         className="w-full"
         {...register('createCard69', {

@@ -16,6 +16,7 @@ export const CheckboxEdit = observer(
     return (
       <div className="flex gap-2 flex-col mx-9 my-1">
         <Textarea
+          textareaId={'checkbox-edit'}
           className="w-full min-h-10 h-10"
           onBlur={e => store.blurEditing(e.target.value, title)}
           value={state.unsavedTitle ?? value}

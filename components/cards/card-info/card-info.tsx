@@ -198,7 +198,13 @@ const TextData = observer(() => {
   if (state.card.loading) {
     return (
       <div className="relative w-full">
-        <Textarea size="md" value={''} className="w-full" onChange={() => {}} />
+        <Textarea
+          textareaId={'card-info-empty'}
+          size="md"
+          value={''}
+          className="w-full"
+          onChange={() => {}}
+        />
         <TwLoading className="absolute transform -translate-x-1/2 -translate-y-2/3 top-1/2 left-1/2" />
       </div>
     )
@@ -207,6 +213,7 @@ const TextData = observer(() => {
   return (
     <div className="flex-1">
       <Textarea
+        textareaId={'card-info-text'}
         size="md"
         value={text}
         onChange={onChange}

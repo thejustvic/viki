@@ -1,4 +1,4 @@
-import {HTMLProps, PropsWithChildren, useId} from 'react'
+import {HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
 interface Props
@@ -9,16 +9,17 @@ interface Props
 interface PropsTextarea extends Props {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   disable?: boolean
+  textareaId: string
 }
 
 export const Textarea = ({
+  textareaId,
   children,
   size,
   disable,
   className,
   ...props
 }: PropsTextarea) => {
-  const textareaId = useId()
   return (
     <textarea
       id={textareaId}
