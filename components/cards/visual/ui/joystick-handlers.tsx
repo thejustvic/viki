@@ -8,6 +8,7 @@ export interface Vector2 {
 interface Handlers {
   stickPos: Vector2
   handleStart: (e: React.TouchEvent<HTMLDivElement>) => void
+  manualTiltAngle: Vector2
 }
 
 interface JoystickProps {
@@ -21,9 +22,9 @@ export const useJoystickHandlers = ({
   onUpdate,
   radius
 }: JoystickProps): Handlers => {
+  const [manualTiltAngle, setManualTiltAngle] = useState<Vector2>({x: 0, y: 0})
   const [stickPos, setStickPos] = useState<Vector2>({x: 0, y: 0})
   const activeTouchId = useRef<number | null>(null)
-
   const handleStart = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
       const touch = e.changedTouches[0]
@@ -31,7 +32,6 @@ export const useJoystickHandlers = ({
       const rect = e.currentTarget.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
-
       const handleMove = (moveEvent: TouchEvent) => {
         const touch = Array.from(moveEvent.touches).find(
           t => t.identifier === activeTouchId.current
@@ -47,6 +47,7 @@ export const useJoystickHandlers = ({
           dy *= radius / distance
         }
         setStickPos({x: dx, y: dy})
+        setManualTiltAngle({x: dx * 0.5, y: -dy * 0.5})
         if (label === 'LOOK') {
           // look around Up/Down (Y) and Left/Right (X)
           onUpdate({
@@ -61,7 +62,6 @@ export const useJoystickHandlers = ({
           })
         }
       }
-
       const handleEnd = (endEvent: TouchEvent) => {
         const touch = Array.from(endEvent.changedTouches).find(
           t => t.identifier === activeTouchId.current
@@ -70,6 +70,7 @@ export const useJoystickHandlers = ({
           activeTouchId.current = null
           setStickPos({x: 0, y: 0})
           onUpdate({x: 0, y: 0})
+          setManualTiltAngle({x: 0, y: 0})
           window.removeEventListener('touchmove', handleMove)
           window.removeEventListener('touchend', handleEnd)
         }
@@ -79,9 +80,9 @@ export const useJoystickHandlers = ({
     },
     [onUpdate, radius]
   )
-
   return {
     handleStart,
-    stickPos
+    stickPos,
+    manualTiltAngle
   }
 }
