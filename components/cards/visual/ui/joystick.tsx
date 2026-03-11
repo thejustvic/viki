@@ -67,18 +67,11 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
                         inset 0px -4px 10px rgba(255,255,255,0.3)
                       `
           }}
-        />
-        <span
-          style={{
-            color: 'white',
-            opacity: 0.3,
-            fontSize: '10px',
-            pointerEvents: 'none',
-            userSelect: 'none'
-          }}
         >
-          {label}
-        </span>
+          <span className="grid place-items-center h-full text-white opacity-30 text-xs pointer-events-none select-none">
+            {label}
+          </span>
+        </div>
       </Tilt>
     </div>
   )
