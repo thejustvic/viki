@@ -70,7 +70,9 @@ export const BasicScene = ({
       }
     >
       <ButtonsAboveCanvas isLocked={isLocked} />
-      <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+      {isCalculated.value && (
+        <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+      )}
       <Canvas selectedVisual={selectedVisual}>
         <Suspense fallback={<CanvasLoader />}>
           {/* Environment map for realistic reflections */}
@@ -82,7 +84,7 @@ export const BasicScene = ({
             <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
           </Physics>
           {selectedVisual === 'winter' && <Snowfall />}
-          <RenderNotifier onFirstFrame={isCalculated.turnOn} />
+          <RenderNotifier onFirstFrame={isCalculated} />
         </Suspense>
       </Canvas>
       {!isMobile && isCalculated.value && <TwDot />}
@@ -90,11 +92,11 @@ export const BasicScene = ({
   )
 }
 
-const RenderNotifier = ({onFirstFrame}: {onFirstFrame: () => void}) => {
+const RenderNotifier = ({onFirstFrame}: {onFirstFrame: BooleanHookState}) => {
   useFrame(state => {
     // gl.render counts frames. Check if we have rendered at least 1-2 frames
-    if (state.gl.info.render.calls > 0) {
-      onFirstFrame()
+    if (state.gl.info.render.calls > 0 && !onFirstFrame.value) {
+      onFirstFrame.turnOn()
     }
   })
   return null
