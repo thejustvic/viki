@@ -1,11 +1,13 @@
+import {Loader} from '@/components/common/loader'
 import {Button} from '@/components/daisyui/button'
-import {BooleanHookState} from '@/hooks/use-boolean'
+import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
-import {Environment} from '@react-three/drei'
+import {Environment, Html, Sky, useProgress} from '@react-three/drei'
+import {useFrame} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
-import {CSSProperties, RefObject} from 'react'
+import {CSSProperties, RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
@@ -58,6 +60,7 @@ export const BasicScene = ({
   isLocked
 }: BasicSceneProps) => {
   const visualTab = getSearchParam('visual-tab')
+  const isCalculated = useBoolean(false)
 
   return (
     <div
@@ -69,17 +72,43 @@ export const BasicScene = ({
       <ButtonsAboveCanvas isLocked={isLocked} />
       <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
       <Canvas selectedVisual={selectedVisual}>
-        {/* Environment map for realistic reflections */}
-        <Environment preset="sunset" />
-        <Lights />
-        <Physics gravity={[0, -9.8, 0]}>
-          {children}
-          <Floor color="white" />
-        </Physics>
-        {selectedVisual === 'winter' && <Snowfall />}
+        <Suspense fallback={<CanvasLoader />}>
+          {/* Environment map for realistic reflections */}
+          <Environment preset="sunset" />
+          <Lights />
+          <Physics gravity={[0, -9.8, 0]}>
+            {children}
+            <Floor color="white" />
+            <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
+          </Physics>
+          {selectedVisual === 'winter' && <Snowfall />}
+          <RenderNotifier onFirstFrame={isCalculated.turnOn} />
+        </Suspense>
       </Canvas>
-      {!isMobile && <TwDot />}
+      {!isMobile && isCalculated.value && <TwDot />}
     </div>
+  )
+}
+
+const RenderNotifier = ({onFirstFrame}: {onFirstFrame: () => void}) => {
+  useFrame(state => {
+    // gl.render counts frames. Check if we have rendered at least 1-2 frames
+    if (state.gl.info.render.calls > 0) {
+      onFirstFrame()
+    }
+  })
+  return null
+}
+
+const CanvasLoader = () => {
+  const {progress} = useProgress()
+  return (
+    <Html center>
+      <div className="flex justify-center items-center gap-2 w-full h-full text-violet-400">
+        <Loader />
+        <span>{progress.toFixed(0)}%</span>
+      </div>
+    </Html>
   )
 }
 

@@ -1,5 +1,4 @@
 import {useBoolean} from '@/hooks/use-boolean'
-import {Sky} from '@react-three/drei'
 import {useRef} from 'react'
 import {isMobile} from 'react-device-detect'
 import {Checkbox} from '../checklist/types'
@@ -40,8 +39,6 @@ export default function CardVisual({
       {selectedVisual === 'winter' && (
         <ConeWithSpheres checklist={checklist} card={card} />
       )}
-
-      <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
       <BaseCharacter
         position={[0, 0, 0]}
         args={[0.5]}
