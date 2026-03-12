@@ -36,8 +36,8 @@ const ThumbGripStyles: CSSProperties = {
   transformStyle: 'preserve-3d'
 }
 
-const topColor = `rgba(0, 87, 184, 0.8)`
-const bottomColor = `rgba(255, 221, 0, 0.7)`
+const topColor = `#0057B7`
+const bottomColor = `#FFDD00`
 
 const BallJointStyles: CSSProperties = {
   position: 'absolute',
@@ -94,7 +94,7 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
               width: `${radius * 2.6}px`, // a little more so that there are no holes when tilted
               height: `${radius * 2.6}px`,
               opacity:
-                Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 1 : 0.5,
+                Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 0.9 : 0.4,
               transition: 'opacity 0.5s ease'
             }}
           />
