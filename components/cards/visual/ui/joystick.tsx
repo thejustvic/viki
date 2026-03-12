@@ -43,7 +43,7 @@ const BallJointStyles: CSSProperties = {
   position: 'absolute',
   top: '50%',
   left: '50%',
-  transform: `translate(-50%, -50%)`,
+  transform: `translate(-50%, -50%) translateZ(20px)`,
   borderRadius: '50%',
   // 3D ball effect through gradient
   background: `
@@ -91,10 +91,11 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
           <div
             style={{
               ...BallJointStyles,
-              width: `${radius * 2.8}px`, // a little more so that there are no holes when tilted
-              height: `${radius * 2.8}px`,
-              opacity: Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 1 : 0,
-              transition: 'opacity 0.2s ease'
+              width: `${radius * 2.6}px`, // a little more so that there are no holes when tilted
+              height: `${radius * 2.6}px`,
+              opacity:
+                Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 1 : 0.5,
+              transition: 'opacity 0.5s ease'
             }}
           />
         </Tilt>
