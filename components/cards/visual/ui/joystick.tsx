@@ -138,13 +138,13 @@ export const DualJoysticks: React.FC<{
   onMove: (v: Vector2) => void
   onLook: (v: Vector2) => void
 }> = ({onMove, onLook}) => {
-  const [radius, setRadius] = useState(120)
+  const [radius, setRadius] = useState(60)
 
   useEffect(() => {
     const updateSize = () => {
       const calculatedRadius = Math.min(
-        Math.max(window.innerWidth * 0.2, 60),
-        120
+        Math.max(window.innerWidth * 0.2, 30),
+        60
       )
       setRadius(calculatedRadius)
     }

@@ -263,7 +263,7 @@ export const Tulip = ({
 const LoadingTulips = () => {
   return (
     <Html>
-      <div className="text-2xl bold -ml-14 pb-10 truncate">
+      <div className="text-2xl text-white bold -ml-14 pb-10 truncate">
         loading tulips...
       </div>
     </Html>
