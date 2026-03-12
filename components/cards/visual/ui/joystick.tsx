@@ -40,10 +40,25 @@ const BallJointStyles: CSSProperties = {
   position: 'absolute',
   top: '50%',
   left: '50%',
-  transform: `translate(-50%, -50%) translateZ(-20px)`,
+  transform: `translate(-50%, -50%)`,
   borderRadius: '50%',
   // 3D ball effect through gradient
-  background: 'radial-gradient(circle at 50% 30%, #333 0%, #050505 100%)',
+  background: `
+                /* bright reflection from above */
+                radial-gradient(circle at 50% 20%, rgba(255,255,255,0.2) 0%, transparent 45%),
+                
+                /* left side marker light */
+                radial-gradient(circle at 0% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                
+                /* right side marker light */
+                radial-gradient(circle at 100% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                
+                /* soft reflex from below */
+                radial-gradient(circle at 50% 120%, rgba(255,255,255,0.1) 0%, transparent 60%),
+                
+                /* main volume */
+                radial-gradient(circle at 50% 30%, #444 0%, #050505 100%)
+              `,
   zIndex: -1, // located under ThumbGripStyles
   pointerEvents: 'none'
 }
