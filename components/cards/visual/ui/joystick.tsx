@@ -36,6 +36,9 @@ const ThumbGripStyles: CSSProperties = {
   transformStyle: 'preserve-3d'
 }
 
+const topColor = `rgba(0, 87, 184, 0.8)`
+const bottomColor = `rgba(255, 221, 0, 0.7)`
+
 const BallJointStyles: CSSProperties = {
   position: 'absolute',
   top: '50%',
@@ -44,20 +47,17 @@ const BallJointStyles: CSSProperties = {
   borderRadius: '50%',
   // 3D ball effect through gradient
   background: `
-                /* bright reflection from above */
-                radial-gradient(circle at 50% 20%, rgba(255,255,255,0.2) 0%, transparent 45%),
+                /* light reflection (gives gloss) */
+                radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
                 
-                /* left side marker light */
-                radial-gradient(circle at 0% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                /* downward glow */
+                radial-gradient(circle at 50% 0%, ${topColor} 0%, transparent 70%),
                 
-                /* right side marker light */
-                radial-gradient(circle at 100% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                /* upward glow */
+                radial-gradient(circle at 50% 100%, ${bottomColor} 0%, transparent 70%),
                 
-                /* soft reflex from below */
-                radial-gradient(circle at 50% 120%, rgba(255,255,255,0.1) 0%, transparent 60%),
-                
-                /* main volume */
-                radial-gradient(circle at 50% 30%, #444 0%, #050505 100%)
+                /* dark liner for volume */
+                radial-gradient(circle at 50% 50%, #222 0%, #050505 100%)
               `,
   zIndex: -1, // located under ThumbGripStyles
   pointerEvents: 'none'
