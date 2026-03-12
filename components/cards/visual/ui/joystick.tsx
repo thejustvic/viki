@@ -16,7 +16,6 @@ interface JoystickProps {
 const JoystickStyles: CSSProperties = {
   borderRadius: '50%',
   background: 'rgba(0, 0, 0, 0.2)',
-  border: '2px solid rgba(0, 0, 0, 0.1)',
   boxShadow: '0px 0px 23px 0px rgba(0,0,0,0.5) inset',
   position: 'relative',
   display: 'flex',
@@ -41,16 +40,12 @@ const BallJointStyles: CSSProperties = {
   position: 'absolute',
   top: '50%',
   left: '50%',
-  overflow: 'hidden',
+  transform: `translate(-50%, -50%) translateZ(-20px)`,
   borderRadius: '50%',
   // 3D ball effect through gradient
-  background: 'radial-gradient(circle at 50% 40%, #222 0%, #0505 100%)',
-  zIndex: -1,
-  // volume shadows
-  boxShadow: `
-                inset 0px 5px 10px rgba(255,255,255,0.5), /* top highlight */
-                0px 5px 15px rgba(255,255,255,0.5)        /* the shadow that the bullet casts into the depths */
-              `
+  background: 'radial-gradient(circle at 50% 30%, #333 0%, #050505 100%)',
+  zIndex: -1, // located under ThumbGripStyles
+  pointerEvents: 'none'
 }
 
 const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
@@ -69,9 +64,29 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
         height: `${radius * 2}px`
       }}
     >
+      {/* container for ball with cutting (mask) */}
+      <div className="transform-3d absolute w-full h-full rounded-full overflow-hidden pointer-events-none z-1">
+        <Tilt
+          perspective={600}
+          tiltAngleXManual={manualTiltAngle.y}
+          tiltAngleYManual={manualTiltAngle.x}
+          className="transform-3d h-full w-full"
+        >
+          {/* a moving sphere bounded by a circle of the base */}
+          <div
+            style={{
+              ...BallJointStyles,
+              width: `${radius * 2.8}px`, // a little more so that there are no holes when tilted
+              height: `${radius * 2.8}px`,
+              opacity: Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 1 : 0,
+              transition: 'opacity 0.2s ease'
+            }}
+          />
+        </Tilt>
+      </div>
       <Tilt
         perspective={600}
-        className="transform-3d h-full w-full grid place-items-center"
+        className="transform-3d absolute z-10 pointer-events-none h-full w-full grid place-items-center"
         tiltAngleXManual={manualTiltAngle.y}
         tiltAngleYManual={manualTiltAngle.x}
       >
@@ -83,7 +98,7 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
             transform: `translate(${stickPos.x}px, ${stickPos.y}px)`,
             transition: stickPos.x === 0 ? 'transform 0.1s ease-out' : 'none',
             boxShadow: `
-                          /* outer shadow (separation from the surface)*/
+                          /* outer shadow (separation from the surface) */
                           ${-stickPos.x * 0.2}px ${-stickPos.y * 0.2 + 15}px 20px rgba(0,0,0,0.7),
                           /* highlight at the very top of the rounding (outer edge) */
                           inset 0px 8px 12px rgba(255,255,255,0.15),
@@ -94,22 +109,6 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
                         `
           }}
         >
-          {/* ball joint */}
-          <div
-            style={{
-              ...BallJointStyles,
-              width: `${radius * 2}px`,
-              height: `${radius * 2}px`,
-              transform: `
-                            translate(-50%, -50%) 
-                            translate(${-stickPos.x * 0.5}px, ${-stickPos.y * 0.5}px)
-                            translateZ(-15px)
-                          `,
-              // hide: if the head is transparent, the bullet should only appear when moving
-              opacity: Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 1 : 0,
-              transition: 'opacity 0.2s ease'
-            }}
-          />
           <span className="grid place-items-center h-full text-white opacity-30 text-xs pointer-events-none select-none">
             {label}
           </span>
