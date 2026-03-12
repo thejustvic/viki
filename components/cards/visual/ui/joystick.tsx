@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {CSSProperties, useEffect, useState} from 'react'
 import Tilt from 'react-parallax-tilt'
 import {useJoystickHandlers} from './joystick-handlers'
 
@@ -13,6 +13,46 @@ interface JoystickProps {
   radius: number
 }
 
+const JoystickStyles: CSSProperties = {
+  borderRadius: '50%',
+  background: 'rgba(0, 0, 0, 0.2)',
+  border: '2px solid rgba(0, 0, 0, 0.1)',
+  boxShadow: '0px 0px 23px 0px rgba(0,0,0,0.5) inset',
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  touchAction: 'none'
+}
+
+const ThumbGripStyles: CSSProperties = {
+  borderRadius: '50%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  /* smooth gradient: lighter edge, darker transition, slightly lighter center */
+  background:
+    'radial-gradient(circle, #2a2a2a 0%, #151515 80%, #353535 90%, #1a1a1a 100%)',
+  zIndex: 10,
+  overflow: 'visible',
+  transformStyle: 'preserve-3d'
+}
+
+const BallJointStyles: CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  overflow: 'hidden',
+  borderRadius: '50%',
+  // 3D ball effect through gradient
+  background: 'radial-gradient(circle at 50% 40%, #222 0%, #0505 100%)',
+  zIndex: -1,
+  // volume shadows
+  boxShadow: `
+                inset 0px 5px 10px rgba(255,255,255,0.5), /* top highlight */
+                0px 5px 15px rgba(255,255,255,0.5)        /* the shadow that the bullet casts into the depths */
+              `
+}
+
 const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
   const {handleStart, stickPos, manualTiltAngle} = useJoystickHandlers({
     label,
@@ -24,17 +64,9 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
     <div
       onTouchStart={handleStart}
       style={{
+        ...JoystickStyles,
         width: `${radius * 2}px`,
-        height: `${radius * 2}px`,
-        borderRadius: '50%',
-        background: 'rgba(0, 0, 0, 0.2)',
-        border: '2px solid rgba(0, 0, 0, 0.1)',
-        boxShadow: '0px 0px 23px 0px rgba(0,0,0,0.5) inset',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        touchAction: 'none'
+        height: `${radius * 2}px`
       }}
     >
       <Tilt
@@ -45,29 +77,39 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
       >
         <div
           style={{
+            ...ThumbGripStyles,
             width: `${radius * 1.6}px`,
             height: `${radius * 1.6}px`,
-            borderRadius: '50%',
-            position: 'absolute',
             transform: `translate(${stickPos.x}px, ${stickPos.y}px)`,
-            pointerEvents: 'none',
             transition: stickPos.x === 0 ? 'transform 0.1s ease-out' : 'none',
-
-            /* smooth gradient: lighter edge, darker transition, slightly lighter center */
-            background:
-              'radial-gradient(circle, #2a2a2a 0%, #151515 80%, #353535 90%, #1a1a1a 100%)',
             boxShadow: `
-                        /* outer shadow (separation from the surface)*/
-                        0px 12px 20px rgba(0,0,0,0.6),
-                        /* highlight at the very top of the rounding (outer edge) */
-                        inset 0px 8px 12px rgba(255,255,255,0.15),
-                        /* deep "bowl" shadow (transition inward) */
-                        inset 0px 0px 25px 5px rgba(0,0,0,0.8),
-                        /* lower contour highlight for volume */
-                        inset 0px -4px 10px rgba(255,255,255,0.3)
-                      `
+                          /* outer shadow (separation from the surface)*/
+                          ${-stickPos.x * 0.2}px ${-stickPos.y * 0.2 + 15}px 20px rgba(0,0,0,0.7),
+                          /* highlight at the very top of the rounding (outer edge) */
+                          inset 0px 8px 12px rgba(255,255,255,0.15),
+                          /* deep "bowl" shadow (transition inward) */
+                          inset 0px 0px 25px 5px rgba(0,0,0,0.8),
+                          /* lower contour highlight for volume */
+                          inset 0px -4px 10px rgba(255,255,255,0.3)
+                        `
           }}
         >
+          {/* ball joint */}
+          <div
+            style={{
+              ...BallJointStyles,
+              width: `${radius * 2}px`,
+              height: `${radius * 2}px`,
+              transform: `
+                            translate(-50%, -50%) 
+                            translate(${-stickPos.x * 0.5}px, ${-stickPos.y * 0.5}px)
+                            translateZ(-15px)
+                          `,
+              // hide: if the head is transparent, the bullet should only appear when moving
+              opacity: Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 1 : 0,
+              transition: 'opacity 0.2s ease'
+            }}
+          />
           <span className="grid place-items-center h-full text-white opacity-30 text-xs pointer-events-none select-none">
             {label}
           </span>
