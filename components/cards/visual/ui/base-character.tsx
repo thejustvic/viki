@@ -2,14 +2,16 @@
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {PointerLockControls} from '@react-three/drei'
 import {useFrame, useThree} from '@react-three/fiber'
-import {RapierRigidBody, RigidBody} from '@react-three/rapier'
+import type {RapierRigidBody} from '@react-three/rapier'
+import {CapsuleCollider, RigidBody} from '@react-three/rapier'
 import {RefObject, useMemo, useRef} from 'react'
 import {isMobile} from 'react-device-detect'
+import type {Mesh} from 'three'
 import {Euler, Vector3} from 'three'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
 
-const SPEED = 1
+const SPEED = 4
 const JUMP_FORCE = 2
 
 const isThirdPersonView = false
@@ -26,6 +28,7 @@ const _tempVec = new Vector3()
 const _tempEuler = new Euler()
 
 export const useCharacterLogic = (
+  meshRef: RefObject<Mesh | null>,
   rigidBodyRef: RefObject<RapierRigidBody | null>,
   isLocked: boolean,
   moveData: RefObject<{x: number; y: number}>,
@@ -53,6 +56,11 @@ export const useCharacterLogic = (
     const body = rigidBodyRef.current
     if (!body) {
       return
+    }
+
+    if (meshRef.current) {
+      // if 3rd person, see the body, if not, hide it
+      meshRef.current.visible = isThirdPersonView
     }
 
     // turn processing (looking)
@@ -91,14 +99,17 @@ export const useCharacterLogic = (
 
     // camera synchronization
     const bodyPos = body.translation()
-    _tempVec.set(bodyPos.x, bodyPos.y, bodyPos.z)
+
+    // determine the "head" point (center of the body + upward movement)
+    // y + 0.55: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase to 0.6
+    const headPos = _tempVec.set(bodyPos.x, bodyPos.y + 0.55, bodyPos.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
       const offset = new Vector3()
         .copy(CAMERA_OFFSET)
         .applyQuaternion(camera.quaternion)
-      const targetCameraPos = new Vector3().addVectors(_tempVec, offset)
+      const targetCameraPos = new Vector3().addVectors(headPos, offset)
       if (camera.position.distanceToSquared(targetCameraPos) > 100) {
         camera.position.copy(targetCameraPos)
       } else {
@@ -110,11 +121,11 @@ export const useCharacterLogic = (
       }
     } else {
       // if the position difference is huge (e.g. teleport), copy instantly
-      if (camera.position.distanceToSquared(_tempVec) > 100) {
-        camera.position.copy(_tempVec)
+      if (camera.position.distanceToSquared(headPos) > 100) {
+        camera.position.copy(headPos)
       } else {
         // exponential smoothing (smoothness factor)
-        camera.position.lerp(_tempVec, 1 - Math.exp(-smoothnessFactor * delta))
+        camera.position.lerp(headPos, 1 - Math.exp(-smoothnessFactor * delta))
       }
     }
 
@@ -198,9 +209,11 @@ interface BaseCharacterProps {
 }
 
 export const BaseCharacter = (props: BaseCharacterProps) => {
+  const meshRef = useRef<Mesh>(null)
   const rigidBodyRef = useRef<RapierRigidBody>(null)
 
   useCharacterLogic(
+    meshRef,
     rigidBodyRef,
     props.isLocked.value,
     props.moveData,
@@ -218,14 +231,18 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
       )}
       <RigidBody
         ref={rigidBodyRef}
+        position={[0, 0.5, 0]}
+        colliders={false}
         lockRotations
-        position={[0, 0, 0]}
-        friction={0} // zero friction for smooth control
-        restitution={0}
-        canSleep={false}
       >
-        <mesh castShadow scale={[0.5, 0.5, 0.5]}>
-          <sphereGeometry args={[0.5]} />
+        {/* physics collider: perfectly matches the shape of the capsule */}
+        {/* args: [half height of cylindrical part, radius] */}
+        <CapsuleCollider args={[0.35, 0.25]} />
+
+        {/* visual: using capsuleGeometry */}
+        <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
+          {/* args: [radius, cylinder height, rounding segments, side segments] */}
+          <capsuleGeometry args={[0.25, 0.6, 4, 16]} />
           <meshStandardMaterial color="pink" />
         </mesh>
       </RigidBody>
