@@ -29,6 +29,7 @@ interface State {
     logout: boolean
   }
   playerSize: PlayerSizeType[number]
+  isVisualModalFromRightDrawerOpen?: boolean
 }
 
 export class GlobalStore {
@@ -52,7 +53,8 @@ export class GlobalStore {
       anonymously: false,
       logout: false
     },
-    playerSize: 'human'
+    playerSize: 'human',
+    isVisualModalFromRightDrawerOpen: false
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -63,10 +65,15 @@ export class GlobalStore {
     if (serverTheme) {
       this.setTheme(serverTheme)
     }
+    this.setVisualModalFromRightDrawerOpen(false)
   }
 
   setAuthTabGroup = (value: AuthTabGroup): void => {
     this.state.authTabGroup = value
+  }
+
+  setVisualModalFromRightDrawerOpen = (value: boolean) => {
+    this.state.isVisualModalFromRightDrawerOpen = value
   }
 
   setPlayerSize = (playerSize: PlayerSizeType[number]): void => {

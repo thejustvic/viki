@@ -1,5 +1,6 @@
 import {Loader} from '@/components/common/loader'
 import {Button} from '@/components/daisyui/button'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
@@ -7,6 +8,7 @@ import {Environment, Html, Sky, useProgress} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
+import {observer} from 'mobx-react-lite'
 import {CSSProperties, RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
@@ -81,8 +83,8 @@ export const BasicScene = ({
           <Physics gravity={[0, -9.8, 0]}>
             {children}
             <Floor color="white" />
-            <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
           </Physics>
+          <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
           {selectedVisual === 'winter' && <Snowfall />}
           <RenderNotifier onFirstFrame={isCalculated} />
         </Suspense>
@@ -131,40 +133,46 @@ const JoysticksAboveCanvas = ({moveData, lookData}: JoysticksProps) => {
   )
 }
 
-const ButtonsAboveCanvas = ({isLocked}: {isLocked: BooleanHookState}) => {
-  const visualTab = getSearchParam('visual-tab')
-  const updateSearchParams = useUpdateSearchParams()
+const ButtonsAboveCanvas = observer(
+  ({isLocked}: {isLocked: BooleanHookState}) => {
+    const [, store] = useGlobalStore()
+    const visualTab = getSearchParam('visual-tab')
+    const updateSearchParams = useUpdateSearchParams()
 
-  if (isMobile) {
-    return null
-  }
-  return isLocked.value ? (
-    <>
-      <Button
-        soft
-        color="info"
-        className={twJoin('absolute h-14 ml-2 mt-2 mr-2 z-10')}
-        id="enter-btn"
-      >
-        Enter First Person With Movement by WASD keys and spacebar
-      </Button>
-      {!visualTab && (
+    if (isMobile) {
+      return null
+    }
+    return isLocked.value ? (
+      <>
         <Button
           soft
           color="info"
-          className={twJoin(
-            visualTab ? 'mt-2' : 'mt-18',
-            'absolute h-14 ml-2 z-10'
-          )}
-          onClick={() => updateSearchParams('visual-tab', 'true')}
+          className={twJoin('absolute h-14 ml-2 mt-2 mr-2 z-10')}
+          id="enter-btn"
         >
-          <IconBrowserMaximize />
+          Enter First Person With Movement by WASD keys and spacebar
         </Button>
-      )}
-    </>
-  ) : (
-    <div className="m-2 text-pretty absolute z-10 text-neutral-400">
-      press ESC to Exit First Person
-    </div>
-  )
-}
+        {!visualTab && (
+          <Button
+            soft
+            color="info"
+            className={twJoin(
+              visualTab ? 'mt-2' : 'mt-18',
+              'absolute h-14 ml-2 z-10'
+            )}
+            onClick={() => {
+              store.setVisualModalFromRightDrawerOpen(true)
+              updateSearchParams('visual-tab', 'true')
+            }}
+          >
+            <IconBrowserMaximize />
+          </Button>
+        )}
+      </>
+    ) : (
+      <div className="m-2 text-pretty absolute z-10 text-neutral-400">
+        press ESC to Exit First Person
+      </div>
+    )
+  }
+)

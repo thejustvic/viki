@@ -10,7 +10,7 @@ import {Tulip} from './visual/ui/tulip'
 
 type Vector2 = {x: number; y: number}
 
-export default function CardVisual({
+export const CardVisual = ({
   playerSize,
   checklist,
   card
@@ -18,7 +18,7 @@ export default function CardVisual({
   playerSize: PlayerSizeType[number]
   checklist: Checkbox[] | undefined
   card: Card | null
-}) {
+}) => {
   const isLocked = useBoolean(isMobile ? false : true)
   const selectedVisual =
     card?.selected_visual as unknown as CardVisualType[number]

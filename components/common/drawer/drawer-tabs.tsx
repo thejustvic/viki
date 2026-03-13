@@ -24,15 +24,16 @@ import dynamic from 'next/dynamic'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
 
-const CardVisual = dynamic(() => import('@/components/cards/card-visual'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex justify-center w-full items-center h-[calc(100dvh-70px)]">
-      <Loader className="text-violet-400" />
-    </div>
-  )
-})
+const CardVisual = dynamic(
+  () => import('@/components/cards/card-visual').then(mod => mod.CardVisual),
+  {ssr: false, loading: () => <CardVisualLoader />}
+)
 
+const CardVisualLoader = () => (
+  <div className="flex justify-center w-full items-center h-[calc(100dvh-70px)]">
+    <Loader className="text-violet-400" />
+  </div>
+)
 const CloseRightDrawer = observer(() => {
   const [, store] = useGlobalStore()
   const closeRightDrawer = () => {

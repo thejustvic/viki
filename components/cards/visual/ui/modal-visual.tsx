@@ -2,11 +2,12 @@
 
 import {CardVisualTab} from '@/components/common/drawer/drawer-tabs'
 import {Modal} from '@/components/common/modal'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
-import {useCallback} from 'react'
+import {useCallback, useEffect} from 'react'
 import {useCardInfoStore} from '../../card-info/card-info-store'
 import {useSetFocusAfterTransitionEnd} from '../../modal-card/use-set-focus-after-transitionend'
 
@@ -26,7 +27,7 @@ export const ModalVisualTab = observer(() => {
       open={Boolean(visualTab)}
       goBack={goBack}
       header={<Header />}
-      body={visualTab && <VisualTab />}
+      body={Boolean(visualTab) && <VisualTab />}
       classNameModalBox="container"
       classNameBody="h-[calc(100vh-100px)]"
     />
@@ -40,14 +41,28 @@ const Header = observer(() => {
   return <div className="capitalize">{view}</div>
 })
 
-const VisualTab = () => {
+const VisualTab = observer(() => {
+  const [state] = useGlobalStore()
   const transitionFinished = useBoolean(false)
 
+  const visualTab = getSearchParam('visual-tab')
+
   useSetFocusAfterTransitionEnd(
-    {id: 'dialog-modal-visual-tab', dep: getSearchParam('visual-tab')},
-    transitionFinished.turnOn,
+    {id: 'dialog-modal-visual-tab', dep: visualTab},
+    () => state.isVisualModalFromRightDrawerOpen && transitionFinished.turnOn(),
     () => {}
   )
 
+  // loaded URL with modal-visual-tab parameter
+  useEffect(() => {
+    if (
+      Boolean(visualTab) &&
+      !transitionFinished.value &&
+      !state.isVisualModalFromRightDrawerOpen
+    ) {
+      transitionFinished.turnOn()
+    }
+  }, [visualTab])
+
   return transitionFinished.value && <CardVisualTab />
-}
+})
