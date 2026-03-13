@@ -87,6 +87,10 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
     radius
   })
 
+  const distanceFromCenterToHandle = Math.sqrt(
+    stickPos.x ** 2 + stickPos.y ** 2
+  )
+
   return (
     <>
       <div
@@ -95,7 +99,7 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
           ...JoystickOuterStyles,
           width: `${radius * 2}px`,
           height: `${radius * 2}px`,
-          opacity: Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 0.9 : 0,
+          opacity: distanceFromCenterToHandle > 2 ? 0.7 : 0,
           transition: 'opacity 0.5s ease'
         }}
       />
@@ -121,8 +125,7 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
                 ...BallJointStyles,
                 width: `${radius * 2.6}px`, // a little more so that there are no holes when tilted
                 height: `${radius * 2.6}px`,
-                opacity:
-                  Math.sqrt(stickPos.x ** 2 + stickPos.y ** 2) > 2 ? 0.9 : 0.4,
+                opacity: distanceFromCenterToHandle > 2 ? 0.9 : 0.4,
                 transition: 'opacity 0.5s ease'
               }}
             />
