@@ -49,14 +49,35 @@ export const useCharacterLogic = (
     // turn processing (looking)
     if (!isLocked) {
       _tempEuler.setFromQuaternion(camera.quaternion, 'YXZ')
-      _tempEuler.y -= lookData.current.x * 1.5 * delta
-      _tempEuler.x -= lookData.current.y * 1.5 * delta
-      _tempEuler.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, _tempEuler.x))
-      camera.quaternion.setFromEuler(_tempEuler)
 
-      // clean up data to avoid stuttering when accumulating events
-      lookData.current.x = 0
-      lookData.current.y = 0
+      if (isMobile) {
+        // mobile joystick: works as velocity
+        // factor of 2-3 is usually better for a joystick
+        _tempEuler.y -= lookData.current.x * 2 * delta
+        _tempEuler.x -= lookData.current.y * 2 * delta
+      } else {
+        // desktop mouse: works like offset (delta)
+        _tempEuler.y -= lookData.current.x * 1.5 * delta
+        _tempEuler.x -= lookData.current.y * 1.5 * delta
+
+        // decay mouse only
+        const lookDecay = Math.exp(-25 * delta)
+        lookData.current.x *= lookDecay
+        lookData.current.y *= lookDecay
+
+        if (Math.abs(lookData.current.x) < 0.0001) {
+          lookData.current.x = 0
+        }
+        if (Math.abs(lookData.current.y) < 0.0001) {
+          lookData.current.y = 0
+        }
+      }
+
+      // limit gaze up/down so you don't "fall over"
+      _tempEuler.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, _tempEuler.x))
+
+      // apply changes to the camera
+      camera.quaternion.setFromEuler(_tempEuler)
     }
 
     // 2. camera synchronization (Lerp with FPS correction)
