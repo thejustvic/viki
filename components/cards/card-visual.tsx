@@ -40,8 +40,6 @@ export default function CardVisual({
         <ConeWithSpheres checklist={checklist} card={card} />
       )}
       <BaseCharacter
-        position={[0, 0, 0]}
-        args={[0.5]}
         isLocked={isLocked}
         moveData={moveData}
         lookData={lookData}

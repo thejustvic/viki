@@ -9,8 +9,17 @@ import {Euler, Vector3} from 'three'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
 
-const SPEED = 5
-const JUMP_FORCE = 5
+const SPEED = 1
+const JUMP_FORCE = 2
+
+const isThirdPersonView = false
+
+const CAMERA_OFFSET = new Vector3(0, 1, 4) // x: sideways, y: up, z: back
+
+// 25 in the lerp formula is the stiffness coefficient of the camera-character connection
+// for a softer camera (like in GTA), try reducing the number to 10-15. if want sharp shooter control, increase to 40-50
+// 15 for TPS softness
+const smoothnessFactor = isThirdPersonView ? 15 : 25
 
 // temporary variables outside the renderer to avoid Garbage Collection
 const _tempVec = new Vector3()
@@ -61,7 +70,7 @@ export const useCharacterLogic = (
         _tempEuler.x -= lookData.current.y * 1.5 * delta
 
         // decay mouse only
-        const lookDecay = Math.exp(-25 * delta)
+        const lookDecay = Math.exp(-smoothnessFactor * delta)
         lookData.current.x *= lookDecay
         lookData.current.y *= lookDecay
 
@@ -80,24 +89,35 @@ export const useCharacterLogic = (
       camera.quaternion.setFromEuler(_tempEuler)
     }
 
-    // 2. camera synchronization (Lerp with FPS correction)
+    // camera synchronization
     const bodyPos = body.translation()
     _tempVec.set(bodyPos.x, bodyPos.y, bodyPos.z)
 
-    // if the position difference is huge (e.g. teleport), copy instantly
-    if (camera.position.distanceToSquared(_tempVec) > 100) {
-      camera.position.copy(_tempVec)
+    // smooth camera tracking (lerp)
+    if (isThirdPersonView) {
+      const offset = new Vector3()
+        .copy(CAMERA_OFFSET)
+        .applyQuaternion(camera.quaternion)
+      const targetCameraPos = new Vector3().addVectors(_tempVec, offset)
+      if (camera.position.distanceToSquared(targetCameraPos) > 100) {
+        camera.position.copy(targetCameraPos)
+      } else {
+        // exponential smoothing (smoothness factor)
+        camera.position.lerp(
+          targetCameraPos,
+          1 - Math.exp(-smoothnessFactor * delta)
+        )
+      }
     } else {
-      // exponential smoothing (smoothness factor = 25)
-      // 25 in the lerp formula is the stiffness coefficient of the camera-character connection
-      // for a softer camera (like in GTA), try reducing the number to 10-15. if want sharp shooter control, increase to 40-50
-      camera.position.lerp(_tempVec, 1 - Math.exp(-25 * delta))
+      // if the position difference is huge (e.g. teleport), copy instantly
+      if (camera.position.distanceToSquared(_tempVec) > 100) {
+        camera.position.copy(_tempVec)
+      } else {
+        // exponential smoothing (smoothness factor)
+        camera.position.lerp(_tempVec, 1 - Math.exp(-smoothnessFactor * delta))
+      }
     }
 
-    if (isLocked) {
-      body.setLinvel({x: 0, y: 0, z: 0}, true)
-      return
-    }
     if (isLocked) {
       body.setLinvel({x: 0, y: 0, z: 0}, true)
       return
@@ -173,8 +193,6 @@ export const useCharacterLogic = (
 
 interface BaseCharacterProps {
   isLocked: BooleanHookState
-  position?: [number, number, number]
-  args?: [number] // sphere geometry args expects a single radius number
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
 }
@@ -201,13 +219,13 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
       <RigidBody
         ref={rigidBodyRef}
         lockRotations
-        position={props.position ?? [0, 2, 0]}
+        position={[0, 0, 0]}
         friction={0} // zero friction for smooth control
         restitution={0}
         canSleep={false}
       >
-        <mesh castShadow scale={[1, 2.5, 1]}>
-          <sphereGeometry args={[props.args?.[0] ?? 1]} />
+        <mesh castShadow scale={[0.5, 0.5, 0.5]}>
+          <sphereGeometry args={[0.5]} />
           <meshStandardMaterial color="pink" />
         </mesh>
       </RigidBody>
