@@ -1,209 +1,152 @@
+/* eslint-disable max-lines-per-function */
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {PointerLockControls} from '@react-three/drei'
-import {Camera, RootState, useFrame, useThree} from '@react-three/fiber'
+import {useFrame, useThree} from '@react-three/fiber'
 import {RapierRigidBody, RigidBody} from '@react-three/rapier'
 import {RefObject, useMemo, useRef} from 'react'
 import {isMobile} from 'react-device-detect'
-import {Vector3} from 'three'
+import {Euler, Vector3} from 'three'
 import {usePlayerControls} from '../utils/helpers'
+import {Vector2} from './joystick'
 
 const SPEED = 5
+const JUMP_FORCE = 5
 
-interface Vector {
-  x: number
-  y: number
-  z: number
-}
-
-type Vector2 = {x: number; y: number}
-
-const useWalking = ({
-  moveData,
-  v,
-  body,
-  isFlying,
-  camera,
-  forward,
-  backward,
-  left,
-  right
-}: {
-  moveData: RefObject<Vector2>
-  v: {
-    direction: Vector3
-    front: Vector3
-    side: Vector3
-  }
-  body: RapierRigidBody
-  isFlying: RefObject<boolean>
-  camera: Camera
-  forward: boolean
-  backward: boolean
-  left: boolean
-  right: boolean
-}) => {
-  // if the joystick is at zero, we take the value from the keyboard
-  const inputX =
-    moveData.current.x !== 0 ? moveData.current.x : Number(left) - Number(right)
-  const inputZ =
-    moveData.current.y !== 0
-      ? -moveData.current.y
-      : Number(backward) - Number(forward)
-
-  const inputLength = Math.sqrt(inputX * inputX + inputZ * inputZ)
-
-  v.front.set(0, 0, inputZ)
-  v.side.set(inputX, 0, 0)
-
-  v.direction
-    .subVectors(v.front, v.side)
-    .normalize()
-    .multiplyScalar(SPEED * Math.min(inputLength, 1))
-    .applyEuler(camera.rotation)
-
-  const currentVelocity = body.linvel()
-
-  body.setLinvel(
-    {
-      x: v.direction.x,
-      y: isFlying.current ? v.direction.y : currentVelocity.y,
-      z: v.direction.z
-    },
-    true
-  )
-
-  return {currentVelocity}
-}
-
-const useJumping = ({
-  state,
-  isFlying,
-  v,
-  body,
-  currentVelocity,
-  lastJumpTime,
-  jumpPressed,
-  forward,
-  backward,
-  left,
-  right,
-  jump
-}: {
-  state: RootState
-  v: {
-    direction: Vector3
-    front: Vector3
-    side: Vector3
-  }
-  body: RapierRigidBody
-  isFlying: RefObject<boolean>
-  currentVelocity: Vector
-  lastJumpTime: RefObject<number>
-  jumpPressed: RefObject<boolean>
-  forward: boolean
-  backward: boolean
-  left: boolean
-  right: boolean
-  jump: boolean
-}) => {
-  const time = state.clock.getElapsedTime()
-  if (jump && !jumpPressed.current) {
-    const timeSinceLastJump = time - lastJumpTime.current
-    if (timeSinceLastJump < 0.3) {
-      isFlying.current = !isFlying.current
-      body.setGravityScale(isFlying.current ? 0 : 1, true)
-    }
-    lastJumpTime.current = time
-    jumpPressed.current = true
-  }
-  if (!jump) {
-    jumpPressed.current = false
-  }
-  v.front.set(0, 0, Number(backward) - Number(forward))
-  v.side.set(Number(left) - Number(right), 0, 0)
-
-  if (isFlying.current) {
-    const verticalSpeed = jump ? SPEED : v.direction.y
-    body.setLinvel({x: v.direction.x, y: verticalSpeed, z: v.direction.z}, true)
-  } else {
-    body.setLinvel(
-      {x: v.direction.x, y: currentVelocity.y, z: v.direction.z},
-      true
-    )
-    if (jump && Math.abs(currentVelocity.y) < 0.05) {
-      body.setLinvel({x: currentVelocity.x, y: 5, z: currentVelocity.z}, true)
-    }
-  }
-}
+// temporary variables outside the renderer to avoid Garbage Collection
+const _tempVec = new Vector3()
+const _tempEuler = new Euler()
 
 export const useCharacterLogic = (
   rigidBodyRef: RefObject<RapierRigidBody | null>,
   isLocked: boolean,
-  moveData: RefObject<Vector2>,
-  lookData: RefObject<Vector2>
+  moveData: RefObject<{x: number; y: number}>,
+  lookData: RefObject<{x: number; y: number}>
 ) => {
-  const {forward, backward, left, right, jump} = usePlayerControls()
+  const controls = usePlayerControls() // { forward, backward, left, right, jump }
   const {camera} = useThree()
+
   const isFlying = useRef(false)
   const lastJumpTime = useRef(0)
   const jumpPressed = useRef(false)
 
+  // cache vectors so they don't have to be created 60 times per second
   const v = useMemo(
     () => ({
       direction: new Vector3(),
       front: new Vector3(),
-      side: new Vector3()
+      side: new Vector3(),
+      targetVel: new Vector3()
     }),
     []
   )
+
   useFrame((state, delta) => {
     const body = rigidBodyRef.current
     if (!body) {
       return
     }
-    camera.rotation.order = 'YXZ'
-    // LOOKING
-    if (!isLocked) {
-      camera.rotation.y -= lookData.current.x * 2 * delta
-      camera.rotation.x -= lookData.current.y * 2 * delta
 
-      camera.rotation.x = Math.max(
-        -Math.PI / 2,
-        Math.min(Math.PI / 2, camera.rotation.x)
-      )
+    // turn processing (looking)
+    if (!isLocked) {
+      _tempEuler.setFromQuaternion(camera.quaternion, 'YXZ')
+      _tempEuler.y -= lookData.current.x * 1.5 * delta
+      _tempEuler.x -= lookData.current.y * 1.5 * delta
+      _tempEuler.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, _tempEuler.x))
+      camera.quaternion.setFromEuler(_tempEuler)
+
+      // clean up data to avoid stuttering when accumulating events
+      lookData.current.x = 0
+      lookData.current.y = 0
     }
-    camera.position.copy(body.translation())
+
+    // 2. camera synchronization (Lerp with FPS correction)
+    const bodyPos = body.translation()
+    _tempVec.set(bodyPos.x, bodyPos.y, bodyPos.z)
+
+    // if the position difference is huge (e.g. teleport), copy instantly
+    if (camera.position.distanceToSquared(_tempVec) > 100) {
+      camera.position.copy(_tempVec)
+    } else {
+      // exponential smoothing (smoothness factor = 25)
+      // 25 in the lerp formula is the stiffness coefficient of the camera-character connection
+      // for a softer camera (like in GTA), try reducing the number to 10-15. if want sharp shooter control, increase to 40-50
+      camera.position.lerp(_tempVec, 1 - Math.exp(-25 * delta))
+    }
 
     if (isLocked) {
       body.setLinvel({x: 0, y: 0, z: 0}, true)
       return
     }
-    const {currentVelocity} = useWalking({
-      moveData,
-      v,
-      body,
-      isFlying,
-      camera,
-      forward,
-      backward,
-      left,
-      right
-    })
-    useJumping({
-      state,
-      v,
-      body,
-      isFlying,
-      currentVelocity,
-      jumpPressed,
-      lastJumpTime,
-      forward,
-      backward,
-      left,
-      right,
-      jump
-    })
+    if (isLocked) {
+      body.setLinvel({x: 0, y: 0, z: 0}, true)
+      return
+    }
+
+    // logic of movement (walking)
+    const {forward, backward, left, right, jump} = controls
+    const inputX =
+      moveData.current.x !== 0
+        ? moveData.current.x
+        : Number(left) - Number(right)
+    const inputZ =
+      moveData.current.y !== 0
+        ? -moveData.current.y
+        : Number(backward) - Number(forward)
+
+    v.front.set(0, 0, inputZ)
+    v.side.set(inputX, 0, 0)
+    v.direction.y = 0
+
+    // get the direction relative to the camera
+    v.direction
+      .subVectors(v.front, v.side)
+      .normalize()
+      .applyQuaternion(camera.quaternion)
+
+    // reset Y so that looking up/down does not affect horizontal speed
+    v.direction.y = 0
+
+    // re-normalize, because after removing Y the length of the vector has changed
+    v.direction.normalize()
+
+    // maintain vertical velocity (gravity)
+    const currentVelocity = body.linvel()
+    const strength = Math.min(Math.sqrt(inputX * inputX + inputZ * inputZ), 1)
+
+    v.targetVel.set(
+      v.direction.x * SPEED * strength,
+      isFlying.current ? v.direction.y * SPEED : currentVelocity.y,
+      v.direction.z * SPEED * strength
+    )
+
+    // jumping and flight logic
+    const time = state.clock.getElapsedTime()
+    if (jump && !jumpPressed.current) {
+      if (time - lastJumpTime.current < 0.3) {
+        isFlying.current = !isFlying.current
+        body.setGravityScale(isFlying.current ? 0 : 1, true)
+      }
+      lastJumpTime.current = time
+      jumpPressed.current = true
+
+      // normal jump
+      if (!isFlying.current && Math.abs(currentVelocity.y) < 0.1) {
+        v.targetVel.y = JUMP_FORCE
+      }
+    }
+    if (!jump) {
+      jumpPressed.current = false
+    }
+
+    // additional upward thrust during flight
+    if (isFlying.current && jump) {
+      v.targetVel.y = SPEED
+    }
+
+    // one physics call (critical for FPS)
+    body.setLinvel(v.targetVel, true)
   })
+
   return {isFlying: isFlying.current}
 }
 
@@ -214,6 +157,7 @@ interface BaseCharacterProps {
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
 }
+
 export const BaseCharacter = (props: BaseCharacterProps) => {
   const rigidBodyRef = useRef<RapierRigidBody>(null)
 
@@ -226,7 +170,6 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
 
   return (
     <>
-      {/* 1. Controller for Desktop */}
       {!isMobile && (
         <PointerLockControls
           selector="#enter-btn"
@@ -234,11 +177,13 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
           onUnlock={props.isLocked.turnOn}
         />
       )}
-
       <RigidBody
         ref={rigidBodyRef}
         lockRotations
         position={props.position ?? [0, 2, 0]}
+        friction={0} // zero friction for smooth control
+        restitution={0}
+        canSleep={false}
       >
         <mesh castShadow scale={[1, 2.5, 1]}>
           <sphereGeometry args={[props.args?.[0] ?? 1]} />

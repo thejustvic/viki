@@ -1,6 +1,6 @@
-import {Stats} from '@react-three/drei'
+import {PerformanceMonitor, Stats} from '@react-three/drei'
 import {Canvas as CanvasComponent, useFrame, useThree} from '@react-three/fiber'
-import {PropsWithChildren, useMemo} from 'react'
+import {PropsWithChildren, useMemo, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import {CardVisualType} from '../../types'
 
@@ -20,8 +20,11 @@ export const Canvas = ({children, selectedVisual}: Props) => {
       : springCameraPosition
   }, [selectedVisual])
 
+  const [dpr, setDpr] = useState(1.5)
+
   return (
     <CanvasComponent
+      frameloop="demand"
       flat
       shadows={!isMobile}
       camera={{
@@ -29,8 +32,13 @@ export const Canvas = ({children, selectedVisual}: Props) => {
         position: cameraPosition
       }}
       className="rounded-md relative"
-      dpr={selectedVisual === 'winter' ? 1.5 : 1} // 1 for maximum FPS
+      dpr={dpr} // 1 for maximum FPS
     >
+      <PerformanceMonitor
+        onIncline={() => setDpr(2)}
+        onDecline={() => setDpr(1)}
+      />
+
       {children}
 
       {process.env.NODE_ENV === 'development' && (
