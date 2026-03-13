@@ -102,7 +102,7 @@ export const useCharacterLogic = (
 
     // determine the "head" point (center of the body + upward movement)
     // y + 0.55: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase to 0.6
-    const headPos = _tempVec.set(bodyPos.x, bodyPos.y + 0.55, bodyPos.z)
+    const headPos = _tempVec.clone().set(bodyPos.x, bodyPos.y + 0.55, bodyPos.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
@@ -119,6 +119,7 @@ export const useCharacterLogic = (
           1 - Math.exp(-smoothnessFactor * delta)
         )
       }
+      camera.lookAt(headPos)
     } else {
       // if the position difference is huge (e.g. teleport), copy instantly
       if (camera.position.distanceToSquared(headPos) > 100) {
@@ -147,7 +148,6 @@ export const useCharacterLogic = (
 
     v.front.set(0, 0, inputZ)
     v.side.set(inputX, 0, 0)
-    v.direction.y = 0
 
     // get the direction relative to the camera
     v.direction

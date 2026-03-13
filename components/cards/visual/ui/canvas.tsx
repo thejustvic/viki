@@ -24,7 +24,6 @@ export const Canvas = ({children, selectedVisual}: Props) => {
 
   return (
     <CanvasComponent
-      frameloop="demand"
       flat
       shadows={!isMobile}
       camera={{
