@@ -20,7 +20,7 @@ export const Canvas = ({children, selectedVisual}: Props) => {
       : springCameraPosition
   }, [selectedVisual])
 
-  const [dpr, setDpr] = useState(1.5)
+  const [dpr, setDpr] = useState(1.25)
 
   return (
     <CanvasComponent
@@ -35,7 +35,7 @@ export const Canvas = ({children, selectedVisual}: Props) => {
       dpr={dpr} // 1 for maximum FPS
     >
       <PerformanceMonitor
-        onIncline={() => setDpr(2)}
+        onIncline={() => setDpr(1.5)}
         onDecline={() => setDpr(1)}
       />
 
