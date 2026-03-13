@@ -4,7 +4,7 @@ import {PointerLockControls} from '@react-three/drei'
 import {useFrame, useThree} from '@react-three/fiber'
 import type {RapierRigidBody} from '@react-three/rapier'
 import {CapsuleCollider, RigidBody} from '@react-three/rapier'
-import {RefObject, useMemo, useRef} from 'react'
+import {RefObject, useLayoutEffect, useMemo, useRef} from 'react'
 import {isMobile} from 'react-device-detect'
 import type {Mesh} from 'three'
 import {Euler, Vector3} from 'three'
@@ -28,7 +28,6 @@ const _tempVec = new Vector3()
 const _tempEuler = new Euler()
 
 export const useCharacterLogic = (
-  meshRef: RefObject<Mesh | null>,
   rigidBodyRef: RefObject<RapierRigidBody | null>,
   isLocked: boolean,
   moveData: RefObject<{x: number; y: number}>,
@@ -56,11 +55,6 @@ export const useCharacterLogic = (
     const body = rigidBodyRef.current
     if (!body) {
       return
-    }
-
-    if (meshRef.current) {
-      // if 3rd person, see the body, if not, hide it
-      meshRef.current.visible = isThirdPersonView
     }
 
     // turn processing (looking)
@@ -102,14 +96,14 @@ export const useCharacterLogic = (
 
     // determine the "head" point (center of the body + upward movement)
     // y + 0.55: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase to 0.6
-    const headPos = _tempVec.clone().set(bodyPos.x, bodyPos.y + 0.55, bodyPos.z)
+    _tempVec.set(bodyPos.x, bodyPos.y + 0.55, bodyPos.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
       const offset = new Vector3()
         .copy(CAMERA_OFFSET)
         .applyQuaternion(camera.quaternion)
-      const targetCameraPos = new Vector3().addVectors(headPos, offset)
+      const targetCameraPos = new Vector3().addVectors(_tempVec, offset)
       if (camera.position.distanceToSquared(targetCameraPos) > 100) {
         camera.position.copy(targetCameraPos)
       } else {
@@ -119,14 +113,13 @@ export const useCharacterLogic = (
           1 - Math.exp(-smoothnessFactor * delta)
         )
       }
-      camera.lookAt(headPos)
     } else {
       // if the position difference is huge (e.g. teleport), copy instantly
-      if (camera.position.distanceToSquared(headPos) > 100) {
-        camera.position.copy(headPos)
+      if (camera.position.distanceToSquared(_tempVec) > 100) {
+        camera.position.copy(_tempVec)
       } else {
         // exponential smoothing (smoothness factor)
-        camera.position.lerp(headPos, 1 - Math.exp(-smoothnessFactor * delta))
+        camera.position.lerp(_tempVec, 1 - Math.exp(-smoothnessFactor * delta))
       }
     }
 
@@ -212,8 +205,13 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
   const meshRef = useRef<Mesh>(null)
   const rigidBodyRef = useRef<RapierRigidBody>(null)
 
+  useLayoutEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.visible = isThirdPersonView
+    }
+  }, [isThirdPersonView])
+
   useCharacterLogic(
-    meshRef,
     rigidBodyRef,
     props.isLocked.value,
     props.moveData,
@@ -231,7 +229,7 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
       )}
       <RigidBody
         ref={rigidBodyRef}
-        position={[0, 0.5, 0]}
+        position={[0, 0, 0]}
         colliders={false}
         lockRotations
       >
