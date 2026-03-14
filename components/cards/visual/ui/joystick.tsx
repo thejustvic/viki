@@ -125,7 +125,7 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
                 ...BallJointStyles,
                 width: `${radius * 2.6}px`, // a little more so that there are no holes when tilted
                 height: `${radius * 2.6}px`,
-                opacity: distanceFromCenterToHandle > 2 ? 0.9 : 0.4,
+                opacity: distanceFromCenterToHandle > 2 ? 1 : 0.4,
                 transition: 'opacity 0.5s ease'
               }}
             />
