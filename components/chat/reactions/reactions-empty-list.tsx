@@ -12,6 +12,7 @@ const TwIconReactionAbsoluteContainer = tw.div`
   bottom-4
   -left-2
   cursor-pointer
+  text-info/80
 `
 
 const TwIconReactionAbsolute = tw.div`

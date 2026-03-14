@@ -25,7 +25,7 @@ export const ReactionsUsersCount = observer(
 
     return (
       <span
-        className="text-sm text-base-content truncate max-w-[30px]"
+        className="text-sm text-base-content/80 truncate max-w-[30px]"
         title={String(usersWhoReactedLength)}
       >
         {usersWhoReactedLength}

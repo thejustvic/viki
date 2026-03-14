@@ -19,7 +19,7 @@ const TwImageContainer = tw.div<{
 }>`
   ${p =>
     twJoin(
-      'btn p-0',
+      'btn p-0 border-0',
       p.$shape === 'square' && 'rounded-xl',
       p.$shape === 'circle' && 'rounded-full'
     )}

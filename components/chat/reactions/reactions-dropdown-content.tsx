@@ -7,7 +7,7 @@ import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 
 const TwSmileyContainer = tw.div`
-  bg-info-content
+  bg-info/80
   rounded-box
   px-1
   grid

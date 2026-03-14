@@ -64,7 +64,9 @@ const ReactionsSmileyWrapper = observer(
       <div
         className={twJoin(
           'flex gap-1 px-2 rounded-box items-center cursor-pointer',
-          isUsersWhoReactedHasCurrentUserId ? 'bg-info' : 'bg-info-content'
+          isUsersWhoReactedHasCurrentUserId
+            ? 'bg-info/80'
+            : 'bg-info-content/80'
         )}
       >
         {children}
