@@ -14,7 +14,7 @@ import {
 import {IconSquareRoundedPlus, IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import type {MouseEvent} from 'react'
-import {useEffect, useState} from 'react'
+import {useEffect} from 'react'
 import {twJoin} from 'tailwind-merge'
 import tw from 'tailwind-styled-components'
 
@@ -55,12 +55,12 @@ const useFirstCurrentTeamIdListener = ({
   }, [store.state.myTeams.data])
 }
 
-export const NavbarTeamSelect = observer(() => {
+export const useTeamSync = () => {
   const {user, supabase} = useSupabase()
   const updateSearchParams = useUpdateSearchParams()
-  const {removeTeam} = useTeamHandlers()
+
   const [state, store] = useTeamStore()
-  const [id, setId] = useState('')
+
   const currentTeamId = state.currentTeamId
 
   useMemberTeamsListener({user, supabase, store, currentTeamId})
@@ -72,30 +72,44 @@ export const NavbarTeamSelect = observer(() => {
     store,
     currentTeamId
   })
+
   useEffect(() => {
-    if (!id) {
+    if (!state.id) {
       return
     }
-    if (id === 'create-team') {
+    if (state.id === 'create-team') {
       updateSearchParams('create-team', 'true')
     } else {
-      void (async (): Promise<void> => {
+      const syncTeam = async () => {
         const currentTeamId = await updateCurrentTeamId({
-          currentTeamId: id,
+          currentTeamId: state.id,
           opts: {supabase, user}
         })
         if (currentTeamId) {
           store.setCurrentTeamId(currentTeamId)
         }
-      })()
+      }
+      void syncTeam()
     }
-    setId('')
-  }, [id])
+    store.setId('')
+  }, [state.id])
+
+  return {currentTeamId}
+}
+
+export const NavbarTeamSelect = observer(() => {
+  const {user} = useSupabase()
+
+  const {removeTeam} = useTeamHandlers()
+  const [state] = useTeamStore()
+
   const handleRemove = async (e: MouseEvent, id: string) => {
     e.stopPropagation()
     await removeTeam(id)
   }
+
   const {ref, close} = useControlledDetails()
+
   if (user?.is_anonymous) {
     return null
   }
@@ -103,20 +117,19 @@ export const NavbarTeamSelect = observer(() => {
   return (
     <div className="flex flex-col items-center">
       <TwMenu>
-        <li>
+        <li className="w-full min-w-[110px]">
           <details ref={ref}>
-            <summary className="truncate">
-              {state.currentTeam.data?.name}
+            <summary>
+              <p className="truncate ">{state.currentTeam.data?.name}</p>
             </summary>
             <ul>
               <MyTeams
-                setId={setId}
                 handleRemove={handleRemove}
                 showDeleteButton={Number(state.myTeams.data?.length) > 1}
                 closeDetails={close}
               />
               {state.memberTeams.data?.length ? (
-                <MemberTeams setId={setId} closeDetails={close} />
+                <MemberTeams closeDetails={close} />
               ) : null}
             </ul>
           </details>
@@ -137,17 +150,15 @@ const TwMenu = tw.ul`
 
 const MyTeams = observer(
   ({
-    setId,
     handleRemove,
     showDeleteButton = true,
     closeDetails
   }: {
-    setId: (id: string) => void
     handleRemove: (e: MouseEvent, id: string) => Promise<void>
     showDeleteButton: boolean
     closeDetails: () => void
   }) => {
-    const [teamState] = useTeamStore()
+    const [teamState, teamStore] = useTeamStore()
 
     return (
       <li>
@@ -162,7 +173,7 @@ const MyTeams = observer(
                   key={team.id}
                   className={twJoin(currentTeamIdEqual && 'bg-accent-content')}
                   onClick={() => {
-                    setId(team.id)
+                    teamStore.setId(team.id)
                     closeDetails()
                   }}
                 >
@@ -184,7 +195,10 @@ const MyTeams = observer(
               )
             })}
             <li>
-              <a onClick={() => setId('create-team')} className="truncate">
+              <a
+                onClick={() => teamStore.setId('create-team')}
+                className="truncate"
+              >
                 <IconSquareRoundedPlus size={18} /> new team
               </a>
             </li>
@@ -195,43 +209,35 @@ const MyTeams = observer(
   }
 )
 
-const MemberTeams = observer(
-  ({
-    setId,
-    closeDetails
-  }: {
-    setId: (id: string) => void
-    closeDetails: () => void
-  }) => {
-    const [teamState] = useTeamStore()
-    return (
-      <li>
-        <details open>
-          <summary className="truncate">member teams</summary>
-          <ul>
-            {teamState.memberTeams.data?.map(team => {
-              return (
-                <li
-                  key={team.id}
-                  className={twJoin(
-                    teamState.currentTeam.data?.id === team.id &&
-                      'bg-accent-content rounded-sm'
-                  )}
+const MemberTeams = observer(({closeDetails}: {closeDetails: () => void}) => {
+  const [teamState, teamStore] = useTeamStore()
+  return (
+    <li>
+      <details open>
+        <summary className="truncate">member teams</summary>
+        <ul>
+          {teamState.memberTeams.data?.map(team => {
+            return (
+              <li
+                key={team.id}
+                className={twJoin(
+                  teamState.currentTeam.data?.id === team.id &&
+                    'bg-accent-content rounded-sm'
+                )}
+              >
+                <a
+                  onClick={() => {
+                    teamStore.setId(team.id)
+                    closeDetails()
+                  }}
                 >
-                  <a
-                    onClick={() => {
-                      setId(team.id)
-                      closeDetails()
-                    }}
-                  >
-                    {team.name}
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
-        </details>
-      </li>
-    )
-  }
-)
+                  {team.name}
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </details>
+    </li>
+  )
+})

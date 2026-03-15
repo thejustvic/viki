@@ -8,31 +8,52 @@ import {Navbar as Nav} from '@/components/daisyui/navbar'
 import {Toggle} from '@/components/daisyui/toggle'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {SwitchTheme} from '@/components/switch-theme'
+import {useResize} from '@/hooks/use-resize'
 import {headerHeight} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import {useEffect} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
 import {NavbarOpenTeamButton} from './navbar-open-team-button'
 import {NavbarRightDrawerButton} from './navbar-right-drawer-button'
 import {NavbarSearch} from './navbar-search'
-import {NavbarTeamSelect} from './navbar-team-select'
+import {NavbarTeamSelect, useTeamSync} from './navbar-team-select'
 
 export const Navbar = observer(() => {
-  const {user} = useSupabase()
+  useTeamSync()
 
+  const [, globalStore] = useGlobalStore()
+  const {ref, width} = useResize()
+
+  useEffect(() => {
+    globalStore.setNavbarWidth(width)
+  }, [width])
+
+  const cardId = getSearchCard()
   return (
     <Nav
+      ref={ref}
       style={{height: headerHeight}}
       className={twJoin(
-        'sticky top-0 z-10 px-0 bg-base-200 gap-6',
-        user ? 'justify-between' : 'justify-center'
+        'sticky top-0 z-10 px-0 bg-base-200 gap-6 justify-between'
       )}
     >
-      {user && !isMobile ? <NavStart /> : null}
-      {user ? <NavCenter /> : null}
-      {user ? <NavEnd /> : null}
+      <div className="absolute top-0 text-xs">{width}</div>
+      {width > 650 ? (
+        <>
+          <NavStart />
+          <NavCenter />
+          <NavEnd />
+        </>
+      ) : (
+        <>
+          {cardId && !isMobile && <NavbarLeftDrawerButton />}
+          <NavCenter />
+          <NavEndMobile />
+        </>
+      )}
     </Nav>
   )
 })
@@ -40,13 +61,9 @@ export const Navbar = observer(() => {
 const NavStart = () => {
   const cardId = getSearchCard()
 
-  if (isMobile) {
-    return
-  }
-
   return (
     <Nav.Start>
-      {cardId && <NavbarLeftDrawerButton />}
+      {cardId && !isMobile && <NavbarLeftDrawerButton />}
       <div className="ml-4 flex gap-2 items-center">
         <NavbarTeamSelect />
         <NavbarOpenTeamButton />
@@ -79,6 +96,20 @@ const NavEnd = () => {
   )
 }
 
+const NavEndMobile = () => {
+  return (
+    <Nav.End className="gap-2">
+      <div className="flex items-center gap-6">
+        <div className="flex gap-2">
+          <SwitchTheme />
+          <AvatarDropdownMobile />
+        </div>
+        <NavbarRightDrawerButton />
+      </div>
+    </Nav.End>
+  )
+}
+
 const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
   const {supabase, user} = useSupabase()
@@ -99,12 +130,42 @@ const AvatarDropdown = observer(() => {
       <UserImage src={user.user_metadata?.avatar_url} />
       <Dropdown.Menu className="shadow-lg bg-base-200 gap-4">
         {cardId && <LabelShowLeftMenu />}
-        {isMobile && (
-          <div className="flex gap-1 items-center">
-            <NavbarTeamSelect />
-            <NavbarOpenTeamButton />
-          </div>
-        )}
+        <Button
+          soft
+          color="info"
+          onClick={handleLogout}
+          disable={state.logging.logout}
+          loading={state.logging.logout}
+        >
+          Logout
+        </Button>
+      </Dropdown.Menu>
+    </Dropdown>
+  )
+})
+
+const AvatarDropdownMobile = observer(() => {
+  const [state, store] = useGlobalStore()
+  const {supabase, user} = useSupabase()
+
+  const handleLogout = async () => {
+    store.setLogging('logout')
+    await supabase.auth.signOut()
+    window.location.href = '/login'
+  }
+
+  if (!user) {
+    return null
+  }
+
+  return (
+    <Dropdown placements={['end']} hover>
+      <UserImage src={user.user_metadata?.avatar_url} />
+      <Dropdown.Menu className="shadow-lg bg-base-200 gap-4">
+        <div className="flex gap-1 items-center">
+          <NavbarTeamSelect />
+          <NavbarOpenTeamButton />
+        </div>
         <Button
           soft
           color="info"

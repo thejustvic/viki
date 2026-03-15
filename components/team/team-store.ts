@@ -9,6 +9,7 @@ interface State {
   memberTeams: SupabaseQuery<Team[]>
   currentTeam: SupabaseQuery<TeamWithMembers>
   currentTeamId: TeamWithMembers['id'] | null
+  id: string
 }
 
 export class TeamStore {
@@ -28,7 +29,8 @@ export class TeamStore {
       data: null,
       error: null
     },
-    currentTeamId: null
+    currentTeamId: null,
+    id: ''
   }
 
   constructor(serverCurrentTeamId: string | null | undefined) {
@@ -56,6 +58,10 @@ export class TeamStore {
       data: null,
       error: null
     }
+  }
+
+  setId = (id: string) => {
+    this.state.id = id
   }
 
   setMyTeams(teams: State['myTeams']): void {

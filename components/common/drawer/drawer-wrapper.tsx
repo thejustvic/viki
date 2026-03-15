@@ -1,6 +1,5 @@
 'use client'
 
-import {DrawerLeft} from '@/components/common/drawer/drawer-left'
 import {Navbar} from '@/components/common/navbar/navbar'
 import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import {headerHeight} from '@/utils/const'
@@ -9,6 +8,16 @@ import dynamic from 'next/dynamic'
 import {ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
+
+const DrawerLeftClient = dynamic(
+  () =>
+    import('@/components/common/drawer/drawer-left').then(mod =>
+      Promise.resolve(mod.DrawerLeft)
+    ),
+  {
+    ssr: false
+  }
+)
 
 const DrawerRightClient = dynamic(
   () =>
@@ -26,7 +35,7 @@ interface Props {
 
 export const DrawerWrapper = observer(({children}: Props) => {
   return (
-    <DrawerLeft>
+    <DrawerLeftClient>
       <DrawerRightClient>
         <Navbar />
         <div
@@ -36,7 +45,7 @@ export const DrawerWrapper = observer(({children}: Props) => {
           <SimpleScrollbar>{children}</SimpleScrollbar>
         </div>
       </DrawerRightClient>
-    </DrawerLeft>
+    </DrawerLeftClient>
   )
 })
 

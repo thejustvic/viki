@@ -240,7 +240,7 @@ const CreatorData = observer(() => {
   const src = state.cardCreator.data.user_metadata?.avatar_url
 
   return (
-    <div className="flex gap-2 items-center truncate">
+    <div className="flex flex-1 gap-2 items-center truncate">
       <UserImage src={src} />
       <div className="truncate">{state.cardCreator.data.email}</div>
     </div>

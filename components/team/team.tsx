@@ -78,8 +78,15 @@ const TeamMembers = observer(() => {
         return (
           <div className="flex justify-between gap-2 px-2" key={teamMember.id}>
             <div className="flex gap-2 truncate">
-              <span className="truncate">{teamMember.name}</span>
-              <span className="opacity-50 truncate">{teamMember.email}</span>
+              <span className="truncate max-w-2/4" title={teamMember.name}>
+                {teamMember.name}
+              </span>
+              <span
+                className="opacity-50 max-w-2/4 truncate"
+                title={teamMember.email}
+              >
+                {teamMember.email}
+              </span>
             </div>
             <Button
               soft

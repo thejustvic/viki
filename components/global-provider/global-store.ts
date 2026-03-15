@@ -18,6 +18,7 @@ interface State {
   drawerOpenByHover: boolean
   showLeftMenuOnHover: boolean
   lastCardId: string | undefined
+  navbarWidth: number | undefined
   rightDrawerWidth: number
   leftDrawerWidth: number
   tab: Tab
@@ -43,8 +44,9 @@ export class GlobalStore {
     drawerOpenByHover: false,
     showLeftMenuOnHover: true,
     lastCardId: undefined,
-    rightDrawerWidth: 320,
-    leftDrawerWidth: 320,
+    navbarWidth: undefined,
+    rightDrawerWidth: 300,
+    leftDrawerWidth: 300,
     tab: 'info',
     logging: {
       email: false,
@@ -78,6 +80,10 @@ export class GlobalStore {
 
   setPlayerSize = (playerSize: PlayerSizeType[number]): void => {
     this.state.playerSize = playerSize
+  }
+
+  setNavbarWidth = (navbarWidth: State['navbarWidth']): void => {
+    this.state.navbarWidth = navbarWidth
   }
 
   setRightDrawerWidth = (rightDrawerWidth: State['rightDrawerWidth']): void => {

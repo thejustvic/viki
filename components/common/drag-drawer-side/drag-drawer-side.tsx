@@ -10,26 +10,44 @@ export interface DragProps {
   drawer: 'left' | 'right'
 }
 
+const minDrawerWidth = 300
+const minNavbarWidth = 500
+const maxWidthLeft = 2500
+const maxWidthRight = 2500
+
 export const DragDrawerSide = observer(({drawer}: DragProps) => {
-  const [, store] = useGlobalStore()
+  const [state, store] = useGlobalStore()
   const {handleMouseDown, handleMouseUp, handleMouseMove, mouseDown, mouseX} =
     useDragDrawerSideHandlers({drawer})
+
+  const navbarWidth = Number(state.navbarWidth)
 
   useEffect(() => {
     if (!mouseDown.value) {
       return
     }
+
     switch (drawer) {
       case 'left': {
         const widthLeft = mouseX.startWidth - mouseX.move
-        if (widthLeft > 320 && widthLeft < 640) {
+
+        // if the drawer size increases and the navigation bar reaches minNavbarWidth pixels, the increase should be stopped
+        if (mouseX.move < 0 && navbarWidth <= minNavbarWidth) {
+          return
+        }
+        if (widthLeft >= minDrawerWidth && widthLeft <= maxWidthLeft) {
           return store.setLeftDrawerWidth(widthLeft)
         }
         break
       }
       case 'right': {
         const widthRight = mouseX.startWidth + mouseX.move
-        if (widthRight > 320 && widthRight < 640) {
+
+        // if the drawer size increases and the navigation bar reaches minNavbarWidth pixels, the increase should be stopped
+        if (mouseX.move > 0 && navbarWidth <= minNavbarWidth) {
+          return
+        }
+        if (widthRight >= minDrawerWidth && widthRight <= maxWidthRight) {
           return store.setRightDrawerWidth(widthRight)
         }
         break
