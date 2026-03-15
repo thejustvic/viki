@@ -10,7 +10,7 @@ import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`
   flex-1 
-  flex-shrink
+  shrink
   mb-2
 `
 
