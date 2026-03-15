@@ -2,6 +2,12 @@
 
 import {useDragDrawerSideHandlers} from '@/components/common/drag-drawer-side/drag-drawer-side-handlers'
 import {useGlobalStore} from '@/components/global-provider/global-store'
+import {
+  maxWidthLeftDrawer,
+  maxWidthRightDrawer,
+  minDrawerWidth,
+  minNavbarWidth
+} from '@/utils/const'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import tw from 'tailwind-styled-components'
@@ -9,11 +15,6 @@ import tw from 'tailwind-styled-components'
 export interface DragProps {
   drawer: 'left' | 'right'
 }
-
-const minDrawerWidth = 300
-const minNavbarWidth = 500
-const maxWidthLeft = 2500
-const maxWidthRight = 2500
 
 export const DragDrawerSide = observer(({drawer}: DragProps) => {
   const [state, store] = useGlobalStore()
@@ -35,7 +36,7 @@ export const DragDrawerSide = observer(({drawer}: DragProps) => {
         if (mouseX.move < 0 && navbarWidth <= minNavbarWidth) {
           return
         }
-        if (widthLeft >= minDrawerWidth && widthLeft <= maxWidthLeft) {
+        if (widthLeft >= minDrawerWidth && widthLeft <= maxWidthLeftDrawer) {
           return store.setLeftDrawerWidth(widthLeft)
         }
         break
@@ -47,7 +48,7 @@ export const DragDrawerSide = observer(({drawer}: DragProps) => {
         if (mouseX.move > 0 && navbarWidth <= minNavbarWidth) {
           return
         }
-        if (widthRight >= minDrawerWidth && widthRight <= maxWidthRight) {
+        if (widthRight >= minDrawerWidth && widthRight <= maxWidthRightDrawer) {
           return store.setRightDrawerWidth(widthRight)
         }
         break

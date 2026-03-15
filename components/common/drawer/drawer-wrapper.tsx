@@ -40,7 +40,7 @@ export const DrawerWrapper = observer(({children}: Props) => {
         <Navbar />
         <div
           className="bg-base-300/20"
-          style={{height: `calc(100% - ${headerHeight})`}}
+          style={{height: `calc(100% - ${headerHeight}px)`}}
         >
           <SimpleScrollbar>{children}</SimpleScrollbar>
         </div>
