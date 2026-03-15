@@ -40,7 +40,6 @@ export const Navbar = observer(() => {
         'sticky top-0 z-10 px-0 bg-base-200 gap-6 justify-between'
       )}
     >
-      <div className="absolute top-0 text-xs">{width}</div>
       {width > 650 ? (
         <>
           <NavStart />
