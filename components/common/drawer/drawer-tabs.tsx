@@ -59,6 +59,9 @@ export const TabsComponent = observer(() => {
   const [state, store] = useGlobalStore()
 
   useEffect(() => {
+    if (isMobile) {
+      return
+    }
     if (state.rightDrawerWidth >= window.innerWidth - minDrawerWidth) {
       store.setRightDrawerWidth(minDrawerWidth)
     }

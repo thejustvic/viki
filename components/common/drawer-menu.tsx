@@ -25,6 +25,9 @@ export const DrawerMenu = observer(() => {
   const [state, store] = useGlobalStore()
 
   useEffect(() => {
+    if (isMobile) {
+      return
+    }
     if (state.leftDrawerWidth >= window.innerWidth - minDrawerWidth) {
       store.setLeftDrawerWidth(minDrawerWidth)
     }
