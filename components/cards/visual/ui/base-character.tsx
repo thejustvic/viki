@@ -229,7 +229,7 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
       )}
       <RigidBody
         ref={rigidBodyRef}
-        position={[0, 0, 0]}
+        position={[0, 0.5, 0]}
         colliders={false}
         lockRotations
       >
