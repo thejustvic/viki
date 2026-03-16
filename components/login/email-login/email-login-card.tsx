@@ -1,13 +1,13 @@
+import tw from '@/components/common/tw-styled-components'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {isSafari} from 'react-device-detect'
 import Tilt from 'react-parallax-tilt'
-import tw from 'tailwind-styled-components'
 import {useCaptchaStore} from '../captcha/captcha-store'
 import {EmailLoginForm} from './email-login-form'
 import {useEmailLoginStore} from './email-login-store'
 
-const TwLoginCardInner = tw.div<{$rotate: boolean}>` 
+const TwLoginCardInner = tw.div<{$rotate: boolean}>`
   rounded-md
   w-[300px]
   duration-700

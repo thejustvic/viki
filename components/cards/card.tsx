@@ -2,6 +2,7 @@
 
 import {CardChecklistProgress} from '@/components/cards/card-checklist/card-checklist-progress'
 import {ParallaxCardContainer} from '@/components/common/parallax-card-container'
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {Card as CardUI} from '@/components/daisyui/card'
 import {useBoolean} from '@/hooks/use-boolean'
@@ -13,7 +14,6 @@ import {IconDragDrop2, IconTrash} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 import {useGlobalStore} from '../global-provider/global-store'
 import {useCardsStore} from './cards-store'
 import {Card as CardType} from './types'
@@ -63,11 +63,7 @@ export const Card = observer(
   }
 )
 
-export const TwCardText = tw.div`
-  line-clamp-3
-  text-base-content/50
-  drop-shadow-xl/25
-`
+export const TwCardText = tw.div`text-base-content/50 line-clamp-3 drop-shadow-xl/25`
 
 interface CardProps {
   my?: boolean
@@ -91,7 +87,7 @@ const CardBody = observer(
       <div
         className={twJoin(
           state.draggingCard && 'cursor-grabbing',
-          'flex flex-col flex-1 justify-between'
+          'flex flex-1 flex-col justify-between'
         )}
         onMouseOver={() => {
           if (!hovered.value) {

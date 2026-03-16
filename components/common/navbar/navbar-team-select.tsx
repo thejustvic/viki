@@ -1,3 +1,4 @@
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {useTeamHandlers} from '@/components/team/team-handlers'
 import {TeamStore, useTeamStore} from '@/components/team/team-store'
@@ -16,7 +17,6 @@ import {observer} from 'mobx-react-lite'
 import type {MouseEvent} from 'react'
 import {useEffect} from 'react'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 
 const useFirstCurrentTeamIdListener = ({
   user,

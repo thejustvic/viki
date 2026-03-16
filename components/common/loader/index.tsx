@@ -1,4 +1,4 @@
-import tw from 'tailwind-styled-components'
+import tw from '@/components/common/tw-styled-components'
 import IconLoader from './loader.svg'
 
 const TwLoader = tw.div<{className: string}>`

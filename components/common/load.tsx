@@ -1,4 +1,4 @@
-import tw from 'tailwind-styled-components'
+import tw from '@/components/common/tw-styled-components'
 import {Loader} from './loader'
 
 const TwLoad = tw.div<{$center?: boolean}>`

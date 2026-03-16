@@ -1,11 +1,11 @@
 import {ReactionsDropdownContent} from '@/components/chat/reactions/reactions-dropdown-content'
 import {Message} from '@/components/chat/types'
+import tw from '@/components/common/tw-styled-components'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {IconMoodSmileFilled} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 
 const TwIconReactionAbsoluteContainer = tw.div`
   absolute

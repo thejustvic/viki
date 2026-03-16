@@ -1,10 +1,10 @@
 import {ReactionsSmileyText} from '@/components/chat/reactions/reactions-smiley-text'
 import {useReactionsHandlers} from '@/components/chat/reactions/use-reactions-handlers'
 import {Message, Smiley, smileys} from '@/components/chat/types'
+import tw from '@/components/common/tw-styled-components'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 
 const TwSmileyContainer = tw.div`
   bg-info/80

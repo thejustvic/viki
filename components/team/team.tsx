@@ -1,7 +1,7 @@
 import {Loader} from '@/components/common/loader'
 import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
+import tw from '@/components/common/tw-styled-components'
 import {observer} from 'mobx-react-lite'
-import tw from 'tailwind-styled-components'
 
 import {Button} from '@/components/daisyui/button'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'

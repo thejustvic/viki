@@ -1,6 +1,6 @@
+import tw from '@/components/common/tw-styled-components'
 import {HTMLProps, PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 
 interface Props extends PropsWithChildren {
   containerClassName?: HTMLProps<HTMLElement>['className']
@@ -10,19 +10,15 @@ interface Props extends PropsWithChildren {
 
 export interface AvatarProps extends Props {
   src?: string
-
   shape?: 'square' | 'circle'
 }
 
-const TwImageContainer = tw.div<{
-  shape?: AvatarProps['shape']
-}>`
-  ${p =>
-    twJoin(
-      'btn p-0 border-0',
-      p.$shape === 'square' && 'rounded-xl',
-      p.$shape === 'circle' && 'rounded-full'
-    )}
+const TwImageContainer = tw.div<{$shape?: AvatarProps['shape']}>`
+  btn
+  p-0
+  border-0
+  ${p => p.$shape === 'square' && 'rounded-xl'}
+  ${p => p.$shape === 'circle' && 'rounded-full'}
 `
 
 export const Avatar = ({

@@ -1,12 +1,12 @@
 'use client'
 
 import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
+import tw from '@/components/common/tw-styled-components'
 import {useLoggingOff} from '@/hooks/use-logging-off'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import dynamic from 'next/dynamic'
 import {useMemo} from 'react'
-import tw from 'tailwind-styled-components'
 import {useTeamStore} from '../team/team-store'
 import {useCardChecklistListener} from './card-checklist/use-card-checklist-listener'
 import {useCardsStore} from './cards-store'
@@ -21,10 +21,10 @@ const CardNoSSR = dynamic(
 )
 
 const TwContainer = tw.div`
-  grid 
+  grid
   grid-cols-[repeat(auto-fill,_minmax(min(190px,100%),_1fr))]
-  gap-4 
-  p-4  
+  gap-4
+  p-4
   max-[425px]:grid-cols-2
   max-[425px]:gap-2
   max-[425px]:p-2

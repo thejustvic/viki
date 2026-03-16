@@ -1,11 +1,11 @@
 import {getSearchCard} from '@/components/cards/get-search-card'
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Input} from '@/components/daisyui/input'
 import {IconSend} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useForm} from 'react-hook-form'
-import tw from 'tailwind-styled-components'
 import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`

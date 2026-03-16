@@ -1,3 +1,4 @@
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {Card} from '@/components/daisyui/card'
 import {Form} from '@/components/daisyui/form'
@@ -7,17 +8,16 @@ import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {AuthResponse} from '@supabase/supabase-js'
 import {observer} from 'mobx-react-lite'
 import {SubmitHandler, useForm, UseFormRegister} from 'react-hook-form'
-import tw from 'tailwind-styled-components'
 import {useCaptchaStore} from '../captcha/captcha-store'
 
 const TwTitle = tw(Card.Title)`
-  flex 
-  justify-center 
+  flex
+  justify-center
   py-4
 `
 
 const TwBody = tw(Card.Body)`
-  pt-0 
+  pt-0
 `
 
 const TwSubmit = tw(Button)`
@@ -25,9 +25,9 @@ const TwSubmit = tw(Button)`
 `
 
 const TwError = tw.p`
-  w-full 
-  text-xs 
-  text-center 
+  w-full
+  text-xs
+  text-center
   text-error
 `
 

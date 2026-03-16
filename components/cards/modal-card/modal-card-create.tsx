@@ -3,6 +3,7 @@
 import {useCardHandlers} from '@/components/cards/cards-handlers'
 import {useSetFocusAfterTransitionEnd} from '@/components/cards/modal-card/use-set-focus-after-transitionend'
 import {Modal} from '@/components/common/modal'
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {Form} from '@/components/daisyui/form'
 import {Textarea} from '@/components/daisyui/textarea'
@@ -12,20 +13,10 @@ import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm, UseFormResetField, UseFormSetFocus} from 'react-hook-form'
-import tw from 'tailwind-styled-components'
 
-const TwError = tw.p`
-  w-full 
-  text-xs 
-  text-center 
-  text-error
-`
+const TwError = tw.p`text-error w-full text-center text-xs`
 
-const TwErrorWrapper = tw.div`
-  p-2
-  bg-info-content
-  rounded-xl
-`
+const TwErrorWrapper = tw.div`bg-info-content rounded-xl p-2`
 
 export const ModalCardCreate = () => {
   const updateSearchParams = useUpdateSearchParams()
@@ -49,7 +40,7 @@ export const ModalCardCreate = () => {
 }
 
 const ModalHeader = () => {
-  return <div className="flex justify-center mb-2">Create card</div>
+  return <div className="mb-2 flex justify-center">Create card</div>
 }
 
 const ModalBody = () => (
@@ -118,7 +109,7 @@ const Text = observer(() => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 flex-col">
+    <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       <Textarea
         textareaId="modal-card-create"
         size="md"

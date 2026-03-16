@@ -1,16 +1,26 @@
+import tw from '@/components/common/tw-styled-components'
 import {Input} from '@/components/daisyui/input'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import tw from 'tailwind-styled-components'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
 import {Card, PlayerSizeType} from '../../types'
 import {ShowData} from '../card-info'
 import {useCardInfoStore} from '../card-info-store'
 
-const TwRadio = tw.div`flex gap-1 items-center justify-between w-[100px] bg-base-200 p-2 rounded cursor-pointer`
+const TwRadio = tw.div`
+  flex
+  gap-1
+  items-center
+  justify-between
+  w-[100px]
+  bg-base-200
+  p-2
+  rounded
+  cursor-pointer
+`
 
 const VisualContentWinter = observer(() => {
   const [state] = useCardInfoStore()
@@ -28,7 +38,7 @@ const VisualContentWinter = observer(() => {
       <Tabs.Tab
         value="winter"
         onChange={({target: {value}}) => {
-          updateCardVisual(value, id)
+          void updateCardVisual(value, id)
         }}
         label="winter"
         groupName="tabs-visual"
@@ -58,7 +68,7 @@ const VisualContentSpring = observer(() => {
       <Tabs.Tab
         value="spring"
         onChange={({target: {value}}) => {
-          updateCardVisual(value, id)
+          void updateCardVisual(value, id)
         }}
         label="spring"
         groupName="tabs-visual"
@@ -80,7 +90,7 @@ export const VisualContent = observer(() => {
   }
 
   return (
-    <Tabs className="flex flex-1 justify-around h-full">
+    <Tabs className="flex justify-around h-full flex-1">
       <VisualContentWinter />
       <VisualContentSpring />
     </Tabs>
@@ -141,7 +151,7 @@ const ChooseTulipColor = observer(() => {
   const [state] = useCardInfoStore()
 
   return (
-    <div className="mt-4 flex flex-col gap-2">
+    <div className="flex mt-4 gap-2 flex-col">
       <ShowData
         loading={state.card.loading}
         error={state.card.error?.message}

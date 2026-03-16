@@ -1,12 +1,12 @@
 'use client'
 
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {Link} from '@/components/daisyui/link'
 import {useBoolean} from '@/hooks/use-boolean'
 import {KeenSliderPlugin, useKeenSlider} from 'keen-slider/react'
 import Image from 'next/image'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 import './style.scss'
 
 const TwCarousel = tw.div`
@@ -18,44 +18,44 @@ const TwScene = tw.div`
   scene
 `
 const TwKeenSlider = tw.div`
-  carousel 
+  carousel
   keen-slider
 `
 const TwTechStack = tw.h1`
-  flex 
-  justify-center 
-  mb-8 
-  font-mono 
-  text-2xl 
-  pointer-events-none 
-  drop-shadow-xl/25 
+  flex
+  justify-center
+  mb-8
+  font-mono
+  text-2xl
+  pointer-events-none
+  drop-shadow-xl/25
   truncate
 `
 const TwCard = tw.div`
-  p-4 
+  p-4
   bg-base-300
-  shadow-xl 
+  shadow-xl
   rounded-2xl
-  h-[142px] 
-  w-[190px] 
-  carousel__cell 
+  h-[142px]
+  w-[190px]
+  carousel__cell
   transform-3d
 `
 const TwCardInner = tw.div`
-  flex 
-  flex-col 
+  flex
+  flex-col
   h-full
 `
 const TwImage = tw.div`
-  flex 
-  items-center 
-  justify-center 
+  flex
+  items-center
+  justify-center
   flex-1
   drop-shadow-xl/25
 `
 const TwLink = tw.div`
-  flex 
-  items-center 
+  flex
+  items-center
   justify-center
   drop-shadow-xl/25
 `

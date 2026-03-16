@@ -1,10 +1,10 @@
 import {ReactionsDropdownContent} from '@/components/chat/reactions/reactions-dropdown-content'
 import {Message} from '@/components/chat/types'
+import tw from '@/components/common/tw-styled-components'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {IconMoodSmile} from '@tabler/icons-react'
 import {twJoin} from 'tailwind-merge'
-import tw from 'tailwind-styled-components'
 
 const TwIconReaction = tw.div`
   cursor-pointer

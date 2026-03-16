@@ -4,6 +4,7 @@ import {CheckboxComponent} from '@/components/checklist/checkbox/checkbox'
 import {Checkbox} from '@/components/checklist/types'
 import {Loader} from '@/components/common/loader'
 import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
+import tw from '@/components/common/tw-styled-components'
 import {useBoolean} from '@/hooks/use-boolean'
 import {
   closestCenter,
@@ -29,7 +30,6 @@ import {
 } from '@dnd-kit/sortable'
 import {CSS} from '@dnd-kit/utilities'
 import {observer} from 'mobx-react-lite'
-import tw from 'tailwind-styled-components'
 import {useGlobalStore} from '../global-provider/global-store'
 import {useCheckboxDragHandlers} from './checkbox/checkbox-drag-handlers'
 
