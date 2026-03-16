@@ -1,7 +1,6 @@
 'use client'
 
 import {useDragDrawerSideHandlers} from '@/components/common/drag-drawer-side/drag-drawer-side-handlers'
-import {useGlobalStore} from '@/components/global-provider/global-store'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
@@ -11,10 +10,8 @@ export interface DragProps {
 }
 
 export const DragDrawerSide = observer(({drawer}: DragProps) => {
-  const [, store] = useGlobalStore()
   const {handleMouseDown, mouseDown} = useDragDrawerSideHandlers({
-    drawer,
-    store
+    drawer
   })
 
   return (

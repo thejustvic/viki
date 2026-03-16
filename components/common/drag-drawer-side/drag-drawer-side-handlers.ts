@@ -1,7 +1,4 @@
-import {
-  GlobalStore,
-  useGlobalStore
-} from '@/components/global-provider/global-store'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {
   maxWidthLeftDrawer,
@@ -18,15 +15,13 @@ interface Handlers {
 
 interface DragHandlersProps {
   drawer: 'left' | 'right'
-  store: GlobalStore
 }
 
 export const useDragDrawerSideHandlers = ({
-  drawer,
-  store
+  drawer
 }: DragHandlersProps): Handlers => {
   const mouseDown = useBoolean(false)
-  const [state] = useGlobalStore()
+  const [state, store] = useGlobalStore()
   const startXRef = useRef(0)
   const startWidthRef = useRef(0)
 
