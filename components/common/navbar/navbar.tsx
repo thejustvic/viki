@@ -28,6 +28,9 @@ export const Navbar = observer(() => {
   const {ref, width: navbarWidth} = useResize()
 
   useEffect(() => {
+    if (isMobile) {
+      return
+    }
     globalStore.setNavbarWidth(navbarWidth)
     const widthMargin = 100
     // adjusting drawer width to navbar width
