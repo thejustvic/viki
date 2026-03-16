@@ -1,6 +1,7 @@
 'use client'
 
 import {Checkbox} from '@/components/checklist/types'
+import {minDrawerWidth} from '@/utils/const'
 import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
@@ -45,8 +46,8 @@ export class GlobalStore {
     showLeftMenuOnHover: true,
     lastCardId: undefined,
     navbarWidth: undefined,
-    rightDrawerWidth: 300,
-    leftDrawerWidth: 300,
+    rightDrawerWidth: minDrawerWidth,
+    leftDrawerWidth: minDrawerWidth,
     tab: 'info',
     logging: {
       email: false,
