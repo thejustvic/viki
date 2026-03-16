@@ -3,7 +3,8 @@ import React, {
   ComponentRef,
   ElementType,
   forwardRef,
-  JSX
+  JSX,
+  useMemo
 } from 'react'
 import {ClassNameValue, twMerge} from 'tailwind-merge'
 
@@ -34,34 +35,39 @@ const createTwComponent = <T extends ElementType>(Tag: T): TwTemplate<T> => {
       ComponentRef<T>,
       ComponentPropsWithoutRef<T> & P
     >(({className, ...props}, ref) => {
-      // calculate the classes by passing all the props in interpolation
-      const computedParts = interpolations.map(i => {
-        const val =
-          typeof i === 'function'
-            ? i(props as ComponentPropsWithoutRef<T> & P)
-            : i
+      const finalClasses = useMemo(() => {
+        const computedParts = interpolations.map(i => {
+          const val =
+            typeof i === 'function'
+              ? i(props as ComponentPropsWithoutRef<T> & P)
+              : i
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          return val || '' // prevents the appearance of "null", "undefined", "false" strings
+        })
+
+        const fullRawString = String.raw({raw: strings}, ...computedParts)
+
+        const sanitized = fullRawString.replace(/\s+/g, ' ').trim()
+
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        return val || '' // prevents the appearance of "null", "undefined", "false" strings
-      })
-
-      const fullRawString = String.raw({raw: strings}, ...computedParts)
-
-      // remove extra spaces and hyphens
-      const sanitizedClasses = fullRawString.replace(/\s+/g, ' ').trim()
+        return twMerge(sanitized, className || '') // use || '' so that twMerge doesn't get undefined
+      }, [props, className])
 
       // filter props starting with $ (Transient Props)
-      const cleanProps = {} as Record<string, unknown>
-      Object.keys(props).forEach(key => {
-        if (!key.startsWith('$')) {
-          cleanProps[key] = (props as Record<string, unknown>)[key]
+      const cleanProps = useMemo(() => {
+        const res = {} as Record<string, unknown>
+        for (const key in props) {
+          if (!key.startsWith('$')) {
+            res[key] = (props as Record<string, unknown>)[key]
+          }
         }
-      })
+        return res as ComponentPropsWithoutRef<T>
+      }, [props])
 
       return React.createElement(Tag, {
         ...cleanProps,
         ref,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        className: twMerge(sanitizedClasses, className || '') // use || '' so that twMerge doesn't get undefined
+        className: finalClasses
       })
     })
 
