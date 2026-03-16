@@ -12,7 +12,7 @@ import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
 
 const SPEED = 4
-const JUMP_FORCE = 2
+const JUMP_FORCE = 5
 
 const isThirdPersonView = false
 
