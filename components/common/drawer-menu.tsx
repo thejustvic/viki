@@ -3,7 +3,9 @@ import {ChatBase} from '@/components/chat/chat'
 import {ChatInput} from '@/components/chat/chat-input'
 import {DragDrawerSide} from '@/components/common/drag-drawer-side/drag-drawer-side'
 import {useGlobalStore} from '@/components/global-provider/global-store'
+import {minDrawerWidth} from '@/utils/const'
 import {observer} from 'mobx-react-lite'
+import {useEffect} from 'react'
 import {isMobile} from 'react-device-detect'
 import tw from 'tailwind-styled-components'
 
@@ -20,7 +22,13 @@ const TwMenu = tw.div`
 `
 
 export const DrawerMenu = observer(() => {
-  const [state] = useGlobalStore()
+  const [state, store] = useGlobalStore()
+
+  useEffect(() => {
+    if (state.leftDrawerWidth >= window.innerWidth - minDrawerWidth) {
+      store.setLeftDrawerWidth(minDrawerWidth)
+    }
+  }, [state.leftDrawerWidth])
 
   return (
     <TwMenu style={isMobile ? {} : {width: state.leftDrawerWidth}}>

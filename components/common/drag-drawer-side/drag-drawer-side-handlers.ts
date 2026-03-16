@@ -1,86 +1,101 @@
-import {useGlobalStore} from '@/components/global-provider/global-store'
+import {
+  GlobalStore,
+  useGlobalStore
+} from '@/components/global-provider/global-store'
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
-import {useCallback, useState} from 'react'
-import {DragProps} from './drag-drawer-side'
+import {
+  maxWidthLeftDrawer,
+  maxWidthRightDrawer,
+  minDrawerWidth,
+  minNavbarWidth
+} from '@/utils/const'
+import {useCallback, useEffect, useRef} from 'react'
 
 interface Handlers {
   handleMouseDown: (event: React.MouseEvent) => void
-  handleMouseUp: () => void
-  handleMouseMove: (event: MouseEvent) => void
   mouseDown: BooleanHookState
-  mouseX: {
-    start: number
-    move: number
-    startWidth: number
-  }
 }
 
-export const useDragDrawerSideHandlers = ({drawer}: DragProps): Handlers => {
+interface DragHandlersProps {
+  drawer: 'left' | 'right'
+  store: GlobalStore
+}
+
+export const useDragDrawerSideHandlers = ({
+  drawer,
+  store
+}: DragHandlersProps): Handlers => {
   const mouseDown = useBoolean(false)
   const [state] = useGlobalStore()
-  const [mouseX, setMouseX] = useState({
-    start: 0,
-    move: 0,
-    startWidth: state.rightDrawerWidth
-  })
+  const startXRef = useRef(0)
+  const startWidthRef = useRef(0)
 
-  const getDrawerWidth = (): number => {
-    return drawer === 'left' ? state.leftDrawerWidth : state.rightDrawerWidth
-  }
+  const handleMouseDown = useCallback(
+    (event: React.MouseEvent): void => {
+      const currentWidth =
+        drawer === 'left' ? state.leftDrawerWidth : state.rightDrawerWidth
+      startXRef.current = event.screenX
+      startWidthRef.current = currentWidth
 
-  const handleMouseDown = (event: React.MouseEvent): void => {
-    mouseDown.turnOn()
-    setMouseX({
-      start: event.screenX,
-      move: 0,
-      startWidth: getDrawerWidth()
-    })
-
-    const body = document.getElementsByTagName('body')[0]
-    body.style.userSelect = 'none'
-    body.style.cursor = 'col-resize'
-  }
-
-  const handleMouseUp = (): void => {
-    if (!mouseDown.value) {
-      return
-    }
-    mouseDown.turnOff()
-    setMouseX({start: 0, move: 0, startWidth: getDrawerWidth()})
-
-    const body = document.getElementsByTagName('body')[0]
-    body.style.userSelect = 'auto'
-    body.style.cursor = 'auto'
-  }
+      mouseDown.turnOn()
+      document.body.style.userSelect = 'none'
+      document.body.style.cursor = 'col-resize'
+    },
+    [drawer, state.leftDrawerWidth, state.rightDrawerWidth, mouseDown]
+  )
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
       if (!mouseDown.value) {
         return
       }
-      switch (drawer) {
-        case 'left':
-          return setMouseX(prev => ({
-            ...prev,
-            move: mouseX.start - event.screenX
-          }))
-        case 'right':
-          return setMouseX(prev => ({
-            ...prev,
-            move: mouseX.start - event.screenX
-          }))
-        default:
+
+      const delta = startXRef.current - event.screenX
+      const navbarWidth = Number(state.navbarWidth)
+
+      if (drawer === 'left') {
+        // if the drawer size increases and the navigation bar reaches minNavbarWidth pixels, the increase should be stopped
+        if (delta < 0 && navbarWidth <= minNavbarWidth) {
           return
+        }
+        const newWidth = startWidthRef.current - delta
+        if (newWidth >= minDrawerWidth && newWidth <= maxWidthLeftDrawer) {
+          store.setLeftDrawerWidth(newWidth)
+        }
+      } else {
+        // if the drawer size increases and the navigation bar reaches minNavbarWidth pixels, the increase should be stopped
+        if (delta > 0 && navbarWidth <= minNavbarWidth) {
+          return
+        }
+        const newWidth = startWidthRef.current + delta
+        if (newWidth >= minDrawerWidth && newWidth <= maxWidthRightDrawer) {
+          store.setRightDrawerWidth(newWidth)
+        }
       }
     },
-    [mouseDown.value]
+    [mouseDown.value, drawer, state.navbarWidth, store]
   )
+
+  const handleMouseUp = useCallback((): void => {
+    mouseDown.turnOff()
+    document.body.style.userSelect = ''
+    document.body.style.cursor = ''
+  }, [mouseDown])
+
+  useEffect(() => {
+    if (mouseDown.value) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [mouseDown.value, handleMouseMove, handleMouseUp])
 
   return {
     handleMouseDown,
-    handleMouseUp,
-    handleMouseMove,
-    mouseDown,
-    mouseX
+    mouseDown
   }
 }

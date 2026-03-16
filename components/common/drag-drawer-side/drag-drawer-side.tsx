@@ -2,100 +2,67 @@
 
 import {useDragDrawerSideHandlers} from '@/components/common/drag-drawer-side/drag-drawer-side-handlers'
 import {useGlobalStore} from '@/components/global-provider/global-store'
-import {
-  maxWidthLeftDrawer,
-  maxWidthRightDrawer,
-  minDrawerWidth,
-  minNavbarWidth
-} from '@/utils/const'
 import {observer} from 'mobx-react-lite'
-import {useEffect} from 'react'
-import tw from 'tailwind-styled-components'
+import {PropsWithChildren} from 'react'
+import {twJoin} from 'tailwind-merge'
 
 export interface DragProps {
   drawer: 'left' | 'right'
 }
 
 export const DragDrawerSide = observer(({drawer}: DragProps) => {
-  const [state, store] = useGlobalStore()
-  const {handleMouseDown, handleMouseUp, handleMouseMove, mouseDown, mouseX} =
-    useDragDrawerSideHandlers({drawer})
-
-  const navbarWidth = Number(state.navbarWidth)
-
-  useEffect(() => {
-    if (!mouseDown.value) {
-      return
-    }
-
-    switch (drawer) {
-      case 'left': {
-        const widthLeft = mouseX.startWidth - mouseX.move
-
-        // if the drawer size increases and the navigation bar reaches minNavbarWidth pixels, the increase should be stopped
-        if (mouseX.move < 0 && navbarWidth <= minNavbarWidth) {
-          return
-        }
-        if (widthLeft >= minDrawerWidth && widthLeft <= maxWidthLeftDrawer) {
-          return store.setLeftDrawerWidth(widthLeft)
-        }
-        break
-      }
-      case 'right': {
-        const widthRight = mouseX.startWidth + mouseX.move
-
-        // if the drawer size increases and the navigation bar reaches minNavbarWidth pixels, the increase should be stopped
-        if (mouseX.move > 0 && navbarWidth <= minNavbarWidth) {
-          return
-        }
-        if (widthRight >= minDrawerWidth && widthRight <= maxWidthRightDrawer) {
-          return store.setRightDrawerWidth(widthRight)
-        }
-        break
-      }
-      default:
-        break
-    }
-  }, [mouseX.move])
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [handleMouseMove, handleMouseUp])
+  const [, store] = useGlobalStore()
+  const {handleMouseDown, mouseDown} = useDragDrawerSideHandlers({
+    drawer,
+    store
+  })
 
   return (
     <TwDragWrap
       onMouseDown={handleMouseDown}
-      $show={mouseDown.value}
-      $right={drawer === 'left'}
+      show={mouseDown.value}
+      right={drawer === 'left'}
     >
       <DragSvg />
     </TwDragWrap>
   )
 })
 
-const TwDragWrap = tw.div<{$show: boolean; $right: boolean}>`
-  absolute
-  h-full
-  p-0
-  pr-2
-  w-1
-  z-10
-  group
-  cursor-col-resize
-  opacity-0
-  hover:opacity-100
-  transition-opacity
-  ease-in-out
-  delay-150
-  duration-200
-  ${p => p.$show && 'opacity-100'}
-  ${p => (p.$right ? 'right-0' : 'left-0')}
-`
+interface TwJoinDragWrapProps extends PropsWithChildren {
+  onMouseDown: (event: React.MouseEvent) => void
+  show: boolean
+  right: boolean
+}
+const TwDragWrap = ({
+  onMouseDown,
+  show,
+  right,
+  children
+}: TwJoinDragWrapProps) => (
+  <div
+    onMouseDown={onMouseDown}
+    className={twJoin(
+      `absolute
+        h-full
+        p-0
+        pr-2
+        w-1
+        z-10
+        group
+        cursor-col-resize
+        opacity-0
+        hover:opacity-100
+        transition-opacity
+        ease-in-out
+        delay-150
+        duration-200`,
+      show && 'opacity-100',
+      right ? 'right-0' : 'left-0'
+    )}
+  >
+    {children}
+  </div>
+)
 
 const DragSvg = () => {
   return (

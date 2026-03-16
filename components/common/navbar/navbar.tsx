@@ -9,7 +9,7 @@ import {Toggle} from '@/components/daisyui/toggle'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {SwitchTheme} from '@/components/switch-theme'
 import {useResize} from '@/hooks/use-resize'
-import {headerHeight} from '@/utils/const'
+import {headerHeight, minDrawerWidth, minNavbarWidth} from '@/utils/const'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
@@ -24,12 +24,30 @@ import {NavbarTeamSelect, useTeamSync} from './navbar-team-select'
 export const Navbar = observer(() => {
   useTeamSync()
 
-  const [, globalStore] = useGlobalStore()
-  const {ref, width} = useResize()
+  const [globalState, globalStore] = useGlobalStore()
+  const {ref, width: navbarWidth} = useResize()
 
   useEffect(() => {
-    globalStore.setNavbarWidth(width)
-  }, [width])
+    globalStore.setNavbarWidth(navbarWidth)
+    const widthMargin = 100
+    // adjusting drawer width to navbar width
+    if (navbarWidth < minNavbarWidth - widthMargin) {
+      const widthThatIsNotEnough = minNavbarWidth - navbarWidth
+      const newRightDrawerWidth =
+        globalState.rightDrawerWidth - widthThatIsNotEnough
+      if (newRightDrawerWidth >= minDrawerWidth) {
+        globalStore.setLeftDrawerWidth(minDrawerWidth)
+        globalStore.setRightDrawerWidth(newRightDrawerWidth)
+      } else {
+        const newLeftDrawerWidth =
+          globalState.leftDrawerWidth - widthThatIsNotEnough
+        if (newLeftDrawerWidth >= minDrawerWidth) {
+          globalStore.setRightDrawerWidth(minDrawerWidth)
+          globalStore.setLeftDrawerWidth(newLeftDrawerWidth)
+        }
+      }
+    }
+  }, [navbarWidth])
 
   const cardId = getSearchCard()
   return (
@@ -40,7 +58,7 @@ export const Navbar = observer(() => {
         'sticky top-0 z-10 px-0 bg-base-200 gap-6 justify-between'
       )}
     >
-      {width > 650 ? (
+      {navbarWidth > 650 ? (
         <>
           <NavStart />
           <NavCenter />

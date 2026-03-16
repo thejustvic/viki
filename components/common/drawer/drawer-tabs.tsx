@@ -18,9 +18,11 @@ import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
 import {canvasContainerStyles} from '@/components/cards/visual/ui/base-scene'
 import {InputGoogleStyle} from '@/components/checklist/checkbox/input-google-style'
 import {Button} from '@/components/daisyui/button'
+import {minDrawerWidth} from '@/utils/const'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {IconArrowBarLeft} from '@tabler/icons-react'
 import dynamic from 'next/dynamic'
+import {useEffect} from 'react'
 import {twJoin} from 'tailwind-merge'
 import {Loader} from '../loader'
 
@@ -54,7 +56,13 @@ const CloseRightDrawer = observer(() => {
 })
 
 export const TabsComponent = observer(() => {
-  const [state] = useGlobalStore()
+  const [state, store] = useGlobalStore()
+
+  useEffect(() => {
+    if (state.rightDrawerWidth >= window.innerWidth - minDrawerWidth) {
+      store.setRightDrawerWidth(minDrawerWidth)
+    }
+  }, [state.leftDrawerWidth])
 
   return (
     <div
