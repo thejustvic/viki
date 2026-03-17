@@ -7,7 +7,7 @@ import {observer} from 'mobx-react-lite'
 import dynamic from 'next/dynamic'
 import {ReactNode} from 'react'
 import {isMobile} from 'react-device-detect'
-import {twJoin} from 'tailwind-merge'
+import tw from '../tw-styled-components'
 
 const DrawerLeftClient = dynamic(
   () =>
@@ -49,11 +49,21 @@ export const DrawerWrapper = observer(({children}: Props) => {
   )
 })
 
+interface ITwDrawerContentWrapper {
+  $isMobile: boolean
+}
+const TwDrawerContentWrapper = tw.div<ITwDrawerContentWrapper>`
+  ${({$isMobile}) => $isMobile && 'w-full'}
+  flex
+  flex-col
+  h-full
+`
+
 // needed for fast width style change in inner component
 export const DrawerContentWrapper = ({children}: React.PropsWithChildren) => {
   return (
-    <div className={twJoin('flex flex-col h-full', isMobile && 'w-full')}>
+    <TwDrawerContentWrapper $isMobile={isMobile}>
       {children}
-    </div>
+    </TwDrawerContentWrapper>
   )
 }

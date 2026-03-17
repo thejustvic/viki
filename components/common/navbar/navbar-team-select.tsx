@@ -217,12 +217,13 @@ const MemberTeams = observer(({closeDetails}: {closeDetails: () => void}) => {
         <summary className="truncate">member teams</summary>
         <ul>
           {teamState.memberTeams.data?.map(team => {
+            const currentTeamIdEqual =
+              teamState.currentTeam.data?.id === team.id
             return (
               <li
                 key={team.id}
                 className={twJoin(
-                  teamState.currentTeam.data?.id === team.id &&
-                    'bg-accent-content rounded-sm'
+                  currentTeamIdEqual && 'bg-accent-content rounded-sm'
                 )}
               >
                 <a

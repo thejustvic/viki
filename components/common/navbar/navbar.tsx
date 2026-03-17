@@ -15,52 +15,64 @@ import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
+import tw from '../tw-styled-components'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
 import {NavbarOpenTeamButton} from './navbar-open-team-button'
 import {NavbarRightDrawerButton} from './navbar-right-drawer-button'
 import {NavbarSearch} from './navbar-search'
 import {NavbarTeamSelect, useTeamSync} from './navbar-team-select'
 
-export const Navbar = observer(() => {
-  useTeamSync()
-
+const useAdjustingDrawerWidth = (navbarWidth: number) => {
   const [globalState, globalStore] = useGlobalStore()
-  const {ref, width: navbarWidth} = useResize()
-
   useEffect(() => {
     if (isMobile) {
       return
     }
+
     globalStore.setNavbarWidth(navbarWidth)
-    const widthMargin = 100
-    // adjusting drawer width to navbar width
-    if (navbarWidth < minNavbarWidth - widthMargin) {
-      const widthThatIsNotEnough = minNavbarWidth - navbarWidth
-      const newRightDrawerWidth =
-        globalState.rightDrawerWidth - widthThatIsNotEnough
-      if (newRightDrawerWidth >= minDrawerWidth) {
-        globalStore.setLeftDrawerWidth(minDrawerWidth)
-        globalStore.setRightDrawerWidth(newRightDrawerWidth)
-      } else {
-        const newLeftDrawerWidth =
-          globalState.leftDrawerWidth - widthThatIsNotEnough
-        if (newLeftDrawerWidth >= minDrawerWidth) {
-          globalStore.setRightDrawerWidth(minDrawerWidth)
-          globalStore.setLeftDrawerWidth(newLeftDrawerWidth)
-        }
+
+    const threshold = minNavbarWidth - 100
+    if (navbarWidth < threshold) {
+      const gap = threshold - navbarWidth
+
+      const {rightDrawerWidth, leftDrawerWidth} = globalState
+
+      // compression of the right drawer
+      const potentialRight = rightDrawerWidth - gap
+      if (potentialRight >= minDrawerWidth) {
+        globalStore.setRightDrawerWidth(potentialRight)
+        return // return so as not to touch the left one at the same time
+      }
+
+      // if the right one is already minimal, compress the left one
+      const potentialLeft = leftDrawerWidth - gap
+      if (potentialLeft >= minDrawerWidth) {
+        globalStore.setRightDrawerWidth(minDrawerWidth)
+        globalStore.setLeftDrawerWidth(potentialLeft)
       }
     }
   }, [navbarWidth])
+}
+
+const TwNavbar = tw(Nav)`
+  sticky
+  top-0
+  z-10
+  px-0
+  bg-base-200
+  gap-6
+  justify-between
+`
+
+export const Navbar = observer(() => {
+  useTeamSync()
+
+  const {ref, width: navbarWidth} = useResize()
+  useAdjustingDrawerWidth(navbarWidth)
 
   const cardId = getSearchCard()
   return (
-    <Nav
-      ref={ref}
-      style={{height: headerHeight}}
-      className={twJoin(
-        'sticky top-0 z-10 px-0 bg-base-200 gap-6 justify-between'
-      )}
-    >
+    <TwNavbar ref={ref} style={{height: headerHeight}}>
       {navbarWidth > 650 ? (
         <>
           <NavStart />
@@ -74,7 +86,7 @@ export const Navbar = observer(() => {
           <NavEndMobile />
         </>
       )}
-    </Nav>
+    </TwNavbar>
   )
 })
 
