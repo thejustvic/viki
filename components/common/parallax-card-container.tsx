@@ -3,7 +3,7 @@ import {cardHeight} from '@/utils/const'
 import {CSSProperties, ReactElement} from 'react'
 import {isMobile, isTablet} from 'react-device-detect'
 import Tilt from 'react-parallax-tilt'
-import {ClassNameValue, twJoin} from 'tailwind-merge'
+import tw from './tw-styled-components'
 
 interface Props {
   disableParallax?: boolean
@@ -13,7 +13,6 @@ interface Props {
   cardNodeBody: ReactElement
   bgImage?: string | null
 }
-
 export const ParallaxCardContainer = (props: Props) => {
   if (isMobile || isTablet || props.disableParallax) {
     return <CardComp {...props} disableTransform />
@@ -31,26 +30,26 @@ export const ParallaxCardContainer = (props: Props) => {
   )
 }
 
+interface ITwCard {
+  $isMy: boolean | undefined
+  $isActive: boolean | undefined
+}
+const TwCard = tw(Card)<ITwCard>`
+  ${({$isMy}) => ($isMy ? 'bg-base-300/20' : 'bg-accent-content/20')}
+  ${({$isActive}) => $isActive && `border-accent`}
+  shadow-md
+  transform-3d
+  bg-no-repeat
+  bg-center
+  bg-cover
+`
+
+const transform: CSSProperties = {
+  transform: 'translateZ(20px)'
+}
+
 const CardComp = (props: Props) => {
   const {disableTransform, my, active, cardNodeBody, bgImage = 'none'} = props
-
-  const transform: CSSProperties = {
-    transform: 'translateZ(20px)'
-  }
-
-  const translateZ: CSSProperties = !disableTransform ? transform : {}
-
-  const cardClassName: ClassNameValue = twJoin(
-    `
-      shadow-md
-      transform-3d 
-      bg-no-repeat
-      bg-center
-      bg-cover
-    `,
-    active && 'border-solid border-accent',
-    my ? 'bg-base-300/20' : 'bg-accent-content/20'
-  )
 
   const getBgImageUrl = () => {
     return bgImage === 'none' ? 'none' : `url('/${bgImage}.svg')`
@@ -62,8 +61,10 @@ const CardComp = (props: Props) => {
   }
 
   return (
-    <Card style={cardStyle} bordered size="sm" className={cardClassName}>
-      <Card.Body style={translateZ}>{cardNodeBody}</Card.Body>
-    </Card>
+    <TwCard style={cardStyle} bordered size="sm" $isActive={active} $isMy={my}>
+      <Card.Body style={disableTransform ? {} : transform}>
+        {cardNodeBody}
+      </Card.Body>
+    </TwCard>
   )
 }
