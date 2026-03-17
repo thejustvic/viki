@@ -1,87 +1,20 @@
 import tw from '@/components/common/tw-styled-components'
 import {Input} from '@/components/daisyui/input'
 import {Tabs} from '@/components/daisyui/tabs'
-import {useGlobalStore} from '@/components/global-provider/global-store'
-import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {Card, PlayerSizeType} from '../../types'
-
-import {CardInfoShowData} from '../card-info-show-data'
+import {Card} from '../../types'
 import {useCardInfoStore} from '../card-info-store'
+import {VisualContentSpring} from './visual-content-spring'
+import {VisualContentWinter} from './visual-content-winter'
 
-const TwRadio = tw.div`
+const TwVisualContent = tw(Tabs)`
   flex
-  gap-1
-  items-center
-  justify-between
-  w-[100px]
-  bg-base-200
-  p-2
-  rounded
-  cursor-pointer
+  justify-around
+  h-full
+  flex-1
 `
-
-const VisualContentWinter = observer(() => {
-  const [state] = useCardInfoStore()
-  const {updateCardVisual} = useCardHandlers()
-  const id = String(getSearchCard())
-
-  if (!state.card.data) {
-    return null
-  }
-
-  const checked = state?.card?.data?.selected_visual === 'winter'
-
-  return (
-    <>
-      <Tabs.Tab
-        value="winter"
-        onChange={({target: {value}}) => {
-          void updateCardVisual(value, id)
-        }}
-        label="winter"
-        groupName="tabs-visual"
-        checked={checked}
-        icon={checked ? IconCircleCheck : IconCircle}
-      />
-      <Tabs.TabContent className="p-2">
-        <WinterContent />
-      </Tabs.TabContent>
-    </>
-  )
-})
-
-const VisualContentSpring = observer(() => {
-  const [state] = useCardInfoStore()
-  const {updateCardVisual} = useCardHandlers()
-  const id = String(getSearchCard())
-
-  if (!state.card.data) {
-    return null
-  }
-
-  const checked = state?.card?.data?.selected_visual === 'spring'
-
-  return (
-    <>
-      <Tabs.Tab
-        value="spring"
-        onChange={({target: {value}}) => {
-          void updateCardVisual(value, id)
-        }}
-        label="spring"
-        groupName="tabs-visual"
-        checked={checked}
-        icon={checked ? IconCircleCheck : IconCircle}
-      />
-      <Tabs.TabContent className="p-2">
-        <SpringContent />
-      </Tabs.TabContent>
-    </>
-  )
-})
 
 export const VisualContent = observer(() => {
   const [state] = useCardInfoStore()
@@ -91,146 +24,21 @@ export const VisualContent = observer(() => {
   }
 
   return (
-    <Tabs className="flex justify-around h-full flex-1">
+    <TwVisualContent>
       <VisualContentWinter />
       <VisualContentSpring />
-    </Tabs>
+    </TwVisualContent>
   )
 })
 
-const SpringContent = () => {
-  return (
-    <>
-      <ChoosePlayerSize />
-      <ChooseTulipColor />
-    </>
-  )
-}
+const TwColorPickerWrapper = tw.div`
+  flex
+  gap-2
+  flex-wrap
+  flex-1
+`
 
-const ChoosePlayerSize = observer(() => {
-  const [state] = useCardInfoStore()
-  return (
-    <CardInfoShowData
-      loading={state.card.loading}
-      error={state.card.error?.message}
-      data={<PlayerSize />}
-      prefix={'user size'}
-      className="items-center"
-    />
-  )
-})
-
-const playerSizes: PlayerSizeType = ['human', 'cat']
-
-const PlayerSize = observer(() => {
-  const [state, store] = useGlobalStore()
-
-  return (
-    <div className="flex flex-1 gap-1 flex-wrap">
-      {playerSizes.map(playerSize => {
-        return (
-          <TwRadio
-            key={playerSize}
-            onClick={() => store.setPlayerSize(playerSize)}
-          >
-            <div>{playerSize}</div>
-            <input
-              type="radio"
-              name="radio-player-size"
-              className="radio"
-              checked={state?.playerSize === playerSize}
-              readOnly
-            />
-          </TwRadio>
-        )
-      })}
-    </div>
-  )
-})
-
-const ChooseTulipColor = observer(() => {
-  const [state] = useCardInfoStore()
-
-  return (
-    <div className="flex mt-4 gap-2 flex-col">
-      <CardInfoShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={
-          <ChooseColorData
-            colorCompleted="tulip_color_completed"
-            colorNotCompleted="tulip_color_not_completed"
-          />
-        }
-        prefix={'tulip color'}
-        className="items-center"
-      />
-      <CardInfoShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={
-          <ChooseColorData
-            colorCompleted="tulip_plate_color_completed"
-            colorNotCompleted="tulip_plate_color_not_completed"
-          />
-        }
-        prefix={'envelope color'}
-        className="items-center"
-      />
-      <CardInfoShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={
-          <ChooseColorData
-            colorCompleted="tulip_plate_text_color_completed"
-            colorNotCompleted="tulip_plate_text_color_not_completed"
-          />
-        }
-        prefix={'color of text on envelope'}
-        className="items-center"
-      />
-    </div>
-  )
-})
-
-const WinterContent = () => {
-  return <ChooseBaubleColor />
-}
-
-const ChooseBaubleColor = observer(() => {
-  const [state] = useCardInfoStore()
-
-  return (
-    <div className="mt-4 flex flex-col gap-2">
-      <CardInfoShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={
-          <ChooseColorData
-            colorCompleted="bauble_color_completed"
-            colorNotCompleted="bauble_color_not_completed"
-          />
-        }
-        prefix={'bauble color'}
-        className="items-center"
-      />
-      <CardInfoShowData
-        loading={state.card.loading}
-        error={state.card.error?.message}
-        data={
-          <ChooseColorData
-            colorCompleted="bauble_text_color_completed"
-            colorNotCompleted="bauble_text_color_not_completed"
-          />
-        }
-        prefix={'color of text on bauble'}
-        className="items-center"
-      />
-    </div>
-  )
-})
-
-const ChooseColorData = observer(
+export const ChooseColorData = observer(
   ({
     colorCompleted,
     colorNotCompleted
@@ -252,7 +60,7 @@ const ChooseColorData = observer(
       return null
     }
     return (
-      <div className="flex gap-2 flex-wrap flex-1">
+      <TwColorPickerWrapper>
         <ColorPicker
           color={state.card.data[colorNotCompleted]}
           label="not checked"
@@ -269,10 +77,17 @@ const ChooseColorData = observer(
             await updateColor(id, colorCompleted, color)
           }}
         />
-      </div>
+      </TwColorPickerWrapper>
     )
   }
 )
+
+const TwColorPickerInput = tw(Input)`
+  p-0
+  h-10
+  w-25
+  cursor-pointer
+`
 
 const ColorPicker = observer(
   ({
@@ -286,11 +101,10 @@ const ColorPicker = observer(
   }) => {
     const [state] = useCardInfoStore()
     return (
-      <Input
+      <TwColorPickerInput
         disabled={!state.my}
         type="color"
         defaultValue={color}
-        className="p-0 h-10 w-25 cursor-pointer"
         label={label}
         onBlur={onBlur}
       />

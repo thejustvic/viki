@@ -5,6 +5,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
+import tw from '../common/tw-styled-components'
 import {TwCardText} from './card/card-body'
 
 export const AddNewCard = () => {
@@ -12,6 +13,13 @@ export const AddNewCard = () => {
     <ParallaxCardContainer bgImage="matrix" cardNodeBody={<CardBody />} my />
   )
 }
+
+const TwWrapper = tw.div`
+  flex
+  flex-col
+  flex-1
+  justify-between
+`
 
 const CardBody = observer(() => {
   const {user} = useSupabase()
@@ -23,7 +31,7 @@ const CardBody = observer(() => {
   }
 
   return (
-    <div className="flex flex-col flex-1 justify-between">
+    <TwWrapper>
       <CardUI.Title>
         <TwCardText>push the button below to add a new card</TwCardText>
       </CardUI.Title>
@@ -37,6 +45,6 @@ const CardBody = observer(() => {
           <IconSquareRoundedPlus size={24} />
         </Button>
       </CardUI.Actions>
-    </div>
+    </TwWrapper>
   )
 })
