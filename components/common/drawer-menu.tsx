@@ -9,11 +9,23 @@ import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {isMobile} from 'react-device-detect'
 
-const TwMenu = tw.div`
+const gradient = `
+  bg-linear-to-b
+  from-blue-500/10
+  via-blue-400/10
+  via-blue-500/10
+  via-yellow-500/10
+  to-yellow-600/10
+`
+
+interface ITwMenu {
+  $withGradient: boolean
+}
+const TwMenu = tw.div<ITwMenu>`
+  ${({$withGradient}) => ($withGradient ? gradient : 'bg-base-300/70')}
   border
   border-y-0
   border-base-300
-  bg-base-300/70
   text-base-content
   flex
   flex-col
@@ -34,7 +46,10 @@ export const DrawerMenu = observer(() => {
   }, [state.leftDrawerWidth])
 
   return (
-    <TwMenu style={isMobile ? {} : {width: state.leftDrawerWidth}}>
+    <TwMenu
+      $withGradient={false}
+      style={isMobile ? {} : {width: state.leftDrawerWidth}}
+    >
       <DragDrawerSide drawer="left" />
       <ChatWrapper />
     </TwMenu>
