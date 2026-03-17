@@ -10,9 +10,8 @@ import {useFrame} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {CSSProperties, RefObject, Suspense} from 'react'
+import {RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
-import {twJoin} from 'tailwind-merge'
 import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
@@ -34,17 +33,24 @@ const TwDot = tw.div`
   border-white
 `
 
-export const canvasContainerStyles: CSSProperties = {
-  height: 'calc(100vh - 74px)',
-  width: '100vw'
+const canvasInsideModalContainerClasses = `
+  h-full
+  w-full
+  min-h-px
+  min-w-px
+`
+export const canvasContainerClasses = `
+  h-[calc(100vh-74px)]
+  w-screen
+`
+interface ITwWrapper {
+  $isVisualTab: boolean
 }
-
-export const canvasInsideModalContainerStyles: CSSProperties = {
-  height: '100%',
-  width: '100%',
-  minWidth: 0,
-  minHeight: 0
-}
+const TwWrapper = tw.div<ITwWrapper>`
+  ${({$isVisualTab}) => ($isVisualTab ? canvasInsideModalContainerClasses : canvasContainerClasses)}
+  relative
+  overflow-hidden
+`
 
 interface BasicSceneProps {
   selectedVisual: CardVisualType[number]
@@ -53,7 +59,6 @@ interface BasicSceneProps {
   lookData: RefObject<Vector2>
   isLocked: BooleanHookState
 }
-
 export const BasicScene = ({
   children,
   selectedVisual,
@@ -65,12 +70,7 @@ export const BasicScene = ({
   const isCalculated = useBoolean(false)
 
   return (
-    <div
-      className="relative overflow-hidden"
-      style={
-        visualTab ? canvasInsideModalContainerStyles : canvasContainerStyles
-      }
-    >
+    <TwWrapper $isVisualTab={Boolean(visualTab)}>
       <ButtonsAboveCanvas isLocked={isLocked} />
       {isCalculated.value && (
         <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
@@ -90,7 +90,7 @@ export const BasicScene = ({
         </Suspense>
       </Canvas>
       {!isMobile && isCalculated.value && <TwDot />}
-    </div>
+    </TwWrapper>
   )
 }
 
@@ -104,14 +104,24 @@ const RenderNotifier = ({onFirstFrame}: {onFirstFrame: BooleanHookState}) => {
   return null
 }
 
+const TwCanvasLoader = tw.div`
+  flex
+  justify-center
+  items-center
+  gap-2
+  w-full
+  h-full
+  text-violet-400
+`
+
 const CanvasLoader = () => {
   const {progress} = useProgress()
   return (
     <Html center>
-      <div className="flex justify-center items-center gap-2 w-full h-full text-violet-400">
+      <TwCanvasLoader>
         <Loader />
         <span>{progress.toFixed(0)}%</span>
-      </div>
+      </TwCanvasLoader>
     </Html>
   )
 }
@@ -133,6 +143,31 @@ const JoysticksAboveCanvas = ({moveData, lookData}: JoysticksProps) => {
   )
 }
 
+const TwEnterButton = tw(Button)`
+  absolute
+  h-14
+  ml-2
+  mt-2
+  mr-2
+  z-10
+`
+
+const TwModalButton = tw(Button)`
+  absolute
+  h-14
+  ml-2
+  mt-18
+  z-10
+`
+
+const TwExit = tw.div`
+  m-2
+  text-pretty
+  absolute
+  z-10
+  text-neutral-400
+`
+
 const ButtonsAboveCanvas = observer(
   ({isLocked}: {isLocked: BooleanHookState}) => {
     const [, store] = useGlobalStore()
@@ -144,35 +179,24 @@ const ButtonsAboveCanvas = observer(
     }
     return isLocked.value ? (
       <>
-        <Button
-          soft
-          color="info"
-          className={twJoin('absolute h-14 ml-2 mt-2 mr-2 z-10')}
-          id="enter-btn"
-        >
+        <TwEnterButton soft color="info" id="enter-btn">
           Enter First Person With Movement by WASD keys and spacebar
-        </Button>
+        </TwEnterButton>
         {!visualTab && (
-          <Button
+          <TwModalButton
             soft
             color="info"
-            className={twJoin(
-              visualTab ? 'mt-2' : 'mt-18',
-              'absolute h-14 ml-2 z-10'
-            )}
             onClick={() => {
               store.setVisualModalFromRightDrawerOpen(true)
               updateSearchParams('visual-tab', 'true')
             }}
           >
             <IconBrowserMaximize />
-          </Button>
+          </TwModalButton>
         )}
       </>
     ) : (
-      <div className="m-2 text-pretty absolute z-10 text-neutral-400">
-        press ESC to Exit First Person
-      </div>
+      <TwExit>press ESC to Exit First Person</TwExit>
     )
   }
 )
