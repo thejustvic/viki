@@ -15,23 +15,23 @@ interface FormInputs {
 }
 
 const TwContainer = tw.div`
-  fixed 
-  z-50 
-  py-[10px] 
-  px-[16px] 
-  transition-transform 
-  duration-100 
-  ease-out 
-  left-0 
-  bottom-0 
+  fixed
+  z-50
+  py-[10px]
+  px-[16px]
+  transition-transform
+  duration-100
+  ease-out
+  left-0
+  bottom-0
   right-0
   shadow-sm
   bg-base-200
 `
 
-/* 
-  hide keyboard height calculations until i figure out 
-  how to prevent mobile view from shifting up when 
+/*
+  hide keyboard height calculations until i figure out
+  how to prevent mobile view from shifting up when
   the keyboard appears
 */
 

@@ -1,6 +1,7 @@
 import React, {
   ComponentPropsWithoutRef,
   ComponentRef,
+  createElement,
   ElementType,
   forwardRef,
   JSX,
@@ -64,7 +65,7 @@ const createTwComponent = <T extends ElementType>(Tag: T): TwTemplate<T> => {
         return res as ComponentPropsWithoutRef<T>
       }, [props])
 
-      return React.createElement(Tag, {
+      return createElement(Tag, {
         ...cleanProps,
         ref,
         className: finalClasses

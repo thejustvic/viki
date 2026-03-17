@@ -22,9 +22,13 @@ const TwCardSide = tw.div`
   transform-3d
 `
 
-const TwCardLogin = tw(TwCardSide)`rotate-y-0`
+const TwCardLogin = tw(TwCardSide)`
+  rotate-y-0
+`
 
-const TwCardRegister = tw(TwCardSide)`rotate-y-180`
+const TwCardRegister = tw(TwCardSide)`
+  rotate-y-180
+`
 
 const TwCard = tw.div`
   shrink-0

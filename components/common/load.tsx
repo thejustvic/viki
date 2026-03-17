@@ -6,7 +6,7 @@ const TwLoad = tw.div<{$center?: boolean}>`
   h-full
   w-full
   flex
-  ${p => (p.$center ? 'justify-center' : '')}
+  ${p => p.$center && 'justify-center'}
 `
 
 interface Props {

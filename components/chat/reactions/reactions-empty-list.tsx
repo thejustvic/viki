@@ -76,13 +76,13 @@ export const ReactionsEmptyList = ({
       className={twJoin(
         isMouseOver && 'opacity-100',
         showChoice.value && 'dropdown-open',
-        ` absolute 
-          bottom-0 
+        ` absolute
+          bottom-0
           left-0
-          opacity-0 
-          hover:opacity-100 
-          transition-opacity 
-          ease-in-out 
+          opacity-0
+          hover:opacity-100
+          transition-opacity
+          ease-in-out
           duration-150
         `
       )}

@@ -140,9 +140,9 @@ export const NavbarTeamSelect = observer(() => {
 })
 
 const TwMenu = tw.ul`
-  menu 
-  menu-horizontal 
-  bg-base-200 
+  menu
+  menu-horizontal
+  bg-base-200
   rounded-box
   items-center
   p-0

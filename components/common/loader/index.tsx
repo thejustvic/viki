@@ -1,11 +1,10 @@
 import tw from '@/components/common/tw-styled-components'
 import IconLoader from './loader.svg'
 
-const TwLoader = tw.div<{className: string}>`
+const TwLoader = tw.div`
   h-16
   w-16
   p-2
-  ${p => p.className}
 `
 
 interface Props {
