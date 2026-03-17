@@ -5,17 +5,21 @@ import {Dropdown} from '@/components/daisyui/dropdown'
 import {format, formatDistance} from 'date-fns'
 import {observer} from 'mobx-react-lite'
 import {MouseEvent} from 'react'
-import {twJoin} from 'tailwind-merge'
+import tw from '../common/tw-styled-components'
 import {useChatHandlers} from './chat-handlers'
 import {useChatMessageHandlers} from './chat-message-handlers'
 import {ReactionsSmiley} from './reactions/reactions-smiley'
 import type {Message as MessageType} from './types'
 
+const TwChatBubbleMessage = tw(ChatBubble.Message)`
+  wrap-break-words
+  wrap-anywhere
+  relative
+`
 interface BubbleProps {
   message: MessageType
   my?: boolean
 }
-
 export const ChatMessage = observer(({my, message}: BubbleProps) => {
   const {
     showChoice,
@@ -30,9 +34,8 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
   return (
     <ChatBubble end={my}>
       <MessageDropdown my={my} message={message} />
-      <ChatBubble.Message
-        color={my ? undefined : undefined}
-        className="wrap-break-words wrap-anywhere relative"
+      <TwChatBubbleMessage
+        color={my ? 'primary' : 'secondary'}
         onDoubleClick={handlePutHeart}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -45,18 +48,41 @@ export const ChatMessage = observer(({my, message}: BubbleProps) => {
           showChoice={showChoice}
           isMouseOver={showReactions.value}
         />
-        <div
-          className={twJoin(
-            my ? 'left-2' : 'right-2',
-            'absolute bottom-px text-[9px]'
-          )}
-        >
-          {formattedTime}
-        </div>
-      </ChatBubble.Message>
+        <TwFormattedTime $isMy={my}>{formattedTime}</TwFormattedTime>
+      </TwChatBubbleMessage>
     </ChatBubble>
   )
 })
+
+interface ITwFormattedTime {
+  $isMy: boolean | undefined
+}
+const TwFormattedTime = tw.div<ITwFormattedTime>`
+  ${({$isMy}) => ($isMy ? 'left-2' : 'right-2')}
+  absolute
+  bottom-px
+  text-[9px]
+`
+
+const TwDropdownMenu = tw(Dropdown.Menu)`
+  shadow-lg
+  bg-base-300/90
+  px-2
+  py-0
+`
+
+const TwWrapper = tw.div`
+  flex
+  items-start
+  gap-1
+`
+
+const TwTime = tw.time`
+  text-xs
+  wrap-break-words
+  wrap-anywhere
+  w-[150px]
+`
 
 const MessageDropdown = ({
   my,
@@ -80,12 +106,12 @@ const MessageDropdown = ({
       className="chat-image"
     >
       <UserImage src={author_image} shape="circle" />
-      <Dropdown.Menu className="shadow-lg bg-base-300/90 px-2 py-0">
+      <TwDropdownMenu>
         {author_email}
-        <div className="flex items-start gap-1">
-          <time className="text-xs wrap-break-words wrap-anywhere w-[150px]">
+        <TwWrapper>
+          <TwTime>
             {timeDistance} on {time}
-          </time>
+          </TwTime>
           {my && (
             <Button
               soft
@@ -97,8 +123,8 @@ const MessageDropdown = ({
               delete
             </Button>
           )}
-        </div>
-      </Dropdown.Menu>
+        </TwWrapper>
+      </TwDropdownMenu>
     </Dropdown>
   )
 }
