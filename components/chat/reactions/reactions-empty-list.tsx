@@ -5,7 +5,6 @@ import {Dropdown} from '@/components/daisyui/dropdown'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {IconMoodSmileFilled} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
-import {twJoin} from 'tailwind-merge'
 
 const TwIconReactionAbsoluteContainer = tw.div`
   absolute
@@ -19,33 +18,58 @@ const TwIconReactionAbsolute = tw.div`
   absolute
 `
 
+interface ITwWrapper {
+  $isVisible: boolean
+  $isMy: boolean
+}
+const TwWrapper = tw.div<ITwWrapper>`
+  ${({$isVisible}) => ($isVisible ? 'block' : 'hidden')}
+  ${({$isMy}) => ($isMy ? 'right-0' : 'left-0')}
+  absolute
+  -top-3
+`
+
 interface MobileReactionsDropdownContentProps {
   message: Message
   showChoice: BooleanHookState
   my: boolean
 }
-
 export const MobileReactionsDropdownContent = ({
   my,
   message,
   showChoice
 }: MobileReactionsDropdownContentProps) => {
   return (
-    <div
-      className={twJoin(
-        showChoice.value ? 'block' : 'hidden',
-        my ? 'right-0' : 'left-0',
-        'absolute -top-3'
-      )}
-    >
+    <TwWrapper $isVisible={showChoice.value} $isMy={my}>
       <ReactionsDropdownContent
         message={message}
         showChoice={showChoice}
         noSmilesInMessage
       />
-    </div>
+    </TwWrapper>
   )
 }
+
+interface ITwDropdown {
+  $isMouseOver: boolean
+  $isVisible: boolean
+}
+const TwDropdown = tw(Dropdown)<ITwDropdown>`
+  ${({$isMouseOver}) => ($isMouseOver ? 'opacity-100' : 'opacity-0')}
+  ${({$isVisible}) => $isVisible && 'dropdown-open'}
+  absolute
+  bottom-0
+  left-0
+  hover:opacity-100
+  transition-opacity
+  ease-in-out
+  duration-150
+`
+
+const TwDropdownMenu = tw(Dropdown.Menu)`
+  -top-6
+  -left-4
+`
 
 interface EmptyReactionsProps {
   message: Message
@@ -53,7 +77,6 @@ interface EmptyReactionsProps {
   isMouseOver: boolean
   my: boolean
 }
-
 export const ReactionsEmptyList = ({
   my,
   message,
@@ -71,30 +94,19 @@ export const ReactionsEmptyList = ({
   }
 
   return (
-    <Dropdown
+    <TwDropdown
+      $isVisible={showChoice.value}
+      $isMouseOver={isMouseOver}
       onClickOutside={showChoice.turnOff}
-      className={twJoin(
-        isMouseOver && 'opacity-100',
-        showChoice.value && 'dropdown-open',
-        ` absolute
-          bottom-0
-          left-0
-          opacity-0
-          hover:opacity-100
-          transition-opacity
-          ease-in-out
-          duration-150
-        `
-      )}
     >
       <TwIconReactionAbsoluteContainer>
         <TwIconReactionAbsolute>
           <IconMoodSmileFilled size={24} onClick={showChoice.turnOn} />
         </TwIconReactionAbsolute>
       </TwIconReactionAbsoluteContainer>
-      <Dropdown.Menu className="-top-6 -left-4">
+      <TwDropdownMenu>
         <ReactionsDropdownContent message={message} showChoice={showChoice} />
-      </Dropdown.Menu>
-    </Dropdown>
+      </TwDropdownMenu>
+    </TwDropdown>
   )
 }
