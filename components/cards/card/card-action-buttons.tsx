@@ -25,28 +25,16 @@ export const CardActionButtons = ({
   remove,
   hovered
 }: CardActionButtonsProps) => {
+  const isVisible = isMobile ? true : hovered
   return (
-    <>
-      {isMobile ? (
-        <TwWrapper>
-          <CardDragButton
-            isDragging={isDragging}
-            dragListeners={dragListeners}
-            dragAttributes={dragAttributes}
-          />
-          <CardDeleteButton remove={remove} />
-        </TwWrapper>
-      ) : (
-        <TwWrapper>
-          <CardDragButton
-            isDragging={isDragging}
-            dragListeners={dragListeners}
-            dragAttributes={dragAttributes}
-            isVisible={hovered}
-          />
-          <CardDeleteButton remove={remove} isVisible={hovered} />
-        </TwWrapper>
-      )}
-    </>
+    <TwWrapper>
+      <CardDragButton
+        isDragging={isDragging}
+        dragListeners={dragListeners}
+        dragAttributes={dragAttributes}
+        isVisible={isVisible}
+      />
+      <CardDeleteButton remove={remove} isVisible={isVisible} />
+    </TwWrapper>
   )
 }
