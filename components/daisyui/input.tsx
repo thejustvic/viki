@@ -1,21 +1,20 @@
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props
-  extends PropsWithChildren,
-    React.InputHTMLAttributes<HTMLInputElement> {
+  extends PropsWithChildren, React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
   color?: 'primary' | 'secondary'
-  inputClassName?: HTMLProps<HTMLElement>['className']
+  labelClassName?: HTMLProps<HTMLElement>['className']
 }
 
-const InnerInput = ({color, inputClassName, ...props}: Props) => {
+const InnerInput = ({color, className, ...props}: Props) => {
   return (
     <input
       autoComplete="off"
-      className={twJoin(
-        'input input-md focus:outline-none',
-        inputClassName,
+      className={twMerge(
+        'input focus:outline-none',
+        className,
         color === 'primary' && 'input-primary',
         color === 'secondary' && 'input-secondary'
       )}
@@ -27,19 +26,17 @@ const InnerInput = ({color, inputClassName, ...props}: Props) => {
 export const Input = ({
   label,
   color,
+  labelClassName,
   className,
-  inputClassName,
   ...props
 }: Props) => {
   if (!label) {
-    return (
-      <InnerInput color={color} inputClassName={inputClassName} {...props} />
-    )
+    return <InnerInput color={color} className={className} {...props} />
   }
   return (
-    <label className={twJoin('floating-label', className)}>
+    <label className={twMerge('floating-label', labelClassName)}>
       <span>{label}</span>
-      <InnerInput color={color} inputClassName={inputClassName} {...props} />
+      <InnerInput color={color} className={className} {...props} />
     </label>
   )
 }

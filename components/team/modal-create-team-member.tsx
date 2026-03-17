@@ -83,7 +83,7 @@ const Data = observer(() => {
     >
       <Input
         label="name"
-        inputClassName="w-full"
+        className="w-full"
         {...register('teamMemberName69', {
           required: true
         })}
@@ -91,7 +91,7 @@ const Data = observer(() => {
       <Input
         type="email"
         label="email"
-        inputClassName="w-full"
+        className="w-full"
         {...register('email', {
           required: true
         })}

@@ -290,7 +290,7 @@ const ColorPicker = observer(
         disabled={!state.my}
         type="color"
         defaultValue={color}
-        inputClassName="p-0 h-10 w-25 cursor-pointer"
+        className="p-0 h-10 w-25 cursor-pointer"
         label={label}
         onBlur={onBlur}
       />

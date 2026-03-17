@@ -163,8 +163,8 @@ const Inputs = ({
       {isRegister && (
         <Input
           label="Name"
+          placeholder="Name"
           type="text"
-          placeholder="name"
           {...register('name', {
             required: true
           })}
@@ -172,8 +172,8 @@ const Inputs = ({
       )}
       <Input
         label="Email"
+        placeholder="Email"
         type="text"
-        placeholder="email"
         {...register('email', {
           required: true,
           pattern: /^\S+@\S+$/i
@@ -181,8 +181,8 @@ const Inputs = ({
       />
       <Input
         label="Password"
+        placeholder="Password"
         type="password"
-        placeholder="password"
         {...register('password', {
           required: true,
           minLength: {

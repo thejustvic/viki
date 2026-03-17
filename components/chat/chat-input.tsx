@@ -9,9 +9,13 @@ import {useForm} from 'react-hook-form'
 import {useChatHandlers} from './chat-handlers'
 
 const TwInput = tw(Input)`
-  flex-1 
+  flex-1
   shrink
-  mb-2
+  w-full
+  border-base-content/10
+  focus:outline-none
+  focus:border-primary/50
+  mb-1
 `
 
 interface FormInputs {
@@ -41,7 +45,6 @@ export const ChatInput = observer(() => {
       className="flex justify-between p-2"
     >
       <TwInput
-        inputClassName="w-full border-base-content/10 focus:outline-none focus:border-primary/50"
         {...register('chatInput69', {
           required: true
         })}
