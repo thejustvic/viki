@@ -7,7 +7,7 @@ import {isMobile} from 'react-device-detect'
 import {twJoin} from 'tailwind-merge'
 
 const TwSmileyContainer = tw.div`
-  bg-info/80
+  bg-info/50
   rounded-box
   px-1
   grid

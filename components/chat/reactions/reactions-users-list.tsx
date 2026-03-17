@@ -7,7 +7,7 @@ const TwUsers = tw.div`
   flex
   flex-col
   gap-2
-  bg-info/80
+  bg-info/50
   p-2
   rounded-box
 `
