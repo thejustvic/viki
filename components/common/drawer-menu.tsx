@@ -28,7 +28,7 @@ export const DrawerMenu = observer(() => {
     if (isMobile) {
       return
     }
-    if (state.leftDrawerWidth >= window.innerWidth - minDrawerWidth) {
+    if (state.leftDrawerWidth >= window.innerWidth) {
       store.setLeftDrawerWidth(minDrawerWidth)
     }
   }, [state.leftDrawerWidth])
@@ -41,18 +41,41 @@ export const DrawerMenu = observer(() => {
   )
 })
 
+const TwChatWrapper = tw.div`
+  relative
+  h-full
+`
+
+const TwChatBase = tw.div`
+  flex
+  flex-col
+  justify-between
+  flex-1
+  gap-3
+  pt-6
+  h-full
+  pb-16
+`
+
+const TwChatInput = tw.div`
+  absolute
+  bottom-0
+  right-0
+  left-0
+`
+
 export const ChatWrapper = () => {
   const cardId = getSearchCard()
   return (
-    <div className="relative h-full">
-      <div className="flex flex-col justify-between flex-1 gap-3 pt-6 h-full pb-16">
+    <TwChatWrapper>
+      <TwChatBase>
         <ChatBase />
-      </div>
+      </TwChatBase>
       {cardId && (
-        <div className="absolute bottom-0 right-0 left-0">
+        <TwChatInput>
           <ChatInput />
-        </div>
+        </TwChatInput>
       )}
-    </div>
+    </TwChatWrapper>
   )
 }

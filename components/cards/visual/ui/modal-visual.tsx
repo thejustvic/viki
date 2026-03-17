@@ -1,6 +1,6 @@
 'use client'
 
-import {CardVisualTab} from '@/components/common/drawer/drawer-tabs'
+import {CardVisualTab} from '@/components/common/drawer/drawer-tab-visual'
 import {Modal} from '@/components/common/modal'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useBoolean} from '@/hooks/use-boolean'

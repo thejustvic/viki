@@ -1,59 +1,25 @@
-import {CardChecklistProgress} from '@/components/cards/card-checklist/card-checklist-progress'
-import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
-import {CardInfo} from '@/components/cards/card-info/card-info'
-import {CheckAllCheckboxes} from '@/components/cards/cards'
-import {getSearchCard} from '@/components/cards/get-search-card'
-
-import {Checklist} from '@/components/checklist/checklist'
 import {DragDrawerSide} from '@/components/common/drag-drawer-side/drag-drawer-side'
-import {ChatWrapper} from '@/components/common/drawer-menu'
 import tw from '@/components/common/tw-styled-components'
+import {Button} from '@/components/daisyui/button'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global-provider/global-store'
-import {Tab} from '@/components/global-provider/types'
-import {observer} from 'mobx-react-lite'
-import {isMobile} from 'react-device-detect'
-
-import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
-import {canvasContainerStyles} from '@/components/cards/visual/ui/base-scene'
-import {InputGoogleStyle} from '@/components/checklist/checkbox/input-google-style'
-import {Button} from '@/components/daisyui/button'
 import {minDrawerWidth} from '@/utils/const'
-import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {IconArrowBarLeft} from '@tabler/icons-react'
-import dynamic from 'next/dynamic'
+import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
-import {twJoin} from 'tailwind-merge'
-import {Loader} from '../loader'
+import {isMobile} from 'react-device-detect'
+import {DrawerTabChat} from './drawer-tab-chat'
+import {DrawerTabChecklist} from './drawer-tab-checklist'
+import {DrawerTabInfo} from './drawer-tab-info'
+import {DrawerTabVisual} from './drawer-tab-visual'
 
-const CardVisual = dynamic(
-  () => import('@/components/cards/card-visual').then(mod => mod.CardVisual),
-  {ssr: false, loading: () => <CardVisualLoader />}
-)
-
-const CardVisualLoader = () => (
-  <div className="flex justify-center w-full items-center h-[calc(100dvh-70px)]">
-    <Loader className="text-violet-400" />
-  </div>
-)
-const CloseRightDrawer = observer(() => {
-  const [, store] = useGlobalStore()
-  const closeRightDrawer = () => {
-    store.setRightDrawerClosed()
-  }
-  return (
-    <div className="flex w-10 items-center text-lg normal-case">
-      <Button
-        soft
-        className="rounded-none rounded-l-md h-10"
-        size="xs"
-        onClick={closeRightDrawer}
-      >
-        <IconArrowBarLeft size={16} />
-      </Button>
-    </div>
-  )
-})
+const TwTabsWrapper = tw.div`
+  h-full
+  border
+  border-y-0
+  border-base-300/50
+  bg-base-300/30
+`
 
 export const TabsComponent = observer(() => {
   const [state, store] = useGlobalStore()
@@ -62,167 +28,54 @@ export const TabsComponent = observer(() => {
     if (isMobile) {
       return
     }
-    if (state.rightDrawerWidth >= window.innerWidth - minDrawerWidth) {
+    if (state.rightDrawerWidth >= window.innerWidth) {
       store.setRightDrawerWidth(minDrawerWidth)
     }
-  }, [state.leftDrawerWidth])
+  }, [state.rightDrawerWidth])
 
   return (
-    <div
-      className="h-full border border-y-0 border-base-300/50 bg-base-300/30"
-      style={isMobile ? {} : {width: state.rightDrawerWidth}}
-    >
+    <TwTabsWrapper style={isMobile ? {} : {width: state.rightDrawerWidth}}>
       <DragDrawerSide drawer="right" />
-      <Tabs className={twJoin('flex justify-between')}>
+      <Tabs className="flex justify-between">
         {isMobile && <CloseRightDrawer />}
-        <InfoTab />
-        <ChecklistTab />
-        {isMobile && <ChatTab />}
-        <VisualTab />
+        <DrawerTabInfo />
+        <DrawerTabChecklist />
+        {isMobile && <DrawerTabChat />}
+        <DrawerTabVisual />
       </Tabs>
-    </div>
+    </TwTabsWrapper>
   )
 })
 
-const TwTab = tw(Tabs.Tab)`
+export const TwTab = tw(Tabs.Tab)`
   flex
   flex-1
 `
 
-const InfoTab = observer(() => {
-  const [state, store] = useGlobalStore()
-  const active = state.tab === 'info'
+const TwCloseRightDrawerWrapper = tw.div`
+  flex
+  w-10
+  items-center
+  text-lg
+  normal-case
+`
+
+const TwCloseRightDrawerButton = tw(Button)`
+  rounded-none
+  rounded-l-md
+  h-10
+`
+
+const CloseRightDrawer = observer(() => {
+  const [, store] = useGlobalStore()
+  const closeRightDrawer = () => {
+    store.setRightDrawerClosed()
+  }
   return (
-    <>
-      <TwTab
-        value="info"
-        onChange={e => store.setTab(e.target.value as Tab)}
-        label="Info"
-        groupName="right_drawer"
-        checked={active}
-      />
-      <InfoTabContent />
-    </>
-  )
-})
-
-const InfoTabContent = observer(() => {
-  return (
-    <Tabs.TabContent>
-      <CardInfo />
-    </Tabs.TabContent>
-  )
-})
-
-const ChecklistTab = observer(() => {
-  const [state, store] = useGlobalStore()
-  const active = state.tab === 'checklist'
-  return (
-    <>
-      <TwTab
-        value="checklist"
-        onChange={e => store.setTab(e.target.value as Tab)}
-        label="Checklist"
-        groupName="right_drawer"
-        checked={active}
-      />
-      <ChecklistTabContent />
-    </>
-  )
-})
-
-const ChecklistTabContent = observer(() => {
-  const [, store] = useCardChecklistStore()
-  const id = String(getSearchCard())
-  return (
-    <Tabs.TabContent>
-      <div className="shadow-sm">
-        {store.getAllCheckboxes(id)?.length ? (
-          <div className="flex gap-3 py-4 px-3 h-full bg-primary/8">
-            <CheckAllCheckboxes />
-            <CardChecklistProgress id={id} />
-          </div>
-        ) : null}
-      </div>
-      <Checklist />
-      <InputGoogleStyle />
-    </Tabs.TabContent>
-  )
-})
-
-const ChatTab = observer(() => {
-  const [state, store] = useGlobalStore()
-  const active = state.tab === 'chat'
-
-  return (
-    <>
-      <TwTab
-        value="chat"
-        onChange={e => store.setTab(e.target.value as Tab)}
-        label="Chat"
-        groupName="right_drawer"
-        checked={active}
-      />
-      <ChatTabContent />
-    </>
-  )
-})
-
-const ChatTabContent = () => {
-  return (
-    <Tabs.TabContent>
-      <div className="h-[calc(100dvh-68px)]">
-        <ChatWrapper />
-      </div>
-    </Tabs.TabContent>
-  )
-}
-
-const VisualTab = observer(() => {
-  const [state, store] = useGlobalStore()
-  const active = state.tab === 'visual'
-  const visualTab = getSearchParam('visual-tab')
-
-  return (
-    <>
-      <TwTab
-        value="visual"
-        onChange={e => store.setTab(e.target.value as Tab)}
-        label="Visual"
-        groupName="right_drawer"
-        checked={active}
-      />
-      {visualTab ? (
-        <div className="grid place-items-center" style={canvasContainerStyles}>
-          see modal
-        </div>
-      ) : (
-        <>{active && !visualTab && <VisualTabContent />}</>
-      )}
-    </>
-  )
-})
-
-const VisualTabContent = () => {
-  return (
-    <Tabs.TabContent>
-      <div className="flex relative">
-        <CardVisualTab />
-      </div>
-    </Tabs.TabContent>
-  )
-}
-
-export const CardVisualTab = observer(() => {
-  const id = String(getSearchCard())
-  const [globalState] = useGlobalStore()
-  const [, cardChecklistStore] = useCardChecklistStore()
-  const [cardInfoState] = useCardInfoStore()
-  return (
-    <CardVisual
-      playerSize={globalState.playerSize}
-      checklist={cardChecklistStore.getAllCheckboxes(id)}
-      card={cardInfoState.card.data}
-    />
+    <TwCloseRightDrawerWrapper>
+      <TwCloseRightDrawerButton soft size="xs" onClick={closeRightDrawer}>
+        <IconArrowBarLeft size={16} />
+      </TwCloseRightDrawerButton>
+    </TwCloseRightDrawerWrapper>
   )
 })
