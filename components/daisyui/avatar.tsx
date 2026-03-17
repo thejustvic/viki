@@ -1,6 +1,6 @@
 import tw from '@/components/common/tw-styled-components'
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   containerClassName?: HTMLProps<HTMLElement>['className']
@@ -31,7 +31,7 @@ export const Avatar = ({
 }: AvatarProps) => {
   if (!src) {
     return (
-      <div className={twJoin('avatar', className)} {...props}>
+      <div className={twMerge('avatar', className)} {...props}>
         <TwImageContainer className={containerClassName} $shape={shape}>
           {children}
         </TwImageContainer>
@@ -39,7 +39,7 @@ export const Avatar = ({
     )
   }
   return (
-    <div className={twJoin('avatar', className)} {...props}>
+    <div className={twMerge('avatar', className)} {...props}>
       <TwImageContainer className={containerClassName} $shape={shape}>
         <img src={src} />
       </TwImageContainer>

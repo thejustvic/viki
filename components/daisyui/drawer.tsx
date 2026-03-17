@@ -1,5 +1,5 @@
 import {HTMLProps, PropsWithChildren, ReactNode} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -38,7 +38,7 @@ export const Drawer = ({
 
   return (
     <div
-      className={twJoin(
+      className={twMerge(
         'drawer',
         className,
         end && 'drawer-end',
@@ -53,15 +53,15 @@ export const Drawer = ({
         checked={open}
         readOnly
       />
-      <div className={twJoin('drawer-content', contentClassName)}>
+      <div className={twMerge('drawer-content', contentClassName)}>
         <label htmlFor={id} aria-label="open sidebar"></label>
         {children}
       </div>
-      <div className={twJoin('drawer-side', sideClassName)}>
+      <div className={twMerge('drawer-side', sideClassName)}>
         <label
           htmlFor={id}
           aria-label="close sidebar"
-          className={twJoin(mobile && 'drawer-overlay')}
+          className={twMerge(mobile && 'drawer-overlay')}
           onClick={clickOverlay}
         ></label>
         {side}

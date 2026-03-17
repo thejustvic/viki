@@ -1,5 +1,5 @@
 import {HTMLProps, PropsWithChildren, RefObject} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -9,7 +9,7 @@ interface Props extends PropsWithChildren {
 
 export const Navbar = ({ref, children, className, ...props}: Props) => {
   return (
-    <div ref={ref} className={twJoin('navbar shrink', className)} {...props}>
+    <div ref={ref} className={twMerge('navbar shrink', className)} {...props}>
       {children}
     </div>
   )
@@ -17,7 +17,7 @@ export const Navbar = ({ref, children, className, ...props}: Props) => {
 
 Navbar.Start = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar-start shrink', className)} {...props}>
+    <div className={twMerge('navbar-start shrink', className)} {...props}>
       {children}
     </div>
   )
@@ -25,7 +25,7 @@ Navbar.Start = ({children, className, ...props}: Props) => {
 
 Navbar.Center = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar-center shrink', className)} {...props}>
+    <div className={twMerge('navbar-center shrink', className)} {...props}>
       {children}
     </div>
   )
@@ -33,7 +33,7 @@ Navbar.Center = ({children, className, ...props}: Props) => {
 
 Navbar.End = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('navbar-end shrink', className)} {...props}>
+    <div className={twMerge('navbar-end shrink', className)} {...props}>
       {children}
     </div>
   )

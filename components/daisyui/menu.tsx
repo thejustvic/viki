@@ -1,15 +1,14 @@
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props
-  extends PropsWithChildren,
-    React.HTMLAttributes<HTMLUListElement> {
+  extends PropsWithChildren, React.HTMLAttributes<HTMLUListElement> {
   className?: HTMLProps<HTMLElement>['className']
 }
 
 export const Menu = ({children, className, ...props}: Props) => {
   return (
-    <ul className={twJoin('menu', className)} {...props}>
+    <ul className={twMerge('menu', className)} {...props}>
       {children}
     </ul>
   )

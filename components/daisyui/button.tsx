@@ -1,9 +1,8 @@
 import {PropsWithChildren, RefObject} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props
-  extends PropsWithChildren,
-    React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends PropsWithChildren, React.ButtonHTMLAttributes<HTMLButtonElement> {
   color?: 'error' | 'primary' | 'info'
   size?: 'xs' | 'xl' | 'sm'
   variant?: 'outline' | 'link'
@@ -32,7 +31,7 @@ export const Button = ({
   return (
     <button
       ref={handleRef}
-      className={twJoin(
+      className={twMerge(
         'btn',
         soft && 'btn-soft',
         ghost && 'btn-ghost',

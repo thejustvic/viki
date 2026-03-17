@@ -1,6 +1,6 @@
 import {useClickOutside} from '@/hooks/use-cilck-outside'
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -36,7 +36,7 @@ export const Dropdown = ({
   return (
     <div
       ref={dropdownRef}
-      className={twJoin(
+      className={twMerge(
         'dropdown',
         className,
         hover && 'dropdown-hover',
@@ -57,7 +57,7 @@ export const Dropdown = ({
 
 Dropdown.Menu = ({children, className, ...props}: Props) => {
   return (
-    <ul className={twJoin('dropdown-content menu', className)} {...props}>
+    <ul className={twMerge('dropdown-content menu', className)} {...props}>
       {children}
     </ul>
   )

@@ -1,5 +1,5 @@
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -20,7 +20,7 @@ export const Card = ({
 }: PropsCard) => {
   return (
     <div
-      className={twJoin(
+      className={twMerge(
         'card',
         className,
         bordered && 'card-border',
@@ -39,7 +39,7 @@ export const Card = ({
 
 Card.Body = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('card-body', className)} {...props}>
+    <div className={twMerge('card-body', className)} {...props}>
       {children}
     </div>
   )
@@ -47,7 +47,7 @@ Card.Body = ({children, className, ...props}: Props) => {
 
 Card.Title = ({className, children, ...props}: Props) => {
   return (
-    <div className={twJoin('card-title', className)} {...props}>
+    <div className={twMerge('card-title', className)} {...props}>
       {children}
     </div>
   )
@@ -55,7 +55,7 @@ Card.Title = ({className, children, ...props}: Props) => {
 
 Card.Actions = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('card-actions', className)} {...props}>
+    <div className={twMerge('card-actions', className)} {...props}>
       {children}
     </div>
   )

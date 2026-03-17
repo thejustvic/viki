@@ -4,7 +4,7 @@ import {
   PropsWithChildren,
   TouchEventHandler
 } from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -23,7 +23,7 @@ export const ChatBubble = ({
 }: PropsChatBubble) => {
   return (
     <div
-      className={twJoin('chat', className, end ? 'chat-end' : 'chat-start')}
+      className={twMerge('chat', className, end ? 'chat-end' : 'chat-start')}
       {...props}
     >
       {children}
@@ -51,7 +51,7 @@ ChatBubble.Message = ({
 }: PropsChatBubbleMessage) => {
   return (
     <div
-      className={twJoin(
+      className={twMerge(
         'chat-bubble touch-manipulation px-2 pb-4',
         className,
         color === 'primary' && 'bg-accent-content/30',

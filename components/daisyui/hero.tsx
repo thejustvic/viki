@@ -1,5 +1,5 @@
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface Props extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -7,7 +7,7 @@ interface Props extends PropsWithChildren {
 
 export const Hero = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('hero', className)} {...props}>
+    <div className={twMerge('hero', className)} {...props}>
       {children}
     </div>
   )
@@ -15,7 +15,7 @@ export const Hero = ({children, className, ...props}: Props) => {
 
 Hero.Content = ({children, className, ...props}: Props) => {
   return (
-    <div className={twJoin('hero-content', className)} {...props}>
+    <div className={twMerge('hero-content', className)} {...props}>
       {children}
     </div>
   )

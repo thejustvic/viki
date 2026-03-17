@@ -1,6 +1,6 @@
 import {IconCircleX} from '@tabler/icons-react'
 import {HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 import {Button} from './button'
 
 interface Props extends PropsWithChildren {
@@ -38,9 +38,9 @@ export const Modal = ({
       <div
         id={`dialog-${id}`}
         role="dialog"
-        className={twJoin('modal', className)}
+        className={twMerge('modal', className)}
       >
-        <div className={twJoin('modal-box', classNameModalBox)}>
+        <div className={twMerge('modal-box', classNameModalBox)}>
           {children}
           <div className="modal-action mt-0">
             <label htmlFor={id} onClick={close}>

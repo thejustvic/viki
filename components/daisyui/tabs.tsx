@@ -1,6 +1,6 @@
 import {TablerIcon} from '@tabler/icons-react'
 import {ChangeEventHandler, HTMLProps, PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import {twMerge} from 'tailwind-merge'
 
 interface PropsWithClassName extends PropsWithChildren {
   className?: HTMLProps<HTMLElement>['className']
@@ -11,7 +11,7 @@ export const Tabs = ({children, className, ...props}: PropsWithClassName) => {
   return (
     <div
       role="tablist"
-      className={twJoin('tabs tabs-box', className)}
+      className={twMerge('tabs tabs-box', className)}
       {...props}
     >
       {children}
@@ -38,7 +38,7 @@ Tabs.Tab = ({
   icon: Icon
 }: PropsTab) => {
   return (
-    <label className={twJoin('tab h-[42px] my-2', className)}>
+    <label className={twMerge('tab h-[42px] my-2', className)}>
       <input
         type="radio"
         name={groupName}
@@ -55,7 +55,7 @@ Tabs.Tab = ({
 Tabs.TabContent = ({children, className, ...props}: PropsWithClassName) => {
   return (
     <div
-      className={twJoin(
+      className={twMerge(
         'tab-content bg-base-100/50 border-base-300/50',
         className
       )}
