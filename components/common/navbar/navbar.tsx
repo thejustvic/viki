@@ -14,7 +14,6 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useEffect} from 'react'
 import {isMobile} from 'react-device-detect'
-import {twJoin} from 'tailwind-merge'
 import tw from '../tw-styled-components'
 import {NavbarLeftDrawerButton} from './navbar-left-drawer-button'
 import {NavbarOpenTeamButton} from './navbar-open-team-button'
@@ -104,26 +103,40 @@ const NavStart = () => {
   )
 }
 
+interface ITwNavCenter {
+  $isMobile: boolean
+}
+const TwNavCenter = tw(Nav.Center)<ITwNavCenter>`
+  ${({$isMobile}) => $isMobile && 'ml-4'}
+  font-mono
+  text-lg
+  w-full
+`
+
 const NavCenter = () => {
   return (
-    <Nav.Center
-      className={twJoin('font-mono text-lg w-full', isMobile && 'ml-4')}
-    >
+    <TwNavCenter $isMobile={isMobile}>
       <NavbarSearch />
-    </Nav.Center>
+    </TwNavCenter>
   )
 }
+
+const TwNavEndWrapper = tw.div`
+  flex
+  items-center
+  gap-6
+`
 
 const NavEnd = () => {
   return (
     <Nav.End className="gap-2">
-      <div className="flex items-center gap-6">
+      <TwNavEndWrapper>
         <div className="flex gap-2">
           <SwitchTheme />
           <AvatarDropdown />
         </div>
         <NavbarRightDrawerButton />
-      </div>
+      </TwNavEndWrapper>
     </Nav.End>
   )
 }
@@ -131,16 +144,22 @@ const NavEnd = () => {
 const NavEndMobile = () => {
   return (
     <Nav.End className="gap-2">
-      <div className="flex items-center gap-6">
+      <TwNavEndWrapper>
         <div className="flex gap-2">
           <SwitchTheme />
           <AvatarDropdownMobile />
         </div>
         <NavbarRightDrawerButton />
-      </div>
+      </TwNavEndWrapper>
     </Nav.End>
   )
 }
+
+const TwDropdownMenu = tw(Dropdown.Menu)`
+  shadow-lg
+  bg-base-200
+  gap-4
+`
 
 const AvatarDropdown = observer(() => {
   const [state, store] = useGlobalStore()
@@ -160,7 +179,7 @@ const AvatarDropdown = observer(() => {
   return (
     <Dropdown placements={['end']} hover>
       <UserImage src={user.user_metadata?.avatar_url} />
-      <Dropdown.Menu className="shadow-lg bg-base-200 gap-4">
+      <TwDropdownMenu>
         {cardId && <LabelShowLeftMenu />}
         <Button
           soft
@@ -171,7 +190,7 @@ const AvatarDropdown = observer(() => {
         >
           Logout
         </Button>
-      </Dropdown.Menu>
+      </TwDropdownMenu>
     </Dropdown>
   )
 })
@@ -193,7 +212,7 @@ const AvatarDropdownMobile = observer(() => {
   return (
     <Dropdown placements={['end']} hover>
       <UserImage src={user.user_metadata?.avatar_url} />
-      <Dropdown.Menu className="shadow-lg bg-base-200 gap-4">
+      <TwDropdownMenu>
         <div className="flex gap-1 items-center">
           <NavbarTeamSelect />
           <NavbarOpenTeamButton />
@@ -207,7 +226,7 @@ const AvatarDropdownMobile = observer(() => {
         >
           Logout
         </Button>
-      </Dropdown.Menu>
+      </TwDropdownMenu>
     </Dropdown>
   )
 })
