@@ -7,6 +7,48 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {IconSearch} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useId} from 'react'
+import tw from '../tw-styled-components'
+
+const TwButton = tw(Button)`
+  w-full
+  border-base-content/10
+`
+
+const TwSearch = tw.div`
+  text-base-content/30
+  flex
+  gap-2
+  items-center
+`
+
+const TwWrapper = tw.div`
+  flex
+  flex-col
+  relative
+  w-full
+`
+
+const TwIconSearchWrap = tw.div`
+  absolute
+  left-2
+  top-2
+  z-10
+`
+
+const TwInput = tw(Input)`
+  px-8
+  w-full
+  input-sm
+  focus:outline-none
+  focus:border-info/50
+`
+
+const TwCardsList = tw.div`
+  absolute
+  bottom-0
+  left-0
+  right-0
+`
 
 export const NavbarSearch = observer(() => {
   const open = useBoolean(false)
@@ -23,26 +65,20 @@ export const NavbarSearch = observer(() => {
 
   if (!open.value) {
     return (
-      <Button
-        onClick={open.turnOn}
-        className="w-full border-base-content/10"
-        size="sm"
-        soft
-      >
-        <div className="text-base-content/30 flex gap-2 items-center ">
+      <TwButton onClick={open.turnOn} size="sm" soft>
+        <TwSearch>
           <IconSearch />
           Search
-        </div>
-      </Button>
+        </TwSearch>
+      </TwButton>
     )
   }
   return (
-    <div className="flex flex-col relative w-full" onBlur={open.turnOff}>
-      <div className="absolute left-2 top-2 z-10">
+    <TwWrapper onBlur={open.turnOff}>
+      <TwIconSearchWrap>
         <IconSearch size={16} />
-      </div>
-      <Input
-        inputClassName="px-8 w-full input-sm focus:outline-none focus:border-info/50"
+      </TwIconSearchWrap>
+      <TwInput
         placeholder="Search cards by name"
         type="search"
         name={id}
@@ -50,12 +86,37 @@ export const NavbarSearch = observer(() => {
         onChange={e => store.setSearchValue(e.target.value)}
         value={state.searchValue}
       />
-      <div className="absolute bottom-0 left-0 right-0">
+      <TwCardsList>
         <CardsList />
-      </div>
-    </div>
+      </TwCardsList>
+    </TwWrapper>
   )
 })
+
+const TwCardsListWrapper = tw.div`
+  h-auto
+  max-h-[250px]
+  overflow-y-auto
+  absolute
+  w-full
+  bg-info-content/75
+  rounded-b-lg
+`
+
+const TwCards = tw.div`
+  flex
+  flex-col
+  cursor-pointer
+`
+
+const TwCard = tw.div`
+  truncate
+  text-base-content/70
+  text-sm
+  px-8
+  py-1
+  hover:bg-info/50
+`
 
 const CardsList = observer(() => {
   const [, store] = useCardsStore()
@@ -63,20 +124,19 @@ const CardsList = observer(() => {
   const updateSearchParams = useUpdateSearchParams()
 
   return (
-    <div className="h-auto max-h-[250px] overflow-y-auto absolute w-full bg-info-content/75 rounded-b-lg">
-      <div className="flex flex-col cursor-pointer">
+    <TwCardsListWrapper>
+      <TwCards>
         {cards.map(card => (
-          <div
+          <TwCard
             key={card.id}
-            className="truncate text-base-content/70 text-sm px-8 py-1 hover:bg-info/50"
             onMouseDown={() => {
               updateSearchParams('card', card.id)
             }}
           >
             {card.text}
-          </div>
+          </TwCard>
         ))}
-      </div>
-    </div>
+      </TwCards>
+    </TwCardsListWrapper>
   )
 })
