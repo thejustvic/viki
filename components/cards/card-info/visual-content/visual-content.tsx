@@ -7,7 +7,8 @@ import {observer} from 'mobx-react-lite'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
 import {Card, PlayerSizeType} from '../../types'
-import {ShowData} from '../card-info'
+
+import {CardInfoShowData} from '../card-info-show-data'
 import {useCardInfoStore} from '../card-info-store'
 
 const TwRadio = tw.div`
@@ -109,7 +110,7 @@ const SpringContent = () => {
 const ChoosePlayerSize = observer(() => {
   const [state] = useCardInfoStore()
   return (
-    <ShowData
+    <CardInfoShowData
       loading={state.card.loading}
       error={state.card.error?.message}
       data={<PlayerSize />}
@@ -152,7 +153,7 @@ const ChooseTulipColor = observer(() => {
 
   return (
     <div className="flex mt-4 gap-2 flex-col">
-      <ShowData
+      <CardInfoShowData
         loading={state.card.loading}
         error={state.card.error?.message}
         data={
@@ -164,7 +165,7 @@ const ChooseTulipColor = observer(() => {
         prefix={'tulip color'}
         className="items-center"
       />
-      <ShowData
+      <CardInfoShowData
         loading={state.card.loading}
         error={state.card.error?.message}
         data={
@@ -176,7 +177,7 @@ const ChooseTulipColor = observer(() => {
         prefix={'envelope color'}
         className="items-center"
       />
-      <ShowData
+      <CardInfoShowData
         loading={state.card.loading}
         error={state.card.error?.message}
         data={
@@ -201,7 +202,7 @@ const ChooseBaubleColor = observer(() => {
 
   return (
     <div className="mt-4 flex flex-col gap-2">
-      <ShowData
+      <CardInfoShowData
         loading={state.card.loading}
         error={state.card.error?.message}
         data={
@@ -213,7 +214,7 @@ const ChooseBaubleColor = observer(() => {
         prefix={'bauble color'}
         className="items-center"
       />
-      <ShowData
+      <CardInfoShowData
         loading={state.card.loading}
         error={state.card.error?.message}
         data={

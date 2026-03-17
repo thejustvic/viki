@@ -2,7 +2,7 @@ import '@/scss/app.scss'
 import 'simplebar-react/dist/simplebar.min.css'
 
 import CardChecklistProvider from '@/components/cards/card-checklist/card-checklist-provider'
-import CardInfoProvider from '@/components/cards/card-info/card-info'
+import CardInfoProvider from '@/components/cards/card-info/card-info-provider'
 import CardsProvider from '@/components/cards/cards'
 import {ModalCardCreate} from '@/components/cards/modal-card/modal-card-create'
 import {ModalCardDelete} from '@/components/cards/modal-card/modal-card-delete'

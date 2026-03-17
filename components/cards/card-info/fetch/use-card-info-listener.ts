@@ -9,7 +9,6 @@ import {useCallback, useEffect} from 'react'
 
 interface CardProps {
   cardId: Card['id'] | null
-  authorId: Card['author_id'] | undefined
   supabase: SupabaseContext['supabase']
   store: CardInfoStore
   user: SupabaseContext['user']
@@ -54,7 +53,6 @@ const useSupabaseListener = (
 
 export const useCardInfoListener = ({
   cardId,
-  authorId,
   store,
   supabase,
   user
@@ -71,6 +69,8 @@ export const useCardInfoListener = ({
 
   const {data, error, loading} = useSupabaseFetch(fetchCardById, [cardId])
 
+  const authorId = data?.author_id
+
   const {
     data: userData,
     error: userError,
@@ -84,20 +84,31 @@ export const useCardInfoListener = ({
   )
 
   useEffect(() => {
-    store.setCard({
-      loading,
-      data,
-      error
-    })
-    store.setCardCreator({
-      loading: userLoading,
-      data: userData,
-      error: userError
-    })
-    if (user) {
-      store.setMy(user.id === authorId)
+    store.setCard({loading, data, error})
+
+    if (loading) {
+      store.setCardCreator({
+        loading: true, // imitate for consistent ui
+        data: null,
+        error: null
+      })
+      store.setMy(undefined)
+    } else {
+      store.setCardCreator({
+        loading: userLoading,
+        data: userData,
+        error: userError
+      })
+
+      if (user && authorId) {
+        store.setMy(user.id === authorId)
+      }
     }
-  }, [userData, userError, userLoading, data, loading, error])
+  }, [loading, data, error, userLoading, userData, userError, authorId, user])
+
+  useEffect(() => {
+    return () => store.clear()
+  }, [])
 
   useSupabaseListener(supabase, cardId, store)
 }
