@@ -2,13 +2,34 @@
 
 import {useDragDrawerSideHandlers} from '@/components/common/drag-drawer-side/drag-drawer-side-handlers'
 import {observer} from 'mobx-react-lite'
-import {PropsWithChildren} from 'react'
-import {twJoin} from 'tailwind-merge'
+import tw from '../tw-styled-components'
+
+interface TwDragWrap {
+  $isVisible: boolean
+  $isRight: boolean
+}
+const TwDragWrap = tw.div<TwDragWrap>`
+  ${({$isVisible}) => $isVisible && 'opacity-100'}
+  ${({$isRight}) => ($isRight ? 'right-0' : 'left-0')}
+  absolute
+  h-full
+  p-0
+  pr-2
+  w-1
+  z-10
+  group
+  cursor-col-resize
+  opacity-0
+  hover:opacity-100
+  transition-opacity
+  ease-in-out
+  delay-150
+  duration-200
+`
 
 export interface DragProps {
   drawer: 'left' | 'right'
 }
-
 export const DragDrawerSide = observer(({drawer}: DragProps) => {
   const {handleMouseDown, mouseDown} = useDragDrawerSideHandlers({
     drawer
@@ -17,49 +38,13 @@ export const DragDrawerSide = observer(({drawer}: DragProps) => {
   return (
     <TwDragWrap
       onMouseDown={handleMouseDown}
-      show={mouseDown.value}
-      right={drawer === 'left'}
+      $isVisible={mouseDown.value}
+      $isRight={drawer === 'left'}
     >
       <DragSvg />
     </TwDragWrap>
   )
 })
-
-interface TwJoinDragWrapProps extends PropsWithChildren {
-  onMouseDown: (event: React.MouseEvent) => void
-  show: boolean
-  right: boolean
-}
-const TwDragWrap = ({
-  onMouseDown,
-  show,
-  right,
-  children
-}: TwJoinDragWrapProps) => (
-  <div
-    onMouseDown={onMouseDown}
-    className={twJoin(
-      `absolute
-        h-full
-        p-0
-        pr-2
-        w-1
-        z-10
-        group
-        cursor-col-resize
-        opacity-0
-        hover:opacity-100
-        transition-opacity
-        ease-in-out
-        delay-150
-        duration-200`,
-      show && 'opacity-100',
-      right ? 'right-0' : 'left-0'
-    )}
-  >
-    {children}
-  </div>
-)
 
 const DragSvg = () => {
   return (
