@@ -14,9 +14,18 @@ import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm, UseFormResetField, UseFormSetFocus} from 'react-hook-form'
 
-const TwError = tw.p`text-error w-full text-center text-xs`
+const TwError = tw.p`
+  text-error
+  w-full
+  text-center
+  text-xs
+`
 
-const TwErrorWrapper = tw.div`bg-info-content rounded-xl p-2`
+const TwErrorWrapper = tw.div`
+  bg-info-content
+  rounded-xl
+  p-2
+`
 
 export const ModalCardCreate = () => {
   const updateSearchParams = useUpdateSearchParams()

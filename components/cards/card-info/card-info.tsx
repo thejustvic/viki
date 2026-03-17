@@ -109,7 +109,18 @@ const Cover = observer(() => {
   )
 })
 
-const TwRadio = tw.div`flex gap-1 items-center justify-between w-[120px] bg-base-200 p-2 rounded cursor-pointer`
+const TwRadio = tw.div`
+  flex
+  gap-1
+  items-center
+  justify-between
+  w-[120px]
+  bg-base-200
+  p-2
+  rounded
+  cursor-pointer
+`
+
 const bgImages: CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
 
 const CoverData = observer(() => {

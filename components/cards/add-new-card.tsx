@@ -5,7 +5,7 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {IconSquareRoundedPlus} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {TwCardText} from './card'
+import {TwCardText} from './card/card-body'
 
 export const AddNewCard = () => {
   return (

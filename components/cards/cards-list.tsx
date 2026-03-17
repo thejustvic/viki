@@ -22,7 +22,7 @@ const CardNoSSR = dynamic(
 
 const TwContainer = tw.div`
   grid
-  grid-cols-[repeat(auto-fill,_minmax(min(190px,100%),_1fr))]
+  grid-cols-[repeat(auto-fill,minmax(min(190px,100%),1fr))]
   gap-4
   p-4
   max-[425px]:grid-cols-2
