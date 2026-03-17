@@ -35,7 +35,7 @@ interface ITwCard {
   $isActive: boolean | undefined
 }
 const TwCard = tw(Card)<ITwCard>`
-  ${({$isMy}) => ($isMy ? 'bg-base-300/20' : 'bg-accent-content/20')}
+  ${({$isMy}) => ($isMy ? 'bg-base-300/20' : 'bg-info-content/20')}
   ${({$isActive}) => $isActive && `border-accent`}
   shadow-md
   transform-3d
