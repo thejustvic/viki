@@ -275,7 +275,7 @@ const getScale = (playerSize: PlayerSizeType[number]) => {
     case 'human': {
       return 0.1
     }
-    case 'mouse': {
+    case 'cat': {
       return 1
     }
     default: {

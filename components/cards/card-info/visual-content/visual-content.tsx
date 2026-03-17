@@ -120,7 +120,7 @@ const ChoosePlayerSize = observer(() => {
   )
 })
 
-const playerSizes: PlayerSizeType = ['human', 'mouse']
+const playerSizes: PlayerSizeType = ['human', 'cat']
 
 const PlayerSize = observer(() => {
   const [state, store] = useGlobalStore()
