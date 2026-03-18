@@ -89,16 +89,23 @@ export const Navbar = observer(() => {
   )
 })
 
+const TwWrapper = tw.div`
+  ml-4
+  flex
+  gap-2
+  items-center
+`
+
 const NavStart = () => {
   const cardId = getSearchCard()
 
   return (
     <Nav.Start>
       {cardId && !isMobile && <NavbarLeftDrawerButton />}
-      <div className="ml-4 flex gap-2 items-center">
+      <TwWrapper>
         <NavbarTeamSelect />
         <NavbarOpenTeamButton />
-      </div>
+      </TwWrapper>
     </Nav.Start>
   )
 }

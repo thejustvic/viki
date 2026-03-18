@@ -97,6 +97,12 @@ export const useTeamSync = () => {
   return {currentTeamId}
 }
 
+const TwNavbarTeamSelect = tw.div`
+  flex
+  flex-col
+  items-center
+`
+
 export const NavbarTeamSelect = observer(() => {
   const {user} = useSupabase()
 
@@ -115,7 +121,7 @@ export const NavbarTeamSelect = observer(() => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <TwNavbarTeamSelect>
       <TwMenu>
         <li className="w-full min-w-[110px]">
           <details ref={ref}>
@@ -135,7 +141,7 @@ export const NavbarTeamSelect = observer(() => {
           </details>
         </li>
       </TwMenu>
-    </div>
+    </TwNavbarTeamSelect>
   )
 })
 
