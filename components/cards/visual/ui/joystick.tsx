@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import tw from '@/components/common/tw-styled-components'
 import React, {CSSProperties, useEffect, useState} from 'react'
 import Tilt from 'react-parallax-tilt'
 import {useJoystickHandlers} from './joystick-handlers'
@@ -19,7 +20,7 @@ const JoystickOuterStyles: CSSProperties = {
   borderRadius: '50%',
   position: 'absolute',
   background: `
-    radial-gradient(circle at 50% 50%, 
+    radial-gradient(circle at 50% 50%,
       transparent 50%,        /* deep empty middle */
       #141414 52%,            /* sharp inner shadow (cliff) */
       #2a2a2a 55%,            /* internal slope */
@@ -66,19 +67,52 @@ const BallJointStyles: CSSProperties = {
   background: `
                 /* light reflection (gives gloss) */
                 radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
-                
+
                 /* downward glow */
                 radial-gradient(circle at 50% 0%, ${topColor} 0%, transparent 70%),
-                
+
                 /* upward glow */
                 radial-gradient(circle at 50% 100%, ${bottomColor} 0%, transparent 70%),
-                
+
                 /* dark liner for volume */
                 radial-gradient(circle at 50% 50%, #222 0%, #050505 100%)
               `,
   zIndex: -1, // located under ThumbGripStyles
   pointerEvents: 'none'
 }
+
+const TwBallJointWrapper = tw.div`
+  transform-3d
+  absolute
+  w-full
+  h-full
+  rounded-full
+  overflow-hidden
+  pointer-events-none
+  z-1
+`
+
+const TwLabel = tw.label`
+  grid
+  place-items-center
+  h-full
+  text-white
+  opacity-30
+  text-xs
+  pointer-events-none
+  select-none
+`
+
+const TwTiltThumbGrip = tw(Tilt)`
+  transform-3d
+  absolute
+  z-10
+  pointer-events-none
+  h-full
+  w-full
+  grid
+  place-items-center
+`
 
 const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
   const {handleStart, stickPos, manualTiltAngle} = useJoystickHandlers({
@@ -112,7 +146,7 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
         }}
       >
         {/* container for ball with cutting (mask) */}
-        <div className="transform-3d absolute w-full h-full rounded-full overflow-hidden pointer-events-none z-1">
+        <TwBallJointWrapper>
           <Tilt
             perspective={600}
             tiltAngleXManual={manualTiltAngle.y}
@@ -130,10 +164,9 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
               }}
             />
           </Tilt>
-        </div>
-        <Tilt
+        </TwBallJointWrapper>
+        <TwTiltThumbGrip
           perspective={600}
-          className="transform-3d absolute z-10 pointer-events-none h-full w-full grid place-items-center"
           tiltAngleXManual={manualTiltAngle.y}
           tiltAngleYManual={manualTiltAngle.x}
         >
@@ -156,11 +189,9 @@ const Joystick: React.FC<JoystickProps> = ({label, onUpdate, radius}) => {
                         `
             }}
           >
-            <span className="grid place-items-center h-full text-white opacity-30 text-xs pointer-events-none select-none">
-              {label}
-            </span>
+            <TwLabel>{label}</TwLabel>
           </div>
-        </Tilt>
+        </TwTiltThumbGrip>
       </div>
     </>
   )
