@@ -1,7 +1,15 @@
 import {useChatStore} from '@/components/chat/chat-store'
 import {Profile} from '@/components/chat/types'
+import tw from '@/components/common/tw-styled-components'
 import {UserImage} from '@/components/common/user-image'
 import {observer} from 'mobx-react-lite'
+
+const TwWrapper = tw.span`
+  text-sm
+  text-base-content/80
+  truncate
+  max-w-[30px]
+`
 
 export const ReactionsUsersCount = observer(
   ({
@@ -24,12 +32,9 @@ export const ReactionsUsersCount = observer(
     }
 
     return (
-      <span
-        className="text-sm text-base-content/80 truncate max-w-[30px]"
-        title={String(usersWhoReactedLength)}
-      >
+      <TwWrapper title={String(usersWhoReactedLength)}>
         {usersWhoReactedLength}
-      </span>
+      </TwWrapper>
     )
   }
 )
