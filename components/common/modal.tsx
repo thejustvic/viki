@@ -1,6 +1,12 @@
 import {Modal as ModalComponent} from '@/components/daisyui/modal'
 import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {HTMLProps, ReactNode} from 'react'
+import tw from './tw-styled-components'
+
+const TwModalComponentHeader = tw(ModalComponent.Header)`
+  font-bold
+  text-base-content/80
+`
 
 interface Props {
   id: string
@@ -11,7 +17,6 @@ interface Props {
   classNameModalBox?: HTMLProps<HTMLElement>['className']
   classNameBody?: HTMLProps<HTMLElement>['className']
 }
-
 export const Modal = ({
   id,
   header,
@@ -38,9 +43,7 @@ export const Modal = ({
       onClickBackdrop={goBack}
       classNameModalBox={classNameModalBox}
     >
-      <ModalComponent.Header className="font-bold text-base-content/80">
-        {header}
-      </ModalComponent.Header>
+      <TwModalComponentHeader>{header}</TwModalComponentHeader>
       <ModalComponent.Body className={classNameBody}>
         {body}
       </ModalComponent.Body>

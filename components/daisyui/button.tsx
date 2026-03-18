@@ -1,5 +1,13 @@
 import {PropsWithChildren, RefObject} from 'react'
 import {twMerge} from 'tailwind-merge'
+import tw from '../common/tw-styled-components'
+
+const TwLoading = tw.span`
+  loading
+  loading-dots
+  loading-sm
+  absolute
+`
 
 interface Props
   extends PropsWithChildren, React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -13,7 +21,6 @@ interface Props
   soft?: boolean
   handleRef?: RefObject<HTMLButtonElement | null>
 }
-
 export const Button = ({
   handleRef,
   soft,
@@ -52,9 +59,7 @@ export const Button = ({
     >
       {disable ? (
         <>
-          {loading && (
-            <span className="loading loading-dots loading-sm absolute" />
-          )}
+          {loading && <TwLoading />}
           <span className="opacity-25">{children}</span>
         </>
       ) : (

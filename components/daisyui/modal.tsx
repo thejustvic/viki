@@ -1,6 +1,7 @@
 import {IconCircleX} from '@tabler/icons-react'
 import {HTMLProps, PropsWithChildren} from 'react'
 import {twMerge} from 'tailwind-merge'
+import tw from '../common/tw-styled-components'
 import {Button} from './button'
 
 interface Props extends PropsWithChildren {
@@ -44,7 +45,7 @@ export const Modal = ({
           {children}
           <div className="modal-action mt-0">
             <label htmlFor={id} onClick={close}>
-              <Close />
+              <CloseButton />
             </label>
           </div>
         </div>
@@ -60,16 +61,18 @@ export const Modal = ({
   )
 }
 
-const Close = () => {
+const TwCloseButton = tw(Button)`
+  absolute
+  right-2
+  top-2
+  text-info/50
+`
+
+const CloseButton = () => {
   return (
-    <Button
-      ghost
-      size="sm"
-      shape="circle"
-      className="absolute right-2 top-2 text-info/50"
-    >
+    <TwCloseButton ghost size="sm" shape="circle">
       <IconCircleX />
-    </Button>
+    </TwCloseButton>
   )
 }
 
