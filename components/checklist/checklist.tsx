@@ -44,6 +44,12 @@ const TwState = tw.div`
   h-[calc(100dvh-123px)]
 `
 
+const TwCheckboxes = tw.div`
+  flex
+  flex-col
+  h-[calc(100dvh-180px)]
+`
+
 const Checkboxes = observer(() => {
   const id = String(getSearchCard())
   const [state, store] = useCardChecklistStore()
@@ -86,7 +92,7 @@ const Checkboxes = observer(() => {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-180px)]">
+    <TwCheckboxes>
       <SimpleScrollbar>
         <DndContext
           modifiers={[
@@ -104,7 +110,7 @@ const Checkboxes = observer(() => {
         </DndContext>
         <CheckboxesCompleted />
       </SimpleScrollbar>
-    </div>
+    </TwCheckboxes>
   )
 })
 
@@ -124,6 +130,21 @@ const SortableContextContainer = observer(() => {
   )
 })
 
+const TwCheckboxesCompleted = tw.div`
+  collapse
+  collapse-arrow
+  bg-base-100
+  focus:outline-none
+  rounded-b-none
+`
+
+const TwCollapseTitle = tw.div`
+  collapse-title
+  text-base-content/50
+  font-semibold
+  px-12
+`
+
 const CheckboxesCompleted = observer(() => {
   const [, store] = useCardChecklistStore()
   const show = useBoolean(false)
@@ -135,7 +156,7 @@ const CheckboxesCompleted = observer(() => {
   }
 
   return (
-    <div className="collapse collapse-arrow bg-base-100 focus:outline-none rounded-b-none">
+    <TwCheckboxesCompleted>
       <input
         className="cursor-pointer"
         type="radio"
@@ -144,9 +165,7 @@ const CheckboxesCompleted = observer(() => {
         onClick={show.toggle}
         checked={show.value}
       />
-      <div className="collapse-title text-base-content/50 font-semibold px-12">
-        checked items
-      </div>
+      <TwCollapseTitle>checked items</TwCollapseTitle>
       <div className="collapse-content p-0">
         <div className="pb-1">
           {items.map(checkbox => (
@@ -154,9 +173,14 @@ const CheckboxesCompleted = observer(() => {
           ))}
         </div>
       </div>
-    </div>
+    </TwCheckboxesCompleted>
   )
 })
+
+const TwDraggingCheckbox = tw.div`
+  bg-info/10
+  cursor-grabbing
+`
 
 const DragOverlayContainer = observer(() => {
   const [state] = useGlobalStore()
@@ -169,9 +193,9 @@ const DragOverlayContainer = observer(() => {
       }}
     >
       {state.draggingCheckbox ? (
-        <div className="bg-info/10 cursor-grabbing">
+        <TwDraggingCheckbox>
           <CheckboxComponent checkbox={state.draggingCheckbox} />
-        </div>
+        </TwDraggingCheckbox>
       ) : null}
     </DragOverlay>
   )

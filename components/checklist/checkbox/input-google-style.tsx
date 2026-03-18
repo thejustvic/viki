@@ -29,6 +29,25 @@ const TwContainer = tw.div`
   bg-base-200
 `
 
+const TwWrapper = tw.div`
+  relative
+  shadow-sm
+`
+
+const TwInput = tw(Input)`
+  pr-16
+  w-full
+  border-base-content/10
+  focus:outline-none
+  focus:border-primary/50
+`
+
+const TwButton = tw(Button)`
+  absolute
+  right-1
+  top-1
+`
+
 /*
   hide keyboard height calculations until i figure out
   how to prevent mobile view from shifting up when
@@ -58,24 +77,18 @@ export const InputGoogleStyle = observer(() => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <TwContainer>
-        <div className="relative shadow-sm">
-          <Input
+        <TwWrapper>
+          <TwInput
             {...register('q_99', {required: true})}
-            className="pr-16 w-full border-base-content/10 focus:outline-none focus:border-primary/50"
             autoComplete="off"
             placeholder="type some stuff..."
             type="search"
             id="q_99"
           />
-          <Button
-            soft
-            size="sm"
-            type="submit"
-            className="absolute right-1 top-1"
-          >
+          <TwButton soft size="sm" type="submit">
             <IconSend />
-          </Button>
-        </div>
+          </TwButton>
+        </TwWrapper>
       </TwContainer>
     </Form>
   )

@@ -6,6 +6,7 @@ import {
   useCheckboxStore
 } from '@/components/checklist/checkbox/checkbox-store'
 import {Checkbox} from '@/components/checklist/types'
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {DraggableAttributes} from '@dnd-kit/core'
@@ -15,12 +16,33 @@ import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
 import {twJoin} from 'tailwind-merge'
 
+const TwWrapper = tw.div`
+  flex
+  items-center
+  gap-3
+  py-1
+  px-3
+  rounded-box
+  hover:bg-accent/20
+`
+
+const TwTitle = tw.span`
+  wrap-break-words
+  wrap-anywhere
+  text-base-content/60
+`
+
+const TwUnsavedTitle = tw.div`
+  text-accent
+  text-xs
+  m-2
+  px-10
+`
 export interface CheckboxProps extends PropsWithChildren {
   checkbox: Checkbox
   dragListeners?: SyntheticListenerMap | undefined
   dragAttributes?: DraggableAttributes
 }
-
 const CheckboxBase = observer((props: CheckboxProps) => {
   const {
     checkbox: {id, title, is_completed},
@@ -38,7 +60,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
 
   return (
     <>
-      <div className="flex items-center gap-3 py-1 px-3 rounded-box hover:bg-accent/20">
+      <TwWrapper>
         <input
           type="checkbox"
           checked={is_completed}
@@ -46,9 +68,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
           onChange={() => updateCheckboxIsCompleted(!is_completed, id)}
         />
         <div className="flex-1 min-w-0" onClick={store.startEditing}>
-          <span className="wrap-break-words wrap-anywhere text-base-content/60">
-            {title}
-          </span>
+          <TwTitle>{title}</TwTitle>
         </div>
         {!is_completed && (
           <DragCheckboxButton
@@ -57,9 +77,9 @@ const CheckboxBase = observer((props: CheckboxProps) => {
             dragAttributes={dragAttributes}
           />
         )}
-      </div>
+      </TwWrapper>
       {state.unsavedTitle && (
-        <div className="text-accent text-xs m-2 px-10">
+        <TwUnsavedTitle>
           You didn't save last changes.{' '}
           <span className="link" onClick={store.startEditing}>
             See changes
@@ -69,7 +89,7 @@ const CheckboxBase = observer((props: CheckboxProps) => {
             Discard
           </span>
           ?
-        </div>
+        </TwUnsavedTitle>
       )}
     </>
   )

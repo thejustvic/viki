@@ -1,3 +1,4 @@
+import tw from '@/components/common/tw-styled-components'
 import {Button} from '@/components/daisyui/button'
 import {Textarea} from '@/components/daisyui/textarea'
 import {IconCancel, IconCheck, IconTrash} from '@tabler/icons-react'
@@ -7,6 +8,14 @@ import {CheckboxProps} from './checkbox'
 import {useCheckboxHandlers} from './checkbox-handlers'
 import {useCheckboxStore} from './checkbox-store'
 
+const TwWrapper = tw.div`
+  flex
+  gap-2
+  flex-col
+  mx-9
+  my-1
+`
+
 export const CheckboxEdit = observer(
   ({checkbox: {id, title}}: CheckboxProps) => {
     const [state, store] = useCheckboxStore()
@@ -14,7 +23,7 @@ export const CheckboxEdit = observer(
     const {updateCheckboxTitle, removeCheckbox} = useCheckboxHandlers()
 
     return (
-      <div className="flex gap-2 flex-col mx-9 my-1">
+      <TwWrapper>
         <Textarea
           textareaId={'checkbox-edit'}
           className="w-full min-h-10 h-10"
@@ -62,7 +71,7 @@ export const CheckboxEdit = observer(
             <IconTrash />
           </Button>
         </div>
-      </div>
+      </TwWrapper>
     )
   }
 )
