@@ -10,6 +10,7 @@ import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
+import tw from '../common/tw-styled-components'
 import {useTeamMemberHandlers} from './team-member-handlers'
 import {useTeamStore} from './team-store'
 
@@ -42,6 +43,13 @@ interface FormInputs {
   teamMemberName69: string
   email: string
 }
+
+const TwForm = tw(Form)`
+  flex
+  gap-4
+  flex-col
+  w-full
+`
 
 const Data = observer(() => {
   const [state] = useTeamStore()
@@ -77,10 +85,7 @@ const Data = observer(() => {
   }
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex gap-4 flex-col w-full"
-    >
+    <TwForm onSubmit={handleSubmit(onSubmit)}>
       <Input
         label="name"
         className="w-full"
@@ -100,6 +105,6 @@ const Data = observer(() => {
       <Button soft color="primary" type="submit">
         Create Member
       </Button>
-    </Form>
+    </TwForm>
   )
 })

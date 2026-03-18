@@ -11,6 +11,7 @@ import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useForm} from 'react-hook-form'
+import tw from '../common/tw-styled-components'
 import {useTeamHandlers} from './team-handlers'
 
 export const ModalCreateTeam = () => {
@@ -41,6 +42,13 @@ const ModalHeader = () => {
 interface FormInputs {
   teamName69: string
 }
+
+const TwForm = tw(Form)`
+  flex
+  gap-4
+  flex-col
+  w-full
+`
 
 const Data = observer(() => {
   const {user} = useSupabase()
@@ -73,10 +81,7 @@ const Data = observer(() => {
   }
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex gap-4 flex-col w-full"
-    >
+    <TwForm onSubmit={handleSubmit(onSubmit)}>
       <Input
         label="name"
         className="w-full"
@@ -87,6 +92,6 @@ const Data = observer(() => {
       <Button soft color="primary" type="submit">
         Create Team
       </Button>
-    </Form>
+    </TwForm>
   )
 })
