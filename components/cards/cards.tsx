@@ -8,6 +8,7 @@ import {SortableContext, useSortable} from '@dnd-kit/sortable'
 import {CSS} from '@dnd-kit/utilities'
 import {observer, useLocalObservable} from 'mobx-react-lite'
 import {PropsWithChildren} from 'react'
+import tw from '../common/tw-styled-components'
 import {useGlobalStore} from '../global-provider/global-store'
 import {useTeamStore} from '../team/team-store'
 import {AddNewCard} from './add-new-card'
@@ -110,6 +111,11 @@ const SortableContainer = ({
   )
 }
 
+const TwTooltip = tw.div`
+  tooltip
+  tooltip-info
+`
+
 export const CheckAllCheckboxes = observer(() => {
   const id = String(getSearchCard())
   const [state, store] = useCardChecklistStore()
@@ -118,7 +124,7 @@ export const CheckAllCheckboxes = observer(() => {
   const checkboxIds = store.getAllCheckboxes(id)?.map(c => c.id)
 
   return (
-    <div className="tooltip tooltip-info" data-tip="all">
+    <TwTooltip data-tip="all">
       <input
         type="checkbox"
         checked={isAllCompleted}
@@ -131,6 +137,6 @@ export const CheckAllCheckboxes = observer(() => {
           }
         }}
       />
-    </div>
+    </TwTooltip>
   )
 })

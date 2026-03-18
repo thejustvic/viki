@@ -75,13 +75,20 @@ const TwRadio = tw.div`
   cursor-pointer
 `
 
+const TwWrapper = tw.div`
+  flex
+  flex-1
+  gap-1
+  flex-wrap
+`
+
 const playerSizes: PlayerSizeType = ['human', 'cat']
 
 const PlayerSize = observer(() => {
   const [state, store] = useGlobalStore()
 
   return (
-    <div className="flex flex-1 gap-1 flex-wrap">
+    <TwWrapper>
       {playerSizes.map(playerSize => {
         return (
           <TwRadio
@@ -99,7 +106,7 @@ const PlayerSize = observer(() => {
           </TwRadio>
         )
       })}
-    </div>
+    </TwWrapper>
   )
 })
 
