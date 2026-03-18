@@ -1,3 +1,4 @@
+import tw from '@/components/common/tw-styled-components'
 import {ArrUtil} from '@/utils/arr-util'
 import {Html} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
@@ -260,12 +261,19 @@ export const Tulip = ({
   )
 }
 
+const TwWrapper = tw.div`
+  text-2xl
+  text-white
+  bold
+  -ml-14
+  pb-10
+  truncate
+`
+
 const LoadingTulips = () => {
   return (
     <Html>
-      <div className="text-2xl text-white bold -ml-14 pb-10 truncate">
-        loading tulips...
-      </div>
+      <TwWrapper>loading tulips...</TwWrapper>
     </Html>
   )
 }
