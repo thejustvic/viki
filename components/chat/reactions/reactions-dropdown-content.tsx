@@ -3,8 +3,7 @@ import {useReactionsHandlers} from '@/components/chat/reactions/use-reactions-ha
 import {Message, Smiley, smileys} from '@/components/chat/types'
 import tw from '@/components/common/tw-styled-components'
 import {BooleanHookState} from '@/hooks/use-boolean'
-import {isMobile} from 'react-device-detect'
-import {twJoin} from 'tailwind-merge'
+import {useScrollNear} from '@/hooks/use-scroll-into-nearest'
 
 const TwSmileyContainer = tw.div`
   bg-info/50
@@ -12,18 +11,18 @@ const TwSmileyContainer = tw.div`
   px-1
   grid
   gap-px
+  grid-cols-[repeat(3,1fr)]
 `
 
 export const ReactionsDropdownContent = ({
   message,
-  showChoice,
-  noSmilesInMessage = false
+  showChoice
 }: {
   message: Message
   showChoice: BooleanHookState
-  noSmilesInMessage?: boolean
 }) => {
   const {selectReaction} = useReactionsHandlers()
+  const {containerRef} = useScrollNear(showChoice.value)
 
   const handleSmile = (smiley: Smiley) => {
     selectReaction(smiley, message)
@@ -31,13 +30,7 @@ export const ReactionsDropdownContent = ({
   }
 
   return (
-    <TwSmileyContainer
-      className={twJoin(
-        isMobile && noSmilesInMessage
-          ? 'grid-cols-[repeat(9,1fr)]'
-          : 'grid-cols-[repeat(3,1fr)]'
-      )}
-    >
+    <TwSmileyContainer ref={containerRef}>
       {smileys.map(smiley => {
         return (
           <div

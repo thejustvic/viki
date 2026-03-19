@@ -6,6 +6,8 @@ import {useReactionsHandlers} from '@/components/chat/reactions/use-reactions-ha
 import {Message} from '@/components/chat/types'
 import tw from '@/components/common/tw-styled-components'
 import {Dropdown} from '@/components/daisyui/dropdown'
+import {useBoolean} from '@/hooks/use-boolean'
+import {useScrollNear} from '@/hooks/use-scroll-into-nearest'
 import {ObjUtil} from '@/utils/obj-util'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
@@ -13,8 +15,10 @@ import {PropsWithChildren} from 'react'
 import {isMobile} from 'react-device-detect'
 
 export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
+  const hovered = useBoolean(false)
   const [state] = useChatStore()
 
+  const {containerRef} = useScrollNear(hovered.value)
   const {selectReaction} = useReactionsHandlers()
 
   return ObjUtil.list(message.reactions, (smiley, userIds) => {
@@ -28,6 +32,12 @@ export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
 
     return (
       <div
+        onMouseOver={() => {
+          if (!hovered.value) {
+            hovered.turnOn()
+          }
+        }}
+        onMouseLeave={hovered.turnOff}
         key={smiley}
         onClick={e => {
           e.stopPropagation()
@@ -35,13 +45,14 @@ export const ReactionsSmileyList = observer(({message}: {message: Message}) => {
         }}
         onTouchStart={e => e.stopPropagation()}
       >
-        <Dropdown hover={!isMobile}>
+        <Dropdown hover={hovered.value && !isMobile}>
           <ReactionsSmileyWrapper filterIds={filterIds}>
             <ReactionsSmileyText value={smiley} className="text-[16px]" />
             <ReactionsUsersCount filterIds={filterIds} userIds={userIds} />
           </ReactionsSmileyWrapper>
-          <Dropdown.Menu>
+          <Dropdown.Menu className="px-0 py-1">
             <ReactionsUsersList users={filteredUsers ?? []} />
+            <div ref={containerRef} />
           </Dropdown.Menu>
         </Dropdown>
       </div>

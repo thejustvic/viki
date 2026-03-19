@@ -7,8 +7,9 @@ const TwUsers = tw.div`
   flex
   flex-col
   gap-2
-  bg-info/50
-  p-2
+  bg-info/70
+  text-base-content/80
+  p-1
   rounded-box
 `
 
@@ -19,7 +20,12 @@ export const ReactionsUsersList = observer(({users}: {users: Profile[]}) => {
     <TwUsers>
       {users.slice(0, maxShownUsers).map(user => {
         return (
-          <div className="flex items-center gap-2" key={user.id}>
+          <div
+            className="flex items-center gap-2"
+            key={user.id}
+            onClick={e => e.stopPropagation()}
+            onDoubleClick={e => e.stopPropagation()}
+          >
             <UserImage
               src={user.avatar_url ?? undefined}
               containerClassName="h-[24px] w-[24px]"

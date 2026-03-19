@@ -2,6 +2,7 @@ import {Loader} from '@/components/common/loader'
 import tw from '@/components/common/tw-styled-components'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
+import {useEffect, useRef} from 'react'
 import {SimpleScrollbar} from '../common/simple-scrollbar'
 import {ChatMessage} from './chat-message'
 import {useChatStore} from './chat-store'
@@ -54,7 +55,29 @@ const Messages = observer(() => {
   return <MessageList />
 })
 
+const TwWrapper = tw.div`
+  flex
+  flex-col
+  gap-2
+  px-4
+`
+
+const useScrollToBottom = () => {
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [])
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView()
+  }
+
+  return messagesEndRef
+}
+
 const MessageList = observer(() => {
+  const messagesEndRef = useScrollToBottom()
   const [state] = useChatStore()
   const {user} = useSupabase()
 
@@ -64,7 +87,7 @@ const MessageList = observer(() => {
 
   return (
     <SimpleScrollbar>
-      <div className="flex flex-col gap-2 px-4">
+      <TwWrapper>
         {state.chat.data?.map(message => {
           return (
             <ChatMessage
@@ -74,7 +97,8 @@ const MessageList = observer(() => {
             />
           )
         })}
-      </div>
+        <div ref={messagesEndRef} />
+      </TwWrapper>
     </SimpleScrollbar>
   )
 })
