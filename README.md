@@ -22,9 +22,8 @@ You can add some cards and see how it works with checklists onto them with uniqu
 You can add members to your team, create multiple teams of your own, or jump to a team you've been invited to.
 And all of this with the real-time updates.
 
-<img width="1434" height="727" alt="Image" src="https://github.com/user-attachments/assets/80dd047c-e06d-4003-a80a-b3136000c61e" />
+<img width="1434" height="726" alt="Image" src="https://github.com/user-attachments/assets/55845c3b-61a4-4df3-9ef3-9d76b369f720" />
 
 Visualized checklist in 3D. I had the idea of ​​setting up a 3d scene coresponding to a 4 states of the year: winter, spring, summer and autumn. What’s interesting is that you can move freely, even jump or fly across the area.
 
-<img width="1434" height="726" alt="Image" src="https://github.com/user-attachments/assets/6543e1ec-ed83-4259-98e7-b51b8c82fa09" />
-
+<img width="1435" height="728" alt="image" src="https://github.com/user-attachments/assets/9cb790d2-8bef-45f6-a3b5-a926093a7b54" />
