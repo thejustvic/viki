@@ -10,12 +10,15 @@ interface IIconReaction {
   $isMy: boolean
 }
 const TwIconReactionAbsoluteContainer = tw.div<IIconReaction>`
-  ${({$isDropdownOpen}) => ($isDropdownOpen ? 'opacity-0' : 'opacity-100')}
+  ${({$isDropdownOpen}) => ($isDropdownOpen ? 'opacity-0' : 'opacity-50')}
   ${({$isMy}) => ($isMy ? '-left-4' : '-right-4')}
   absolute
   -bottom-3
   cursor-pointer
-  text-info/80
+  text-info
+  transition-opacity
+  ease-in-out
+  duration-150
 `
 
 interface ITwDropdown {
