@@ -10,6 +10,8 @@ const TwIconReaction = tw.div`
   cursor-pointer
   flex
   items-center
+  opacity-50
+  text-info
 `
 
 export const ReactionsDropdown = ({

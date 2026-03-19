@@ -3,13 +3,13 @@ import {Message} from '@/components/chat/types'
 import tw from '@/components/common/tw-styled-components'
 import {Dropdown} from '@/components/daisyui/dropdown'
 import {BooleanHookState} from '@/hooks/use-boolean'
-import {IconMoodSmileFilled} from '@tabler/icons-react'
+import {IconMoodSmile} from '@tabler/icons-react'
 import {isMobile} from 'react-device-detect'
 
 const TwIconReactionAbsoluteContainer = tw.div`
   absolute
   bottom-4
-  -left-2
+  -left-4
   cursor-pointer
   text-info/80
 `
@@ -68,7 +68,7 @@ const TwDropdown = tw(Dropdown)<ITwDropdown>`
 
 const TwDropdownMenu = tw(Dropdown.Menu)`
   -top-6
-  -left-4
+  -left-6
 `
 
 interface EmptyReactionsProps {
@@ -101,7 +101,7 @@ export const ReactionsEmptyList = ({
     >
       <TwIconReactionAbsoluteContainer>
         <TwIconReactionAbsolute>
-          <IconMoodSmileFilled size={24} onClick={showChoice.turnOn} />
+          <IconMoodSmile size={24} onClick={showChoice.turnOn} />
         </TwIconReactionAbsolute>
       </TwIconReactionAbsoluteContainer>
       <TwDropdownMenu>
