@@ -5,6 +5,7 @@ import {Message} from '@/components/chat/types'
 import tw from '@/components/common/tw-styled-components'
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {ObjUtil} from '@/utils/obj-util'
+import {isMobile} from 'react-device-detect'
 
 const TwContainer = tw.div`
   relative
@@ -28,6 +29,9 @@ export const ReactionsSmiley = ({
   my
 }: SmileyReactionsProps) => {
   if (ObjUtil.isEmpty(message.reactions)) {
+    if (isMobile) {
+      return
+    }
     return (
       <ReactionsEmptyList
         my={my}
