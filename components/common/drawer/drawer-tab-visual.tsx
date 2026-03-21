@@ -6,6 +6,7 @@ import tw from '@/components/common/tw-styled-components'
 import {Tabs} from '@/components/daisyui/tabs'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {Tab} from '@/components/global-provider/types'
+import {useGlobalKeyDown} from '@/hooks/use-global-key-down'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import dynamic from 'next/dynamic'
@@ -75,11 +76,31 @@ export const CardVisualTab = observer(() => {
   const [globalState] = useGlobalStore()
   const [, cardChecklistStore] = useCardChecklistStore()
   const [cardInfoState] = useCardInfoStore()
+
+  usePersonViewToggle()
+
   return (
     <CardVisual
       playerSize={globalState.playerSize}
       checklist={cardChecklistStore.getAllCheckboxes(id)}
       card={cardInfoState.card.data}
+      isThirdPersonView={globalState.isThirdPersonView}
     />
   )
 })
+
+const usePersonViewToggle = () => {
+  const id = String(getSearchCard())
+  const [globalState, globalStore] = useGlobalStore()
+  useGlobalKeyDown({
+    handlers: {
+      anyKey: e => {
+        if (e.key.toLowerCase() === 'v' && e.shift) {
+          globalStore.setThirdPersonView(!globalState.isThirdPersonView)
+        }
+      }
+    },
+    id,
+    active: Boolean(id)
+  })
+}

@@ -13,11 +13,13 @@ type Vector2 = {x: number; y: number}
 export const CardVisual = ({
   playerSize,
   checklist,
-  card
+  card,
+  isThirdPersonView
 }: {
   playerSize: PlayerSizeType[number]
   checklist: Checkbox[] | undefined
   card: Card | null
+  isThirdPersonView: boolean
 }) => {
   const isLocked = useBoolean(isMobile ? false : true)
   const selectedVisual =
@@ -43,6 +45,7 @@ export const CardVisual = ({
         isLocked={isLocked}
         moveData={moveData}
         lookData={lookData}
+        isThirdPersonView={isThirdPersonView}
       />
     </BasicScene>
   )

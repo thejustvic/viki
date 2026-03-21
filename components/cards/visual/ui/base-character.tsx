@@ -14,14 +14,13 @@ import {Vector2} from './joystick'
 const SPEED = 4
 const JUMP_FORCE = 5
 
-const isThirdPersonView = false
-
 const CAMERA_OFFSET = new Vector3(0, 1, 4) // x: sideways, y: up, z: back
 
 // 25 in the lerp formula is the stiffness coefficient of the camera-character connection
 // for a softer camera (like in GTA), try reducing the number to 10-15. if want sharp shooter control, increase to 40-50
+const firstPersonViewSmoothnessFactor = 25
 // 15 for TPS softness
-const smoothnessFactor = isThirdPersonView ? 15 : 25
+const thirdPersonViewSmoothnessFactor = 15
 
 // temporary variables outside the renderer to avoid Garbage Collection
 const _tempVec = new Vector3()
@@ -31,7 +30,9 @@ export const useCharacterLogic = (
   rigidBodyRef: RefObject<RapierRigidBody | null>,
   isLocked: boolean,
   moveData: RefObject<{x: number; y: number}>,
-  lookData: RefObject<{x: number; y: number}>
+  lookData: RefObject<{x: number; y: number}>,
+  smoothnessFactor: number,
+  isThirdPersonView: boolean
 ) => {
   const controls = usePlayerControls() // { forward, backward, left, right, jump }
   const {camera} = useThree()
@@ -199,11 +200,18 @@ interface BaseCharacterProps {
   isLocked: BooleanHookState
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
+  isThirdPersonView: boolean
 }
 
 export const BaseCharacter = (props: BaseCharacterProps) => {
   const meshRef = useRef<Mesh>(null)
   const rigidBodyRef = useRef<RapierRigidBody>(null)
+
+  const isThirdPersonView = props.isThirdPersonView
+
+  const smoothnessFactor = isThirdPersonView
+    ? thirdPersonViewSmoothnessFactor
+    : firstPersonViewSmoothnessFactor
 
   useLayoutEffect(() => {
     if (meshRef.current) {
@@ -215,7 +223,9 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
     rigidBodyRef,
     props.isLocked.value,
     props.moveData,
-    props.lookData
+    props.lookData,
+    smoothnessFactor,
+    isThirdPersonView
   )
 
   return (

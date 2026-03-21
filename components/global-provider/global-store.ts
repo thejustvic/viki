@@ -30,6 +30,7 @@ interface State {
     anonymously: boolean
     logout: boolean
   }
+  isThirdPersonView: boolean
   playerSize: PlayerSizeType[number]
   isVisualModalFromRightDrawerOpen?: boolean
 }
@@ -56,6 +57,7 @@ export class GlobalStore {
       anonymously: false,
       logout: false
     },
+    isThirdPersonView: false,
     playerSize: 'human',
     isVisualModalFromRightDrawerOpen: false
   }
@@ -75,8 +77,12 @@ export class GlobalStore {
     this.state.authTabGroup = value
   }
 
-  setVisualModalFromRightDrawerOpen = (value: boolean) => {
+  setVisualModalFromRightDrawerOpen = (value: boolean): void => {
     this.state.isVisualModalFromRightDrawerOpen = value
+  }
+
+  setThirdPersonView = (value: boolean): void => {
+    this.state.isThirdPersonView = value
   }
 
   setPlayerSize = (playerSize: PlayerSizeType[number]): void => {
@@ -164,7 +170,7 @@ export class GlobalStore {
     this.state.logging = {...this.state.logging, [value]: true}
   }
 
-  checkIfSomeLoad = () => {
+  checkIfSomeLoad = (): boolean => {
     return ObjUtil.values(this.state.logging).some(e => e === true)
   }
 }
