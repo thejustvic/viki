@@ -18,12 +18,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 <img width="1127" height="597" alt="Image Scheme" src="https://github.com/user-attachments/assets/4ccf6156-3c8a-43bc-8b81-17d0f46a6a40" />
 
-You can add some cards and see how it works with checklists onto them with unique chat on the left for each card. You can resize both left and right navbars, put emoji on the messages, change color theme.
-You can add members to your team, create multiple teams of your own, or jump to a team you've been invited to.
-And all of this with the real-time updates.
+Real-time Collaboration: Multi-team infrastructure with instant chat, emoji-reactions, and invitation-based scaling.
+
+Adaptive UI: Fully customizable workspace with resizable layouts, theme modulation, and real-time state updates across checklists and card-based workflows.
 
 <img width="1434" height="726" alt="Image" src="https://github.com/user-attachments/assets/55845c3b-61a4-4df3-9ef3-9d76b369f720" />
 
-Visualized checklist in 3D. I had the idea of ​​setting up a 3d scene coresponding to a 4 states of the year: winter, spring, summer and autumn. What’s interesting is that you can move freely, even jump or fly across the area.
+Dynamic Environments: Real-time 3D scenes synchronized with seasonal states (Winter to Autumn) featuring free-roam navigation (jump/fly).
 
 <img width="1435" height="728" alt="image" src="https://github.com/user-attachments/assets/9cb790d2-8bef-45f6-a3b5-a926093a7b54" />
