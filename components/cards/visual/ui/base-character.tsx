@@ -8,13 +8,14 @@ import {RefObject, useLayoutEffect, useMemo, useRef} from 'react'
 import {isMobile} from 'react-device-detect'
 import type {Mesh} from 'three'
 import {Euler, Vector3} from 'three'
+import {BunnyModel} from '../components/bunny-model'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
 
 const SPEED = 4
 const JUMP_FORCE = 5
 
-const CAMERA_OFFSET = new Vector3(0, 1, 4) // x: sideways, y: up, z: back
+const CAMERA_OFFSET = new Vector3(0, 1, 5) // x: sideways, y: up, z: back
 
 // 25 in the lerp formula is the stiffness coefficient of the camera-character connection
 // for a softer camera (like in GTA), try reducing the number to 10-15. if want sharp shooter control, increase to 40-50
@@ -96,8 +97,8 @@ export const useCharacterLogic = (
     const bodyPos = body.translation()
 
     // determine the "head" point (center of the body + upward movement)
-    // y + 0.55: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase to 0.6
-    _tempVec.set(bodyPos.x, bodyPos.y + 0.55, bodyPos.z)
+    // y + 0.95: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase
+    _tempVec.set(bodyPos.x, bodyPos.y + 0.95, bodyPos.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
@@ -247,11 +248,9 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
         {/* args: [half height of cylindrical part, radius] */}
         <CapsuleCollider args={[0.35, 0.25]} />
 
-        {/* visual: using capsuleGeometry */}
+        {/* visual: using model */}
         <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
-          {/* args: [radius, cylinder height, rounding segments, side segments] */}
-          <capsuleGeometry args={[0.25, 0.6, 4, 16]} />
-          <meshStandardMaterial color="pink" />
+          <BunnyModel />
         </mesh>
       </RigidBody>
     </>
