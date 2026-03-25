@@ -17,7 +17,7 @@ import {
   Vector3
 } from 'three'
 import {GLTF, SkeletonUtils} from 'three-stdlib'
-import {usePlayerControls} from '../utils/helpers'
+import {MovementState, usePlayerControls} from '../utils/helpers'
 
 type ActionName =
   | 'Death'
@@ -66,16 +66,13 @@ export const BunnyModel = () => {
     if (action) {
       action.reset().fadeIn(0.5).play()
       return () => {
-        action.fadeOut(0.2)
+        action.fadeOut(0.5)
       }
     }
   }, [currentAction, actions])
 
   useFrame(() => {
-    const {forward, backward, left, right} = controls
-
-    const isMoving = forward || backward || left || right
-    const nextAction = isMoving ? 'Walk' : 'Idle'
+    const nextAction = getNextAction(controls)
 
     if (nextAction !== currentAction) {
       setCurrentAction(nextAction)
@@ -103,6 +100,22 @@ export const BunnyModel = () => {
       </group>
     </group>
   )
+}
+
+const getNextAction = (controls: MovementState): ActionName => {
+  const {forward, backward, left, right, leftClick} = controls
+
+  const isMoving = forward || backward || left || right
+
+  if (isMoving) {
+    return 'Walk'
+  }
+
+  if (leftClick) {
+    return 'Weapon'
+  }
+
+  return 'Idle'
 }
 
 const _tempEuler = new Euler() // caching for performance
