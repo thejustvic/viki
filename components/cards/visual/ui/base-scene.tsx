@@ -151,6 +151,18 @@ const TwEnterButton = tw(Button)`
   mr-2
   z-10
 `
+interface ITwChangeView {
+  $inTab: boolean
+}
+const TwChangeView = tw.div<ITwChangeView>`
+  ${({$inTab}) => ($inTab ? 'ml-6' : 'ml-22')}
+  absolute
+  h-14
+  mt-22
+  mr-4
+  z-10
+  text-neutral-400
+`
 
 const TwModalButton = tw(Button)`
   absolute
@@ -182,6 +194,9 @@ const ButtonsAboveCanvas = observer(
         <TwEnterButton soft color="info" id="enter-btn">
           Enter First Person With Movement by WASD keys and spacebar
         </TwEnterButton>
+        <TwChangeView $inTab={Boolean(visualTab)}>
+          shift+v for view change
+        </TwChangeView>
         {!visualTab && (
           <TwModalButton
             soft
