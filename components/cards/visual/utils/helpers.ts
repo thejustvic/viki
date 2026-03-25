@@ -6,6 +6,7 @@ export type MovementState = {
   left: boolean
   right: boolean
   jump: boolean
+  shift: boolean
   leftClick: boolean
 }
 
@@ -15,6 +16,7 @@ export const usePlayerControls = (): MovementState => {
     KeyS: 'backward',
     KeyA: 'left',
     KeyD: 'right',
+    ShiftLeft: 'shift',
     Space: 'jump'
   }
 
@@ -27,6 +29,7 @@ export const usePlayerControls = (): MovementState => {
     left: false,
     right: false,
     jump: false,
+    shift: false,
     leftClick: false
   })
 

@@ -103,16 +103,20 @@ export const BunnyModel = () => {
 }
 
 const getNextAction = (controls: MovementState): ActionName => {
-  const {forward, backward, left, right, leftClick} = controls
+  const {forward, backward, left, right, shift, leftClick} = controls
 
   const isMoving = forward || backward || left || right
 
-  if (isMoving) {
-    return 'Walk'
-  }
-
   if (leftClick) {
     return 'Weapon'
+  }
+
+  if (isMoving && shift) {
+    return 'Run'
+  }
+
+  if (isMoving) {
+    return 'Walk'
   }
 
   return 'Idle'

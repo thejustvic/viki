@@ -4,7 +4,7 @@ import {PointerLockControls} from '@react-three/drei'
 import {useFrame, useThree} from '@react-three/fiber'
 import type {RapierRigidBody} from '@react-three/rapier'
 import {CapsuleCollider, RigidBody} from '@react-three/rapier'
-import {RefObject, useLayoutEffect, useMemo, useRef} from 'react'
+import {RefObject, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import type {Mesh} from 'three'
 import {Euler, Vector3} from 'three'
@@ -12,7 +12,6 @@ import {BunnyModel} from '../components/bunny-model'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
 
-const SPEED = 4
 const JUMP_FORCE = 5
 
 const CAMERA_OFFSET = new Vector3(0, 1, 5) // x: sideways, y: up, z: back
@@ -33,7 +32,8 @@ export const useCharacterLogic = (
   moveData: RefObject<{x: number; y: number}>,
   lookData: RefObject<{x: number; y: number}>,
   smoothnessFactor: number,
-  isThirdPersonView: boolean
+  isThirdPersonView: boolean,
+  SPEED = 4
 ) => {
   const controls = usePlayerControls() // { forward, backward, left, right, jump }
   const {camera} = useThree()
@@ -204,9 +204,14 @@ interface BaseCharacterProps {
   isThirdPersonView: boolean
 }
 
+const walkSpeed = 4
+const runSpeed = 8
+
 export const BaseCharacter = (props: BaseCharacterProps) => {
   const meshRef = useRef<Mesh>(null)
   const rigidBodyRef = useRef<RapierRigidBody>(null)
+  const {shift} = usePlayerControls()
+  const [speed, setSpeed] = useState(walkSpeed)
 
   const isThirdPersonView = props.isThirdPersonView
 
@@ -218,7 +223,12 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
     if (meshRef.current) {
       meshRef.current.visible = isThirdPersonView
     }
-  }, [isThirdPersonView])
+    if (shift) {
+      setSpeed(runSpeed)
+    } else {
+      setSpeed(walkSpeed)
+    }
+  }, [isThirdPersonView, shift])
 
   useCharacterLogic(
     rigidBodyRef,
@@ -226,7 +236,8 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
     props.moveData,
     props.lookData,
     smoothnessFactor,
-    isThirdPersonView
+    isThirdPersonView,
+    speed
   )
 
   return (
