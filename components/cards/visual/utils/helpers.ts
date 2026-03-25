@@ -1,11 +1,12 @@
 import {useEffect, useState} from 'react'
 
-type MovementState = {
+export type MovementState = {
   forward: boolean
   backward: boolean
   left: boolean
   right: boolean
   jump: boolean
+  leftClick: boolean
 }
 
 export const usePlayerControls = (): MovementState => {
@@ -25,7 +26,8 @@ export const usePlayerControls = (): MovementState => {
     backward: false,
     left: false,
     right: false,
-    jump: false
+    jump: false,
+    leftClick: false
   })
 
   useEffect(() => {
@@ -43,12 +45,29 @@ export const usePlayerControls = (): MovementState => {
       }
     }
 
+    const handleMouseDown = (e: MouseEvent): void => {
+      if (e.button === 0) {
+        // 0 — this is the left button
+        setMovement(m => ({...m, leftClick: true}))
+      }
+    }
+
+    const handleMouseUp = (e: MouseEvent): void => {
+      if (e.button === 0) {
+        setMovement(m => ({...m, leftClick: false}))
+      }
+    }
+
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
+    document.addEventListener('mousedown', handleMouseDown)
+    document.addEventListener('mouseup', handleMouseUp)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('keyup', handleKeyUp)
+      document.removeEventListener('mousedown', handleMouseDown)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
   }, [])
 
