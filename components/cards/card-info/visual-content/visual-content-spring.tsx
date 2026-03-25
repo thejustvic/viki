@@ -82,7 +82,7 @@ const TwWrapper = tw.div`
   flex-wrap
 `
 
-const playerSizes: PlayerSizeType = ['human', 'cat']
+const playerSizes: PlayerSizeType = ['human', 'bunny']
 
 const PlayerSize = observer(() => {
   const [state, store] = useGlobalStore()

@@ -283,7 +283,7 @@ const getScale = (playerSize: PlayerSizeType[number]) => {
     case 'human': {
       return 0.1
     }
-    case 'cat': {
+    case 'bunny': {
       return 1
     }
     default: {

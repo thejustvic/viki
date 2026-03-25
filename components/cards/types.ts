@@ -8,4 +8,4 @@ export type CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
 
 export type CardVisualType = ['winter', 'spring']
 
-export type PlayerSizeType = ['human', 'cat']
+export type PlayerSizeType = ['human', 'bunny']
