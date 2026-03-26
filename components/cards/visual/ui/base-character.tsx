@@ -105,8 +105,8 @@ export const useCharacterLogic = (props: CharacterLogicProps) => {
     const bodyPos = body.translation()
 
     // determine the "head" point (center of the body + upward movement)
-    // y + 0.95: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase
-    _tempVec.set(bodyPos.x, bodyPos.y + 0.95, bodyPos.z)
+    // y + 1.1: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase
+    _tempVec.set(bodyPos.x, bodyPos.y + 1.1, bodyPos.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
@@ -270,14 +270,13 @@ export const BaseCharacter = ({
         colliders={false}
         lockRotations
       >
-        {/* physics collider: perfectly matches the shape of the capsule */}
-        {/* args: [half height of cylindrical part, radius] */}
-        <CapsuleCollider args={[0.35, 0.25]} />
-
-        {/* visual: using model */}
+        {/* visual: using Bunny model */}
         <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
           <BunnyModel isLocked={isLocked.value} />
         </mesh>
+
+        {/* physics collider: adjust these two values until the mesh "hugs" the Bunny */}
+        <CapsuleCollider args={[0.4, 0.3]} position={[0, 0.7, 0]} />
       </RigidBody>
     </>
   )
