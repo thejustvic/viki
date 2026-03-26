@@ -47,7 +47,7 @@ const TwState = tw.div`
 const TwCheckboxes = tw.div`
   flex
   flex-col
-  h-[calc(100dvh-180px)]
+  h-[calc(100dvh-190px)]
 `
 
 const Checkboxes = observer(() => {

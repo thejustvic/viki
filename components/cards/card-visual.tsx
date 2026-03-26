@@ -36,7 +36,12 @@ export const CardVisual = ({
       lookData={lookData}
     >
       {selectedVisual === 'spring' && (
-        <Tulip checklist={checklist} card={card} playerSize={playerSize} />
+        <Tulip
+          checklist={checklist}
+          card={card}
+          playerSize={playerSize}
+          isLocked={isLocked.value}
+        />
       )}
       {selectedVisual === 'winter' && (
         <ConeWithSpheres checklist={checklist} card={card} />

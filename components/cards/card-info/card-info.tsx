@@ -13,14 +13,14 @@ import {CardInfoVisual} from './card-info-visual'
 import {useCardInfoListener} from './fetch/use-card-info-listener'
 
 const TwMenu = tw(Menu)`
-  p-2
   flex-nowrap
   relative
   w-full
+  p-3
 `
 
 const TwCardInfoBodyWrapper = tw.div`
-  h-[calc(100dvh-90px)]
+  h-[calc(100dvh-74px)]
 `
 
 const TwCardInfoWrapper = tw.div`
@@ -42,9 +42,9 @@ export const CardInfo = observer(() => {
   })
 
   return (
-    <TwMenu>
-      <TwCardInfoBodyWrapper>
-        <SimpleScrollbar>
+    <TwCardInfoBodyWrapper>
+      <SimpleScrollbar>
+        <TwMenu>
           <TwCardInfoWrapper>
             <CardInfoCreator />
             <CardInfoTime />
@@ -52,8 +52,8 @@ export const CardInfo = observer(() => {
             <CardInfoCover />
             <CardInfoVisual />
           </TwCardInfoWrapper>
-        </SimpleScrollbar>
-      </TwCardInfoBodyWrapper>
-    </TwMenu>
+        </TwMenu>
+      </SimpleScrollbar>
+    </TwCardInfoBodyWrapper>
   )
 })
