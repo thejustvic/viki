@@ -26,15 +26,23 @@ const thirdPersonViewSmoothnessFactor = 15
 const _tempVec = new Vector3()
 const _tempEuler = new Euler()
 
-export const useCharacterLogic = (
-  rigidBodyRef: RefObject<RapierRigidBody | null>,
-  isLocked: boolean,
-  moveData: RefObject<{x: number; y: number}>,
-  lookData: RefObject<{x: number; y: number}>,
-  smoothnessFactor: number,
-  isThirdPersonView: boolean,
-  SPEED = 4
-) => {
+interface CharacterLogicProps {
+  rigidBodyRef: RefObject<RapierRigidBody | null>
+  movement: {
+    moveData: RefObject<{x: number; y: number}>
+    lookData: RefObject<{x: number; y: number}>
+  }
+  characteristics: {
+    isLocked: boolean
+    smoothnessFactor: number
+    isThirdPersonView: boolean
+    speed: number
+  }
+}
+export const useCharacterLogic = (props: CharacterLogicProps) => {
+  const {rigidBodyRef, movement, characteristics} = props
+  const {moveData, lookData} = movement
+  const {isLocked, smoothnessFactor, isThirdPersonView, speed} = characteristics
   const controls = usePlayerControls() // { forward, backward, left, right, jump }
   const {camera} = useThree()
 
@@ -161,9 +169,9 @@ export const useCharacterLogic = (
     const strength = Math.min(Math.sqrt(inputX * inputX + inputZ * inputZ), 1)
 
     v.targetVel.set(
-      v.direction.x * SPEED * strength,
-      isFlying.current ? v.direction.y * SPEED : currentVelocity.y,
-      v.direction.z * SPEED * strength
+      v.direction.x * speed * strength,
+      isFlying.current ? v.direction.y * speed : currentVelocity.y,
+      v.direction.z * speed * strength
     )
 
     // jumping and flight logic
@@ -187,7 +195,7 @@ export const useCharacterLogic = (
 
     // additional upward thrust during flight
     if (isFlying.current && jump) {
-      v.targetVel.y = SPEED
+      v.targetVel.y = speed
     }
 
     // one physics call (critical for FPS)
@@ -207,13 +215,16 @@ interface BaseCharacterProps {
 const walkSpeed = 4
 const runSpeed = 8
 
-export const BaseCharacter = (props: BaseCharacterProps) => {
+export const BaseCharacter = ({
+  isLocked,
+  moveData,
+  lookData,
+  isThirdPersonView
+}: BaseCharacterProps) => {
   const meshRef = useRef<Mesh>(null)
   const rigidBodyRef = useRef<RapierRigidBody>(null)
   const {shift} = usePlayerControls()
   const [speed, setSpeed] = useState(walkSpeed)
-
-  const isThirdPersonView = props.isThirdPersonView
 
   const smoothnessFactor = isThirdPersonView
     ? thirdPersonViewSmoothnessFactor
@@ -230,23 +241,27 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
     }
   }, [isThirdPersonView, shift])
 
-  useCharacterLogic(
+  useCharacterLogic({
     rigidBodyRef,
-    props.isLocked.value,
-    props.moveData,
-    props.lookData,
-    smoothnessFactor,
-    isThirdPersonView,
-    speed
-  )
+    movement: {
+      moveData,
+      lookData
+    },
+    characteristics: {
+      isLocked: isLocked.value,
+      smoothnessFactor,
+      isThirdPersonView,
+      speed
+    }
+  })
 
   return (
     <>
       {!isMobile && (
         <PointerLockControls
           selector="#enter-btn"
-          onLock={props.isLocked.turnOff}
-          onUnlock={props.isLocked.turnOn}
+          onLock={isLocked.turnOff}
+          onUnlock={isLocked.turnOn}
         />
       )}
       <RigidBody
@@ -261,7 +276,7 @@ export const BaseCharacter = (props: BaseCharacterProps) => {
 
         {/* visual: using model */}
         <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
-          <BunnyModel />
+          <BunnyModel isLocked={isLocked.value} />
         </mesh>
       </RigidBody>
     </>

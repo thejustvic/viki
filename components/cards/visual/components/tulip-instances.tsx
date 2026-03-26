@@ -33,13 +33,15 @@ interface Props {
   card: Card | null
   checklist: Checkbox[] | undefined
   shouldShrink: boolean
+  isLocked: boolean
 }
 
 export const TulipInstances = ({
   positions,
   checklist,
   card,
-  shouldShrink
+  shouldShrink,
+  isLocked
 }: Props) => {
   const {nodes, materials} = useGLTF(
     '/tulip_flower.glb'
@@ -86,6 +88,7 @@ export const TulipInstances = ({
                 materials={materials}
                 models={models}
                 shouldShrink={shouldShrink}
+                isLocked={isLocked}
               />
             )
           })}
@@ -109,6 +112,7 @@ interface TulipProps {
   plateColor: string
   plateTextColor: string
   text: string
+  isLocked: boolean
 }
 
 const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
@@ -138,18 +142,17 @@ const Tulip = ({
   color,
   plateColor,
   plateTextColor,
-  text
+  text,
+  isLocked
 }: TulipProps) => {
   useCustomTulipMaterial(materials.mFlowerTulip)
   const {updateCheckboxIsCompleted} = useCheckboxHandlers()
   const groupRef = useRef<Group>(null)
-
   useFrame((_state, delta) => {
     if (!groupRef.current) {
       return
     }
     const targetScale = shouldShrink ? 0 : 1
-
     easing.damp3(
       groupRef.current.scale,
       [targetScale, targetScale, targetScale],
@@ -164,6 +167,9 @@ const Tulip = ({
       ref={groupRef}
       position={position}
       onClick={event => {
+        if (isLocked) {
+          return
+        }
         // prevent click from bleeding through to objects behind
         event.stopPropagation()
         if (checkbox) {
@@ -187,12 +193,12 @@ const Tulip = ({
         plateTextColor={plateTextColor}
         plateBgColor={plateColor}
       />
-      {/* 
+      {/*
           <models.FlowerPot // this is the model for a flower pot
             material={materials.EnvironmentAmbientLight}
             rotation={[-Math.PI / 2, 0, 0]}
             castShadow
-          /> 
+          />
       */}
     </group>
   )

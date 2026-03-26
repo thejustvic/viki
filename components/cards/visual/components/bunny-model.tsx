@@ -51,7 +51,7 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export const BunnyModel = () => {
+export const BunnyModel = ({isLocked}: {isLocked: boolean}) => {
   const group = useRef<Group>(null)
   const {scene, animations} = useGLTF('/bunny.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
@@ -72,14 +72,14 @@ export const BunnyModel = () => {
   }, [currentAction, actions])
 
   useFrame(() => {
-    const nextAction = getNextAction(controls)
+    const nextAction = getNextAction(controls, isLocked)
 
     if (nextAction !== currentAction) {
       setCurrentAction(nextAction)
     }
   })
 
-  useMoveForwardCamera(group)
+  useMoveForwardCamera(group, isLocked)
 
   return (
     <group ref={group} dispose={null} scale={0.5}>
@@ -102,20 +102,23 @@ export const BunnyModel = () => {
   )
 }
 
-const getNextAction = (controls: MovementState): ActionName => {
+const getNextAction = (
+  controls: MovementState,
+  isLocked: boolean
+): ActionName => {
   const {forward, backward, left, right, shift, leftClick} = controls
 
   const isMoving = forward || backward || left || right
 
-  if (leftClick) {
+  if (leftClick && !isLocked) {
     return 'Weapon'
   }
 
-  if (isMoving && shift) {
+  if (isMoving && shift && !isLocked) {
     return 'Run'
   }
 
-  if (isMoving) {
+  if (isMoving && !isLocked) {
     return 'Walk'
   }
 
@@ -126,10 +129,16 @@ const _tempEuler = new Euler() // caching for performance
 const targetQuaternion = new Quaternion()
 const rotationAxis = new Vector3(0, 1, 0)
 
-const useMoveForwardCamera = (group: RefObject<Group | null>) => {
+const useMoveForwardCamera = (
+  group: RefObject<Group | null>,
+  isLocked: boolean
+) => {
   const controls = usePlayerControls()
 
   useFrame(state => {
+    if (isLocked) {
+      return
+    }
     const {forward, backward, left, right} = controls
     const isMoving = forward || backward || left || right
 

@@ -199,11 +199,13 @@ export interface PositionsProps {
 export const Tulip = ({
   playerSize,
   checklist,
-  card
+  card,
+  isLocked
 }: {
   playerSize: PlayerSizeType[number]
   checklist: Checkbox[] | undefined
   card: Card | null
+  isLocked: boolean
 }) => {
   const fieldRef = useRef<Group>(null)
   const {fieldRadius, minRequiredDistance} = getBaseConstants(checklist)
@@ -255,6 +257,7 @@ export const Tulip = ({
           positions={positions}
           shouldShrink={shouldShrink}
           card={cardData.card}
+          isLocked={isLocked}
         />
       </Suspense>
     </group>
