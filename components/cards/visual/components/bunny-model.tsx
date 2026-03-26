@@ -90,12 +90,16 @@ export const BunnyModel = ({isLocked}: {isLocked: boolean}) => {
           geometry={nodes.Bunny.geometry}
           material={materials.Atlas}
           skeleton={nodes.Bunny.skeleton}
+          castShadow
+          receiveShadow
         />
         <skinnedMesh
           name="Carrot"
           geometry={nodes.Carrot.geometry}
           material={materials.Atlas}
           skeleton={nodes.Carrot.skeleton}
+          castShadow
+          receiveShadow
         />
       </group>
     </group>
