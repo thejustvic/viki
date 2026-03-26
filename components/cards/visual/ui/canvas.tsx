@@ -1,38 +1,20 @@
 import {Stats} from '@react-three/drei'
 import {Canvas as CanvasComponent, useFrame, useThree} from '@react-three/fiber'
-import {PropsWithChildren, useMemo} from 'react'
+import {PropsWithChildren} from 'react'
 import {isMobile} from 'react-device-detect'
-import {CardVisualType} from '../../types'
 
-interface Props extends PropsWithChildren {
-  selectedVisual: CardVisualType[number]
-}
-
-type CameraPosition = [x: number, y: number, z: number]
-
-export const Canvas = ({children, selectedVisual}: Props) => {
-  const cameraPosition = useMemo(() => {
-    const winterCameraPosition: CameraPosition = [-0.1, -0.7, 5]
-    const springCameraPosition: CameraPosition = [-0.1, 1.7, 5]
-
-    return selectedVisual === 'winter'
-      ? winterCameraPosition
-      : springCameraPosition
-  }, [selectedVisual])
-
+export const Canvas = ({children}: PropsWithChildren) => {
   return (
     <CanvasComponent
       flat
       shadows={!isMobile}
       camera={{
-        fov: 50,
-        position: cameraPosition
+        fov: 50
       }}
       className="rounded-md relative"
       dpr={1} // 1 for maximum FPS
     >
       {children}
-
       {process.env.NODE_ENV === 'development' && (
         <>
           <Stats />

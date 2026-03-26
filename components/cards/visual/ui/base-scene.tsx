@@ -75,7 +75,7 @@ export const BasicScene = ({
       {isCalculated.value && (
         <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
       )}
-      <Canvas selectedVisual={selectedVisual}>
+      <Canvas>
         <Suspense fallback={<CanvasLoader />}>
           {/* Environment map for realistic reflections */}
           <Environment preset="sunset" />

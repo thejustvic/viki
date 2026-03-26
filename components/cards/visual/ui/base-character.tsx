@@ -266,7 +266,7 @@ export const BaseCharacter = ({
       )}
       <RigidBody
         ref={rigidBodyRef}
-        position={[0, 0.5, 0]}
+        position={[0, 0, 0]}
         colliders={false}
         lockRotations
       >

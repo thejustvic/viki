@@ -251,7 +251,7 @@ export const ConeWithSpheres = ({checklist, card}: ConeWithSpheresProps) => {
 
   return (
     <>
-      <group position={[0, dynamicConeY, -5]}>
+      <group position={[0, dynamicConeY, -2]}>
         <Cone args={[coneRadius, coneHeight, 32] as const}>
           {/* change opacity to see the cone */}
           <meshStandardMaterial color="hotpink" transparent opacity={0} />
@@ -266,7 +266,7 @@ export const ConeWithSpheres = ({checklist, card}: ConeWithSpheresProps) => {
       </group>
       <group
         ref={treeRef}
-        position={[0, treeGroundY, -5]}
+        position={[0, treeGroundY, -2]}
         scale={baseTreeScale}
       >
         <TreeModel />
