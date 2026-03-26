@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 import {BooleanHookState} from '@/hooks/use-boolean'
 import {PointerLockControls} from '@react-three/drei'
@@ -8,7 +9,9 @@ import {RefObject, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import type {Mesh} from 'three'
 import {Euler, Vector3} from 'three'
+import {PlayerSizeType} from '../../types'
 import {BunnyModel} from '../components/bunny-model'
+import {HumanModel} from '../components/human-model'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
 
@@ -37,12 +40,14 @@ interface CharacterLogicProps {
     smoothnessFactor: number
     isThirdPersonView: boolean
     speed: number
+    headPoint: number
   }
 }
 export const useCharacterLogic = (props: CharacterLogicProps) => {
   const {rigidBodyRef, movement, characteristics} = props
   const {moveData, lookData} = movement
-  const {isLocked, smoothnessFactor, isThirdPersonView, speed} = characteristics
+  const {isLocked, smoothnessFactor, isThirdPersonView, speed, headPoint} =
+    characteristics
   const controls = usePlayerControls() // { forward, backward, left, right, jump }
   const {camera} = useThree()
 
@@ -104,9 +109,9 @@ export const useCharacterLogic = (props: CharacterLogicProps) => {
     // camera synchronization
     const bodyPos = body.translation()
 
-    // determine the "head" point (center of the body + upward movement)
-    // y + 1.1: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase
-    _tempVec.set(bodyPos.x, bodyPos.y + 1.1, bodyPos.z)
+    // determine the "headPoint" point (center of the body + upward movement)
+    // y + headPoint: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase headPoint
+    _tempVec.set(bodyPos.x, bodyPos.y + headPoint, bodyPos.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
@@ -210,6 +215,7 @@ interface BaseCharacterProps {
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
   isThirdPersonView: boolean
+  playerSize: PlayerSizeType[number]
 }
 
 const walkSpeed = 4
@@ -219,7 +225,8 @@ export const BaseCharacter = ({
   isLocked,
   moveData,
   lookData,
-  isThirdPersonView
+  isThirdPersonView,
+  playerSize
 }: BaseCharacterProps) => {
   const meshRef = useRef<Mesh>(null)
   const rigidBodyRef = useRef<RapierRigidBody>(null)
@@ -251,9 +258,13 @@ export const BaseCharacter = ({
       isLocked: isLocked.value,
       smoothnessFactor,
       isThirdPersonView,
-      speed
+      speed,
+      headPoint: getHeadPoint(playerSize)
     }
   })
+
+  const {argsCapsuleCollider, positionCapsuleCollider} =
+    getCapsuleColliderProps(playerSize)
 
   return (
     <>
@@ -270,14 +281,69 @@ export const BaseCharacter = ({
         colliders={false}
         lockRotations
       >
-        {/* visual: using Bunny model */}
+        {/* visual */}
         <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
-          <BunnyModel isLocked={isLocked.value} />
+          {getModel(playerSize, isLocked.value)}
         </mesh>
-
-        {/* physics collider: adjust these two values until the mesh "hugs" the Bunny */}
-        <CapsuleCollider args={[0.4, 0.3]} position={[0, 0.7, 0]} />
+        {/* physics collider */}
+        <CapsuleCollider
+          args={argsCapsuleCollider}
+          position={positionCapsuleCollider}
+        />
       </RigidBody>
     </>
   )
+}
+
+const getHeadPoint = (playerSize: PlayerSizeType[number]) => {
+  switch (playerSize) {
+    case 'human': {
+      return 2.1
+    }
+    case 'bunny': {
+      return 1.1
+    }
+    default: {
+      return 2.1
+    }
+  }
+}
+
+const getCapsuleColliderProps = (
+  playerSize: PlayerSizeType[number]
+): {
+  argsCapsuleCollider: [number, number]
+  positionCapsuleCollider: [number, number, number]
+} => {
+  // adjust these two values until the mesh "hugs" the model in <Physics debug /> mode
+  // default is for human
+  let argsCapsuleCollider: [number, number] = [0.8, 0.5]
+  let positionCapsuleCollider: [number, number, number] = [0, 1.2, 0]
+  switch (playerSize) {
+    case 'human': {
+      return {argsCapsuleCollider, positionCapsuleCollider}
+    }
+    case 'bunny': {
+      argsCapsuleCollider = [0.4, 0.3]
+      positionCapsuleCollider = [0, 0.7, 0]
+      return {argsCapsuleCollider, positionCapsuleCollider}
+    }
+    default: {
+      return {argsCapsuleCollider, positionCapsuleCollider}
+    }
+  }
+}
+
+const getModel = (playerSize: PlayerSizeType[number], isLocked: boolean) => {
+  switch (playerSize) {
+    case 'human': {
+      return <HumanModel isLocked={isLocked} />
+    }
+    case 'bunny': {
+      return <BunnyModel isLocked={isLocked} />
+    }
+    default: {
+      return <HumanModel isLocked={isLocked} />
+    }
+  }
 }

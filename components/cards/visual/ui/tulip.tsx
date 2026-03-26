@@ -284,13 +284,13 @@ const LoadingTulips = () => {
 const getScale = (playerSize: PlayerSizeType[number]) => {
   switch (playerSize) {
     case 'human': {
-      return 0.1
+      return 0.2
     }
     case 'bunny': {
-      return 1
+      return 0.6
     }
     default: {
-      return 0.1
+      return 0.2
     }
   }
 }

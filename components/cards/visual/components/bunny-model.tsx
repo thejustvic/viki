@@ -5,38 +5,24 @@ Files: bunny.gltf [1.45MB] > bunny.glb [397.81KB] (73%)
 
 import {useAnimations, useGLTF} from '@react-three/drei'
 import {useFrame, useGraph} from '@react-three/fiber'
-import React, {RefObject, useEffect, useRef, useState} from 'react'
+import {useEffect, useMemo, useRef, useState} from 'react'
 import {
   AnimationClip,
   Bone,
-  Euler,
   Group,
   MeshStandardMaterial,
-  Quaternion,
-  SkinnedMesh,
-  Vector3
+  SkinnedMesh
 } from 'three'
 import {GLTF, SkeletonUtils} from 'three-stdlib'
-import {MovementState, usePlayerControls} from '../utils/helpers'
-
-type ActionName =
-  | 'Death'
-  | 'Duck'
-  | 'HitReact'
-  | 'Idle'
-  | 'Jump'
-  | 'Jump_Idle'
-  | 'Jump_Land'
-  | 'No'
-  | 'Punch'
-  | 'Run'
-  | 'Walk'
-  | 'Wave'
-  | 'Weapon'
-  | 'Yes'
+import {usePlayerControls} from '../utils/helpers'
+import {
+  ActionNameBunny,
+  getNextActionBunny,
+  useMoveForwardCamera
+} from './model-helpers'
 
 interface GLTFAction extends AnimationClip {
-  name: ActionName
+  name: ActionNameBunny
 }
 
 type GLTFResult = GLTF & {
@@ -54,12 +40,12 @@ type GLTFResult = GLTF & {
 export const BunnyModel = ({isLocked}: {isLocked: boolean}) => {
   const group = useRef<Group>(null)
   const {scene, animations} = useGLTF('/bunny.glb')
-  const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
+  const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
   const {actions} = useAnimations(animations, group)
   const controls = usePlayerControls()
 
-  const [currentAction, setCurrentAction] = useState<ActionName>('Idle')
+  const [currentAction, setCurrentAction] = useState<ActionNameBunny>('Idle')
 
   useEffect(() => {
     const action = actions[currentAction]
@@ -72,7 +58,7 @@ export const BunnyModel = ({isLocked}: {isLocked: boolean}) => {
   }, [currentAction, actions])
 
   useFrame(() => {
-    const nextAction = getNextAction(controls, isLocked)
+    const nextAction = getNextActionBunny(controls, isLocked)
 
     if (nextAction !== currentAction) {
       setCurrentAction(nextAction)
@@ -104,82 +90,4 @@ export const BunnyModel = ({isLocked}: {isLocked: boolean}) => {
       </group>
     </group>
   )
-}
-
-const getNextAction = (
-  controls: MovementState,
-  isLocked: boolean
-): ActionName => {
-  const {forward, backward, left, right, shift, leftClick} = controls
-
-  const isMoving = forward || backward || left || right
-
-  if (leftClick && !isLocked) {
-    return 'Weapon'
-  }
-
-  if (isMoving && shift && !isLocked) {
-    return 'Run'
-  }
-
-  if (isMoving && !isLocked) {
-    return 'Walk'
-  }
-
-  return 'Idle'
-}
-
-const _tempEuler = new Euler() // caching for performance
-const targetQuaternion = new Quaternion()
-const rotationAxis = new Vector3(0, 1, 0)
-
-const useMoveForwardCamera = (
-  group: RefObject<Group | null>,
-  isLocked: boolean
-) => {
-  const controls = usePlayerControls()
-
-  useFrame(state => {
-    if (isLocked) {
-      return
-    }
-    const {forward, backward, left, right} = controls
-    const isMoving = forward || backward || left || right
-
-    if (isMoving && group.current) {
-      // get the net angle of rotation of the camera around the Y axis
-      // this works no matter where the camera is located.
-      _tempEuler.setFromQuaternion(state.camera.quaternion, 'YXZ')
-      const cameraAngle = _tempEuler.y
-
-      // offset logic (direction relative to the camera's view)
-      let offset = 0
-      if (forward) {
-        if (left) {
-          offset = Math.PI / 4
-        } else if (right) {
-          offset = -Math.PI / 4
-        } else {
-          offset = 0
-        }
-      } else if (backward) {
-        if (left) {
-          offset = Math.PI - Math.PI / 4
-        } else if (right) {
-          offset = -Math.PI + Math.PI / 4
-        } else {
-          offset = Math.PI
-        }
-      } else if (left) {
-        offset = Math.PI / 2
-      } else if (right) {
-        offset = -Math.PI / 2
-      }
-
-      const finalAngle = cameraAngle + offset + Math.PI
-
-      targetQuaternion.setFromAxisAngle(rotationAxis, finalAngle)
-      group.current.quaternion.slerp(targetQuaternion, 0.15)
-    }
-  })
 }

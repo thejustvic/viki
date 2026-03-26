@@ -51,6 +51,7 @@ export const CardVisual = ({
         moveData={moveData}
         lookData={lookData}
         isThirdPersonView={isThirdPersonView}
+        playerSize={playerSize}
       />
     </BasicScene>
   )
