@@ -48,16 +48,20 @@ export const getNextActionBunny = (
 
   const isMoving = forward || backward || left || right
 
+  if (leftClick) {
+    return 'Weapon'
+  }
+
+  if (isLocked && isFlying) {
+    return 'Jump_Idle'
+  }
+
   if (isLocked) {
     return 'Idle'
   }
 
   if (isPreparingJump || isJumping || isFlying) {
     return 'Jump_Idle'
-  }
-
-  if (leftClick) {
-    return 'Weapon'
   }
 
   if (isMoving && shift) {
@@ -80,12 +84,12 @@ export const getNextActionHuman = (
 
   const isMoving = forward || backward || left || right
 
-  if (isLocked || isFlying) {
-    return 'Idle'
-  }
-
   if (leftClick) {
     return 'PickUp'
+  }
+
+  if (isLocked || isFlying) {
+    return 'Idle'
   }
 
   if (isPreparingJump) {

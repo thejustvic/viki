@@ -14,7 +14,6 @@ import {
   SkinnedMesh
 } from 'three'
 import {GLTF, SkeletonUtils} from 'three-stdlib'
-
 import {ModelCharacteristics} from '../ui/use-character-logic'
 import {usePlayerControls} from '../utils/helpers'
 import {
