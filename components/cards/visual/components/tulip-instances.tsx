@@ -125,9 +125,6 @@ const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
       material.metalness = 0.1 // 0 - not metal
       material.roughness = 0.5 // 1 - matte (standard for mesh)
 
-      material.transparent = true
-      material.opacity = 0.8
-
       material.needsUpdate = true
     }
   }, [material])
