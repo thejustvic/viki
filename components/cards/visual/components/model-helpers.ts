@@ -1,6 +1,7 @@
 import {useFrame} from '@react-three/fiber'
 import {RefObject} from 'react'
 import {Euler, Group, Quaternion, Vector3} from 'three'
+import {ModelCharacteristics} from '../ui/use-character-logic'
 import {MovementState, usePlayerControls} from '../utils/helpers'
 
 export type ActionNameBunny =
@@ -40,21 +41,30 @@ export type ActionNameHuman =
 
 export const getNextActionBunny = (
   controls: MovementState,
-  isLocked: boolean
+  characteristics: ModelCharacteristics
 ): ActionNameBunny => {
+  const {isLocked, isJumping, isPreparingJump, isFlying} = characteristics
   const {forward, backward, left, right, shift, leftClick} = controls
 
   const isMoving = forward || backward || left || right
 
-  if (leftClick && !isLocked) {
+  if (isLocked) {
+    return 'Idle'
+  }
+
+  if (isPreparingJump || isJumping || isFlying) {
+    return 'Jump_Idle'
+  }
+
+  if (leftClick) {
     return 'Weapon'
   }
 
-  if (isMoving && shift && !isLocked) {
+  if (isMoving && shift) {
     return 'Run'
   }
 
-  if (isMoving && !isLocked) {
+  if (isMoving) {
     return 'Walk'
   }
 
@@ -63,21 +73,30 @@ export const getNextActionBunny = (
 
 export const getNextActionHuman = (
   controls: MovementState,
-  isLocked: boolean
+  characteristics: ModelCharacteristics
 ): ActionNameHuman => {
+  const {isLocked, isFlying, isPreparingJump} = characteristics
   const {forward, backward, left, right, shift, leftClick} = controls
 
   const isMoving = forward || backward || left || right
 
-  if (leftClick && !isLocked) {
+  if (isLocked || isFlying) {
+    return 'Idle'
+  }
+
+  if (leftClick) {
     return 'PickUp'
   }
 
-  if (isMoving && shift && !isLocked) {
+  if (isPreparingJump) {
+    return 'Jump'
+  }
+
+  if (isMoving && shift) {
     return 'Run'
   }
 
-  if (isMoving && !isLocked) {
+  if (isMoving) {
     return 'Walk'
   }
 

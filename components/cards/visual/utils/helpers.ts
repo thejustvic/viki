@@ -37,6 +37,9 @@ export const usePlayerControls = (): MovementState => {
     const handleKeyDown = (e: KeyboardEvent): void => {
       const field = moveFieldByKey(e.code)
       if (field) {
+        if (e.code === 'Space') {
+          e.preventDefault()
+        }
         setMovement(m => ({...m, [field]: true}))
       }
     }

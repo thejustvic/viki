@@ -11,6 +11,7 @@ import {
   SkinnedMesh
 } from 'three'
 import {GLTF, SkeletonUtils} from 'three-stdlib'
+import {ModelCharacteristics} from '../ui/use-character-logic'
 import {usePlayerControls} from '../utils/helpers'
 import {
   ActionNameHuman,
@@ -38,7 +39,10 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export const HumanModel = ({isLocked}: {isLocked: boolean}) => {
+interface HumanModelProps {
+  characteristics: ModelCharacteristics
+}
+export const HumanModel = ({characteristics}: HumanModelProps) => {
   const group = useRef<Group>(null)
   const {scene, animations} = useGLTF('/man.glb')
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
@@ -59,14 +63,14 @@ export const HumanModel = ({isLocked}: {isLocked: boolean}) => {
   }, [currentAction, actions])
 
   useFrame(() => {
-    const nextAction = getNextActionHuman(controls, isLocked)
+    const nextAction = getNextActionHuman(controls, characteristics)
 
     if (nextAction !== currentAction) {
       setCurrentAction(nextAction)
     }
   })
 
-  useMoveForwardCamera(group, isLocked)
+  useMoveForwardCamera(group, characteristics.isLocked)
 
   return (
     <group ref={group} dispose={null} scale={0.8}>
