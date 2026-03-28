@@ -9,6 +9,7 @@ import {GameModeType, PlayerSizeType} from '../../types'
 
 import {Input} from '@/components/daisyui/input'
 import {useCardChecklistStore} from '../../card-checklist/card-checklist-store'
+import {pluralize} from '../../visual/utils/helpers'
 import {CardInfoShowData} from '../card-info-show-data'
 import {useCardInfoStore} from '../card-info-store'
 import {ChooseColorData} from './visual-content'
@@ -78,7 +79,7 @@ const gameModes: IGameModes[] = [
 const GameMode = observer(() => {
   const [state, store] = useGlobalStore()
   return (
-    <div className="flex flex-col gap-1 mb-2">
+    <div className="flex flex-col flex-1 gap-1 mb-2">
       <TwWrapper>
         {gameModes.map(({key, name}) => {
           return (
@@ -109,15 +110,15 @@ const Range = observer(() => {
   const [, cardChecklistStore] = useCardChecklistStore()
   const [state, store] = useGlobalStore()
 
-  const checklist = cardChecklistStore.getAllCheckboxes(id)
+  const checklistCount = cardChecklistStore.getAllCheckboxes(id)?.length
 
   const count = state.eggsTotalCount
   const min = 1
-  const max = checklist?.length
+  const max = Number(checklistCount)
   const step = 1
   return (
     <div className="flex flex-col gap-1">
-      <span>How many eggs are behind the envelopes?</span>
+      <p>How many eggs are behind the envelopes?</p>
       <Input
         type="range"
         className="range"
@@ -131,9 +132,9 @@ const Range = observer(() => {
           store.setEggsLeftToCollect(val)
         }}
       />
-      <div>
-        {count} egg{count !== 1 && 's'} behind {max} envelopes
-      </div>
+      <p>
+        {pluralize(count, 'egg')} behind {pluralize(max, 'envelope')}
+      </p>
     </div>
   )
 })

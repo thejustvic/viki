@@ -15,6 +15,7 @@ import {isMobile} from 'react-device-detect'
 import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
+import {pluralize} from '../utils/helpers'
 import {Snowfall} from './base-snowfall'
 import {Canvas} from './canvas'
 import {DualJoysticks, Vector2} from './joystick'
@@ -256,7 +257,7 @@ const GameModeInfo = observer(() => {
         <TwEggs $isCompleted={isCompleted}>
           {isCompleted
             ? 'all Easter eggs collected!'
-            : `${state.eggsLeftToCollect} eggs left to collect`}
+            : `${pluralize(state.eggsLeftToCollect, 'egg')} left to collect`}
         </TwEggs>
       )}
     </>
