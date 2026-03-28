@@ -12,7 +12,8 @@ const DOUBLE_CLICK_WINDOW = 0.25 // 250ms time between the first and second clic
 const THRUST_DELAY = 0.25 // 250ms delay before activating up thrust
 const GROUNDED_THRESHOLD = 0.1 // vertical speed threshold for ground
 
-const CAMERA_OFFSET = new Vector3(0, 1, 5) // x: sideways, y: up, z: back
+// side camera view
+const CAMERA_OFFSET = new Vector3(1, 0, 4) // x: sideways, y: up, z: back
 
 // temporary variables outside the renderer to avoid Garbage Collection
 const _tempVec = new Vector3()
@@ -121,7 +122,7 @@ export const useCharacterLogic = (
         lookData.current.x *= lookDecay
         lookData.current.y *= lookDecay
       }
-      const angleView = isThirdPersonView ? 0.35 : Math.PI / 2
+      const angleView = isThirdPersonView ? 0.15 : Math.PI / 2
       // limit gaze up/down so you don't "fall over"
       _tempEuler.x = Math.max(-Math.PI / 2, Math.min(angleView, _tempEuler.x))
 
