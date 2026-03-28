@@ -250,15 +250,30 @@ interface EggProps {
 }
 
 const Egg = ({isLocked, eggState, toggleEgg, eggsModels}: EggProps) => {
-  const itemNumber = getRandom(1, 7)
+  const itemNumber = useMemo(() => getRandom(1, 7), [])
   const leftPosition: PositionType = [-1.3, 2, 0.7]
   const rightPosition: PositionType = [1.3, 2, 0.7]
-  const randomPosition = Math.random() > 0.5 ? leftPosition : rightPosition
-  if (eggState) {
-    return
-  }
+  const randomPosition = useMemo(
+    () => (Math.random() > 0.5 ? leftPosition : rightPosition),
+    []
+  )
+  const groupRef = useRef<Group>(null)
+  useFrame((_state, delta) => {
+    if (!groupRef.current) {
+      return
+    }
+    const targetScale = eggState ? 0 : 0.6
+    easing.damp3(
+      groupRef.current.scale,
+      [targetScale, targetScale, targetScale],
+      0.25,
+      delta
+    )
+  })
   return (
-    <mesh
+    <group
+      ref={groupRef}
+      position={randomPosition}
       onClick={event => {
         if (isLocked) {
           return
@@ -268,10 +283,8 @@ const Egg = ({isLocked, eggState, toggleEgg, eggsModels}: EggProps) => {
         toggleEgg()
       }}
     >
-      <group scale={0.6} position={randomPosition}>
-        <EggsModel item={itemNumber} eggs={eggsModels} />
-      </group>
-    </mesh>
+      <EggsModel item={itemNumber} eggs={eggsModels} />
+    </group>
   )
 }
 
