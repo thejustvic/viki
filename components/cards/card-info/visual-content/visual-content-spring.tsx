@@ -111,9 +111,10 @@ const Range = observer(() => {
 
   const checklist = cardChecklistStore.getAllCheckboxes(id)
 
-  const min = '0'
+  const count = state.eggsTotalCount
+  const min = 1
   const max = checklist?.length
-  const step = Number(checklist?.length) / 10
+  const step = 1
   return (
     <div className="flex flex-col gap-1">
       <span>How many eggs are behind the envelopes?</span>
@@ -123,7 +124,7 @@ const Range = observer(() => {
         min={min}
         max={max}
         step={step}
-        value={state.eggsTotalCount}
+        value={count}
         onChange={({currentTarget: {value}}) => {
           const val = Math.round(Number(value))
           store.setEggsTotalCount(val)
@@ -131,7 +132,7 @@ const Range = observer(() => {
         }}
       />
       <div>
-        {state.eggsTotalCount} eggs behind {max} envelopes
+        {count} egg{count !== 1 && 's'} behind {max} envelopes
       </div>
     </div>
   )

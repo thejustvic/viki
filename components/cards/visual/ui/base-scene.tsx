@@ -180,7 +180,21 @@ const TwExit = tw.div`
   text-neutral-400
 `
 
-const TwEggs = tw.div`
+const colorsCompleted = `
+  text-accent/80
+  bg-accent-content/80
+`
+
+const colorsNotCompleted = `
+  text-info/80
+  bg-info-content/80
+`
+
+interface ITwEggs {
+  $isCompleted: boolean
+}
+const TwEggs = tw.div<ITwEggs>`
+  ${({$isCompleted}) => ($isCompleted ? colorsCompleted : colorsNotCompleted)}
   right-0
   m-2
   text-pretty
@@ -191,8 +205,6 @@ const TwEggs = tw.div`
   p-2
   py-0
   rounded
-  text-accent/80
-  bg-accent-content/80
   drop-shadow-xl/25
 `
 
@@ -237,11 +249,12 @@ const ButtonsAboveCanvas = observer(
 
 const GameModeInfo = observer(() => {
   const [state] = useGlobalStore()
+  const isCompleted = state.eggsLeftToCollect === 0
   return (
     <>
       {state.gameMode === 'egg-collecting' && (
-        <TwEggs>
-          {state.eggsLeftToCollect === 0
+        <TwEggs $isCompleted={isCompleted}>
+          {isCompleted
             ? 'all Easter eggs collected!'
             : `${state.eggsLeftToCollect} eggs left to collect`}
         </TwEggs>
