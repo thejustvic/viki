@@ -200,12 +200,14 @@ export const Tulip = ({
   playerSize,
   checklist,
   card,
-  isLocked
+  isLocked,
+  eggsCount
 }: {
   playerSize: PlayerSizeType[number]
   checklist: Checkbox[] | undefined
   card: Card | null
   isLocked: boolean
+  eggsCount: number
 }) => {
   const fieldRef = useRef<Group>(null)
   const {fieldRadius, minRequiredDistance} = getBaseConstants(checklist)
@@ -258,6 +260,7 @@ export const Tulip = ({
           shouldShrink={shouldShrink}
           card={cardData.card}
           isLocked={isLocked}
+          eggsCount={eggsCount}
         />
       </Suspense>
     </group>
@@ -282,15 +285,17 @@ const LoadingTulips = () => {
 }
 
 const getScale = (playerSize: PlayerSizeType[number]) => {
+  const human = 0.2
+  const bunny = 0.6
   switch (playerSize) {
     case 'human': {
-      return 0.2
+      return human
     }
     case 'bunny': {
-      return 0.6
+      return bunny
     }
     default: {
-      return 0.2
+      return human
     }
   }
 }

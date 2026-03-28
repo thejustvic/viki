@@ -109,54 +109,62 @@ export const BaseCharacter = ({
 }
 
 const getJumpForce = (playerSize: PlayerSizeType[number]) => {
+  const human = 2
+  const bunny = 5
   switch (playerSize) {
     case 'human': {
-      return 2
+      return human
     }
     case 'bunny': {
-      return 5
+      return bunny
     }
     default: {
-      return 2
+      return human
     }
   }
 }
 
 const getHeadPoint = (playerSize: PlayerSizeType[number]) => {
+  const human = 2.1
+  const bunny = 1.1
   switch (playerSize) {
     case 'human': {
-      return 2.1
+      return human
     }
     case 'bunny': {
-      return 1.1
+      return bunny
     }
     default: {
-      return 2.1
+      return human
     }
   }
 }
 
-const getCapsuleColliderProps = (
-  playerSize: PlayerSizeType[number]
-): {
+interface ICapsuleCollider {
   argsCapsuleCollider: [number, number]
   positionCapsuleCollider: [number, number, number]
-} => {
+}
+const getCapsuleColliderProps = (
+  playerSize: PlayerSizeType[number]
+): ICapsuleCollider => {
   // adjust these two values until the mesh "hugs" the model in <Physics debug /> mode
-  // default is for human
-  let argsCapsuleCollider: [number, number] = [0.8, 0.5]
-  let positionCapsuleCollider: [number, number, number] = [0, 1.2, 0]
+  const human: ICapsuleCollider = {
+    argsCapsuleCollider: [0.8, 0.5],
+    positionCapsuleCollider: [0, 1.2, 0]
+  }
+  const bunny: ICapsuleCollider = {
+    argsCapsuleCollider: [0.4, 0.3],
+    positionCapsuleCollider: [0, 0.7, 0]
+  }
   switch (playerSize) {
     case 'human': {
-      return {argsCapsuleCollider, positionCapsuleCollider}
+      return human
     }
     case 'bunny': {
-      argsCapsuleCollider = [0.4, 0.3]
-      positionCapsuleCollider = [0, 0.7, 0]
-      return {argsCapsuleCollider, positionCapsuleCollider}
+      return bunny
     }
     default: {
-      return {argsCapsuleCollider, positionCapsuleCollider}
+      return human
     }
   }
 }

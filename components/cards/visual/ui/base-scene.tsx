@@ -180,6 +180,22 @@ const TwExit = tw.div`
   text-neutral-400
 `
 
+const TwEggs = tw.div`
+  right-0
+  m-2
+  text-pretty
+  absolute
+  z-10
+  font-bold
+  text-xl
+  p-2
+  py-0
+  rounded
+  text-accent/80
+  bg-accent-content/80
+  drop-shadow-xl/25
+`
+
 const ButtonsAboveCanvas = observer(
   ({isLocked}: {isLocked: BooleanHookState}) => {
     const [, store] = useGlobalStore()
@@ -187,7 +203,7 @@ const ButtonsAboveCanvas = observer(
     const updateSearchParams = useUpdateSearchParams()
 
     if (isMobile) {
-      return null
+      return <GameModeInfo />
     }
     return isLocked.value ? (
       <>
@@ -211,7 +227,25 @@ const ButtonsAboveCanvas = observer(
         )}
       </>
     ) : (
-      <TwExit>press ESC to Exit First Person</TwExit>
+      <>
+        <TwExit>press ESC to Exit First Person</TwExit>
+        <GameModeInfo />
+      </>
     )
   }
 )
+
+const GameModeInfo = observer(() => {
+  const [state] = useGlobalStore()
+  return (
+    <>
+      {state.gameMode === 'egg-collecting' && (
+        <TwEggs>
+          {state.eggsLeftToCollect === 0
+            ? 'all Easter eggs collected!'
+            : `${state.eggsLeftToCollect} eggs left to collect`}
+        </TwEggs>
+      )}
+    </>
+  )
+})

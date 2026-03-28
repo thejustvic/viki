@@ -1,9 +1,13 @@
+/* eslint-disable max-lines */
+/* eslint-disable max-lines-per-function */
 import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
 import {Checkbox} from '@/components/checklist/types'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {Center, Merged, RoundedBox, Text3D, useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
-import {useLayoutEffect, useMemo, useRef} from 'react'
+import {observer} from 'mobx-react-lite'
+import {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
 import {
   DoubleSide,
   Shape,
@@ -12,8 +16,9 @@ import {
   type MeshStandardMaterial
 } from 'three'
 import type {GLTF} from 'three-stdlib'
-import {Card} from '../../types'
-import {PositionType} from '../ui/tulip'
+import {Card, GameModeType} from '../../types'
+import type {PositionType} from '../ui/tulip'
+import {EggsGLTFResult, EggsModel, useEggModels} from './eggs-model'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -34,71 +39,92 @@ interface Props {
   checklist: Checkbox[] | undefined
   shouldShrink: boolean
   isLocked: boolean
+  eggsCount: number
 }
 
-export const TulipInstances = ({
-  positions,
-  checklist,
-  card,
-  shouldShrink,
-  isLocked
-}: Props) => {
-  const {nodes, materials} = useGLTF(
-    '/tulip_flower.glb'
-  ) as unknown as GLTFResult
+export const TulipInstances = observer(
+  ({positions, checklist, card, shouldShrink, isLocked, eggsCount}: Props) => {
+    const [state, store] = useGlobalStore()
+    const {nodes, materials} = useGLTF(
+      '/tulip_flower.glb'
+    ) as unknown as GLTFResult
+    const [eggs, setEggs] = useState<boolean[]>(() =>
+      new Array(eggsCount).fill(false)
+    )
 
-  const instances = useMemo(
-    () => ({
-      FlowerBody: nodes.Object_3,
-      FlowerTulip: nodes.Object_4,
-      FlowerPot: nodes.Object_5
-    }),
-    [nodes]
-  )
+    useEffect(() => {
+      const count = eggs.length - eggs.filter(Boolean).length
+      store.setEggsLeftToCollect(count)
+    }, [eggs])
 
-  return (
-    <Merged meshes={instances} frustumCulled={false}>
-      {(models: any) => (
-        <>
-          {positions.map((position, index) => {
-            const checkbox = checklist?.[index]
-            const isCompleted = checkbox?.is_completed
-            const text = checkbox?.title ?? ''
-            return (
-              <Tulip
-                key={index}
-                position={position}
-                color={
-                  isCompleted
-                    ? (card?.tulip_color_completed ?? '')
-                    : (card?.tulip_color_not_completed ?? '')
-                }
-                plateColor={
-                  isCompleted
-                    ? (card?.tulip_plate_color_completed ?? '')
-                    : (card?.tulip_plate_color_not_completed ?? '')
-                }
-                plateTextColor={
-                  isCompleted
-                    ? (card?.tulip_plate_text_color_completed ?? '')
-                    : (card?.tulip_plate_text_color_not_completed ?? '')
-                }
-                text={text}
-                checkbox={checkbox}
-                materials={materials}
-                models={models}
-                shouldShrink={shouldShrink}
-                isLocked={isLocked}
-              />
-            )
-          })}
-        </>
-      )}
-    </Merged>
-  )
-}
+    const toggleEgg = (index: number) => {
+      setEggs(prev => prev.map((item, i) => (i === index ? !item : item)))
+    }
+
+    const instances = useMemo(
+      () => ({
+        FlowerBody: nodes.Object_3,
+        FlowerTulip: nodes.Object_4,
+        FlowerPot: nodes.Object_5
+      }),
+      [nodes]
+    )
+
+    const eggsModels = useEggModels()
+
+    return (
+      <Merged meshes={instances} frustumCulled={false}>
+        {(models: any) => (
+          <>
+            {positions.map((position, index) => {
+              const eggState = eggs[index]
+              const checkbox = checklist?.[index]
+              const isCompleted = checkbox?.is_completed
+              const text = checkbox?.title ?? ''
+              return (
+                <Tulip
+                  key={index}
+                  position={position}
+                  color={
+                    isCompleted
+                      ? (card?.tulip_color_completed ?? '')
+                      : (card?.tulip_color_not_completed ?? '')
+                  }
+                  plateColor={
+                    isCompleted
+                      ? (card?.tulip_plate_color_completed ?? '')
+                      : (card?.tulip_plate_color_not_completed ?? '')
+                  }
+                  plateTextColor={
+                    isCompleted
+                      ? (card?.tulip_plate_text_color_completed ?? '')
+                      : (card?.tulip_plate_text_color_not_completed ?? '')
+                  }
+                  text={text}
+                  checkbox={checkbox}
+                  materials={materials}
+                  models={models}
+                  shouldShrink={shouldShrink}
+                  isLocked={isLocked}
+                  eggState={eggState}
+                  toggleEgg={() => toggleEgg(index)}
+                  eggsModels={eggsModels}
+                  gameMode={state.gameMode}
+                />
+              )
+            })}
+          </>
+        )}
+      </Merged>
+    )
+  }
+)
 
 interface TulipProps {
+  gameMode: GameModeType[number]
+  eggState: boolean
+  toggleEgg: () => void
+  eggsModels: EggsGLTFResult
   position: PositionType
   materials: {
     mFlowerBodyTulip: MeshStandardMaterial
@@ -131,6 +157,10 @@ const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
 }
 
 const Tulip = ({
+  gameMode,
+  eggState,
+  toggleEgg,
+  eggsModels,
   position,
   materials,
   models,
@@ -190,6 +220,14 @@ const Tulip = ({
         plateTextColor={plateTextColor}
         plateBgColor={plateColor}
       />
+      {eggState !== undefined && gameMode === 'egg-collecting' && (
+        <Egg
+          isLocked={isLocked}
+          eggState={eggState}
+          toggleEgg={toggleEgg}
+          eggsModels={eggsModels}
+        />
+      )}
       {/*
           <models.FlowerPot // this is the model for a flower pot
             material={materials.EnvironmentAmbientLight}
@@ -198,6 +236,42 @@ const Tulip = ({
           />
       */}
     </group>
+  )
+}
+
+const getRandom = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
+
+interface EggProps {
+  isLocked: boolean
+  eggState: boolean
+  toggleEgg: () => void
+  eggsModels: EggsGLTFResult
+}
+
+const Egg = ({isLocked, eggState, toggleEgg, eggsModels}: EggProps) => {
+  const itemNumber = getRandom(1, 7)
+  const leftPosition: PositionType = [-1.3, 2, 0.7]
+  const rightPosition: PositionType = [1.3, 2, 0.7]
+  const randomPosition = Math.random() > 0.5 ? leftPosition : rightPosition
+  if (eggState) {
+    return
+  }
+  return (
+    <mesh
+      onClick={event => {
+        if (isLocked) {
+          return
+        }
+        // prevent click from bleeding through to objects behind
+        event.stopPropagation()
+        toggleEgg()
+      }}
+    >
+      <group scale={0.6} position={randomPosition}>
+        <EggsModel item={itemNumber} eggs={eggsModels} />
+      </group>
+    </mesh>
   )
 }
 
@@ -288,7 +362,7 @@ export const wrapText = (str: string, width: number): string => {
       }
 
       // split a long word into parts by width
-      const wordChunks = word.match(new RegExp(`.{1,${width}}`, 'g')) || []
+      const wordChunks = word.match(new RegExp(`.{1,${width}}`, 'g')) ?? []
 
       // add all parts except the last one to separate lines
       const lastChunk = wordChunks.pop()

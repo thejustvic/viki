@@ -85,6 +85,7 @@ export const CardVisualTab = observer(() => {
       checklist={cardChecklistStore.getAllCheckboxes(id)}
       card={cardInfoState.card.data}
       isThirdPersonView={globalState.isThirdPersonView}
+      eggsCount={globalState.eggsTotalCount}
     />
   )
 })

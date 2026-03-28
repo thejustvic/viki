@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 import {useFrame, useThree} from '@react-three/fiber'
 import type {RapierRigidBody} from '@react-three/rapier'
@@ -120,9 +121,9 @@ export const useCharacterLogic = (
         lookData.current.x *= lookDecay
         lookData.current.y *= lookDecay
       }
-
+      const angleView = isThirdPersonView ? 0.35 : Math.PI / 2
       // limit gaze up/down so you don't "fall over"
-      _tempEuler.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, _tempEuler.x))
+      _tempEuler.x = Math.max(-Math.PI / 2, Math.min(angleView, _tempEuler.x))
 
       // apply changes to the camera
       camera.quaternion.setFromEuler(_tempEuler)

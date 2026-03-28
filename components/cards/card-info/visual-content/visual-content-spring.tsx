@@ -5,8 +5,10 @@ import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {PlayerSizeType} from '../../types'
+import {GameModeType, PlayerSizeType} from '../../types'
 
+import {Input} from '@/components/daisyui/input'
+import {useCardChecklistStore} from '../../card-checklist/card-checklist-store'
 import {CardInfoShowData} from '../card-info-show-data'
 import {useCardInfoStore} from '../card-info-store'
 import {ChooseColorData} from './visual-content'
@@ -44,11 +46,96 @@ export const VisualContentSpring = observer(() => {
 const SpringContent = () => {
   return (
     <>
+      <ChooseGameMode />
       <ChoosePlayerSize />
       <ChooseTulipColor />
     </>
   )
 }
+
+const ChooseGameMode = observer(() => {
+  const [state] = useCardInfoStore()
+  return (
+    <CardInfoShowData
+      loading={state.card.loading}
+      error={state.card.error?.message}
+      data={<GameMode />}
+      prefix={'game mode'}
+      className="items-center"
+    />
+  )
+})
+
+interface IGameModes {
+  key: GameModeType[number]
+  name: string
+}
+const gameModes: IGameModes[] = [
+  {key: 'none', name: 'not set'},
+  {key: 'egg-collecting', name: 'find all eggs'}
+]
+
+const GameMode = observer(() => {
+  const [state, store] = useGlobalStore()
+  return (
+    <div className="flex flex-col gap-1 mb-2">
+      <TwWrapper>
+        {gameModes.map(({key, name}) => {
+          return (
+            <TwRadio key={key} onClick={() => store.setGameMode(key)}>
+              <div>{name}</div>
+              <input
+                type="radio"
+                name="radio-game-mode"
+                className="radio"
+                checked={state?.gameMode === key}
+                readOnly
+              />
+            </TwRadio>
+          )
+        })}
+      </TwWrapper>
+      {state?.gameMode === 'egg-collecting' && (
+        <>
+          <Range />
+        </>
+      )}
+    </div>
+  )
+})
+
+const Range = observer(() => {
+  const id = String(getSearchCard())
+  const [, cardChecklistStore] = useCardChecklistStore()
+  const [state, store] = useGlobalStore()
+
+  const checklist = cardChecklistStore.getAllCheckboxes(id)
+
+  const min = '0'
+  const max = checklist?.length
+  const step = Number(checklist?.length) / 10
+  return (
+    <div className="flex flex-col gap-1">
+      <span>How many eggs are behind the envelopes?</span>
+      <Input
+        type="range"
+        className="range"
+        min={min}
+        max={max}
+        step={step}
+        value={state.eggsTotalCount}
+        onChange={({currentTarget: {value}}) => {
+          const val = Math.round(Number(value))
+          store.setEggsTotalCount(val)
+          store.setEggsLeftToCollect(val)
+        }}
+      />
+      <div>
+        {state.eggsTotalCount} eggs behind {max} envelopes
+      </div>
+    </div>
+  )
+})
 
 const ChoosePlayerSize = observer(() => {
   const [state] = useCardInfoStore()

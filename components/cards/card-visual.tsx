@@ -14,12 +14,14 @@ export const CardVisual = ({
   playerSize,
   checklist,
   card,
-  isThirdPersonView
+  isThirdPersonView,
+  eggsCount
 }: {
   playerSize: PlayerSizeType[number]
   checklist: Checkbox[] | undefined
   card: Card | null
   isThirdPersonView: boolean
+  eggsCount: number
 }) => {
   const isLocked = useBoolean(isMobile ? false : true)
   const selectedVisual =
@@ -41,6 +43,7 @@ export const CardVisual = ({
           card={card}
           playerSize={playerSize}
           isLocked={isLocked.value}
+          eggsCount={eggsCount}
         />
       )}
       {selectedVisual === 'winter' && (

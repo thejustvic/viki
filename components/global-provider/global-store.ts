@@ -6,7 +6,7 @@ import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
-import {Card, PlayerSizeType} from '../cards/types'
+import {Card, GameModeType, PlayerSizeType} from '../cards/types'
 import {AuthTabGroup, Tab, Theme} from './types'
 
 interface State {
@@ -31,8 +31,11 @@ interface State {
     logout: boolean
   }
   isThirdPersonView: boolean
+  gameMode: GameModeType[number]
   playerSize: PlayerSizeType[number]
   isVisualModalFromRightDrawerOpen?: boolean
+  eggsTotalCount: number
+  eggsLeftToCollect: number
 }
 
 export class GlobalStore {
@@ -58,8 +61,11 @@ export class GlobalStore {
       logout: false
     },
     isThirdPersonView: false,
+    gameMode: 'none',
     playerSize: 'human',
-    isVisualModalFromRightDrawerOpen: false
+    isVisualModalFromRightDrawerOpen: false,
+    eggsTotalCount: 0,
+    eggsLeftToCollect: 0
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -83,6 +89,10 @@ export class GlobalStore {
 
   setThirdPersonView = (value: boolean): void => {
     this.state.isThirdPersonView = value
+  }
+
+  setGameMode = (gameMode: GameModeType[number]): void => {
+    this.state.gameMode = gameMode
   }
 
   setPlayerSize = (playerSize: PlayerSizeType[number]): void => {
@@ -154,6 +164,14 @@ export class GlobalStore {
 
   setTab = (tab: Tab): void => {
     this.state.tab = tab
+  }
+
+  setEggsTotalCount = (value: number): void => {
+    this.state.eggsTotalCount = value
+  }
+
+  setEggsLeftToCollect = (value: number): void => {
+    this.state.eggsLeftToCollect = value
   }
 
   setLoggingOff = (): void => {
