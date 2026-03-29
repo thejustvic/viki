@@ -120,7 +120,7 @@ const Range = observer(() => {
   const step = 1
   return (
     <div className="flex flex-col gap-1">
-      <p>How many eggs are behind the envelopes?</p>
+      <p>How many Easter eggs are behind the envelopes?</p>
       <Input
         type="range"
         className="range"
@@ -135,7 +135,7 @@ const Range = observer(() => {
         }}
       />
       <p>
-        {pluralize(count, 'egg')} behind {pluralize(max, 'envelope')}
+        {pluralize(count, 'Easter egg')} behind {pluralize(max, 'envelope')}
       </p>
     </div>
   )

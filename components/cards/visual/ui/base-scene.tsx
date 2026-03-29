@@ -212,9 +212,13 @@ const TwEggs = tw.div<ITwEggs>`
 
 const ButtonsAboveCanvas = observer(
   ({isLocked}: {isLocked: BooleanHookState}) => {
-    const [, store] = useGlobalStore()
+    const [state, store] = useGlobalStore()
     const visualTab = getSearchParam('visual-tab')
     const updateSearchParams = useUpdateSearchParams()
+
+    const view = state.isThirdPersonView
+      ? 'Third Person View'
+      : 'First Person View'
 
     if (isMobile) {
       return <GameModeInfo />
@@ -222,7 +226,7 @@ const ButtonsAboveCanvas = observer(
     return isLocked.value ? (
       <>
         <TwEnterButton soft color="info" id="enter-btn">
-          Enter First Person With Movement by WASD keys and spacebar
+          Enter {view} With Movement by WASD keys and spacebar
         </TwEnterButton>
         <TwChangeView $inTab={Boolean(visualTab)}>
           shift+v for view change
@@ -242,7 +246,7 @@ const ButtonsAboveCanvas = observer(
       </>
     ) : (
       <>
-        <TwExit>press ESC to Exit First Person</TwExit>
+        <TwExit>press ESC to Exit {view}</TwExit>
         <GameModeInfo />
       </>
     )
@@ -264,7 +268,7 @@ const GameModeInfo = observer(() => {
         <TwEggs $isCompleted={isCompleted}>
           {isCompleted
             ? 'all Easter eggs collected!'
-            : `${pluralize(eggsLeftToCollect, 'egg')} left to collect`}
+            : `${pluralize(eggsLeftToCollect, 'Easter egg')} left to collect`}
         </TwEggs>
       )}
     </>
