@@ -75,7 +75,7 @@ interface IGameModes {
 }
 const gameModes: IGameModes[] = [
   {key: 'none', name: 'not set'},
-  {key: 'egg-collecting', name: 'find all eggs'}
+  {key: 'egg-collecting', name: 'find all Easter eggs'}
 ]
 
 const GameMode = observer(() => {
