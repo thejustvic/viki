@@ -12,6 +12,7 @@ import {IconBrowserMaximize} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
+import {useCardInfoStore} from '../../card-info/card-info-store'
 import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
@@ -249,15 +250,21 @@ const ButtonsAboveCanvas = observer(
 )
 
 const GameModeInfo = observer(() => {
-  const [state] = useGlobalStore()
-  const isCompleted = state.eggsLeftToCollect === 0
+  const [globalState] = useGlobalStore()
+  const [cardState] = useCardInfoStore()
+  const {eggsLeftToCollect, gameMode} = globalState
+  const {
+    card: {data}
+  } = cardState
+
+  const isCompleted = eggsLeftToCollect === 0
   return (
     <>
-      {state.gameMode === 'egg-collecting' && (
+      {gameMode === 'egg-collecting' && data?.selected_visual === 'spring' && (
         <TwEggs $isCompleted={isCompleted}>
           {isCompleted
             ? 'all Easter eggs collected!'
-            : `${pluralize(state.eggsLeftToCollect, 'egg')} left to collect`}
+            : `${pluralize(eggsLeftToCollect, 'egg')} left to collect`}
         </TwEggs>
       )}
     </>

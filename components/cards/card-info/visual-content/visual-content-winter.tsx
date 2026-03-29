@@ -1,4 +1,5 @@
 import {Tabs} from '@/components/daisyui/tabs'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useCardHandlers} from '../../cards-handlers'
@@ -8,6 +9,7 @@ import {useCardInfoStore} from '../card-info-store'
 import {ChooseColorData} from './visual-content'
 
 export const VisualContentWinter = observer(() => {
+  const [, globalStore] = useGlobalStore()
   const [state] = useCardInfoStore()
   const {updateCardVisual} = useCardHandlers()
   const id = String(getSearchCard())
@@ -24,6 +26,7 @@ export const VisualContentWinter = observer(() => {
         value="winter"
         onChange={({target: {value}}) => {
           void updateCardVisual(value, id)
+          globalStore.setPlayerSize('human')
         }}
         label="winter"
         groupName="tabs-visual"

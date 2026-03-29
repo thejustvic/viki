@@ -15,6 +15,7 @@ import {useCardInfoStore} from '../card-info-store'
 import {ChooseColorData} from './visual-content'
 
 export const VisualContentSpring = observer(() => {
+  const [, globalStore] = useGlobalStore()
   const [state] = useCardInfoStore()
   const {updateCardVisual} = useCardHandlers()
   const id = String(getSearchCard())
@@ -31,6 +32,7 @@ export const VisualContentSpring = observer(() => {
         value="spring"
         onChange={({target: {value}}) => {
           void updateCardVisual(value, id)
+          globalStore.setPlayerSize('bunny')
         }}
         label="spring"
         groupName="tabs-visual"
