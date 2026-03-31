@@ -69,29 +69,31 @@ export const BasicScene = ({
   isLocked
 }: BasicSceneProps) => {
   const visualTab = getSearchParam('visual-tab')
-  const isCalculated = useBoolean(false)
+  const isReady = useBoolean(false)
 
   return (
     <TwWrapper $isVisualTab={Boolean(visualTab)}>
-      <ButtonsAboveCanvas isLocked={isLocked} />
-      {isCalculated.value && (
-        <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+      {isReady.value && (
+        <>
+          <ButtonsAboveCanvas isLocked={isLocked} />
+          <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+        </>
       )}
       <Canvas>
         <Suspense fallback={<CanvasLoader />}>
           {/* Environment map for realistic reflections */}
           <Environment preset="sunset" />
           <Lights />
-          <Physics gravity={[0, -9.8, 0]}>
+          <Physics gravity={[0, -9.81, 0]}>
             {children}
             <Floor color="white" />
           </Physics>
           <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
           {selectedVisual === 'winter' && <Snowfall />}
-          <RenderNotifier onFirstFrame={isCalculated} />
+          <RenderNotifier onFirstFrame={isReady} />
         </Suspense>
       </Canvas>
-      {!isMobile && isCalculated.value && <TwDot />}
+      {!isMobile && isReady.value && <TwDot />}
     </TwWrapper>
   )
 }
