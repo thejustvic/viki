@@ -1,8 +1,9 @@
 /* eslint-disable max-lines-per-function */
-import {BooleanHookState} from '@/hooks/use-boolean'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {PointerLockControls} from '@react-three/drei'
 import type {RapierRigidBody} from '@react-three/rapier'
 import {CapsuleCollider, RigidBody} from '@react-three/rapier'
+import {observer} from 'mobx-react-lite'
 import {RefObject, useLayoutEffect, useRef, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import type {Mesh} from 'three'
@@ -20,93 +21,91 @@ const firstPersonViewSmoothnessFactor = 25
 const thirdPersonViewSmoothnessFactor = 15
 
 interface BaseCharacterProps {
-  isLocked: BooleanHookState
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
-  isThirdPersonView: boolean
-  playerSize: PlayerSizeType[number]
 }
 
 const walkSpeed = 4
 const runSpeed = 8
 
-export const BaseCharacter = ({
-  isLocked,
-  moveData,
-  lookData,
-  isThirdPersonView,
-  playerSize
-}: BaseCharacterProps) => {
-  const meshRef = useRef<Mesh>(null)
-  const rigidBodyRef = useRef<RapierRigidBody>(null)
-  const {shift} = usePlayerControls()
-  const [speed, setSpeed] = useState(walkSpeed)
+export const BaseCharacter = observer(
+  ({moveData, lookData}: BaseCharacterProps) => {
+    const [globalState, globalStore] = useGlobalStore()
 
-  const smoothnessFactor = isThirdPersonView
-    ? thirdPersonViewSmoothnessFactor
-    : firstPersonViewSmoothnessFactor
+    const playerSize = globalState.playerSize
+    const isThirdPersonView = globalState.isThirdPersonView
 
-  useLayoutEffect(() => {
-    if (meshRef.current) {
-      meshRef.current.visible = isThirdPersonView
-    }
-    if (shift) {
-      setSpeed(runSpeed)
-    } else {
-      setSpeed(walkSpeed)
-    }
-  }, [isThirdPersonView, shift])
+    const meshRef = useRef<Mesh>(null)
+    const rigidBodyRef = useRef<RapierRigidBody>(null)
+    const {shift} = usePlayerControls()
+    const [speed, setSpeed] = useState(walkSpeed)
 
-  const characteristics = useCharacterLogic({
-    rigidBodyRef,
-    movement: {
-      moveData,
-      lookData
-    },
-    characteristics: {
-      isLocked: isLocked.value,
-      smoothnessFactor,
-      isThirdPersonView,
-      speed,
-      headPoint: getHeadPoint(playerSize),
-      jumpForce: getJumpForce(playerSize)
-    }
-  })
+    const smoothnessFactor = isThirdPersonView
+      ? thirdPersonViewSmoothnessFactor
+      : firstPersonViewSmoothnessFactor
 
-  const {argsCapsuleCollider, positionCapsuleCollider} =
-    getCapsuleColliderProps(playerSize)
+    useLayoutEffect(() => {
+      if (meshRef.current) {
+        meshRef.current.visible = isThirdPersonView
+      }
+      if (shift) {
+        setSpeed(runSpeed)
+      } else {
+        setSpeed(walkSpeed)
+      }
+    }, [isThirdPersonView, shift])
 
-  return (
-    <>
-      {!isMobile && (
-        <PointerLockControls
-          selector="#enter-btn"
-          onLock={isLocked.turnOff}
-          onUnlock={isLocked.turnOn}
-        />
-      )}
-      <RigidBody
-        ref={rigidBodyRef}
-        position={[0, 0, 0]}
-        colliders={false}
-        lockRotations
-      >
-        {/* visual */}
-        <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
-          {getModel({
-            playerSize,
-            characteristics
-          })}
-        </mesh>
-        {/* physics collider */}
-        <CapsuleCollider
-          args={argsCapsuleCollider}
-          position={positionCapsuleCollider}
-        />
-      </RigidBody>
-    </>
-  )
-}
+    const characteristics = useCharacterLogic({
+      rigidBodyRef,
+      movement: {
+        moveData,
+        lookData
+      },
+      characteristics: {
+        isLocked: globalState.is3DSceneLocked,
+        smoothnessFactor,
+        isThirdPersonView,
+        speed,
+        headPoint: getHeadPoint(playerSize),
+        jumpForce: getJumpForce(playerSize)
+      }
+    })
+
+    const {argsCapsuleCollider, positionCapsuleCollider} =
+      getCapsuleColliderProps(playerSize)
+
+    return (
+      <>
+        {!isMobile && (
+          <PointerLockControls
+            selector="#enter-btn"
+            onLock={() => globalStore.setIs3DSceneLocked(false)}
+            onUnlock={() => globalStore.setIs3DSceneLocked(true)}
+          />
+        )}
+        <RigidBody
+          ref={rigidBodyRef}
+          position={[0, 0, 0]}
+          colliders={false}
+          lockRotations
+        >
+          {/* visual */}
+          <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
+            {getModel({
+              playerSize,
+              characteristics
+            })}
+          </mesh>
+          {/* physics collider */}
+          <CapsuleCollider
+            args={argsCapsuleCollider}
+            position={positionCapsuleCollider}
+          />
+        </RigidBody>
+      </>
+    )
+  }
+)
 
 const getJumpForce = (playerSize: PlayerSizeType[number]) => {
   const human = 2

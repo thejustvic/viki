@@ -200,13 +200,13 @@ export const Tulip = ({
   playerSize,
   checklist,
   card,
-  isLocked,
+
   eggsCount
 }: {
   playerSize: PlayerSizeType[number]
   checklist: Checkbox[] | undefined
   card: Card | null
-  isLocked: boolean
+
   eggsCount: number
 }) => {
   const fieldRef = useRef<Group>(null)
@@ -259,7 +259,6 @@ export const Tulip = ({
           positions={positions}
           shouldShrink={shouldShrink}
           card={cardData.card}
-          isLocked={isLocked}
           eggsCount={eggsCount}
         />
       </Suspense>

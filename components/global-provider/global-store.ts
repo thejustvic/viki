@@ -6,6 +6,7 @@ import {createUseStore} from '@/utils/mobx-utils/create-use-store'
 import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
+import {isMobile} from 'react-device-detect'
 import {Card, GameModeType, PlayerSizeType} from '../cards/types'
 import {AuthTabGroup, Tab, Theme} from './types'
 
@@ -36,6 +37,7 @@ interface State {
   isVisualModalFromRightDrawerOpen?: boolean
   eggsTotalCount: number
   eggsLeftToCollect: number
+  is3DSceneLocked: boolean
 }
 
 export class GlobalStore {
@@ -65,7 +67,8 @@ export class GlobalStore {
     playerSize: 'human',
     isVisualModalFromRightDrawerOpen: false,
     eggsTotalCount: 0,
-    eggsLeftToCollect: 0
+    eggsLeftToCollect: 0,
+    is3DSceneLocked: isMobile ? false : true
   }
 
   constructor(serverTheme: Theme | undefined) {
@@ -190,6 +193,10 @@ export class GlobalStore {
 
   checkIfSomeLoad = (): boolean => {
     return ObjUtil.values(this.state.logging).some(e => e === true)
+  }
+
+  setIs3DSceneLocked = (value: boolean): void => {
+    this.state.is3DSceneLocked = value
   }
 }
 

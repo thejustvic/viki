@@ -10,7 +10,7 @@ import {useFrame} from '@react-three/fiber'
 import {Physics} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
-import {RefObject, Suspense} from 'react'
+import {PropsWithChildren, RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useCardInfoStore} from '../../card-info/card-info-store'
 import {CardVisualType} from '../../types'
@@ -54,49 +54,49 @@ const TwWrapper = tw.div<ITwWrapper>`
   overflow-hidden
 `
 
-interface BasicSceneProps {
-  selectedVisual: CardVisualType[number]
-  children: React.ReactNode
+interface BasicSceneProps extends PropsWithChildren {
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
-  isLocked: BooleanHookState
 }
-export const BasicScene = ({
-  children,
-  selectedVisual,
-  moveData,
-  lookData,
-  isLocked
-}: BasicSceneProps) => {
-  const visualTab = getSearchParam('visual-tab')
-  const isReady = useBoolean(false)
+export const BasicScene = observer(
+  ({children, moveData, lookData}: BasicSceneProps) => {
+    const [cardInfoState] = useCardInfoStore()
 
-  return (
-    <TwWrapper $isVisualTab={Boolean(visualTab)}>
-      {isReady.value && (
-        <>
-          <ButtonsAboveCanvas isLocked={isLocked} />
-          <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
-        </>
-      )}
-      <Canvas>
-        <Suspense fallback={<CanvasLoader />}>
-          {/* Environment map for realistic reflections */}
-          <Environment preset="sunset" />
-          <Lights />
-          <Physics gravity={[0, -9.81, 0]}>
-            {children}
-            <Floor color="white" />
-          </Physics>
-          <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
-          {selectedVisual === 'winter' && <Snowfall />}
-          <RenderNotifier onFirstFrame={isReady} />
-        </Suspense>
-      </Canvas>
-      {!isMobile && isReady.value && <TwDot />}
-    </TwWrapper>
-  )
-}
+    const card = cardInfoState.card.data
+
+    const selectedVisual =
+      card?.selected_visual as unknown as CardVisualType[number]
+
+    const visualTab = getSearchParam('visual-tab')
+    const isReady = useBoolean(false)
+
+    return (
+      <TwWrapper $isVisualTab={Boolean(visualTab)}>
+        {isReady.value && (
+          <>
+            <ButtonsAboveCanvas />
+            <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+          </>
+        )}
+        <Canvas>
+          <Suspense fallback={<CanvasLoader />}>
+            {/* Environment map for realistic reflections */}
+            <Environment preset="sunset" />
+            <Lights />
+            <Physics gravity={[0, -9.81, 0]}>
+              {children}
+              <Floor color="white" />
+            </Physics>
+            <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
+            {selectedVisual === 'winter' && <Snowfall />}
+            <RenderNotifier onFirstFrame={isReady} />
+          </Suspense>
+        </Canvas>
+        {!isMobile && isReady.value && <TwDot />}
+      </TwWrapper>
+    )
+  }
+)
 
 const RenderNotifier = ({onFirstFrame}: {onFirstFrame: BooleanHookState}) => {
   useFrame(state => {
@@ -212,48 +212,46 @@ const TwEggs = tw.div<ITwEggs>`
   drop-shadow-xl/25
 `
 
-const ButtonsAboveCanvas = observer(
-  ({isLocked}: {isLocked: BooleanHookState}) => {
-    const [state, store] = useGlobalStore()
-    const visualTab = getSearchParam('visual-tab')
-    const updateSearchParams = useUpdateSearchParams()
+const ButtonsAboveCanvas = observer(() => {
+  const [state, store] = useGlobalStore()
+  const visualTab = getSearchParam('visual-tab')
+  const updateSearchParams = useUpdateSearchParams()
 
-    const view = state.isThirdPersonView
-      ? 'Third Person View'
-      : 'First Person View'
+  const view = state.isThirdPersonView
+    ? 'Third Person View'
+    : 'First Person View'
 
-    if (isMobile) {
-      return <GameModeInfo />
-    }
-    return isLocked.value ? (
-      <>
-        <TwEnterButton soft color="info" id="enter-btn">
-          Enter {view} With Movement by WASD keys and spacebar
-        </TwEnterButton>
-        <TwChangeView $inTab={Boolean(visualTab)}>
-          shift+v for view change
-        </TwChangeView>
-        {!visualTab && (
-          <TwModalButton
-            soft
-            color="info"
-            onClick={() => {
-              store.setVisualModalFromRightDrawerOpen(true)
-              updateSearchParams('visual-tab', 'true')
-            }}
-          >
-            <IconBrowserMaximize />
-          </TwModalButton>
-        )}
-      </>
-    ) : (
-      <>
-        <TwExit>press ESC to Exit {view}</TwExit>
-        <GameModeInfo />
-      </>
-    )
+  if (isMobile) {
+    return <GameModeInfo />
   }
-)
+  return state.is3DSceneLocked ? (
+    <>
+      <TwEnterButton soft color="info" id="enter-btn">
+        Enter {view} With Movement by WASD keys and spacebar
+      </TwEnterButton>
+      <TwChangeView $inTab={Boolean(visualTab)}>
+        shift+v for view change
+      </TwChangeView>
+      {!visualTab && (
+        <TwModalButton
+          soft
+          color="info"
+          onClick={() => {
+            store.setVisualModalFromRightDrawerOpen(true)
+            updateSearchParams('visual-tab', 'true')
+          }}
+        >
+          <IconBrowserMaximize />
+        </TwModalButton>
+      )}
+    </>
+  ) : (
+    <>
+      <TwExit>press ESC to Exit {view}</TwExit>
+      <GameModeInfo />
+    </>
+  )
+})
 
 const GameModeInfo = observer(() => {
   const [globalState] = useGlobalStore()

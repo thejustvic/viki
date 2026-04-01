@@ -38,12 +38,11 @@ interface Props {
   card: Card | null
   checklist: Checkbox[] | undefined
   shouldShrink: boolean
-  isLocked: boolean
   eggsCount: number
 }
 
 export const TulipInstances = observer(
-  ({positions, checklist, card, shouldShrink, isLocked, eggsCount}: Props) => {
+  ({positions, checklist, card, shouldShrink, eggsCount}: Props) => {
     const [state, store] = useGlobalStore()
     const {nodes, materials} = useGLTF(
       '/tulip_flower.glb'
@@ -105,7 +104,6 @@ export const TulipInstances = observer(
                   materials={materials}
                   models={models}
                   shouldShrink={shouldShrink}
-                  isLocked={isLocked}
                   eggState={eggState}
                   toggleEgg={() => toggleEgg(index)}
                   eggsModels={eggsModels}
@@ -138,7 +136,6 @@ interface TulipProps {
   plateColor: string
   plateTextColor: string
   text: string
-  isLocked: boolean
 }
 
 const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
@@ -156,100 +153,101 @@ const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
   }, [material])
 }
 
-const Tulip = ({
-  gameMode,
-  eggState,
-  toggleEgg,
-  eggsModels,
-  position,
-  materials,
-  models,
-  shouldShrink,
-  checkbox,
-  color,
-  plateColor,
-  plateTextColor,
-  text,
-  isLocked
-}: TulipProps) => {
-  useCustomTulipMaterial(materials.mFlowerTulip)
-  const {updateCheckboxIsCompleted} = useCheckboxHandlers()
-  const groupRef = useRef<Group>(null)
-  useFrame((_state, delta) => {
-    if (!groupRef.current) {
-      return
-    }
-    const targetScale = shouldShrink ? 0 : 1
-    easing.damp3(
-      groupRef.current.scale,
-      [targetScale, targetScale, targetScale],
-      0.25,
-      delta
-    )
-  })
+const Tulip = observer(
+  ({
+    gameMode,
+    eggState,
+    toggleEgg,
+    eggsModels,
+    position,
+    materials,
+    models,
+    shouldShrink,
+    checkbox,
+    color,
+    plateColor,
+    plateTextColor,
+    text
+  }: TulipProps) => {
+    const [globalState] = useGlobalStore()
+    useCustomTulipMaterial(materials.mFlowerTulip)
+    const {updateCheckboxIsCompleted} = useCheckboxHandlers()
+    const groupRef = useRef<Group>(null)
+    useFrame((_state, delta) => {
+      if (!groupRef.current) {
+        return
+      }
+      const targetScale = shouldShrink ? 0 : 1
+      easing.damp3(
+        groupRef.current.scale,
+        [targetScale, targetScale, targetScale],
+        0.25,
+        delta
+      )
+    })
 
-  return (
-    <group
-      scale={0}
-      ref={groupRef}
-      position={position}
-      onClick={event => {
-        if (isLocked) {
-          return
-        }
-        // prevent click from bleeding through to objects behind
-        event.stopPropagation()
-        if (checkbox) {
-          updateCheckboxIsCompleted(!checkbox.is_completed, checkbox.id)
-        }
-      }}
-    >
-      <models.FlowerBody
-        material={materials.mFlowerBodyTulip}
-        rotation={[-Math.PI / 2, 0, 0]}
-        castShadow
-      />
-      <models.FlowerTulip
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.mFlowerTulip}
-        color={color}
-        castShadow
-      />
-      <TextWithBg
-        text={text}
-        plateTextColor={plateTextColor}
-        plateBgColor={plateColor}
-      />
-      {eggState !== undefined && gameMode === 'egg-collecting' && (
-        <Egg
-          isLocked={isLocked}
-          eggState={eggState}
-          toggleEgg={toggleEgg}
-          eggsModels={eggsModels}
+    return (
+      <group
+        scale={0}
+        ref={groupRef}
+        position={position}
+        onClick={event => {
+          if (globalState.is3DSceneLocked) {
+            return
+          }
+          // prevent click from bleeding through to objects behind
+          event.stopPropagation()
+          if (checkbox) {
+            updateCheckboxIsCompleted(!checkbox.is_completed, checkbox.id)
+          }
+        }}
+      >
+        <models.FlowerBody
+          material={materials.mFlowerBodyTulip}
+          rotation={[-Math.PI / 2, 0, 0]}
+          castShadow
         />
-      )}
-      {/*
+        <models.FlowerTulip
+          rotation={[-Math.PI / 2, 0, 0]}
+          material={materials.mFlowerTulip}
+          color={color}
+          castShadow
+        />
+        <TextWithBg
+          text={text}
+          plateTextColor={plateTextColor}
+          plateBgColor={plateColor}
+        />
+        {eggState !== undefined && gameMode === 'egg-collecting' && (
+          <Egg
+            eggState={eggState}
+            toggleEgg={toggleEgg}
+            eggsModels={eggsModels}
+          />
+        )}
+        {/*
           <models.FlowerPot // this is the model for a flower pot
             material={materials.EnvironmentAmbientLight}
             rotation={[-Math.PI / 2, 0, 0]}
             castShadow
           />
       */}
-    </group>
-  )
-}
+      </group>
+    )
+  }
+)
 
 const getRandom = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 
 interface EggProps {
-  isLocked: boolean
   eggState: boolean
   toggleEgg: () => void
   eggsModels: EggsGLTFResult
 }
 
-const Egg = ({isLocked, eggState, toggleEgg, eggsModels}: EggProps) => {
+const Egg = observer(({eggState, toggleEgg, eggsModels}: EggProps) => {
+  const [globalState] = useGlobalStore()
   const itemNumber = useMemo(() => getRandom(1, 7), [])
   const leftPosition: PositionType = [-1.3, 2, 0.7]
   const rightPosition: PositionType = [1.3, 2, 0.7]
@@ -275,7 +273,7 @@ const Egg = ({isLocked, eggState, toggleEgg, eggsModels}: EggProps) => {
       ref={groupRef}
       position={randomPosition}
       onClick={event => {
-        if (isLocked) {
+        if (globalState.is3DSceneLocked) {
           return
         }
         // prevent click from bleeding through to objects behind
@@ -286,7 +284,7 @@ const Egg = ({isLocked, eggState, toggleEgg, eggsModels}: EggProps) => {
       <EggsModel item={itemNumber} eggs={eggsModels} />
     </group>
   )
-}
+})
 
 interface TextWithBgProps {
   text: string

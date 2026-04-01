@@ -1,5 +1,3 @@
-import {useCardChecklistStore} from '@/components/cards/card-checklist/card-checklist-store'
-import {useCardInfoStore} from '@/components/cards/card-info/card-info-store'
 import {getSearchCard} from '@/components/cards/get-search-card'
 import {canvasContainerClasses} from '@/components/cards/visual/ui/base-scene'
 import tw from '@/components/common/tw-styled-components'
@@ -72,22 +70,9 @@ const VisualTabContent = () => {
 }
 
 export const CardVisualTab = observer(() => {
-  const id = String(getSearchCard())
-  const [globalState] = useGlobalStore()
-  const [, cardChecklistStore] = useCardChecklistStore()
-  const [cardInfoState] = useCardInfoStore()
-
   usePersonViewToggle()
 
-  return (
-    <CardVisual
-      playerSize={globalState.playerSize}
-      checklist={cardChecklistStore.getAllCheckboxes(id)}
-      card={cardInfoState.card.data}
-      isThirdPersonView={globalState.isThirdPersonView}
-      eggsCount={globalState.eggsTotalCount}
-    />
-  )
+  return <CardVisual />
 })
 
 const usePersonViewToggle = () => {
