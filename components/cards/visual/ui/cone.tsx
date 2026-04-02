@@ -1,11 +1,15 @@
+/* eslint-disable max-lines-per-function */
 import {ArrUtil} from '@/utils/arr-util'
 import {Cone} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
+import {observer} from 'mobx-react-lite'
 import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react'
 import {Group} from 'three'
+import {useCardChecklistStore} from '../../card-checklist/card-checklist-store'
 import {Checkbox} from '../../card-checklist/types'
-import {CardInfoStore} from '../../card-info/card-info-store'
+import {CardInfoStore, useCardInfoStore} from '../../card-info/card-info-store'
+import {getSearchCard} from '../../get-search-card'
 import {Card} from '../../types'
 import {TreeModel} from '../components/tree-model'
 import {BaseSphere} from './base-sphere'
@@ -202,12 +206,14 @@ interface CardDataProps {
   checklist: Checkbox[] | undefined
 }
 
-interface ConeWithSpheresProps {
-  checklist: Checkbox[] | undefined
-  card: Card | null
-}
+export const ConeWithSpheres = observer(() => {
+  const id = String(getSearchCard())
+  const [, cardChecklistStore] = useCardChecklistStore()
+  const [cardInfoState] = useCardInfoStore()
 
-export const ConeWithSpheres = ({checklist, card}: ConeWithSpheresProps) => {
+  const checklist = cardChecklistStore.getAllCheckboxes(id)
+  const card = cardInfoState.card.data
+
   const treeRef = useRef<Group>(null)
   const [spherePositions, updateSpherePositions] = useState<SphereData[]>([])
   const [shouldShrink, updateShouldShrink] = useState(false)
@@ -273,7 +279,7 @@ export const ConeWithSpheres = ({checklist, card}: ConeWithSpheresProps) => {
       </group>
     </>
   )
-}
+})
 
 const Spheres = ({
   radius,

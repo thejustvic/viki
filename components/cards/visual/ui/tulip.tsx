@@ -1,8 +1,10 @@
 import tw from '@/components/common/tw-styled-components'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {ArrUtil} from '@/utils/arr-util'
 import {Html} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {easing} from 'maath'
+import {observer} from 'mobx-react-lite'
 import {
   Dispatch,
   SetStateAction,
@@ -13,7 +15,10 @@ import {
   useState
 } from 'react'
 import {Group} from 'three'
+import {useCardChecklistStore} from '../../card-checklist/card-checklist-store'
 import {Checkbox} from '../../card-checklist/types'
+import {useCardInfoStore} from '../../card-info/card-info-store'
+import {getSearchCard} from '../../get-search-card'
 import {Card, PlayerSizeType} from '../../types'
 import {LawnInstances} from '../components/lawn-instances'
 import {TulipInstances} from '../components/tulip-instances'
@@ -49,7 +54,7 @@ const generateNonOverlappingPoints = ({
         z: (Math.random() * 2 - 1) * fieldRadius
       }
 
-      // 2. check the distance to all existing points
+      // check the distance to all existing points
       const isOverlapping = points.some(p => {
         const dx = p.x - newPoint.x
         const dz = p.z - newPoint.z
@@ -69,7 +74,7 @@ const generateNonOverlappingPoints = ({
 
 const getLawnPosition = (fieldRadius: number) => {
   const positions: PositionType[] = []
-  const squareSize = 20 - 0.25 // -0.25 for little overlap each other
+  const squareSize = 20 - 0.25 // -0.25 for a little overlap each other
 
   const gridSteps = Math.ceil((fieldRadius * 2) / squareSize)
   const offset = (gridSteps * squareSize) / 2
@@ -196,19 +201,17 @@ export interface PositionsProps {
   plateTextColor: string
 }
 
-export const Tulip = ({
-  playerSize,
-  checklist,
-  card,
+export const Tulip = observer(() => {
+  const id = String(getSearchCard())
+  const [globalState] = useGlobalStore()
+  const [, cardChecklistStore] = useCardChecklistStore()
+  const [cardInfoState] = useCardInfoStore()
 
-  eggsCount
-}: {
-  playerSize: PlayerSizeType[number]
-  checklist: Checkbox[] | undefined
-  card: Card | null
+  const playerSize = globalState.playerSize
+  const checklist = cardChecklistStore.getAllCheckboxes(id)
+  const card = cardInfoState.card.data
+  const eggsCount = globalState.eggsTotalCount
 
-  eggsCount: number
-}) => {
   const fieldRef = useRef<Group>(null)
   const {fieldRadius, minRequiredDistance} = getBaseConstants(checklist)
   const [positions, updatePositions] = useState<PositionType[]>([])
@@ -264,7 +267,7 @@ export const Tulip = ({
       </Suspense>
     </group>
   )
-}
+})
 
 const TwWrapper = tw.div`
   text-2xl

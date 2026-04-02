@@ -13,11 +13,9 @@ import {observer} from 'mobx-react-lite'
 import {PropsWithChildren, RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useCardInfoStore} from '../../card-info/card-info-store'
-import {CardVisualType} from '../../types'
 import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
 import {pluralize} from '../utils/helpers'
-import {Snowfall} from './base-snowfall'
 import {Canvas} from './canvas'
 import {DualJoysticks, Vector2} from './joystick'
 
@@ -58,45 +56,35 @@ interface BasicSceneProps extends PropsWithChildren {
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
 }
-export const BasicScene = observer(
-  ({children, moveData, lookData}: BasicSceneProps) => {
-    const [cardInfoState] = useCardInfoStore()
+export const BasicScene = ({children, moveData, lookData}: BasicSceneProps) => {
+  const visualTab = getSearchParam('visual-tab')
+  const isReady = useBoolean(false)
 
-    const card = cardInfoState.card.data
-
-    const selectedVisual =
-      card?.selected_visual as unknown as CardVisualType[number]
-
-    const visualTab = getSearchParam('visual-tab')
-    const isReady = useBoolean(false)
-
-    return (
-      <TwWrapper $isVisualTab={Boolean(visualTab)}>
-        {isReady.value && (
-          <>
-            <ButtonsAboveCanvas />
-            <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
-          </>
-        )}
-        <Canvas>
-          <Suspense fallback={<CanvasLoader />}>
-            {/* Environment map for realistic reflections */}
-            <Environment preset="sunset" />
-            <Lights />
-            <Physics gravity={[0, -9.81, 0]}>
-              {children}
-              <Floor color="white" />
-            </Physics>
-            <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
-            {selectedVisual === 'winter' && <Snowfall />}
-            <RenderNotifier onFirstFrame={isReady} />
-          </Suspense>
-        </Canvas>
-        {!isMobile && isReady.value && <TwDot />}
-      </TwWrapper>
-    )
-  }
-)
+  return (
+    <TwWrapper $isVisualTab={Boolean(visualTab)}>
+      {isReady.value && (
+        <>
+          <ButtonsAboveCanvas />
+          <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+        </>
+      )}
+      <Canvas>
+        <Suspense fallback={<CanvasLoader />}>
+          {/* Environment map for realistic reflections */}
+          <Environment preset="sunset" />
+          <Lights />
+          <Physics gravity={[0, -9.81, 0]}>
+            {children}
+            <Floor color="white" />
+          </Physics>
+          <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
+          <RenderNotifier onFirstFrame={isReady} />
+        </Suspense>
+      </Canvas>
+      {!isMobile && isReady.value && <TwDot />}
+    </TwWrapper>
+  )
+}
 
 const RenderNotifier = ({onFirstFrame}: {onFirstFrame: BooleanHookState}) => {
   useFrame(state => {
