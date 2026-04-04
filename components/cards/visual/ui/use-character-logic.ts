@@ -19,6 +19,7 @@ const CAMERA_OFFSET = new Vector3(1, 0, 4) // x: sideways, y: up, z: back
 const _tempVec = new Vector3()
 const _tempEuler = new Euler()
 
+export type HeadPointType = {y: number; z: number}
 interface CharacterLogicProps {
   rigidBodyRef: RefObject<RapierRigidBody | null>
   movement: {
@@ -26,16 +27,17 @@ interface CharacterLogicProps {
     lookData: RefObject<{x: number; y: number}>
   }
   characteristics: {
-    isLocked: boolean
+    is3DSceneLocked: boolean
     smoothnessFactor: number
     isThirdPersonView: boolean
     speed: number
-    headPoint: number
+    headPoint: HeadPointType
     jumpForce: number
   }
 }
 export interface ModelCharacteristics {
-  isLocked: boolean
+  isThirdPersonView: boolean
+  is3DSceneLocked: boolean
   isFlying: boolean
   isJumping: boolean
   isFalling: boolean
@@ -48,14 +50,14 @@ export const useCharacterLogic = (
   const {rigidBodyRef, movement, characteristics} = props
   const {moveData, lookData} = movement
   const {
-    isLocked,
+    is3DSceneLocked,
     smoothnessFactor,
     isThirdPersonView,
     speed,
     headPoint,
     jumpForce
   } = characteristics
-  const controls = usePlayerControls() // { forward, backward, left, right, jump }
+  const controls = usePlayerControls(is3DSceneLocked) // { forward, backward, left, right, jump }
   const {camera} = useThree()
 
   const [isPreparingJump, setIsPreparingJump] = useState(false)
@@ -103,7 +105,7 @@ export const useCharacterLogic = (
     }
 
     // turn processing (looking)
-    if (!isLocked) {
+    if (!is3DSceneLocked) {
       _tempEuler.setFromQuaternion(camera.quaternion, 'YXZ')
 
       if (isMobile) {
@@ -135,7 +137,7 @@ export const useCharacterLogic = (
 
     // determine the "headPoint" point (center of the body + upward movement)
     // y + headPoint: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase headPoint
-    _tempVec.set(bodyPos.x, bodyPos.y + headPoint, bodyPos.z)
+    _tempVec.set(bodyPos.x, bodyPos.y + headPoint.y, bodyPos.z + headPoint.z)
 
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
@@ -162,7 +164,7 @@ export const useCharacterLogic = (
       }
     }
 
-    if (isLocked) {
+    if (is3DSceneLocked) {
       body.setLinvel({x: 0, y: 0, z: 0}, true)
       return
     }
@@ -298,7 +300,8 @@ export const useCharacterLogic = (
   })
 
   return {
-    isLocked,
+    isThirdPersonView,
+    is3DSceneLocked,
     isFlying: isFlying.current,
     isJumping,
     isFalling,

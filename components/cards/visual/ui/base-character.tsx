@@ -12,7 +12,11 @@ import {BunnyModel} from '../components/bunny-model'
 import {HumanModel} from '../components/human-model'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
-import {ModelCharacteristics, useCharacterLogic} from './use-character-logic'
+import {
+  HeadPointType,
+  ModelCharacteristics,
+  useCharacterLogic
+} from './use-character-logic'
 
 // 25 in the lerp formula is the stiffness coefficient of the camera-character connection
 // for a softer camera (like in GTA), try reducing the number to 10-15. if want sharp shooter control, increase to 40-50
@@ -25,19 +29,21 @@ interface BaseCharacterProps {
   lookData: RefObject<Vector2>
 }
 
-const walkSpeed = 4
-const runSpeed = 8
+const sittingSpeed = 1
+const walkSpeed = 2
+const runSpeed = 6
 
 export const BaseCharacter = observer(
   ({moveData, lookData}: BaseCharacterProps) => {
     const [globalState, globalStore] = useGlobalStore()
 
+    const is3DSceneLocked = globalState.is3DSceneLocked
     const playerSize = globalState.playerSize
     const isThirdPersonView = globalState.isThirdPersonView
 
     const meshRef = useRef<Mesh>(null)
     const rigidBodyRef = useRef<RapierRigidBody>(null)
-    const {shift} = usePlayerControls()
+    const {shift, sitDown} = usePlayerControls(is3DSceneLocked)
     const [speed, setSpeed] = useState(walkSpeed)
 
     const smoothnessFactor = isThirdPersonView
@@ -48,12 +54,14 @@ export const BaseCharacter = observer(
       if (meshRef.current) {
         meshRef.current.visible = isThirdPersonView
       }
-      if (shift) {
+      if (sitDown) {
+        setSpeed(sittingSpeed)
+      } else if (shift) {
         setSpeed(runSpeed)
       } else {
         setSpeed(walkSpeed)
       }
-    }, [isThirdPersonView, shift])
+    }, [isThirdPersonView, sitDown, shift])
 
     const characteristics = useCharacterLogic({
       rigidBodyRef,
@@ -62,11 +70,11 @@ export const BaseCharacter = observer(
         lookData
       },
       characteristics: {
-        isLocked: globalState.is3DSceneLocked,
+        is3DSceneLocked,
         smoothnessFactor,
         isThirdPersonView,
         speed,
-        headPoint: getHeadPoint(playerSize),
+        headPoint: getHeadPoint({playerSize, sitDown}),
         jumpForce: getJumpForce(playerSize)
       }
     })
@@ -90,7 +98,7 @@ export const BaseCharacter = observer(
           lockRotations
         >
           {/* visual */}
-          <mesh ref={meshRef} position={[0, 0, 0]} castShadow>
+          <mesh ref={meshRef} position={[0, 0, 0]} castShadow receiveShadow>
             {getModel({
               playerSize,
               characteristics
@@ -108,7 +116,7 @@ export const BaseCharacter = observer(
 )
 
 const getJumpForce = (playerSize: PlayerSizeType[number]) => {
-  const human = 2
+  const human = 4
   const bunny = 5
   switch (playerSize) {
     case 'human': {
@@ -122,10 +130,13 @@ const getJumpForce = (playerSize: PlayerSizeType[number]) => {
     }
   }
 }
-
-const getHeadPoint = (playerSize: PlayerSizeType[number]) => {
-  const human = 2.1
-  const bunny = 1.1
+interface HeadPintProps {
+  playerSize: PlayerSizeType[number]
+  sitDown: boolean
+}
+const getHeadPoint = ({playerSize, sitDown}: HeadPintProps): HeadPointType => {
+  const human = sitDown ? {y: 1.1, z: -0.5} : {y: 2.1, z: 0}
+  const bunny = {y: 1.1, z: 0}
   switch (playerSize) {
     case 'human': {
       return human

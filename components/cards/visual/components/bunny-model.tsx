@@ -47,7 +47,7 @@ export const BunnyModel = ({characteristics}: BunnyModelProps) => {
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
   const {actions} = useAnimations(animations, group)
-  const controls = usePlayerControls()
+  const controls = usePlayerControls(characteristics.is3DSceneLocked)
 
   const [currentAction, setCurrentAction] = useState<ActionNameBunny>('Idle')
 
@@ -69,7 +69,7 @@ export const BunnyModel = ({characteristics}: BunnyModelProps) => {
     }
   })
 
-  useMoveForwardCamera(group, characteristics.isLocked)
+  useMoveForwardCamera(group, characteristics)
 
   return (
     <group ref={group} dispose={null} scale={0.5}>

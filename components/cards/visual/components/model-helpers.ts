@@ -21,38 +21,67 @@ export type ActionNameBunny =
   | 'Yes'
 
 export type ActionNameHuman =
-  | 'Death'
-  | 'Defeat'
-  | 'Idle'
-  | 'Jump'
-  | 'PickUp'
-  | 'Punch'
-  | 'RecieveHit'
+  | 'A_TPose'
+  | 'Crouch_Fwd_Loop'
+  | 'Crouch_Idle_Loop'
+  | 'Dance_Loop'
+  | 'Death01'
+  | 'Driving_Loop'
+  | 'Fixing_Kneeling'
+  | 'Hit_Chest'
+  | 'Hit_Head'
+  | 'Idle_Loop'
+  | 'Idle_Talking_Loop'
+  | 'Idle_Torch_Loop'
+  | 'Interact'
+  | 'Jog_Fwd_Loop'
+  | 'Jump_Land'
+  | 'Jump_Loop'
+  | 'Jump_Start'
+  | 'PickUp_Table'
+  | 'Pistol_Aim_Down'
+  | 'Pistol_Aim_Neutral'
+  | 'Pistol_Aim_Up'
+  | 'Pistol_Idle_Loop'
+  | 'Pistol_Reload'
+  | 'Pistol_Shoot'
+  | 'Punch_Cross'
+  | 'Punch_Jab'
+  | 'Push_Loop'
   | 'Roll'
-  | 'Run'
-  | 'Run_Carry'
-  | 'Shoot_OneHanded'
-  | 'SitDown'
-  | 'StandUp'
-  | 'SwordSlash'
-  | 'Victory'
-  | 'Walk'
-  | 'Walk_Carry'
+  | 'Roll_RM'
+  | 'Sitting_Enter'
+  | 'Sitting_Exit'
+  | 'Sitting_Idle_Loop'
+  | 'Sitting_Talking_Loop'
+  | 'Spell_Simple_Enter'
+  | 'Spell_Simple_Exit'
+  | 'Spell_Simple_Idle_Loop'
+  | 'Spell_Simple_Shoot'
+  | 'Sprint_Loop'
+  | 'Swim_Fwd_Loop'
+  | 'Swim_Idle_Loop'
+  | 'Sword_Attack'
+  | 'Sword_Attack_RM'
+  | 'Sword_Idle'
+  | 'Walk_Formal_Loop'
+  | 'Walk_Loop'
 
 export const getNextActionBunny = (
   controls: MovementState,
   characteristics: ModelCharacteristics
 ): ActionNameBunny => {
-  const {isLocked, isJumping, isPreparingJump, isFlying} = characteristics
+  const {is3DSceneLocked, isJumping, isPreparingJump, isFlying} =
+    characteristics
   const {forward, backward, left, right, shift, leftClick} = controls
 
   const isMoving = forward || backward || left || right
 
-  if (isLocked && isFlying) {
+  if (is3DSceneLocked && isFlying) {
     return 'Jump_Idle'
   }
 
-  if (isLocked) {
+  if (is3DSceneLocked) {
     return 'Idle'
   }
 
@@ -79,40 +108,53 @@ export const getNextActionHuman = (
   controls: MovementState,
   characteristics: ModelCharacteristics
 ): ActionNameHuman => {
-  const {isLocked, isFlying, isPreparingJump} = characteristics
-  const {forward, backward, left, right, shift, leftClick} = controls
+  const {is3DSceneLocked, isFlying, isPreparingJump, isFalling} =
+    characteristics
+  const {forward, backward, left, right, shift, sitDown, leftClick} = controls
 
   const isMoving = forward || backward || left || right
 
-  if (isLocked && isFlying) {
-    return 'Jump'
+  if (is3DSceneLocked && isFlying) {
+    return 'Jump_Loop'
   }
 
-  if (isLocked) {
-    return 'Idle'
+  if (is3DSceneLocked) {
+    return 'Idle_Talking_Loop'
   }
 
   if (leftClick) {
-    return 'PickUp'
+    return 'Spell_Simple_Shoot'
   }
 
   if (isFlying) {
-    return 'Idle'
+    return 'Jump_Loop'
   }
 
   if (isPreparingJump) {
-    return 'Jump'
+    return 'Jump_Start'
+  }
+
+  if (isFalling) {
+    return 'Jump_Land'
+  }
+
+  if (isMoving && sitDown) {
+    return 'Crouch_Fwd_Loop'
+  }
+
+  if (sitDown) {
+    return 'Crouch_Idle_Loop'
   }
 
   if (isMoving && shift) {
-    return 'Run'
+    return 'Jog_Fwd_Loop'
   }
 
   if (isMoving) {
-    return 'Walk'
+    return 'Walk_Loop'
   }
 
-  return 'Idle'
+  return 'Idle_Loop'
 }
 
 const _tempEuler = new Euler() // caching for performance
@@ -121,32 +163,39 @@ const rotationAxis = new Vector3(0, 1, 0)
 
 export const useMoveForwardCamera = (
   group: RefObject<Group | null>,
-  isLocked: boolean
+  characteristics: ModelCharacteristics
 ): void => {
-  const controls = usePlayerControls()
+  const {is3DSceneLocked, isThirdPersonView} = characteristics
+  const controls = usePlayerControls(is3DSceneLocked)
 
   useFrame(state => {
-    if (isLocked) {
+    if (is3DSceneLocked || !group.current) {
       return
     }
+
     const {forward, backward, left, right} = controls
     const isMoving = forward || backward || left || right
 
-    if (isMoving && group.current) {
-      // get the net angle of rotation of the camera around the Y axis
-      // this works no matter where the camera is located.
-      _tempEuler.setFromQuaternion(state.camera.quaternion, 'YXZ')
-      const cameraAngle = _tempEuler.y
+    // get the current camera angle (Y)
+    _tempEuler.setFromQuaternion(state.camera.quaternion, 'YXZ')
+    const cameraAngle = _tempEuler.y
 
-      // offset logic (direction relative to the camera's view)
+    if (!isThirdPersonView) {
+      // IF FIRST PERSON VIEW: Constantly turn the model behind the camera
+      // add Math.PI to make the model look "from the camera" (forward)
+      const finalAngle = cameraAngle + Math.PI
+      targetQuaternion.setFromAxisAngle(rotationAxis, finalAngle)
+
+      // copy instantly so that the model does not lag behind when turning the head
+      group.current.quaternion.copy(targetQuaternion)
+    } else if (isMoving) {
+      // IF THIRD PERSON VIEW: only return while moving
       let offset = 0
       if (forward) {
         if (left) {
           offset = Math.PI / 4
         } else if (right) {
           offset = -Math.PI / 4
-        } else {
-          offset = 0
         }
       } else if (backward) {
         if (left) {
@@ -163,8 +212,9 @@ export const useMoveForwardCamera = (
       }
 
       const finalAngle = cameraAngle + offset + Math.PI
-
       targetQuaternion.setFromAxisAngle(rotationAxis, finalAngle)
+
+      // smooth turn (slerp) while moving
       group.current.quaternion.slerp(targetQuaternion, 0.15)
     }
   })

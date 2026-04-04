@@ -1,5 +1,7 @@
-/* eslint-disable max-lines-per-function */
-
+/*
+Command: npx gltfjsx@6.5.3 public/one.glb --transform --types --resolution 1024
+Files: public/one.glb [8.11MB] > one.glb [2.43MB] (70%)
+*/
 import {useAnimations, useGLTF} from '@react-three/drei'
 import {useFrame, useGraph} from '@react-three/fiber'
 import {useEffect, useMemo, useRef, useState} from 'react'
@@ -25,16 +27,13 @@ interface GLTFAction extends AnimationClip {
 
 type GLTFResult = GLTF & {
   nodes: {
-    Cube004: SkinnedMesh
-    Cube004_1: SkinnedMesh
-    Cube004_2: SkinnedMesh
-    Cube004_3: SkinnedMesh
-    Cube004_4: SkinnedMesh
-    Cube004_5: SkinnedMesh
-    Bone: Bone
+    Mannequin_1: SkinnedMesh
+    Mannequin_2: SkinnedMesh
+    root: Bone
   }
   materials: {
-    PaletteMaterial001: MeshStandardMaterial
+    M_Main: MeshStandardMaterial
+    M_Joints: MeshStandardMaterial
   }
   animations: GLTFAction[]
 }
@@ -44,13 +43,14 @@ interface HumanModelProps {
 }
 export const HumanModel = ({characteristics}: HumanModelProps) => {
   const group = useRef<Group>(null)
-  const {scene, animations} = useGLTF('/man.glb')
+  const {scene, animations} = useGLTF('/one.glb')
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
   const {actions} = useAnimations(animations, group)
-  const controls = usePlayerControls()
+  const controls = usePlayerControls(characteristics.is3DSceneLocked)
 
-  const [currentAction, setCurrentAction] = useState<ActionNameHuman>('Idle')
+  const [currentAction, setCurrentAction] =
+    useState<ActionNameHuman>('Idle_Talking_Loop')
 
   useEffect(() => {
     const action = actions[currentAction]
@@ -70,64 +70,28 @@ export const HumanModel = ({characteristics}: HumanModelProps) => {
     }
   })
 
-  useMoveForwardCamera(group, characteristics.isLocked)
+  useMoveForwardCamera(group, characteristics)
 
   return (
-    <group ref={group} dispose={null} scale={0.8}>
-      <group name="Scene">
-        <group name="CharacterArmature">
-          <primitive object={nodes.Bone} />
+    <group ref={group} dispose={null} scale={1.3} castShadow receiveShadow>
+      <group name="Scene" castShadow receiveShadow>
+        <group name="Armature" castShadow receiveShadow>
+          <primitive object={nodes.root} castShadow receiveShadow />
         </group>
-        <group name="Body">
+        <group name="Mannequin" castShadow receiveShadow>
           <skinnedMesh
-            name="Cube004"
-            geometry={nodes.Cube004.geometry}
-            material={materials.PaletteMaterial001}
-            skeleton={nodes.Cube004.skeleton}
-            castShadow
-            receiveShadow
-          >
-            <meshStandardMaterial color="#D2B48C" />
-          </skinnedMesh>
-          <skinnedMesh
-            name="Cube004_1"
-            geometry={nodes.Cube004_1.geometry}
-            material={materials.PaletteMaterial001}
-            skeleton={nodes.Cube004_1.skeleton}
+            name="Mannequin_1"
+            geometry={nodes.Mannequin_1.geometry}
+            material={materials.M_Main}
+            skeleton={nodes.Mannequin_1.skeleton}
             castShadow
             receiveShadow
           />
           <skinnedMesh
-            name="Cube004_2"
-            geometry={nodes.Cube004_2.geometry}
-            material={materials.PaletteMaterial001}
-            skeleton={nodes.Cube004_2.skeleton}
-            castShadow
-            receiveShadow
-          />
-          <skinnedMesh
-            name="Cube004_3"
-            geometry={nodes.Cube004_3.geometry}
-            material={materials.PaletteMaterial001}
-            skeleton={nodes.Cube004_3.skeleton}
-            castShadow
-            receiveShadow
-          />
-          <skinnedMesh
-            name="Cube004_4"
-            geometry={nodes.Cube004_4.geometry}
-            material={materials.PaletteMaterial001}
-            skeleton={nodes.Cube004_4.skeleton}
-            castShadow
-            receiveShadow
-          >
-            <meshStandardMaterial color="#333333" />
-          </skinnedMesh>
-          <skinnedMesh
-            name="Cube004_5"
-            geometry={nodes.Cube004_5.geometry}
-            material={materials.PaletteMaterial001}
-            skeleton={nodes.Cube004_5.skeleton}
+            name="Mannequin_2"
+            geometry={nodes.Mannequin_2.geometry}
+            material={materials.M_Joints}
+            skeleton={nodes.Mannequin_2.skeleton}
             castShadow
             receiveShadow
           />

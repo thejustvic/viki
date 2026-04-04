@@ -81,7 +81,10 @@ const usePersonViewToggle = () => {
   useGlobalKeyDown({
     handlers: {
       anyKey: e => {
-        if (e.key.toLowerCase() === 'v' && e.shift) {
+        if (e.key.toLowerCase() === 'v') {
+          if (globalState.is3DSceneLocked) {
+            return
+          }
           globalStore.setThirdPersonView(!globalState.isThirdPersonView)
         }
       }

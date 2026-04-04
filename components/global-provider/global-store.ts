@@ -80,6 +80,7 @@ export class GlobalStore {
       this.setTheme(serverTheme)
     }
     this.setVisualModalFromRightDrawerOpen(false)
+    this.setIs3DSceneLocked(isMobile ? false : true)
   }
 
   setAuthTabGroup = (value: AuthTabGroup): void => {
