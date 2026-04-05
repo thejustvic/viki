@@ -166,7 +166,7 @@ export const useMoveForwardCamera = (
   characteristics: ModelCharacteristics
 ): void => {
   const {is3DSceneLocked, isThirdPersonView} = characteristics
-  const controls = usePlayerControls(is3DSceneLocked)
+  const controls = usePlayerControls({is3DSceneLocked})
 
   useFrame(state => {
     if (is3DSceneLocked || !group.current) {

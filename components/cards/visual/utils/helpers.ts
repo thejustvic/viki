@@ -13,8 +13,14 @@ export type MovementState = {
   sitDown: boolean
   leftClick: boolean
 }
-
-export const usePlayerControls = (is3DSceneLocked: boolean): MovementState => {
+interface PlayerControlsProps {
+  is3DSceneLocked: boolean
+  withClickTimer?: boolean
+}
+export const usePlayerControls = ({
+  is3DSceneLocked,
+  withClickTimer = false
+}: PlayerControlsProps): MovementState => {
   const keys: Record<string, keyof MovementState> = {
     KeyW: 'forward',
     KeyS: 'backward',
@@ -107,10 +113,14 @@ export const usePlayerControls = (is3DSceneLocked: boolean): MovementState => {
         return
       }
       if (e.button === 0) {
-        // instead of instant false, we start a timer for clickTimer milliseconds
-        timeoutRef.current = setTimeout(() => {
+        if (withClickTimer) {
+          // instead of instant false, start a timer for clickTimer milliseconds
+          timeoutRef.current = setTimeout(() => {
+            setMovement(m => ({...m, leftClick: false}))
+          }, clickTimer)
+        } else {
           setMovement(m => ({...m, leftClick: false}))
-        }, clickTimer)
+        }
       }
     }
 

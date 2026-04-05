@@ -47,7 +47,9 @@ export const BunnyModel = ({characteristics}: BunnyModelProps) => {
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
   const {actions} = useAnimations(animations, group)
-  const controls = usePlayerControls(characteristics.is3DSceneLocked)
+  const controls = usePlayerControls({
+    is3DSceneLocked: characteristics.is3DSceneLocked
+  })
 
   const [currentAction, setCurrentAction] = useState<ActionNameBunny>('Idle')
 

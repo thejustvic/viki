@@ -57,7 +57,7 @@ export const useCharacterLogic = (
     headPoint,
     jumpForce
   } = characteristics
-  const controls = usePlayerControls(is3DSceneLocked) // { forward, backward, left, right, jump }
+  const controls = usePlayerControls({is3DSceneLocked}) // { forward, backward, left, right, jump }
   const {camera} = useThree()
 
   const [isPreparingJump, setIsPreparingJump] = useState(false)

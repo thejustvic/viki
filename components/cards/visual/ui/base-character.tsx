@@ -43,7 +43,7 @@ export const BaseCharacter = observer(
 
     const meshRef = useRef<Mesh>(null)
     const rigidBodyRef = useRef<RapierRigidBody>(null)
-    const {shift, sitDown} = usePlayerControls(is3DSceneLocked)
+    const {shift, sitDown} = usePlayerControls({is3DSceneLocked})
     const [speed, setSpeed] = useState(walkSpeed)
 
     const smoothnessFactor = isThirdPersonView

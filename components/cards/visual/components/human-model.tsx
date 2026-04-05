@@ -47,7 +47,10 @@ export const HumanModel = ({characteristics}: HumanModelProps) => {
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
   const {actions} = useAnimations(animations, group)
-  const controls = usePlayerControls(characteristics.is3DSceneLocked)
+  const controls = usePlayerControls({
+    is3DSceneLocked: characteristics.is3DSceneLocked,
+    withClickTimer: true // for Spell_Simple_Shoot animation
+  })
 
   const [currentAction, setCurrentAction] =
     useState<ActionNameHuman>('Idle_Talking_Loop')
