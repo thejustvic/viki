@@ -7,6 +7,7 @@ import {getSearchCard} from '../../get-search-card'
 import {Card} from '../../types'
 import {useCardInfoStore} from '../card-info-store'
 import {VisualContentSpring} from './visual-content-spring'
+import {VisualContentSummer} from './visual-content-summer'
 import {VisualContentWinter} from './visual-content-winter'
 
 const TwVisualContent = tw(Tabs)`
@@ -27,6 +28,7 @@ export const VisualContent = observer(() => {
     <TwVisualContent>
       <VisualContentWinter />
       <VisualContentSpring />
+      <VisualContentSummer />
     </TwVisualContent>
   )
 })

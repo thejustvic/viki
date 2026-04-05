@@ -6,6 +6,7 @@ import {BaseCharacter} from './visual/ui/base-character'
 import {BasicScene} from './visual/ui/base-scene'
 import {Snowfall} from './visual/ui/base-snowfall'
 import {ConeWithSpheres} from './visual/ui/cone'
+import {Ocean} from './visual/ui/ocean'
 import {Tulip} from './visual/ui/tulip'
 
 type Vector2 = {x: number; y: number}
@@ -37,6 +38,7 @@ const PhysicsContent = observer(() => {
           <Snowfall />
         </>
       )}
+      {selectedVisual === 'summer' && <Ocean />}
     </>
   )
 })
