@@ -42,7 +42,8 @@
     "react-swipeable": "7.0.2",
     "simplebar-react": "3.3.2",
     "tailwind-merge": "3.5.0",
-    "three": "0.183.1"
+    "three": "0.183.1",
+    "three-custom-shader-material": "6.4.0"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "4.6.0",
