@@ -72,7 +72,12 @@ const OceanSand = () => {
   })
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+    <mesh
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, 0, 0]}
+      castShadow
+      receiveShadow
+    >
       {/* 128x128 segments — this is important for terrain */}
       <planeGeometry args={[100, 200, 128, 128]} />
       <meshStandardMaterial
