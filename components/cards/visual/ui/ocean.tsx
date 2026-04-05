@@ -1,32 +1,58 @@
 import {useFrame, useLoader} from '@react-three/fiber'
-import {useMemo} from 'react'
-import {PlaneGeometry, RepeatWrapping, TextureLoader, Vector2} from 'three'
-import {EXRLoader, Water} from 'three-stdlib'
+import {useMemo, useRef} from 'react'
+import {
+  MeshStandardMaterial,
+  RepeatWrapping,
+  TextureLoader,
+  Vector2
+} from 'three'
+import {EXRLoader} from 'three-stdlib'
+
+import CustomShaderMaterial from 'three-custom-shader-material'
+import {oceanFragmentShader} from './shaders/ocean-fragment-shader'
+import {oceanVertexShader} from './shaders/ocean-vertex-shader'
 
 const OceanWater = () => {
-  const waterNormals = useLoader(TextureLoader, '/textures/waternormals.jpg')
+  const materialRef = useRef(null)
 
+  // textures of normals for the shine of water
+  const waterNormals = useLoader(TextureLoader, '/textures/waternormals.jpg')
   waterNormals.wrapS = waterNormals.wrapT = RepeatWrapping
   waterNormals.repeat.set(8, 2)
 
-  const water = useMemo(() => {
-    const geometry = new PlaneGeometry(100, 100)
-    return new Water(geometry, {
-      waterNormals,
-      distortionScale: 5.0
-    })
-  }, [waterNormals])
+  // creating Uniforms to pass time to the shader
+  const uniforms = useMemo(
+    () => ({
+      uTime: {value: 0},
+      uTexture: {value: waterNormals}
+    }),
+    [waterNormals]
+  )
 
-  useFrame((_state, delta) => {
-    water.material.uniforms['time'].value += delta * 0.5
+  useFrame(state => {
+    uniforms.uTime.value = state.clock.getElapsedTime()
   })
 
   return (
-    <primitive
-      object={water}
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, 0, -50]}
-    />
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.18, -55]}>
+      {/* 128x128 segments for smooth 3D waves */}
+      <planeGeometry args={[100, 100, 128, 128]} />
+
+      <CustomShaderMaterial
+        ref={materialRef}
+        baseMaterial={MeshStandardMaterial}
+        vertexShader={oceanVertexShader}
+        fragmentShader={oceanFragmentShader}
+        uniforms={uniforms}
+        // standard water props
+        color="#004466"
+        roughness={0.1}
+        metalness={0.8}
+        transparent
+        opacity={0.9}
+        normalMap={waterNormals}
+      />
+    </mesh>
   )
 }
 
@@ -42,13 +68,13 @@ const OceanSand = () => {
 
   textures.forEach(t => {
     t.wrapS = t.wrapT = RepeatWrapping
-    t.repeat.set(10, 10) // proportional to planeGeometry with [100, 100]
+    t.repeat.set(10, 20) // proportional to planeGeometry with [100, 200]
   })
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 40]}>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
       {/* 128x128 segments — this is important for terrain */}
-      <planeGeometry args={[100, 100, 128, 128]} />
+      <planeGeometry args={[100, 200, 128, 128]} />
       <meshStandardMaterial
         map={sandDiff}
         roughnessMap={sandRough}
