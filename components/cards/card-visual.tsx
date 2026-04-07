@@ -2,6 +2,7 @@ import {observer} from 'mobx-react-lite'
 import {useRef} from 'react'
 import {useCardInfoStore} from './card-info/card-info-store'
 import {CardVisualType} from './types'
+import {Floor} from './visual/components/floor'
 import {BaseCharacter} from './visual/ui/base-character'
 import {BasicScene} from './visual/ui/base-scene'
 import {Snowfall} from './visual/ui/base-snowfall'
@@ -31,11 +32,17 @@ const PhysicsContent = observer(() => {
 
   return (
     <>
-      {selectedVisual === 'spring' && <Tulip />}
+      {selectedVisual === 'spring' && (
+        <>
+          <Tulip />
+          <Floor color="white" />
+        </>
+      )}
       {selectedVisual === 'winter' && (
         <>
           <ConeWithSpheres />
           <Snowfall />
+          <Floor color="white" />
         </>
       )}
       {selectedVisual === 'summer' && <Ocean />}

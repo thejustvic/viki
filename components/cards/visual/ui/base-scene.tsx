@@ -13,7 +13,6 @@ import {observer} from 'mobx-react-lite'
 import {PropsWithChildren, RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useCardInfoStore} from '../../card-info/card-info-store'
-import {Floor} from '../components/floor'
 import {Lights} from '../components/lights'
 import {pluralize} from '../utils/helpers'
 import {Canvas} from './canvas'
@@ -73,9 +72,8 @@ export const BasicScene = ({children, moveData, lookData}: BasicSceneProps) => {
           {/* Environment map for realistic reflections */}
           <Environment preset="sunset" />
           <Lights />
-          <Physics gravity={[0, -9.81, 0]}>
+          <Physics debug gravity={[0, -9.81, 0]}>
             {children}
-            <Floor color="white" />
           </Physics>
           <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
           <RenderNotifier onFirstFrame={isReady} />

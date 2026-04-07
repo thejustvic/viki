@@ -1,14 +1,15 @@
 import {useFrame, useLoader} from '@react-three/fiber'
+import {RigidBody} from '@react-three/rapier'
 import {useMemo, useRef} from 'react'
 import {
   MeshStandardMaterial,
+  PlaneGeometry,
   RepeatWrapping,
   TextureLoader,
   Vector2
 } from 'three'
-import {EXRLoader} from 'three-stdlib'
-
 import CustomShaderMaterial from 'three-custom-shader-material'
+import {EXRLoader} from 'three-stdlib'
 import {oceanFragmentShader} from './shaders/ocean-fragment-shader'
 import {oceanVertexShader} from './shaders/ocean-vertex-shader'
 
@@ -34,7 +35,7 @@ const OceanWater = () => {
   })
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.18, -55]}>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.15, -55]}>
       {/* 128x128 segments for smooth 3D waves */}
       <planeGeometry args={[100, 100, 128, 128]} />
 
@@ -64,6 +65,34 @@ const OceanSand = () => {
   ])
   const sandNormal = useLoader(EXRLoader, '/textures/sand_nor.exr')
 
+  const slantedGeometry = useMemo(() => {
+    // 128x128 segments — this is important for terrain
+    const geo = new PlaneGeometry(100, 200, 128, 128)
+    const pos = geo.attributes.position.array
+
+    for (let i = 0; i < pos.length; i += 3) {
+      const yCoord = pos[i + 1]
+
+      // determine the mixing factor (from 0 to 1) between points 20 and 50
+      // t will be 0 at 20, and 1 at 50
+      let t = (yCoord - 20) / (50 - 20)
+
+      // limit t to the range [0, 1]
+      t = Math.max(0, Math.min(1, t))
+
+      // make the transition smooth (S-shaped curve)
+      // this will remove sharp corners at the entrance and exit.
+      const smoothT = t * t * (3 - 2 * t)
+
+      // calculate the final depth
+      // interpolate between 0 (shore) and -5 (depth)
+      pos[i + 2] = smoothT * -5
+    }
+
+    geo.computeVertexNormals()
+    return geo
+  }, [])
+
   const textures = [sandDiff, sandRough, sandDisp, sandNormal]
 
   textures.forEach(t => {
@@ -72,24 +101,25 @@ const OceanSand = () => {
   })
 
   return (
-    <mesh
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, 0, 0]}
-      castShadow
-      receiveShadow
-    >
-      {/* 128x128 segments — this is important for terrain */}
-      <planeGeometry args={[100, 200, 128, 128]} />
-      <meshStandardMaterial
-        map={sandDiff}
-        roughnessMap={sandRough}
-        roughness={1} // base value (matte)
-        displacementMap={sandDisp}
-        displacementScale={0.2} // height of sand mounds (e.g. 20cm)
-        normalMap={sandNormal}
-        normalScale={new Vector2(1, 1)} // microrelief strength control
-      />
-    </mesh>
+    <RigidBody type="fixed" colliders="hull">
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0, 0]}
+        castShadow
+        receiveShadow
+      >
+        <primitive object={slantedGeometry} attach="geometry" />
+        <meshStandardMaterial
+          map={sandDiff}
+          roughnessMap={sandRough}
+          roughness={1} // base value (matte)
+          displacementMap={sandDisp}
+          displacementScale={0.2} // height of sand mounds (e.g. 20cm)
+          normalMap={sandNormal}
+          normalScale={new Vector2(1, 1)} // microrelief strength control
+        />
+      </mesh>
+    </RigidBody>
   )
 }
 
