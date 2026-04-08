@@ -135,6 +135,8 @@ export const useCharacterLogic = (
     // camera synchronization
     const bodyPos = body.translation()
 
+    const characterY = bodyPos.y // the height at which the character is located
+
     // determine the "headPoint" point (center of the body + upward movement)
     // y + headPoint: this offset raises the camera from the center of the capsule to the top. if the camera is too low, increase headPoint
     _tempVec.set(bodyPos.x, bodyPos.y + headPoint.y, bodyPos.z + headPoint.z)
@@ -279,7 +281,11 @@ export const useCharacterLogic = (
     // animation state updates
     if (!isFlying.current && jumpTargetTime.current === null) {
       const jumping = vy > 0.5
-      const falling = vy < -0.5
+
+      // fall: down speed + height check (e.g. > 0.5 from ground)
+      // use current character Y position (characterY)
+      const falling = vy < -0.5 && characterY > 0.5
+
       if (isJumping !== jumping) {
         setIsJumping(jumping)
       }

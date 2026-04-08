@@ -1,3 +1,4 @@
+import {RapierRigidBody} from '@react-three/rapier'
 import {observer} from 'mobx-react-lite'
 import {useRef} from 'react'
 import {useCardInfoStore} from './card-info/card-info-store'
@@ -15,11 +16,20 @@ type Vector2 = {x: number; y: number}
 export const CardVisual = () => {
   const moveData = useRef<Vector2>({x: 0, y: 0})
   const lookData = useRef<Vector2>({x: 0, y: 0})
+  const rigidBodyRef = useRef<RapierRigidBody>(null)
 
   return (
-    <BasicScene moveData={moveData} lookData={lookData}>
+    <BasicScene
+      moveData={moveData}
+      lookData={lookData}
+      rigidBodyRef={rigidBodyRef}
+    >
       <PhysicsContent />
-      <BaseCharacter moveData={moveData} lookData={lookData} />
+      <BaseCharacter
+        moveData={moveData}
+        lookData={lookData}
+        rigidBodyRef={rigidBodyRef}
+      />
     </BasicScene>
   )
 }

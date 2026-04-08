@@ -5,15 +5,15 @@ import {useGlobalStore} from '@/components/global-provider/global-store'
 import {BooleanHookState, useBoolean} from '@/hooks/use-boolean'
 import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
-import {Environment, Html, Sky, useProgress} from '@react-three/drei'
+import {Html, useProgress} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
-import {Physics} from '@react-three/rapier'
+import {Physics, RapierRigidBody} from '@react-three/rapier'
 import {IconBrowserMaximize} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {PropsWithChildren, RefObject, Suspense} from 'react'
 import {isMobile} from 'react-device-detect'
 import {useCardInfoStore} from '../../card-info/card-info-store'
-import {Lights} from '../components/lights'
+import {Lighting} from '../components/lights'
 import {pluralize} from '../utils/helpers'
 import {Canvas} from './canvas'
 import {DualJoysticks, Vector2} from './joystick'
@@ -54,8 +54,14 @@ const TwWrapper = tw.div<ITwWrapper>`
 interface BasicSceneProps extends PropsWithChildren {
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
+  rigidBodyRef: RefObject<RapierRigidBody | null>
 }
-export const BasicScene = ({children, moveData, lookData}: BasicSceneProps) => {
+export const BasicScene = ({
+  children,
+  moveData,
+  lookData,
+  rigidBodyRef
+}: BasicSceneProps) => {
   const visualTab = getSearchParam('visual-tab')
   const isReady = useBoolean(false)
 
@@ -69,13 +75,8 @@ export const BasicScene = ({children, moveData, lookData}: BasicSceneProps) => {
       )}
       <Canvas>
         <Suspense fallback={<CanvasLoader />}>
-          {/* Environment map for realistic reflections */}
-          <Environment preset="sunset" />
-          <Lights />
-          <Physics debug gravity={[0, -9.81, 0]}>
-            {children}
-          </Physics>
-          <Sky sunPosition={[5, 10, 5]} turbidity={0.25} />
+          <Lighting playerRef={rigidBodyRef} />
+          <Physics gravity={[0, -9.81, 0]}>{children}</Physics>
           <RenderNotifier onFirstFrame={isReady} />
         </Suspense>
       </Canvas>

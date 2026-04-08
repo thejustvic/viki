@@ -27,6 +27,7 @@ const thirdPersonViewSmoothnessFactor = 15
 interface BaseCharacterProps {
   moveData: RefObject<Vector2>
   lookData: RefObject<Vector2>
+  rigidBodyRef: RefObject<RapierRigidBody | null>
 }
 
 const sittingSpeed = 1
@@ -34,7 +35,7 @@ const walkSpeed = 2
 const runSpeed = 6
 
 export const BaseCharacter = observer(
-  ({moveData, lookData}: BaseCharacterProps) => {
+  ({moveData, lookData, rigidBodyRef}: BaseCharacterProps) => {
     const [globalState, globalStore] = useGlobalStore()
 
     const is3DSceneLocked = globalState.is3DSceneLocked
@@ -42,7 +43,7 @@ export const BaseCharacter = observer(
     const isThirdPersonView = globalState.isThirdPersonView
 
     const meshRef = useRef<Mesh>(null)
-    const rigidBodyRef = useRef<RapierRigidBody>(null)
+
     const {shift, sitDown} = usePlayerControls({is3DSceneLocked})
     const [speed, setSpeed] = useState(walkSpeed)
 

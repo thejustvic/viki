@@ -1,4 +1,4 @@
-export const oceanVertexShader = /* glsl */ `
+export const oceanWaterVertexShader = /* glsl */ `
 
     // vertexShader
     varying vec2 vUv;

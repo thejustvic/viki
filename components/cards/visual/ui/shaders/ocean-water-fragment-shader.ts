@@ -1,4 +1,4 @@
-export const oceanFragmentShader = /* glsl */ `
+export const oceanWaterFragmentShader = /* glsl */ `
 
     // fragmentShader
     varying vec2 vUv;
