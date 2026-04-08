@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import React, {useCallback, useRef, useState} from 'react'
 
 export interface Vector2 {
@@ -58,13 +57,10 @@ export const useJoystickHandlers = ({
             y: Math.pow(dy / radius, 3) * SENSITIVITY // change 'dy' to '-dy' here to reverse Up/Down
           })
         } else {
-          // for soft start motion (quadratic dependence)
-          const powerX = Math.pow(dx / radius, 2) * Math.sign(dx)
-          const powerY = Math.pow(dy / radius, 2) * Math.sign(dy)
           // move around Forward/Backward (Y) and Left/Right (X)
           onUpdate({
-            x: -powerX, //  change '-powerX' to 'powerX' here to reverse Left/Right
-            y: -powerY // change '-powerY' to 'powerY' here to reverse Forward/Backward
+            x: -dx / radius, //  change '-dx' to 'dx' here to reverse Left/Right
+            y: -dy / radius // change '-dy' to 'dy' here to reverse Forward/Backward
           })
         }
       }

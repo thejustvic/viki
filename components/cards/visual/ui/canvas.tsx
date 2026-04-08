@@ -6,7 +6,7 @@ export const Canvas = ({children}: PropsWithChildren) => {
   return (
     <CanvasComponent
       flat
-      shadows="percentage"
+      shadows="soft"
       camera={{
         fov: 50
       }}
