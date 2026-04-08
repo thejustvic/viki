@@ -11,6 +11,8 @@ interface Handlers {
   manualTiltAngle: Vector2
 }
 
+const SENSITIVITY = 0.5 // 1.0 — standard, 0.5 — half as slow
+
 interface JoystickProps {
   label: string
   onUpdate: (v: Vector2) => void
@@ -51,8 +53,8 @@ export const useJoystickHandlers = ({
         if (label === 'LOOK') {
           // look around Up/Down (Y) and Left/Right (X)
           onUpdate({
-            x: dx / radius, // change 'dx' to '-dx' here to reverse Left/Right
-            y: dy / radius // change 'dy' to '-dy' here to reverse Up/Down
+            x: (dx / radius) * SENSITIVITY, // change 'dx' to '-dx' here to reverse Left/Right
+            y: (dy / radius) * SENSITIVITY // change 'dy' to '-dy' here to reverse Up/Down
           })
         } else {
           // move around Forward/Backward (Y) and Left/Right (X)
