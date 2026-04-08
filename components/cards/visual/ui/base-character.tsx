@@ -60,7 +60,7 @@ export const BaseCharacter = observer(
       } else if (shift) {
         setSpeed(runSpeed)
       } else {
-        setSpeed(walkSpeed)
+        setSpeed(isMobile ? runSpeed : walkSpeed)
       }
     }, [isThirdPersonView, sitDown, shift])
 
