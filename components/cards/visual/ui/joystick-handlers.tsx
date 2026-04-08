@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import React, {useCallback, useRef, useState} from 'react'
 
 export interface Vector2 {
@@ -11,7 +12,7 @@ interface Handlers {
   manualTiltAngle: Vector2
 }
 
-const SENSITIVITY = 0.5 // 1.0 — standard, 0.5 — half as slow
+const SENSITIVITY = 1 // 1.0 — standard, 0.5 — half as slow
 
 interface JoystickProps {
   label: string
@@ -53,14 +54,17 @@ export const useJoystickHandlers = ({
         if (label === 'LOOK') {
           // look around Up/Down (Y) and Left/Right (X)
           onUpdate({
-            x: (dx / radius) * SENSITIVITY, // change 'dx' to '-dx' here to reverse Left/Right
-            y: (dy / radius) * SENSITIVITY // change 'dy' to '-dy' here to reverse Up/Down
+            x: Math.pow(dx / radius, 3) * SENSITIVITY, // change 'dx' to '-dx' here to reverse Left/Right
+            y: Math.pow(dy / radius, 3) * SENSITIVITY // change 'dy' to '-dy' here to reverse Up/Down
           })
         } else {
+          // for soft start motion (quadratic dependence)
+          const powerX = Math.pow(dx / radius, 2) * Math.sign(dx)
+          const powerY = Math.pow(dy / radius, 2) * Math.sign(dy)
           // move around Forward/Backward (Y) and Left/Right (X)
           onUpdate({
-            x: -dx / radius, //  change '-dx' to 'dx' here to reverse Left/Right
-            y: -dy / radius // change '-dy' to 'dy' here to reverse Forward/Backward
+            x: -powerX, //  change '-powerX' to 'powerX' here to reverse Left/Right
+            y: -powerY // change '-powerY' to 'powerY' here to reverse Forward/Backward
           })
         }
       }
