@@ -53,8 +53,8 @@ export const useJoystickHandlers = ({
         if (label === 'LOOK') {
           // look around Up/Down (Y) and Left/Right (X)
           onUpdate({
-            x: Math.pow(dx / radius, 3) * SENSITIVITY, // change 'dx' to '-dx' here to reverse Left/Right
-            y: Math.pow(dy / radius, 3) * SENSITIVITY // change 'dy' to '-dy' here to reverse Up/Down
+            x: (dx / radius) * SENSITIVITY, // change 'dx' to '-dx' here to reverse Left/Right
+            y: (dy / radius) * SENSITIVITY // change 'dy' to '-dy' here to reverse Up/Down
           })
         } else {
           // move around Forward/Backward (Y) and Left/Right (X)
