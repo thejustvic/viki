@@ -3,6 +3,7 @@ import {useGlobalStore} from '@/components/global-provider/global-store'
 import {ArrUtil} from '@/utils/arr-util'
 import {Html} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
+import {RigidBody} from '@react-three/rapier'
 import {easing} from 'maath'
 import {observer} from 'mobx-react-lite'
 import {
@@ -248,12 +249,14 @@ export const Tulip = observer(() => {
     )
   })
   return (
-    <group scale={scale} position={[0, 0, -3]}>
-      <group ref={fieldRef} scale={0.5}>
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 10, 0]}>
-          <planeGeometry args={[fieldRadius * 2, fieldRadius * 2]} />
-          <meshStandardMaterial color="#2d5a27" transparent opacity={0} />
+    <group scale={scale}>
+      <RigidBody type="fixed" colliders="cuboid" position={[0, -0.01, 0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[1000, 1000]} />
+          <meshStandardMaterial transparent opacity={0} />
         </mesh>
+      </RigidBody>
+      <group ref={fieldRef} scale={0.5}>
         <LawnInstances positions={lawnPositions} />
       </group>
       <Suspense fallback={<LoadingTulips />}>

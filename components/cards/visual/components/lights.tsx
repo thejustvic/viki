@@ -1,11 +1,70 @@
 import {useGlobalStore} from '@/components/global-provider/global-store'
-import {Sky} from '@react-three/drei'
+import {Sphere} from '@react-three/drei'
 import {useFrame, useThree} from '@react-three/fiber'
 import {RapierRigidBody} from '@react-three/rapier'
 import {observer} from 'mobx-react-lite'
 import {RefObject, useMemo, useRef} from 'react'
-import {Color, DirectionalLight, Vector3} from 'three'
+import {BackSide, Color, DirectionalLight, Vector3} from 'three'
 import {CardVisualType} from '../../types'
+
+interface GradientSkyProps {
+  sunPosition: SunPosition
+}
+const GradientSky = ({sunPosition}: GradientSkyProps) => {
+  const sunOffset = useMemo(() => new Vector3(...sunPosition), [sunPosition])
+
+  return (
+    <Sphere args={[500, 64, 64]}>
+      <shaderMaterial
+        side={BackSide}
+        fog={false} // sky shouldn't cloud over on its own.
+        uniforms={{
+          uSunPosition: {value: sunOffset.clone().normalize()}, // transmit the direction to the sun
+          uBottomColor: {value: new Color('#D8FEFE')},
+          uTopColor: {value: new Color('#A6D8FE')}
+        }}
+        vertexShader={`
+          varying vec3 vWorldPosition;
+          varying vec3 vViewDirection;
+          void main() {
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            vWorldPosition = worldPosition.xyz;
+            vViewDirection = normalize(worldPosition.xyz);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `}
+        fragmentShader={`
+          varying vec3 vViewDirection;
+          uniform vec3 uSunPosition;
+          uniform vec3 uBottomColor;
+          uniform vec3 uTopColor;
+
+          void main() {
+            float h = vViewDirection.y;
+
+            // creating a sky gradient
+            vec3 skyColor = mix(uBottomColor, uTopColor, max(h, 0.0));
+
+            // draw the sun
+            // calculate the distance from the current point in the sky to the position of the sun
+            float sunDistance = distance(vViewDirection, uSunPosition);
+
+            // creating a soft disk of the sun
+            float sunDisc = smoothstep(0.05, 0.04, sunDistance);
+
+            // creating a glow around the sun
+            float sunGlow = smoothstep(0.4, 0.0, sunDistance) * 0.3;
+
+            // add the sun (white color) to the sky color
+            vec3 finalColor = skyColor + (sunDisc + sunGlow);
+
+            gl_FragColor = vec4(finalColor, 1.0);
+          }
+        `}
+      />
+    </Sphere>
+  )
+}
 
 type SunPosition = [number, number, number]
 interface LightingProps {
@@ -13,16 +72,9 @@ interface LightingProps {
 }
 export const Lighting = ({playerRef}: LightingProps) => {
   const sunPosition: SunPosition = [15, 10, 15] // 16:00 for big shadows
-
   return (
     <>
-      <Sky
-        sunPosition={sunPosition}
-        turbidity={0.5} // a little more "chirp" in the air
-        rayleigh={0.2} // a richer blue sky
-        mieCoefficient={0.005}
-        mieDirectionalG={0.7}
-      />
+      <GradientSky sunPosition={sunPosition} />
       <DynamicSun sunPosition={sunPosition} playerRef={playerRef} />
     </>
   )
