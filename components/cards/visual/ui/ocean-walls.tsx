@@ -13,8 +13,8 @@ const OceanWall = ({position, rotation, args}: Props) => {
 
   const uniforms = useMemo(
     () => ({
-      uWaterColor: {value: new Color('#001824')},
-      uDeepColor: {value: new Color('#001824')}
+      uWaterColor: {value: new Color('#001e33')},
+      uDeepColor: {value: new Color('#001e33')}
     }),
     []
   )
@@ -60,21 +60,21 @@ export const OceanWalls = () => {
     <group>
       {/* left wall*/}
       <OceanWall
-        position={[-50, 0, -4.1]}
+        position={[-50, 0, -4.7]}
         rotation={[0, Math.PI / 2, Math.PI]}
-        args={[12, 90]}
+        args={[11, 90]}
       />
       {/* right wall */}
       <OceanWall
-        position={[50, 0, -4.1]}
+        position={[50, 0, -4.7]}
         rotation={[0, -Math.PI / 2, -Math.PI]}
-        args={[12, 90]}
+        args={[11, 90]}
       />
       {/* back wall */}
       <OceanWall
-        position={[0, 45, -4.1]}
+        position={[0, 45, -4.7]}
         rotation={[-Math.PI / 2, -Math.PI, 0]}
-        args={[100, 12]}
+        args={[100, 11]}
       />
     </group>
   )

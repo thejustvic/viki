@@ -1,12 +1,13 @@
 import {Stats} from '@react-three/drei'
 import {Canvas as CanvasComponent, useFrame, useThree} from '@react-three/fiber'
 import {PropsWithChildren} from 'react'
+import {isMobile} from 'react-device-detect'
 
 export const Canvas = ({children}: PropsWithChildren) => {
   return (
     <CanvasComponent
       flat
-      shadows="variance"
+      shadows={isMobile ? 'basic' : 'variance'}
       camera={{
         fov: 50
       }}
