@@ -8,7 +8,6 @@ import {useUpdateSearchParams} from '@/hooks/use-update-search-params'
 import {getSearchParam} from '@/utils/nextjs-utils/getSearchParam'
 import {observer} from 'mobx-react-lite'
 import {useCallback, useEffect} from 'react'
-import {useCardInfoStore} from '../../card-info/card-info-store'
 import {useSetFocusAfterTransitionEnd} from '../../modal-card/use-set-focus-after-transitionend'
 
 export const ModalVisualTab = observer(() => {
@@ -35,10 +34,9 @@ export const ModalVisualTab = observer(() => {
 })
 
 const Header = observer(() => {
-  const [cardInfoState] = useCardInfoStore()
-  const view = cardInfoState.card.data?.selected_visual
+  const [{selectedVisualMode}] = useGlobalStore()
 
-  return <div className="capitalize">{view}</div>
+  return <div className="capitalize">{selectedVisualMode}</div>
 })
 
 const VisualTab = observer(() => {

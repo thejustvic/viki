@@ -4,10 +4,11 @@ import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
+import {CardVisualType} from '../../types'
 import {useCardInfoStore} from '../card-info-store'
 
 export const VisualContentSummer = observer(() => {
-  const [, globalStore] = useGlobalStore()
+  const [{selectedVisualMode}, globalStore] = useGlobalStore()
   const [state] = useCardInfoStore()
   const {updateCardVisual} = useCardHandlers()
   const id = String(getSearchCard())
@@ -16,7 +17,7 @@ export const VisualContentSummer = observer(() => {
     return null
   }
 
-  const checked = state?.card?.data?.selected_visual === 'summer'
+  const checked = selectedVisualMode === 'summer'
 
   return (
     <>
@@ -24,6 +25,7 @@ export const VisualContentSummer = observer(() => {
         value="summer"
         onChange={({target: {value}}) => {
           void updateCardVisual(value, id)
+          globalStore.setSelectedVisualMode(value as CardVisualType[number])
           globalStore.setPlayerSize('human')
         }}
         label="summer"

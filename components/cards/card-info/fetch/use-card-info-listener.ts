@@ -1,6 +1,7 @@
 import {CardInfoStore} from '@/components/cards/card-info/card-info-store'
 import {getCardById} from '@/components/cards/card-info/fetch/get-card-by-id'
-import {Card} from '@/components/cards/types'
+import {Card, CardVisualType} from '@/components/cards/types'
+import {GlobalStore} from '@/components/global-provider/global-store'
 import {useFetch} from '@/hooks/use-fetch'
 import {useSupabaseFetch} from '@/hooks/use-supabase-fetch'
 import {SupabaseContext} from '@/utils/supabase-utils/supabase-provider'
@@ -11,6 +12,7 @@ interface CardProps {
   cardId: Card['id'] | null
   supabase: SupabaseContext['supabase']
   store: CardInfoStore
+  globalStore: GlobalStore
   user: SupabaseContext['user']
 }
 
@@ -54,6 +56,7 @@ const useSupabaseListener = (
 export const useCardInfoListener = ({
   cardId,
   store,
+  globalStore,
   supabase,
   user
 }: CardProps): void => {
@@ -102,6 +105,11 @@ export const useCardInfoListener = ({
 
       if (user && authorId) {
         store.setMy(user.id === authorId)
+
+        // set visual config
+        globalStore.setSelectedVisualMode(
+          (data?.selected_visual as CardVisualType[number]) ?? 'winter'
+        )
       }
     }
   }, [loading, data, error, userLoading, userData, userError, authorId, user])

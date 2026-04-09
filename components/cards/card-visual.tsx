@@ -1,14 +1,14 @@
 import {RapierRigidBody} from '@react-three/rapier'
 import {observer} from 'mobx-react-lite'
 import {useRef} from 'react'
-import {useCardInfoStore} from './card-info/card-info-store'
-import {CardVisualType} from './types'
+import {useGlobalStore} from '../global-provider/global-store'
 import {Floor} from './visual/components/floor'
 import {BaseCharacter} from './visual/ui/base-character'
 import {BasicScene} from './visual/ui/base-scene'
 import {Snowfall} from './visual/ui/base-snowfall'
 import {ConeWithSpheres} from './visual/ui/cone'
 import {Ocean} from './visual/ui/ocean'
+import {Snowland} from './visual/ui/snowland'
 import {Tulip} from './visual/ui/tulip'
 
 type Vector2 = {x: number; y: number}
@@ -35,27 +35,24 @@ export const CardVisual = () => {
 }
 
 const PhysicsContent = observer(() => {
-  const [cardInfoState] = useCardInfoStore()
-  const card = cardInfoState.card.data
-  const selectedVisual =
-    card?.selected_visual as unknown as CardVisualType[number]
+  const [{selectedVisualMode}] = useGlobalStore()
 
   return (
     <>
-      {selectedVisual === 'spring' && (
+      {selectedVisualMode === 'spring' && (
         <>
           <Tulip />
           <Floor color="white" />
         </>
       )}
-      {selectedVisual === 'winter' && (
+      {selectedVisualMode === 'winter' && (
         <>
           <ConeWithSpheres />
           <Snowfall />
-          <Floor color="white" />
+          <Snowland />
         </>
       )}
-      {selectedVisual === 'summer' && <Ocean />}
+      {selectedVisualMode === 'summer' && <Ocean />}
     </>
   )
 })

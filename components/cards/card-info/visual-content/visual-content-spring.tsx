@@ -7,14 +7,14 @@ import {observer} from 'mobx-react-lite'
 import {useCardChecklistStore} from '../../card-checklist/card-checklist-store'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
-import {GameModeType, PlayerSizeType} from '../../types'
+import {CardVisualType, GameModeType, PlayerSizeType} from '../../types'
 import {pluralize} from '../../visual/utils/helpers'
 import {CardInfoShowData} from '../card-info-show-data'
 import {useCardInfoStore} from '../card-info-store'
 import {ChooseColorData} from './visual-content'
 
 export const VisualContentSpring = observer(() => {
-  const [, globalStore] = useGlobalStore()
+  const [{selectedVisualMode}, globalStore] = useGlobalStore()
   const [state] = useCardInfoStore()
   const {updateCardVisual} = useCardHandlers()
   const id = String(getSearchCard())
@@ -23,7 +23,7 @@ export const VisualContentSpring = observer(() => {
     return null
   }
 
-  const checked = state?.card?.data?.selected_visual === 'spring'
+  const checked = selectedVisualMode === 'spring'
 
   return (
     <>
@@ -31,6 +31,7 @@ export const VisualContentSpring = observer(() => {
         value="spring"
         onChange={({target: {value}}) => {
           void updateCardVisual(value, id)
+          globalStore.setSelectedVisualMode(value as CardVisualType[number])
           globalStore.setPlayerSize('bunny')
         }}
         label="spring"

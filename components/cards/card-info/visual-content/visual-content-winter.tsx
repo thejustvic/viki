@@ -4,12 +4,13 @@ import {IconCircle, IconCircleCheck} from '@tabler/icons-react'
 import {observer} from 'mobx-react-lite'
 import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
+import {CardVisualType} from '../../types'
 import {CardInfoShowData} from '../card-info-show-data'
 import {useCardInfoStore} from '../card-info-store'
 import {ChooseColorData} from './visual-content'
 
 export const VisualContentWinter = observer(() => {
-  const [, globalStore] = useGlobalStore()
+  const [{selectedVisualMode}, globalStore] = useGlobalStore()
   const [state] = useCardInfoStore()
   const {updateCardVisual} = useCardHandlers()
   const id = String(getSearchCard())
@@ -18,7 +19,7 @@ export const VisualContentWinter = observer(() => {
     return null
   }
 
-  const checked = state?.card?.data?.selected_visual === 'winter'
+  const checked = selectedVisualMode === 'winter'
 
   return (
     <>
@@ -26,6 +27,7 @@ export const VisualContentWinter = observer(() => {
         value="winter"
         onChange={({target: {value}}) => {
           void updateCardVisual(value, id)
+          globalStore.setSelectedVisualMode(value as CardVisualType[number])
           globalStore.setPlayerSize('human')
         }}
         label="winter"

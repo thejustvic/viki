@@ -7,7 +7,12 @@ import {makeAutoPersist} from '@/utils/mobx-utils/make-auto-persist'
 import {ObjUtil} from '@/utils/obj-util'
 import {makeAutoObservable, observable} from 'mobx'
 import {isMobile} from 'react-device-detect'
-import {Card, GameModeType, PlayerSizeType} from '../cards/types'
+import {
+  Card,
+  CardVisualType,
+  GameModeType,
+  PlayerSizeType
+} from '../cards/types'
 import {AuthTabGroup, Tab, Theme} from './types'
 
 interface State {
@@ -33,6 +38,7 @@ interface State {
   }
   isThirdPersonView: boolean
   gameMode: GameModeType[number]
+  selectedVisualMode: CardVisualType[number] | undefined
   playerSize: PlayerSizeType[number]
   isVisualModalFromRightDrawerOpen?: boolean
   eggsTotalCount: number
@@ -64,6 +70,7 @@ export class GlobalStore {
     },
     isThirdPersonView: false,
     gameMode: 'none',
+    selectedVisualMode: undefined,
     playerSize: 'human',
     isVisualModalFromRightDrawerOpen: false,
     eggsTotalCount: 0,
@@ -198,6 +205,10 @@ export class GlobalStore {
 
   setIs3DSceneLocked = (value: boolean): void => {
     this.state.is3DSceneLocked = value
+  }
+
+  setSelectedVisualMode = (mode: CardVisualType[number]): void => {
+    this.state.selectedVisualMode = mode
   }
 }
 

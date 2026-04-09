@@ -2,6 +2,7 @@ import {getSearchCard} from '@/components/cards/get-search-card'
 import {SimpleScrollbar} from '@/components/common/simple-scrollbar'
 import tw from '@/components/common/tw-styled-components'
 import {Menu} from '@/components/daisyui/menu'
+import {useGlobalStore} from '@/components/global-provider/global-store'
 import {useSupabase} from '@/utils/supabase-utils/supabase-provider'
 import {observer} from 'mobx-react-lite'
 import {CardInfoCover} from './card-info-cover'
@@ -32,11 +33,13 @@ const TwCardInfoWrapper = tw.div`
 export const CardInfo = observer(() => {
   const {supabase, user} = useSupabase()
   const [, store] = useCardInfoStore()
+  const [, globalStore] = useGlobalStore()
   const cardId = getSearchCard()
 
   useCardInfoListener({
     cardId,
     store,
+    globalStore,
     supabase,
     user
   })

@@ -42,8 +42,9 @@ export const LawnInstances = ({positions}: Props) => {
                 scale={[5.483, 0.667, 5.483]}
               />
               <models.Soil
-                receiveShadow={false}
                 material={materials.Soil}
+                material-metalness={0} // removes any metallic sheen
+                material-roughness={1} // makes full matte
                 rotation={[-Math.PI / 2, 0, 0]}
                 scale={100}
               />
