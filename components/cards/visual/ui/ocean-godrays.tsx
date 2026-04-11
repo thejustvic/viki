@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import {useFrame} from '@react-three/fiber'
 import {useMemo, useRef} from 'react'
 import {
@@ -25,20 +26,14 @@ const SingleRay = ({
 
   useFrame(state => {
     const t = state.clock.getElapsedTime()
-    if (meshRef.current) {
-      meshRef.current.rotation.z = Math.sin(t * 0.5 + position[0]) * 0.05
-    }
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = t
     }
   })
 
   return (
-    <mesh ref={meshRef} position={position} rotation={[Math.PI / 2, 0, 0]}>
-      {/*
-        args: [radius top, radius bottom, height, ...]
-      */}
-      <cylinderGeometry args={[1, 15, 10, 32, 1, true]} />
+    <mesh ref={meshRef} position={position} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[100, 11]} />
       <shaderMaterial
         ref={materialRef}
         transparent
@@ -50,20 +45,48 @@ const SingleRay = ({
           varying vec2 vUv;
           void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vec3 pos = position;
+
+            // tilt the beam depending on the height (vUv.y)
+            // the lower (less y), the stronger the x-shift
+
+            float tilt = 5.0;
+            pos.x += (1.0 - uv.y) * tilt;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
           }
         `}
         fragmentShader={`
+          // fragmentShader
           varying vec2 vUv;
           uniform float uTime;
           uniform vec3 uColor;
           uniform float uIntensity;
+
           void main() {
-            // vUv.y goes from bottom to top. 1.0 is top, 0.0 is bottom.
-            float vMask = pow(vUv.y, 2.0);
-            float rays = sin(vUv.x * 20.0 + uTime * 0.5) * 0.5 + 0.5;
+            // create very thin vertical stripes
+            // increase the frequency (120.0) and raise it to the power (20.0) for sharpness
+
+            float needleBase = sin(vUv.x * 120.0 + uTime * 0.5) * 0.5 + 0.5;
+            float needles = pow(needleBase, 20.0); // the higher the grade, the thinner the needles.
+
+            // add a second layer for unevenness (shimmer)
+
+            float noise = sin(vUv.x * 30.0 - uTime * 0.3) * 0.5 + 0.5;
+            float finalNeedles = needles * noise;
+
+            // smooth fading from top (vUv.y = 1) and bottom (vUv.y = 0)
+            // the needles should "grow" from a point on top.
+
+            float verticalFade = smoothstep(0.0, 0.15, vUv.y) * pow(1.0 - vUv.y, 2.0);
+
+            // masking the side seams
+
             float edgeFade = sin(vUv.x * 3.1415);
-            gl_FragColor = vec4(uColor, vMask * rays * edgeFade * uIntensity);
+
+            float alpha = finalNeedles * verticalFade * edgeFade * uIntensity;
+
+            gl_FragColor = vec4(uColor, alpha);
           }
         `}
       />
@@ -89,10 +112,7 @@ export const OceanGodRays = ({
     [color, intensity]
   )
 
-  const positions: [number, number, number][] = [
-    [-20, 20, -5],
-    [20, 20, -5]
-  ]
+  const positions: [number, number, number][] = [[0, 44, -5]]
 
   return (
     <group>
