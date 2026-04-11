@@ -93,6 +93,11 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
   const belowWaterLevelColor = useMemo(() => new Color('#004466'), [])
   const sunOffset = useMemo(() => new Vector3(...sunPosition), [sunPosition])
 
+  const intensity = useMemo(
+    () => getIntensity(selectedVisualMode),
+    [selectedVisualMode]
+  )
+
   useFrame(() => {
     if (!lightRef.current || !playerRef.current) {
       return
@@ -124,7 +129,7 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
       <directionalLight
         ref={lightRef}
         castShadow
-        intensity={3.5}
+        intensity={intensity}
         shadow-mapSize={[2048, 2048]}
         // shadow area (focus around the player)
         shadow-camera-left={-25}
@@ -136,31 +141,28 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
         shadow-bias={-0.001} // removes artifacts on the sand
       />
       {/* cold backlighting of shadows from the sky */}
-      <ambientLight
-        intensity={getAmbient(selectedVisualMode)}
-        color="#d0e0ff"
-      />
+      <ambientLight intensity={intensity} color="#d0e0ff" />
     </>
   )
 })
 
-const getAmbient = (visual: CardVisualType[number] | undefined): number => {
-  const ambientLightIntensitySummer = 4.0
-  const ambientLightIntensitySpring = 3.5
-  const ambientLightIntensityWinter = 3.0
+const getIntensity = (visual: CardVisualType[number] | undefined): number => {
+  const lightIntensitySummer = 4.0
+  const lightIntensitySpring = 3.5
+  const lightIntensityWinter = 3.0
 
   switch (visual) {
     case 'winter': {
-      return ambientLightIntensityWinter
+      return lightIntensityWinter
     }
     case 'spring': {
-      return ambientLightIntensitySpring
+      return lightIntensitySpring
     }
     case 'summer': {
-      return ambientLightIntensitySummer
+      return lightIntensitySummer
     }
     default: {
-      return ambientLightIntensityWinter
+      return lightIntensityWinter
     }
   }
 }
