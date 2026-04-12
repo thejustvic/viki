@@ -67,6 +67,8 @@ export type ActionNameHuman =
   | 'Walk_Formal_Loop'
   | 'Walk_Loop'
 
+export type ActionNameDolphin = 'Swim'
+
 export const getNextActionBunny = (
   controls: MovementState,
   characteristics: ModelCharacteristics

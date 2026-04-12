@@ -4,7 +4,7 @@ import {useFrame, useThree} from '@react-three/fiber'
 import {RapierRigidBody} from '@react-three/rapier'
 import {observer} from 'mobx-react-lite'
 import {RefObject, useMemo, useRef} from 'react'
-import {BackSide, Color, DirectionalLight, Vector3} from 'three'
+import {BackSide, Color, DirectionalLight, MathUtils, Vector3} from 'three'
 import {CardVisualType} from '../../types'
 
 interface GradientSkyProps {
@@ -121,7 +121,15 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
       ? belowWaterLevelColor
       : aboveWaterLevelColor
     lightRef.current.color.lerp(targetColor, 0.05)
-    lightRef.current.intensity = isUnderwater ? 0 : 3.5
+
+    const targetIntensity = isUnderwater ? 0 : intensity
+
+    // smooth change: (current value, target value, speed)
+    lightRef.current.intensity = MathUtils.lerp(
+      lightRef.current.intensity,
+      targetIntensity,
+      0.05 // the lower the number, the slower the light fades
+    )
   })
 
   return (

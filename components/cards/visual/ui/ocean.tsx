@@ -1,3 +1,4 @@
+import {DolphinScene} from './dolphin-scene'
 import {OceanGodRays} from './ocean-godrays'
 import {OceanPlankton} from './ocean-plankton'
 import {OceanSand} from './ocean-sand'
@@ -12,6 +13,7 @@ export const Ocean = () => {
         <OceanWalls />
         <OceanPlankton count={1500} area={[100, 30, 100]} />
         <OceanGodRays />
+        <DolphinScene />
       </mesh>
       <OceanSand />
     </>
