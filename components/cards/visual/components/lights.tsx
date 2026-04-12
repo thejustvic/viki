@@ -93,8 +93,8 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
   const belowWaterLevelColor = useMemo(() => new Color('#004466'), [])
   const sunOffset = useMemo(() => new Vector3(...sunPosition), [sunPosition])
 
-  const intensity = useMemo(
-    () => getIntensity(selectedVisualMode),
+  const ambientIntensity = useMemo(
+    () => getAmbientIntensity(selectedVisualMode),
     [selectedVisualMode]
   )
 
@@ -122,7 +122,7 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
       : aboveWaterLevelColor
     lightRef.current.color.lerp(targetColor, 0.05)
 
-    const targetIntensity = isUnderwater ? 0 : intensity
+    const targetIntensity = isUnderwater ? 0 : 3.5
 
     // smooth change: (current value, target value, speed)
     lightRef.current.intensity = MathUtils.lerp(
@@ -137,7 +137,6 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
       <directionalLight
         ref={lightRef}
         castShadow
-        intensity={intensity}
         shadow-mapSize={[2048, 2048]}
         // shadow area (focus around the player)
         shadow-camera-left={-25}
@@ -149,12 +148,14 @@ const DynamicSun = observer(({sunPosition, playerRef}: Props) => {
         shadow-bias={-0.001} // removes artifacts on the sand
       />
       {/* cold backlighting of shadows from the sky */}
-      <ambientLight intensity={intensity} color="#d0e0ff" />
+      <ambientLight intensity={ambientIntensity} color="#d0e0ff" />
     </>
   )
 })
 
-const getIntensity = (visual: CardVisualType[number] | undefined): number => {
+const getAmbientIntensity = (
+  visual: CardVisualType[number] | undefined
+): number => {
   const lightIntensitySummer = 4.0
   const lightIntensitySpring = 3.5
   const lightIntensityWinter = 3.0
