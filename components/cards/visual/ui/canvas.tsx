@@ -7,7 +7,7 @@ export const Canvas = ({children}: PropsWithChildren) => {
   return (
     <CanvasComponent
       flat
-      shadows={isMobile ? 'basic' : 'variance'}
+      shadows={isMobile ? 'basic' : 'soft'}
       camera={{
         fov: 50
       }}
