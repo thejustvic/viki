@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import {useAnimations, useGLTF} from '@react-three/drei'
 import {useGraph} from '@react-three/fiber'
 import {useEffect, useMemo, useRef} from 'react'
@@ -5,6 +6,7 @@ import {
   AnimationClip,
   Bone,
   Group,
+  Mesh,
   MeshStandardMaterial,
   SkinnedMesh
 } from 'three'
@@ -44,6 +46,46 @@ export const DolphinModel = () => {
       }
     }
   }, [actions])
+
+  useMemo(() => {
+    scene.traverse(child => {
+      if (
+        child instanceof Mesh &&
+        child.material instanceof MeshStandardMaterial
+      ) {
+        const material = child.material
+
+        material.onBeforeCompile = shader => {
+          // adding uniforms
+          shader.uniforms.uWaterLevel = {value: 0.0}
+          shader.uniforms.uUnderWaterDarkness = {value: 0.2}
+          shader.uniforms.uTransitionSmoothness = {value: 0.5}
+
+          // modification
+          shader.vertexShader = shader.vertexShader.replace(
+            '#include <worldpos_vertex>',
+            `#include <worldpos_vertex>
+            varying vec3 vWorldPosition;
+            vWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;`
+          )
+
+          shader.fragmentShader = `
+          uniform float uWaterLevel;
+          uniform float uUnderWaterDarkness;
+          uniform float uTransitionSmoothness;
+          varying vec3 vWorldPosition;
+          ${shader.fragmentShader}
+        `.replace(
+            '#include <dithering_fragment>',
+            `#include <dithering_fragment>
+            float mixFactor = smoothstep(uWaterLevel - uTransitionSmoothness, uWaterLevel, vWorldPosition.y);
+            gl_FragColor.rgb *= mix(uUnderWaterDarkness, 1.0, mixFactor);`
+          )
+        }
+        material.needsUpdate = true
+      }
+    })
+  }, [scene])
 
   return (
     <group ref={group} dispose={null} castShadow receiveShadow>
