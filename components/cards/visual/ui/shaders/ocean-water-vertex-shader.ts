@@ -32,8 +32,8 @@ export const oceanWaterVertexShader = /* glsl */ `
 
       // CURVED COAST
       float shoreCurve = (sin(pos.x * 0.001) * shoreCurveStrength) + (cos(pos.x * 1.4) * 0.5);
-      float edgeMask = smoothstep(0.4, 0.0, vUv.y);
-      float sideMask = smoothstep(1000.0, 50.0, abs(pos.x));
+      float edgeMask = smoothstep(0.8, 0.0, vUv.y);
+      float sideMask = smoothstep(1000.0, 30.0, abs(pos.x));
 
       float totalDisplacement = wave + (shoreCurve * edgeMask * sideMask);
       vWave = totalDisplacement;

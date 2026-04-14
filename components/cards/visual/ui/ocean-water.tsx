@@ -16,7 +16,7 @@ export const OceanWater = () => {
   // textures of normals for the shine of water
   const waterNormals = useLoader(TextureLoader, '/textures/waternormals.jpg')
   waterNormals.wrapS = waterNormals.wrapT = RepeatWrapping
-  waterNormals.repeat.set(100, 70)
+  waterNormals.repeat.set(50, 50)
 
   // creating Uniforms to pass time to the shader
   const uniforms = useMemo(

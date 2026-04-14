@@ -12,8 +12,8 @@ export const oceanSandFragmentShader = `
     float underwaterMask = smoothstep(0.0, -1.0, vDepth);
 
     // caustic calculation
-    vec2 uv1 = vUv * 8.0 + vec2(uTime * 0.02, uTime * 0.01);
-    vec2 uv2 = vUv * 8.0 + vec2(uTime * -0.015, uTime * 0.02);
+    vec2 uv1 = vUv * 50.0 + vec2(uTime * 0.02, uTime * 0.01);
+    vec2 uv2 = vUv * 50.0 + vec2(uTime * -0.015, uTime * 0.02);
     float finalCaustic = min(texture2D(uCausticsTex, uv1).r, texture2D(uCausticsTex, uv2).r);
 
     // mix the base color of the sand with the color of the water
