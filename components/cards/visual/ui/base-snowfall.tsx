@@ -3,10 +3,10 @@ import {useEffect, useMemo, useRef} from 'react'
 import {Euler, InstancedMesh, Object3D, Quaternion} from 'three'
 
 const NUM_SNOWFLAKES = 1000
-const SCENE_WIDTH = 15
-const SNOW_RESET_Y = -5
+const SCENE_WIDTH = 20
+const SNOW_RESET_Y = 0
 const SNOW_START_Y_MAX = 15
-const SCENE_BOTTOM = -5
+const SCENE_BOTTOM = 0
 
 export interface SnowflakeMeta {
   speed: number
@@ -107,9 +107,14 @@ export const Snowfall = () => {
   })
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, NUM_SNOWFLAKES]}>
-      <sphereGeometry args={[0.05, 6, 6]} />
-      <meshBasicMaterial color="white" transparent opacity={0.7} />
-    </instancedMesh>
+    <group position={[0, 0, 114]}>
+      <instancedMesh
+        ref={meshRef}
+        args={[undefined, undefined, NUM_SNOWFLAKES]}
+      >
+        <sphereGeometry args={[0.05, 6, 6]} />
+        <meshBasicMaterial color="white" transparent opacity={0.7} />
+      </instancedMesh>
+    </group>
   )
 }
