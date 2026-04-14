@@ -1,11 +1,9 @@
 export const oceanWaterFragmentShader = /* glsl */ `
-
-    // fragmentShader
     varying vec2 vUv;
     varying float vWave;
+    varying vec3 vWorldPosition; // added in vertex shader to use here
     uniform float uTime;
 
-    // simple noise function for "holes" in foam
     float hash(vec2 p) {
       return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
     }
@@ -15,6 +13,7 @@ export const oceanWaterFragmentShader = /* glsl */ `
       vec3 depthColor = vec3(0.0, 0.05, 0.1);   // color in depth (dark)
       vec3 surfaceColor = vec3(0.0, 0.3, 0.4);  // color near the shore (light/turquoise)
       vec3 foamColor = vec3(1.0, 1.0, 1.0);     // foam color (white)
+      vec3 fogColor = vec3(0.0, 0.02, 0.05);    // very dark blue
 
       float foamWidth = 0.02;          // basic foam strip width
       float foamTearStrength = 0.15;   // how much foam "breaks" at low tide
@@ -25,25 +24,37 @@ export const oceanWaterFragmentShader = /* glsl */ `
       float edgeSoftness = 0.15;       // how gently the water disappears at the very edge
       // ------------------------------
 
-      // base color (gradient from depth to shore)
+      // base color of water
       float edge = smoothstep(0.1, 0.0, vUv.y);
       vec3 waterBaseColor = mix(depthColor, surfaceColor, edge);
 
-      // noise for torn foam effect
+      // foam logic
       float noise = hash(vUv * noiseScale + uTime * noiseSpeed);
-
-      // foam Break Logic (vWave as Phase Indicator)
       float breakAmount = smoothstep(0.5, -1.5, vWave) * foamTearStrength;
       float foamArea = smoothstep(foamWidth + breakAmount, 0.0, vUv.y + noise * breakAmount);
-
-      // final color (mixing water and foam)
       float foamIntensity = clamp(foamArea * 2.0, 0.0, 1.0);
       vec3 finalColor = mix(waterBaseColor, foamColor, foamIntensity);
 
-      // transparency (soft edge of the shore)
+      // calculation of fog at a distance (Skirt)
+      // radius from the center of the world
+      float dist = length(vWorldPosition.xz);
+
+      // start to fog from 0 to 500 units
+      float radialFog = smoothstep(0.0, 500.0, dist);
+
+      // altitude dive (below 0.0)
+      float heightFog = smoothstep(0.0, -10.0, vWorldPosition.y);
+
+      // combine: fog is activated either at a distance or at depth
+      float fogMix = max(radialFog, heightFog);
+      fogMix = clamp(fogMix, 0.0, 1.0);
+
+      vec3 colorWithFog = mix(finalColor, fogColor, fogMix);
+
+      // transparency: soft shore + full opacity at the edge of fog
       float alpha = smoothstep(-0.1, edgeSoftness, vUv.y);
+      float finalAlpha = mix(waterOpacity * alpha, 1.0, fogMix);
 
-      csm_DiffuseColor = vec4(finalColor, waterOpacity * alpha);
+      csm_DiffuseColor = vec4(colorWithFog, finalAlpha);
     }
-
-  `
+`

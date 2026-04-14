@@ -1,8 +1,7 @@
 export const oceanWaterVertexShader = /* glsl */ `
-
-    // vertexShader
     varying vec2 vUv;
     varying float vWave;
+    varying vec3 vWorldPosition; // add for fragment shader
     uniform float uTime;
 
     void main() {
@@ -20,8 +19,6 @@ export const oceanWaterVertexShader = /* glsl */ `
 
       // PHASE AND BASE WAVE
       float phase = pos.y * waveFrequency + uTime * waveSpeed;
-
-      // VOLUME MASK (Z)
       float calmMask = smoothstep(0.0, calmZoneStart, vUv.y);
 
       // HORIZONTAL ROLL (Y)
@@ -39,9 +36,23 @@ export const oceanWaterVertexShader = /* glsl */ `
       vWave = totalDisplacement;
 
       pos.y += totalDisplacement;
-      pos.z += height;
+
+      // CALCULATION OF WORLD COORDINATES (before edge immersion)
+      vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+
+      // radius from the center of the world (0.0)
+      float dist = length(worldPos.xz);
+
+      // SKIRT EFFECT
+      // start the dive a little earlier (490) to make the transition smooth
+      float skirtAlpha = smoothstep(490.0, 500.0, dist);
+      float skirtDepth = skirtAlpha * -30.0; // going deeper for reliability
+
+      pos.z += height + skirtDepth;
+
+      // update the world position (now Y in the world is the height after the offsets)
+      vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
       csm_Position = pos;
     }
-
-  `
+`
