@@ -16,7 +16,7 @@ export const OceanWater = () => {
   // textures of normals for the shine of water
   const waterNormals = useLoader(TextureLoader, '/textures/waternormals.jpg')
   waterNormals.wrapS = waterNormals.wrapT = RepeatWrapping
-  waterNormals.repeat.set(8, 2)
+  waterNormals.repeat.set(100, 70)
 
   // creating Uniforms to pass time to the shader
   const uniforms = useMemo(
@@ -34,7 +34,7 @@ export const OceanWater = () => {
   return (
     <mesh>
       {/* 128x128 segments for smooth 3D waves */}
-      <planeGeometry args={[100, 100, 128, 128]} />
+      <planeGeometry args={[1000, 700, 128, 128]} />
       <CustomShaderMaterial
         ref={materialRef}
         baseMaterial={MeshStandardMaterial}

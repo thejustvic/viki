@@ -258,7 +258,7 @@ export const ConeWithSpheres = observer(() => {
 
   return (
     <>
-      <group position={[0, dynamicConeY, -6]}>
+      <group position={[0, dynamicConeY, 114]}>
         <Cone args={[coneRadius, coneHeight, 32] as const}>
           {/* change opacity to see the cone */}
           <meshStandardMaterial color="hotpink" transparent opacity={0} />
@@ -273,7 +273,7 @@ export const ConeWithSpheres = observer(() => {
       </group>
       <group
         ref={treeRef}
-        position={[0, treeGroundY, -6]}
+        position={[0, treeGroundY, 114]}
         scale={baseTreeScale}
       >
         <TreeModel />

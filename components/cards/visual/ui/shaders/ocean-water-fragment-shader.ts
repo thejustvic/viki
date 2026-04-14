@@ -17,7 +17,7 @@ export const oceanWaterFragmentShader = /* glsl */ `
       vec3 foamColor = vec3(1.0, 1.0, 1.0);     // foam color (white)
 
       float foamWidth = 0.02;          // basic foam strip width
-      float foamTearStrength = 0.55;   // how much foam "breaks" at low tide
+      float foamTearStrength = 0.15;   // how much foam "breaks" at low tide
       float noiseScale = 100.0;        // foam bubble size (larger = smaller)
       float noiseSpeed = 0.1;          // foam flicker speed
 
@@ -26,7 +26,7 @@ export const oceanWaterFragmentShader = /* glsl */ `
       // ------------------------------
 
       // base color (gradient from depth to shore)
-      float edge = smoothstep(0.4, 0.0, vUv.y);
+      float edge = smoothstep(0.1, 0.0, vUv.y);
       vec3 waterBaseColor = mix(depthColor, surfaceColor, edge);
 
       // noise for torn foam effect

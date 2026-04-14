@@ -249,7 +249,7 @@ export const Tulip = observer(() => {
     )
   })
   return (
-    <group scale={scale}>
+    <group scale={scale} position={[0, 0, 120]}>
       <RigidBody type="fixed" colliders="cuboid" position={[0, -0.01, 0]}>
         <mesh rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[1000, 1000]} />

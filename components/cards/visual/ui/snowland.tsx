@@ -28,7 +28,7 @@ export const Snowland = () => {
     snowDiff.colorSpace = 'srgb'
     textures.forEach(t => {
       t.wrapS = t.wrapT = RepeatWrapping
-      t.repeat.set(10, 10)
+      t.repeat.set(50, 50)
     })
   }, [textures])
 
@@ -36,7 +36,7 @@ export const Snowland = () => {
     <RigidBody type="fixed" colliders="trimesh">
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         {/* [radius, circle segments, ring segments for relief] */}
-        <circleGeometry args={[25, 128, 64]} />
+        <circleGeometry args={[500, 128, 64]} />
         <CustomShaderMaterial
           metalness={0} // removes any metallic sheen
           ref={materialRef}

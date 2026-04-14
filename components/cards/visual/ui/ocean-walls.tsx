@@ -60,21 +60,21 @@ export const OceanWalls = () => {
     <group>
       {/* left wall*/}
       <OceanWall
-        position={[-50, 0, -4.7]}
+        position={[-500, 0, -4.7]}
         rotation={[0, Math.PI / 2, Math.PI]}
-        args={[11, 90]}
+        args={[11, 900]}
       />
       {/* right wall */}
       <OceanWall
-        position={[50, 0, -4.7]}
+        position={[500, 0, -4.7]}
         rotation={[0, -Math.PI / 2, -Math.PI]}
-        args={[11, 90]}
+        args={[11, 900]}
       />
       {/* back wall */}
       <OceanWall
-        position={[0, 45, -4.7]}
+        position={[0, 495, -4.7]}
         rotation={[-Math.PI / 2, -Math.PI, 0]}
-        args={[100, 11]}
+        args={[1000, 11]}
       />
     </group>
   )

@@ -15,7 +15,7 @@ export const oceanWaterVertexShader = /* glsl */ `
       float waveHorizontal = 2.8;       // rollover force (forward-backward)
       float waveVertical = 0.5;         // wave height (z volume)
       float shoreCurveStrength = 1.8;   // shore curvature force
-      float calmZoneStart = 0.05;       // where do 3D waves start to disappear (0.0 - 1.0)
+      float calmZoneStart = 0.01;       // where do 3D waves start to disappear (0.0 - 1.0)
       // ------------------------------
 
       // PHASE AND BASE WAVE
@@ -31,9 +31,9 @@ export const oceanWaterVertexShader = /* glsl */ `
       float height = pow(cos(phase + 1.2) * 0.5 + 0.5, 3.0) * waveVertical * calmMask;
 
       // CURVED COAST
-      float shoreCurve = (sin(pos.x * 0.1) * shoreCurveStrength) + (cos(pos.x * 0.4) * 0.5);
+      float shoreCurve = (sin(pos.x * 0.001) * shoreCurveStrength) + (cos(pos.x * 1.4) * 0.5);
       float edgeMask = smoothstep(0.4, 0.0, vUv.y);
-      float sideMask = smoothstep(100.0, 50.0, abs(pos.x));
+      float sideMask = smoothstep(1000.0, 50.0, abs(pos.x));
 
       float totalDisplacement = wave + (shoreCurve * edgeMask * sideMask);
       vWave = totalDisplacement;

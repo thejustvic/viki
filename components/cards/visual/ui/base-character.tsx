@@ -32,7 +32,7 @@ interface BaseCharacterProps {
 
 const sittingSpeed = 1
 const walkSpeed = 2
-const runSpeed = 6
+const runSpeed = 100
 
 export const BaseCharacter = observer(
   ({moveData, lookData, rigidBodyRef}: BaseCharacterProps) => {
@@ -94,7 +94,7 @@ export const BaseCharacter = observer(
         )}
         <RigidBody
           ref={rigidBodyRef}
-          position={[0, 0, 0]}
+          position={[0, 0, 120]}
           colliders={false}
           lockRotations
         >

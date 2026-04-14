@@ -5,7 +5,7 @@ import {DolphinModel} from '../components/dolphin-model'
 
 export const DolphinScene = () => {
   return (
-    <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 20, 0]}>
+    <group rotation={[-Math.PI / 2, 0, 0]} position={[0, -200, 0]}>
       <Dolphin />
     </group>
   )

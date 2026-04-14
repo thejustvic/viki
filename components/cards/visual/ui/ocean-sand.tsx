@@ -34,14 +34,14 @@ export const OceanSand = () => {
   const sandNormal = useLoader(EXRLoader, '/textures/sand_nor.exr')
   const causticsTexture = useLoader(TextureLoader, '/textures/caustic.jpg')
 
-  const geometry = useMemo(() => createSlopedBottom(100, 200), [])
+  const geometry = useMemo(() => createSlopedBottom(1000, 1000), [])
 
   const textures = [sandDiff, sandRough, sandDisp, sandNormal, causticsTexture]
 
   useMemo(() => {
     textures.forEach(t => {
       t.wrapS = t.wrapT = RepeatWrapping
-      t.repeat.set(10, 20)
+      t.repeat.set(100, 100)
     })
   }, [textures])
 
@@ -83,30 +83,33 @@ export const OceanSand = () => {
     </RigidBody>
   )
 }
+const TERRAIN_CONFIG = {
+  SEGMENTS: 128,
+  START_Y: -100,
+  END_Y: 0,
+  MAX_DEPTH: -10
+}
 
 const createSlopedBottom = (width: number, height: number) => {
-  // 128x128 segments — this is important for terrain
-  const geo = new PlaneGeometry(width, height, 128, 128)
+  const {SEGMENTS, START_Y, END_Y, MAX_DEPTH} = TERRAIN_CONFIG
+
+  const geo = new PlaneGeometry(width, height, SEGMENTS, SEGMENTS)
   const pos = geo.attributes.position.array as Float32Array
 
   for (let i = 0; i < pos.length; i += 3) {
     const yCoord = pos[i + 1]
 
-    // determine the mixing factor (from 0 to 1) between points 20 and 70
-    // t will be 0 at 20, and 1 at 70
-    let t = (yCoord - 20) / (70 - 20)
-
-    // limit t to the range [0, 1]
+    // Розрахунок фактора змішування (t) в діапазоні [0, 1]
+    let t = (yCoord - START_Y) / (END_Y - START_Y)
     t = Math.max(0, Math.min(1, t))
 
-    // make the transition smooth (S-shaped curve)
-    // this will remove sharp corners at the entrance and exit.
+    // Плавна інтерполяція (Smoothstep)
     const smoothT = t * t * (3 - 2 * t)
 
-    // calculate the final depth
-    // interpolate between 0 (shore) and -10 (depth)
-    pos[i + 2] = smoothT * -10
+    // Встановлення глибини по осі Z
+    pos[i + 2] = smoothT * MAX_DEPTH
   }
+
   geo.computeVertexNormals()
   return geo
 }
