@@ -11,7 +11,7 @@ export const oceanWaterVertexShader = /* glsl */ `
       // --- SETTING CONSTANTS---
       float waveSpeed = 1.5;            // wave speed
       float waveFrequency = 0.2;        // frequency (the lower, the longer the waves)
-      float waveHorizontal = 2.8;       // rollover force (forward-backward)
+      float waveHorizontal = 4.8;       // rollover force (forward-backward)
       float waveVertical = 0.5;         // wave height (z volume)
       float shoreCurveStrength = 1.8;   // shore curvature force
       float calmZoneStart = 0.01;       // where do 3D waves start to disappear (0.0 - 1.0)
