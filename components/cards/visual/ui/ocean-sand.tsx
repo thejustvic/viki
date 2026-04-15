@@ -64,7 +64,6 @@ export const OceanSand = () => {
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <primitive object={geometry} attach="geometry" />
         <CustomShaderMaterial
-          metalness={0} // removes any metallic sheen
           ref={materialRef}
           baseMaterial={MeshStandardMaterial}
           uniforms={uniforms}
@@ -73,7 +72,6 @@ export const OceanSand = () => {
           // MeshStandardMaterial props
           map={sandDiff}
           roughnessMap={sandRough}
-          roughness={1} // makes the sand completely matte
           normalMap={sandNormal}
           normalScale={new Vector2(1, 1)} // microrelief strength control
           displacementMap={sandDisp}

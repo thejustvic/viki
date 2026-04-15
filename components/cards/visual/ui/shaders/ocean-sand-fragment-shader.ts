@@ -6,6 +6,12 @@ export const oceanSandFragmentShader = `
   uniform vec3 uWaterColor;
 
   void main() {
+    // makes the material as matte as possible, diffusing glare
+    csm_Roughness = 1.0;
+
+    // make sure that there is no metallicity
+    csm_Metalness = 0.0;
+
     // create a dive mask
     // smoothstep(upper bound, lower bound, value)
     // 0.0 — dry, 1.0 — completely underwater (at a depth of -1.0 and below)
