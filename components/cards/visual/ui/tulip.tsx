@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import tw from '@/components/common/tw-styled-components'
 import {useGlobalStore} from '@/components/global-provider/global-store'
 import {ArrUtil} from '@/utils/arr-util'
@@ -292,12 +293,16 @@ const LoadingTulips = () => {
 const getScale = (playerSize: PlayerSizeType[number]) => {
   const human = 0.2
   const bunny = 0.6
+  const car = 0.6
   switch (playerSize) {
     case 'human': {
       return human
     }
     case 'bunny': {
       return bunny
+    }
+    case 'car': {
+      return car
     }
     default: {
       return human

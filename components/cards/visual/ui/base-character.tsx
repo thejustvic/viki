@@ -9,6 +9,7 @@ import {isMobile} from 'react-device-detect'
 import type {Mesh} from 'three'
 import {PlayerSizeType} from '../../types'
 import {BunnyModel} from '../components/bunny-model'
+import {CarModel} from '../components/car-model'
 import {HumanModel} from '../components/human-model'
 import {usePlayerControls} from '../utils/helpers'
 import {Vector2} from './joystick'
@@ -32,7 +33,7 @@ interface BaseCharacterProps {
 
 const sittingSpeed = 1
 const walkSpeed = 2
-const runSpeed = 100
+const runSpeed = 6
 
 export const BaseCharacter = observer(
   ({moveData, lookData, rigidBodyRef}: BaseCharacterProps) => {
@@ -119,12 +120,16 @@ export const BaseCharacter = observer(
 const getJumpForce = (playerSize: PlayerSizeType[number]) => {
   const human = 4
   const bunny = 5
+  const car = 5
   switch (playerSize) {
     case 'human': {
       return human
     }
     case 'bunny': {
       return bunny
+    }
+    case 'car': {
+      return car
     }
     default: {
       return human
@@ -138,12 +143,16 @@ interface HeadPintProps {
 const getHeadPoint = ({playerSize, sitDown}: HeadPintProps): HeadPointType => {
   const human = sitDown ? {y: 1.1, z: -0.5} : {y: 2.1, z: 0}
   const bunny = {y: 1.1, z: 0}
+  const car = {y: 0.8, z: 0}
   switch (playerSize) {
     case 'human': {
       return human
     }
     case 'bunny': {
       return bunny
+    }
+    case 'car': {
+      return car
     }
     default: {
       return human
@@ -167,12 +176,19 @@ const getCapsuleColliderProps = (
     argsCapsuleCollider: [0.4, 0.3],
     positionCapsuleCollider: [0, 0.7, 0]
   }
+  const car: ICapsuleCollider = {
+    argsCapsuleCollider: [0.4, 0.3],
+    positionCapsuleCollider: [0, 0.7, 0]
+  }
   switch (playerSize) {
     case 'human': {
       return human
     }
     case 'bunny': {
       return bunny
+    }
+    case 'car': {
+      return car
     }
     default: {
       return human
@@ -193,6 +209,9 @@ const getModel = (props: ModelProps) => {
     }
     case 'bunny': {
       return <BunnyModel characteristics={characteristics} />
+    }
+    case 'car': {
+      return <CarModel characteristics={characteristics} />
     }
     default: {
       return <HumanModel characteristics={characteristics} />

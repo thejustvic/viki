@@ -43,6 +43,7 @@ export interface ModelCharacteristics {
   isFalling: boolean
   isPreparingJump: boolean
   justDropped: boolean
+  speed: number
 }
 export const useCharacterLogic = (
   props: CharacterLogicProps
@@ -312,6 +313,7 @@ export const useCharacterLogic = (
     isJumping,
     isFalling,
     isPreparingJump,
-    justDropped: wasFlying.current && !isFlying.current
+    justDropped: wasFlying.current && !isFlying.current,
+    speed
   }
 }

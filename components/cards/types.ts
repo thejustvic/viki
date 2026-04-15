@@ -8,6 +8,6 @@ export type CardBgImages = ['none', 'cyborg', 'matrix', 'cyberpunk']
 
 export type CardVisualType = ['winter', 'spring', 'summer']
 
-export type PlayerSizeType = ['human', 'bunny']
+export type PlayerSizeType = ['human', 'bunny', 'car']
 
 export type GameModeType = ['none', 'egg-collecting']
