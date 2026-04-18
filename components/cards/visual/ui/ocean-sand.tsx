@@ -34,7 +34,7 @@ export const OceanSand = () => {
   const sandNormal = useLoader(EXRLoader, '/textures/sand_nor.exr')
   const causticsTexture = useLoader(TextureLoader, '/textures/caustic.jpg')
 
-  const geometry = useMemo(() => createSlopedBottom(1000, 1000), [])
+  const geometry = useMemo(createSlopedBottom, [])
 
   const textures = [sandDiff, sandRough, sandDisp, sandNormal, causticsTexture]
 
@@ -82,32 +82,44 @@ export const OceanSand = () => {
   )
 }
 const TERRAIN_CONFIG = {
-  SEGMENTS: 128,
-  START_Y: -100,
-  END_Y: 0,
-  MAX_DEPTH: -10
+  SEGMENTS: 256, // number of squares in the grid
+  TOTAL_RADIUS: 500,
+  MAX_DEPTH: -10,
+  SURFACE_Z: 0,
+  START_Y: 100,
+  END_Y: 200
 }
 
-const createSlopedBottom = (width: number, height: number) => {
-  const {SEGMENTS, START_Y, END_Y, MAX_DEPTH} = TERRAIN_CONFIG
+const createSlopedBottom = () => {
+  const {SEGMENTS, TOTAL_RADIUS, MAX_DEPTH, SURFACE_Z, START_Y, END_Y} =
+    TERRAIN_CONFIG
 
-  const geo = new PlaneGeometry(width, height, SEGMENTS, SEGMENTS)
-  const pos = geo.attributes.position.array as Float32Array
+  const size = TOTAL_RADIUS * 2
+  const geo = new PlaneGeometry(size, size, SEGMENTS, SEGMENTS)
+
+  const attr = geo.getAttribute('position')
+  const pos = attr.array as Float32Array
 
   for (let i = 0; i < pos.length; i += 3) {
-    const yCoord = pos[i + 1]
+    const x = pos[i]
+    const y = pos[i + 1]
+    const distance = Math.sqrt(x * x + y * y)
 
-    // Розрахунок фактора змішування (t) в діапазоні [0, 1]
-    let t = (yCoord - START_Y) / (END_Y - START_Y)
-    t = Math.max(0, Math.min(1, t))
-
-    // Плавна інтерполяція (Smoothstep)
-    const smoothT = t * t * (3 - 2 * t)
-
-    // Встановлення глибини по осі Z
-    pos[i + 2] = smoothT * MAX_DEPTH
+    if (distance <= START_Y) {
+      pos[i + 2] = SURFACE_Z
+    } else if (distance <= END_Y) {
+      const t = (distance - START_Y) / (END_Y - START_Y)
+      const smoothT = t * t * (3 - 2 * t)
+      pos[i + 2] = SURFACE_Z + smoothT * (MAX_DEPTH - SURFACE_Z)
+    } else if (distance <= TOTAL_RADIUS) {
+      pos[i + 2] = MAX_DEPTH
+    } else {
+      pos[i + 2] = MAX_DEPTH
+    }
   }
 
+  attr.needsUpdate = true
   geo.computeVertexNormals()
+  geo.computeBoundingSphere()
   return geo
 }

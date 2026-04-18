@@ -1,11 +1,15 @@
 export const oceanSandFragmentShader = `
   varying vec2 vUv;
   varying float vDepth; // on the shore = 0, at depth = -5
+  varying float vDist;
   uniform float uTime;
   uniform sampler2D uCausticsTex;
   uniform vec3 uWaterColor;
 
   void main() {
+    // CUT THE SAND TO A RADIUS (e.g. 480)
+    if (vDist > 480.0) discard;
+
     // makes the material as matte as possible, diffusing glare
     csm_Roughness = 1.0;
 
