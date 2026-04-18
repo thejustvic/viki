@@ -7,8 +7,8 @@ export const oceanSandFragmentShader = `
   uniform vec3 uWaterColor;
 
   void main() {
-    // CUT THE SAND TO A RADIUS (e.g. 480)
-    if (vDist > 480.0) discard;
+    // CUT THE SAND TO A RADIUS (e.g. 470)
+    if (vDist > 470.0) discard;
 
     // makes the material as matte as possible, diffusing glare
     csm_Roughness = 1.0;

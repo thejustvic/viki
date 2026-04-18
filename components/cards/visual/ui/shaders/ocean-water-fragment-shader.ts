@@ -23,43 +23,38 @@ export const oceanWaterFragmentShader = /* glsl */ `
     }
 
     void main() {
-      // cut off everything beyond a radius of 500
+      // CUT THE WATER ALONG A RADIUS
       if (vDist > 500.0) discard;
 
-      // BASIC COLOR
-      float edge = smoothstep(uShoreRadius + 50.0, uShoreRadius, vDist);
+      // BASIC COLOR AND SURF NEAR THE ISLAND
+      float edge = smoothstep(uShoreRadius + 100.0, uShoreRadius, vDist);
       vec3 waterBaseColor = mix(uDepthColor, uSurfaceColor, edge);
 
-      // FOAM LOGIC
       float noise = hash(vUv * uNoiseScale + uTime * uNoiseSpeed);
-      // calculate the distance from the current point to the shore
       float foamDist = abs(vDist - uShoreRadius);
-
-      // add a wave effect (vWave) to make the foam "move" with the crest
       float waveEffect = vWave * uFoamTearStrength * 10.0;
-
-      // radial foam using uFoamWidth
-      // draw a white ring
-      // use uFoamWidth (e.g. 15.0) to make the foam visible
       float foamArea = smoothstep(uFoamWidth + waveEffect, 0.0, foamDist);
       float foamIntensity = clamp(foamArea * 0.2, 0.0, 1.0);
 
-      vec3 finalColor = mix(waterBaseColor, uFoamColor, foamIntensity);
+      // color of the water with the surf near the shore
+      vec3 finalRGB = mix(waterBaseColor, uFoamColor, foamIntensity);
 
-      // FOG AND IMMERSION
-      float radialFog = smoothstep(400.0, 500.0, vDist);
-      float heightFog = smoothstep(0.0, -10.0, vWorldPosition.y);
-      float fogMix = clamp(max(radialFog, heightFog), 0.0, 1.0);
+      // WATERFALL FOAM
+      // draw white strands at the very edge
+      float waterfallFoam = smoothstep(493.0, 500.0, vDist);
+      float dynamicFoam = waterfallFoam * (0.6 + noise * 0.4);
 
-      vec3 colorWithFog = mix(finalColor, uFogColor, fogMix);
+      // applying foam to the waterfall
+      finalRGB = mix(finalRGB, uFoamColor, dynamicFoam * 0.9);
 
       // TRANSPARENCY
-      // the water becomes transparent only where there is an island (vDist < uShoreRadius)
-      float alphaMask = smoothstep(uShoreRadius - 2.0, uShoreRadius + 15.0, vDist);
+      // smooth appearance of water near the shore of the island
+      float alphaMask = smoothstep(uShoreRadius - 2.0, uShoreRadius + 20.0, vDist);
 
-      // final transparency with fog included (fogMix makes water opaque on the horizon)
-      float finalAlpha = mix(uWaterOpacity * alphaMask, 1.0, fogMix);
+      // make the water opaque at the very edge of the waterfall for clarity of the jets
+      float finalAlpha = mix(uWaterOpacity * alphaMask, 1.0, waterfallFoam);
 
-      csm_DiffuseColor = vec4(colorWithFog, finalAlpha);
+      csm_DiffuseColor = vec4(finalRGB, finalAlpha);
     }
+
 `
