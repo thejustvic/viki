@@ -9,7 +9,7 @@ export const Ocean = () => {
     <>
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <OceanWater />
-        <OceanPlankton count={1500} area={[100, 30, 100]} />
+        <OceanPlankton />
         <OceanGodRays />
         <DolphinScene />
       </mesh>
