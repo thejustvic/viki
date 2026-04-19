@@ -9,7 +9,8 @@ export const Canvas = ({children}: PropsWithChildren) => {
       flat
       shadows={isMobile ? 'basic' : 'soft'}
       camera={{
-        fov: 50
+        fov: 50,
+        far: 2000
       }}
       className="rounded-md relative"
       dpr={1} // 1 for maximum FPS

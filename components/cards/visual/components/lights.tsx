@@ -14,13 +14,13 @@ const GradientSky = ({sunPosition}: GradientSkyProps) => {
   const sunOffset = useMemo(() => new Vector3(...sunPosition), [sunPosition])
 
   return (
-    <Sphere args={[500, 64, 64]}>
+    <Sphere args={[1000, 128, 128]}>
       <shaderMaterial
         side={BackSide}
         fog={false} // sky shouldn't cloud over on its own.
         uniforms={{
           uSunPosition: {value: sunOffset.clone().normalize()}, // transmit the direction to the sun
-          uBottomColor: {value: new Color('#D8FEFE')},
+          uBottomColor: {value: new Color('#daefff')},
           uTopColor: {value: new Color('#A6D8FE')}
         }}
         vertexShader={`
