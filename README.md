@@ -27,3 +27,5 @@ Adaptive UI: Fully customizable workspace with resizable layouts, theme modulati
 Dynamic Environments: Real-time 3D scenes synchronized with seasonal states (Winter to Autumn) featuring free-roam navigation (jump/fly).
 
 <img width="1435" height="728" alt="image" src="https://github.com/user-attachments/assets/9cb790d2-8bef-45f6-a3b5-a926093a7b54" />
+
+https://github.com/user-attachments/assets/fe58088f-3021-4f80-848b-7bc23942d267
