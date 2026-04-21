@@ -18,6 +18,7 @@ const GradientSky = ({sunPosition}: GradientSkyProps) => {
       <shaderMaterial
         side={BackSide}
         fog={false} // sky shouldn't cloud over on its own.
+        depthWrite={false} // THIS IS CRITICAL: the sky should not write to the depth buffer
         uniforms={{
           uSunPosition: {value: sunOffset.clone().normalize()}, // transmit the direction to the sun
           uBottomColor: {value: new Color('#daefff')},
