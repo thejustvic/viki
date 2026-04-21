@@ -1,8 +1,18 @@
+/* eslint-disable max-lines-per-function */
 import {useGLTF} from '@react-three/drei'
 import {useFrame, useGraph} from '@react-three/fiber'
 import {useMemo, useRef} from 'react'
-import {Group, Mesh, MeshStandardMaterial} from 'three'
+import {
+  AdditiveBlending,
+  Color,
+  DoubleSide,
+  Group,
+  Mesh,
+  MeshStandardMaterial
+} from 'three'
 import {GLTF, SkeletonUtils} from 'three-stdlib'
+
+const JELLYFISH_RENDER_ORDER = 10 // the higher the number, the later the object is drawn (on top of others)
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -20,6 +30,17 @@ export const JellyfishModel = () => {
   const {scene} = useGLTF('/jellyfish.glb')
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
+
+  const jellyfishMaterial = useMemo(() => {
+    const m = materials.Jellyfish3.clone()
+
+    m.emissive = new Color('#00f2ff')
+    m.transparent = true
+    m.blending = AdditiveBlending // the color will layer and glow
+    m.side = DoubleSide // both the inner and outer walls will glow
+
+    return m
+  }, [materials])
 
   useFrame(state => {
     const t = state.clock.getElapsedTime()
@@ -56,13 +77,19 @@ export const JellyfishModel = () => {
       pivotRef.current.scale.x = thickness
       pivotRef.current.scale.z = thickness
     }
+
+    // luminescence pulsation
+    if (jellyfishMaterial) {
+      jellyfishMaterial.opacity = 0.1 + Math.abs(Math.sin(t * 1.5)) * 0.1
+    }
   })
 
   return (
     <group ref={group} dispose={null} scale={0.005}>
       <mesh
+        renderOrder={JELLYFISH_RENDER_ORDER}
         geometry={nodes.Cylinder002_Jellyfish3_0.geometry}
-        material={materials.Jellyfish3}
+        material={jellyfishMaterial}
         position={[0, 123.354, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         scale={[62.143, 62.143, 74.045]}
@@ -72,8 +99,9 @@ export const JellyfishModel = () => {
         position={[0, 0, 0]} // point where growth begins (top of tentacles)
       >
         <mesh
+          renderOrder={JELLYFISH_RENDER_ORDER}
           geometry={nodes.BezierCurve002_Jellyfish3_0.geometry}
-          material={materials.Jellyfish3}
+          material={jellyfishMaterial}
           /*
             IMPORTANT: add position.y to shift the mesh down to stretch the tentacles only downwards
           */
