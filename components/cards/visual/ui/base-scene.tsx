@@ -16,8 +16,12 @@ import {Lighting} from '../components/lights'
 import {pluralize} from '../utils/helpers'
 import {Canvas} from './canvas'
 import {DualJoysticks, Vector2} from './joystick'
-
-const TwDot = tw.div`
+interface ITWDot {
+  $isHidden: boolean
+}
+const TwDot = tw.div<ITWDot>`
+  ${({$isHidden}) => $isHidden && 'hidden'}
+  hidden
   absolute
   top-1/2
   left-1/2
@@ -55,34 +59,35 @@ interface BasicSceneProps extends PropsWithChildren {
   lookData: RefObject<Vector2>
   rigidBodyRef: RefObject<RapierRigidBody | null>
 }
-export const BasicScene = ({
-  children,
-  moveData,
-  lookData,
-  rigidBodyRef
-}: BasicSceneProps) => {
-  const visualTab = getSearchParam('visual-tab')
-  const isReady = useBoolean(false)
+export const BasicScene = observer(
+  ({children, moveData, lookData, rigidBodyRef}: BasicSceneProps) => {
+    const [{selectedVisualMode}] = useGlobalStore()
 
-  return (
-    <TwWrapper $isVisualTab={Boolean(visualTab)}>
-      {isReady.value && (
-        <>
-          <ButtonsAboveCanvas />
-          <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
-        </>
-      )}
-      <Canvas>
-        <Suspense fallback={<CanvasLoader />}>
-          <Lighting playerRef={rigidBodyRef} />
-          <Physics gravity={[0, -9.81, 0]}>{children}</Physics>
-          <RenderNotifier onFirstFrame={isReady} />
-        </Suspense>
-      </Canvas>
-      {!isMobile && isReady.value && <TwDot />}
-    </TwWrapper>
-  )
-}
+    const visualTab = getSearchParam('visual-tab')
+    const isReady = useBoolean(false)
+
+    return (
+      <TwWrapper $isVisualTab={Boolean(visualTab)}>
+        {isReady.value && (
+          <>
+            <ButtonsAboveCanvas />
+            <JoysticksAboveCanvas moveData={moveData} lookData={lookData} />
+          </>
+        )}
+        <Canvas>
+          <Suspense fallback={<CanvasLoader />}>
+            <Lighting playerRef={rigidBodyRef} />
+            <Physics gravity={[0, -9.81, 0]}>{children}</Physics>
+            <RenderNotifier onFirstFrame={isReady} />
+          </Suspense>
+        </Canvas>
+        {!isMobile && isReady.value && (
+          <TwDot $isHidden={selectedVisualMode === 'summer'} />
+        )}
+      </TwWrapper>
+    )
+  }
+)
 
 const RenderNotifier = ({onFirstFrame}: {onFirstFrame: BooleanHookState}) => {
   useFrame(state => {

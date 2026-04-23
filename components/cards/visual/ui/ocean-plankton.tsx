@@ -7,9 +7,9 @@ interface PlanktonProps {
   count?: number
 }
 
-const toTubeCenterRadius = 300 // radius to the center of the tube
-const tubeRadius = 120 // radius of the tube itself
-const yScale = 0.04 // flattening scale
+export const torusToTubeCenterRadius = 300 // radius to the center of the tube
+export const torusTubeRadius = 120 // radius of the tube itself
+export const torusYScale = 0.04 // flattening scale
 
 export const OceanPlankton = ({count = 10000}: PlanktonProps) => {
   const meshRef = useRef<InstancedMesh>(null)
@@ -27,17 +27,17 @@ export const OceanPlankton = ({count = 10000}: PlanktonProps) => {
 
       // random point INSIDE the tube cross-section (small circle)
       // use polar coordinates inside a circle for uniformity
-      const r = Math.sqrt(Math.random()) * tubeRadius
+      const r = Math.sqrt(Math.random()) * torusTubeRadius
       const phi = Math.random() * Math.PI * 2
 
       // calculation of coordinates
       // x and y form a circle of intersection, which we then distribute along the circle theta
-      // important: in mesh, scale is on the last axis [1, 1, yScale],
+      // important: in mesh, scale is on the last axis [1, 1, torusYScale],
 
-      const x = (toTubeCenterRadius + r * Math.cos(phi)) * Math.cos(theta)
-      const y = (toTubeCenterRadius + r * Math.cos(phi)) * Math.sin(theta)
+      const x = (torusToTubeCenterRadius + r * Math.cos(phi)) * Math.cos(theta)
+      const y = (torusToTubeCenterRadius + r * Math.cos(phi)) * Math.sin(theta)
       // flatten Z just like you flattened the mesh
-      const z = r * Math.sin(phi) * yScale
+      const z = r * Math.sin(phi) * torusYScale
 
       const pos = new Vector3(x, y, z)
       temp.push({t, factor, speed, pos})
@@ -75,8 +75,10 @@ export const OceanPlankton = ({count = 10000}: PlanktonProps) => {
   return (
     <group position={[0, 0, -5]}>
       {/* change visible parameter to see the torus */}
-      <mesh scale={[1, 1, yScale]} visible={false}>
-        <torusGeometry args={[toTubeCenterRadius, tubeRadius, 16, 64]} />
+      <mesh scale={[1, 1, torusYScale]} visible={false}>
+        <torusGeometry
+          args={[torusToTubeCenterRadius, torusTubeRadius, 16, 64]}
+        />
         <meshBasicMaterial
           color="#00ffff"
           transparent

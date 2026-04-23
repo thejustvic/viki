@@ -24,7 +24,15 @@ type GLTFResult = GLTF & {
   }
 }
 
-export const JellyfishModel = () => {
+interface JellyfishModelProps {
+  offset?: number
+  scale?: number
+}
+
+export const JellyfishModel = ({
+  offset = 0,
+  scale = 0.01
+}: JellyfishModelProps) => {
   const group = useRef<Group>(null)
   const pivotRef = useRef<Group>(null)
   const {scene} = useGLTF('/jellyfish.glb')
@@ -43,7 +51,7 @@ export const JellyfishModel = () => {
   }, [materials])
 
   useFrame(state => {
-    const t = state.clock.getElapsedTime()
+    const t = state.clock.getElapsedTime() + offset
 
     // rotation of the entire jellyfish
     if (group.current) {
@@ -85,7 +93,7 @@ export const JellyfishModel = () => {
   })
 
   return (
-    <group ref={group} dispose={null} scale={0.005}>
+    <group ref={group} dispose={null} scale={scale}>
       <mesh
         renderOrder={JELLYFISH_RENDER_ORDER}
         geometry={nodes.Cylinder002_Jellyfish3_0.geometry}
