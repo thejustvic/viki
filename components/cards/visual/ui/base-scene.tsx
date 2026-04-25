@@ -21,7 +21,6 @@ interface ITWDot {
 }
 const TwDot = tw.div<ITWDot>`
   ${({$isHidden}) => $isHidden && 'hidden'}
-  hidden
   absolute
   top-1/2
   left-1/2

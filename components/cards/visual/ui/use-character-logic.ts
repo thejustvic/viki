@@ -5,6 +5,7 @@ import type {RapierRigidBody} from '@react-three/rapier'
 import {RefObject, useMemo, useRef, useState} from 'react'
 import {isMobile} from 'react-device-detect'
 import {Euler, Vector3} from 'three'
+import {PlayerSizeType} from '../../types'
 import {usePlayerControls} from '../utils/helpers'
 
 const JUMP_PREP_DURATION = 0.2 // 200ms time for jump-start animation
@@ -14,6 +15,7 @@ const GROUNDED_THRESHOLD = 0.1 // vertical speed threshold for ground
 
 // side camera view
 const CAMERA_OFFSET = new Vector3(1, 0, 4) // x: sideways, y: up, z: back
+const CAR_CAMERA_OFFSET = new Vector3(0, 0.7, 5) // x: sideways, y: up, z: back
 
 // temporary variables outside the renderer to avoid Garbage Collection
 const _tempVec = new Vector3()
@@ -33,6 +35,7 @@ interface CharacterLogicProps {
     speed: number
     headPoint: HeadPointType
     jumpForce: number
+    playerSize: PlayerSizeType[number]
   }
 }
 export interface ModelCharacteristics {
@@ -56,7 +59,8 @@ export const useCharacterLogic = (
     isThirdPersonView,
     speed,
     headPoint,
-    jumpForce
+    jumpForce,
+    playerSize
   } = characteristics
   const controls = usePlayerControls({is3DSceneLocked}) // { forward, backward, left, right, jump }
   const {camera} = useThree()
@@ -83,6 +87,10 @@ export const useCharacterLogic = (
     }),
     []
   )
+
+  const cameraOffset = useMemo(() => {
+    return playerSize === 'car' ? CAR_CAMERA_OFFSET : CAMERA_OFFSET
+  }, [playerSize])
 
   useFrame((state, delta) => {
     const body = rigidBodyRef.current
@@ -145,7 +153,7 @@ export const useCharacterLogic = (
     // smooth camera tracking (lerp)
     if (isThirdPersonView) {
       const offset = new Vector3()
-        .copy(CAMERA_OFFSET)
+        .copy(cameraOffset)
         .applyQuaternion(camera.quaternion)
       const targetCameraPos = new Vector3().addVectors(_tempVec, offset)
       if (camera.position.distanceToSquared(targetCameraPos) > 100) {

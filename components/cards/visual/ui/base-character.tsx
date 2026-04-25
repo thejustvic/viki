@@ -77,7 +77,8 @@ export const BaseCharacter = observer(
         isThirdPersonView,
         speed,
         headPoint: getHeadPoint({playerSize, sitDown}),
-        jumpForce: getJumpForce(playerSize)
+        jumpForce: getJumpForce(playerSize),
+        playerSize
       }
     })
 

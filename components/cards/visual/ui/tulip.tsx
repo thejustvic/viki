@@ -224,7 +224,7 @@ export const Tulip = observer(() => {
   })
   const scale = useMemo(() => getScale(playerSize), [playerSize])
   const lawnPositions = useMemo(
-    () => getLawnPosition(fieldRadius),
+    () => getLawnPosition(fieldRadius + 10), // make it by 10 units bigger
     [fieldRadius]
   )
   useMainSequence({
@@ -257,7 +257,7 @@ export const Tulip = observer(() => {
           <meshStandardMaterial transparent opacity={0} />
         </mesh>
       </RigidBody>
-      <group ref={fieldRef} scale={0.5}>
+      <group ref={fieldRef}>
         <LawnInstances positions={lawnPositions} />
       </group>
       <Suspense fallback={<LoadingTulips />}>
