@@ -4,11 +4,13 @@ import {useFrame, useGraph} from '@react-three/fiber'
 import {useMemo, useRef} from 'react'
 import {
   AdditiveBlending,
+  CanvasTexture,
   Color,
   DoubleSide,
   Group,
   Mesh,
-  MeshStandardMaterial
+  MeshStandardMaterial,
+  ShaderMaterial
 } from 'three'
 import {GLTF, SkeletonUtils} from 'three-stdlib'
 
@@ -116,7 +118,154 @@ export const JellyfishModel = ({
           position={[0, -25, 0]}
           scale={[100, 119.153, 100]}
         />
+        <TextRibbon
+          position={[-10, -120, 40]} // attached to one of the jellyfish's legs
+          text={'my text is very longus, this is crazy how it long'}
+        />
       </group>
     </group>
   )
+}
+
+interface TextRibbonProps {
+  text: string
+  position: [number, number, number]
+}
+export const TextRibbon = ({text, position}: TextRibbonProps) => {
+  const {texture, aspectRatio} = useTextTexture(text)
+  const materialRef = useRef<ShaderMaterial>(null)
+  const meshRef = useRef<Mesh>(null)
+
+  const ribbonHeight = 20
+  const totalLength = ribbonHeight * Number(aspectRatio)
+
+  useFrame(({clock}) => {
+    const t = clock.getElapsedTime()
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = t
+    }
+    if (meshRef.current) {
+      // rotation in the opposite direction of the jellyfish's rotation for a static effect
+      meshRef.current.rotation.y = -(t * 0.2)
+    }
+  })
+
+  return (
+    <mesh ref={meshRef} position={position}>
+      <planeGeometry args={[totalLength, ribbonHeight, 128, 32]} />
+      <shaderMaterial
+        ref={materialRef}
+        transparent
+        side={DoubleSide}
+        uniforms={{
+          uTime: {value: 0},
+          uTexture: {value: texture},
+          uBgColor: {value: new Color('#1b7a5b')},
+          uTotalLength: {value: totalLength}
+        }}
+        vertexShader={`
+          varying vec2 vUv;
+          varying float vCirclePortion;
+          uniform float uTotalLength;
+          uniform float uTime;
+
+          void main() {
+            vUv = uv;
+            vec3 newPos = position;
+
+            float radius = 5.0;
+            float circleLength = 6.28318 * radius;
+
+            // calculation of the ring's fraction from the total length
+            float circlePortion = circleLength / uTotalLength;
+            circlePortion = clamp(circlePortion, 0.1, 0.5);
+            vCirclePortion = circlePortion;
+
+            if (vUv.x < circlePortion) {
+
+              // Ring Logic
+              float angle = (vUv.x / circlePortion) * 6.28318;
+              newPos.x = sin(angle) * radius;
+              newPos.z = cos(angle) * radius - radius;
+            } else {
+
+              // Tail Logic
+              float normalizedX = (vUv.x - circlePortion) / (1.0 - circlePortion);
+              float tailLength = uTotalLength - (circlePortion * uTotalLength);
+
+              newPos.x = normalizedX * tailLength;
+              newPos.z = 0.0;
+
+              float speed = uTime * 3.0;
+              float waveIndex = normalizedX * 5.0;
+              newPos.y += sin(waveIndex - speed) * 2.0;
+              newPos.z += cos(waveIndex - speed) * 2.0;
+            }
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+          }
+        `}
+        fragmentShader={`
+          uniform sampler2D uTexture;
+          uniform vec3 uBgColor;
+          varying vec2 vUv;
+          varying float vCirclePortion;
+
+          void main() {
+            if (vUv.x < vCirclePortion) {
+
+              // draw only the background on the ring
+              gl_FragColor = vec4(uBgColor, 1.0);
+            } else {
+                if (gl_FrontFacing) {
+
+                  // draw text on the tail
+                  // recalculate the UV so that the text takes only the tail
+                  float tailX = (vUv.x - vCirclePortion) / (1.0 - vCirclePortion);
+                  vec4 texColor = texture2D(uTexture, vec2(tailX, vUv.y));
+
+                  vec3 finalColor = mix(uBgColor, texColor.rgb, texColor.a);
+                  gl_FragColor = vec4(finalColor, 1.0);
+                } else {
+
+                  // the reverse side is just a plain background color with no text
+                  gl_FragColor = vec4(uBgColor, 1.0);
+                }
+            }
+          }
+        `}
+      />
+    </mesh>
+  )
+}
+
+const useTextTexture = (text: string) => {
+  return useMemo(() => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      return {texture: null, width: 0}
+    }
+
+    ctx.font = 'Bold 80px Arial'
+
+    // measuring the actual width of the text
+    const textMetrics = ctx.measureText(text)
+    const textWidth = textMetrics.width
+    const padding = 500
+
+    // dynamic canvas size for text
+    canvas.width = textWidth + padding
+    canvas.height = 128
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.font = 'Bold 80px Arial'
+    ctx.fillStyle = '#1a85f0'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2)
+
+    const texture = new CanvasTexture(canvas)
+    return {texture, aspectRatio: Number(canvas.width / canvas.height)}
+  }, [text])
 }

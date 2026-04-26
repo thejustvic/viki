@@ -17,11 +17,15 @@ export const JellyfishTorus = () => {
       r: number
       actualPos: Vector3
     }[] = []
-    const count = 10
+    const count = 3
     const minDistance = 2 // minimum distance between jellyfish (select according to model size)
 
-    const clusterCenterTheta = Math.PI
-    const clusterCenterPhi = Math.PI
+    // clusterCenterTheta = 0                  left side
+    // clusterCenterTheta = Math.PI            right side
+    // clusterCenterTheta = Math.PI / 2        forward side
+    // clusterCenterTheta = 3 * Math.PI / 2    backward side
+    const clusterCenterTheta = (3 * Math.PI) / 2 // change this value to move in a circle
+    const clusterCenterPhi = Math.PI // change this value to rotate inside the pipe
 
     for (let i = 0; i < count; i++) {
       let positionFound = false
@@ -31,12 +35,14 @@ export const JellyfishTorus = () => {
         // generate potential coordinates within the flock
 
         // For them to be close together within a radius of 300, the randomness must be microscopic
-        const theta = clusterCenterTheta + (Math.random() - 0.5) * 0.1 // this is the length of the "jam" along the track
+        // increase 0.05 to stretch the flock along the trajectory
+        const theta = clusterCenterTheta + (Math.random() - 0.5) * 0.05 // this is the length of the "jam" along the track
         // angle inside the pipe
-        const phi = clusterCenterPhi + (Math.random() - 0.5) * 0.2 //  this is the width of the group inside the pipe
+        // increase 0.08 so that they spread out more to the sides inside the pipe
+        const phi = clusterCenterPhi + (Math.random() - 0.5) * 0.08 //  this is the width of the group inside the pipe
         // r must be significant (e.g. half the radius of the pipe),
         // otherwise they are all at one point in the center
-        const r = torusTubeRadius * 0.5 + (Math.random() - 0.5) * 20 // this is the depth (distance from the center of the pipe to the wall)
+        const r = torusTubeRadius * 0.5 + (Math.random() - 0.5) // this is the depth (distance from the center of the pipe to the wall)
 
         // calculate the real X, Y, Z position to check the distance
         const x =
@@ -131,7 +137,7 @@ const JellyfishSwimmer = ({
 
       // raise jellyfish head and turn right locally
       outerGroupRef.current.rotateZ(Math.PI / 2) // right turn/U-turn
-      outerGroupRef.current.rotateX(-0.8) // raise jellyfish head
+      outerGroupRef.current.rotateX(-1.3) // raise jellyfish head
     }
   })
 
