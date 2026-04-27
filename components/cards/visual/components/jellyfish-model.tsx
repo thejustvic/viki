@@ -1,7 +1,8 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 import {useGLTF} from '@react-three/drei'
 import {useFrame, useGraph} from '@react-three/fiber'
-import {useMemo, useRef} from 'react'
+import {useEffect, useMemo, useRef} from 'react'
 import {
   AdditiveBlending,
   CanvasTexture,
@@ -29,11 +30,15 @@ type GLTFResult = GLTF & {
 interface JellyfishModelProps {
   offset?: number
   scale?: number
+  text: string
+  color: string
 }
 
 export const JellyfishModel = ({
   offset = 0,
-  scale = 0.01
+  scale = 0.01,
+  text,
+  color
 }: JellyfishModelProps) => {
   const group = useRef<Group>(null)
   const pivotRef = useRef<Group>(null)
@@ -44,13 +49,15 @@ export const JellyfishModel = ({
   const jellyfishMaterial = useMemo(() => {
     const m = materials.Jellyfish3.clone()
 
-    m.emissive = new Color('#00f2ff')
+    m.color = new Color('#000000') // black base color to ONLY glow emissive
+
+    m.emissive = new Color(color)
     m.transparent = true
     m.blending = AdditiveBlending // the color will layer and glow
     m.side = DoubleSide // both the inner and outer walls will glow
 
     return m
-  }, [materials])
+  }, [materials, color])
 
   useFrame(state => {
     const t = state.clock.getElapsedTime() + offset
@@ -118,26 +125,39 @@ export const JellyfishModel = ({
           position={[0, -25, 0]}
           scale={[100, 119.153, 100]}
         />
-        <TextRibbon
-          position={[-10, -120, 40]} // attached to one of the jellyfish's legs
-          text={'my text is very longus, this is crazy how it long'}
-        />
       </group>
+      <TextRibbon
+        position={[10, -120, 30]} // attached to one of the jellyfish's legs
+        text={text}
+        color={color}
+      />
     </group>
   )
 }
 
 interface TextRibbonProps {
   text: string
+  color: string
   position: [number, number, number]
 }
-export const TextRibbon = ({text, position}: TextRibbonProps) => {
-  const {texture, aspectRatio} = useTextTexture(text)
+export const TextRibbon = ({text, color, position}: TextRibbonProps) => {
+  const {texture, aspectRatio} = useTextTexture(text, color)
   const materialRef = useRef<ShaderMaterial>(null)
   const meshRef = useRef<Mesh>(null)
 
   const ribbonHeight = 20
-  const totalLength = ribbonHeight * Number(aspectRatio)
+  const totalLength = useMemo(
+    () => ribbonHeight * Number(aspectRatio),
+    [aspectRatio]
+  )
+
+  // updating the ribbon in the shader when color changes
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTexture.value = texture
+      materialRef.current.uniforms.uTotalLength.value = totalLength
+    }
+  }, [color, texture, totalLength])
 
   useFrame(({clock}) => {
     const t = clock.getElapsedTime()
@@ -147,11 +167,27 @@ export const TextRibbon = ({text, position}: TextRibbonProps) => {
     if (meshRef.current) {
       // rotation in the opposite direction of the jellyfish's rotation for a static effect
       meshRef.current.rotation.y = -(t * 0.2)
+
+      // determining the compression/stretching force
+      // use Math.sin without abs to get both compression and stretching
+      const wave = Math.sin(t * 1.5) * 0.09
+
+      // vertical scaling (Y)
+      // when wave is negative, the tentacles shorten.
+      meshRef.current.scale.y = 1 + wave
+
+      // horizontal scaling (X and Z)
+      // use MINUS wave:
+      // if Y decreases (1 - 0.2 = 0.8), then X/Z increases (1 - (-0.2) = 1.2)
+      const thickness = 1 - wave
+
+      meshRef.current.scale.x = thickness
+      meshRef.current.scale.z = thickness
     }
   })
 
   return (
-    <mesh ref={meshRef} position={position}>
+    <mesh key={totalLength} ref={meshRef} position={position}>
       <planeGeometry args={[totalLength, ribbonHeight, 128, 32]} />
       <shaderMaterial
         ref={materialRef}
@@ -196,10 +232,16 @@ export const TextRibbon = ({text, position}: TextRibbonProps) => {
               newPos.x = normalizedX * tailLength;
               newPos.z = 0.0;
 
-              float speed = uTime * 3.0;
-              float waveIndex = normalizedX * 5.0;
+              float speed = uTime * 2.0;
+
+              // use newPos.x to calculate the wave.
+              // this will make the waves stable relative to the length of the tape.
+              float waveFreq = 0.1; // adjust the frequency (number of bends)
+              float waveIndex = newPos.x * waveFreq;
+
               newPos.y += sin(waveIndex - speed) * 2.0;
               newPos.z += cos(waveIndex - speed) * 2.0;
+
             }
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
@@ -239,33 +281,47 @@ export const TextRibbon = ({text, position}: TextRibbonProps) => {
   )
 }
 
-const useTextTexture = (text: string) => {
-  return useMemo(() => {
-    const canvas = document.createElement('canvas')
+const useTextTexture = (text: string, color: string) => {
+  const canvas = useMemo(() => document.createElement('canvas'), [])
+
+  // use a separate useRef for the texture so as not to recreate the object
+  const textureRef = useRef<CanvasTexture | null>(null)
+
+  const {texture, aspectRatio} = useMemo(() => {
     const ctx = canvas.getContext('2d')
     if (!ctx) {
-      return {texture: null, width: 0}
+      return {texture: null, aspectRatio: 1}
     }
 
     ctx.font = 'Bold 80px Arial'
-
-    // measuring the actual width of the text
     const textMetrics = ctx.measureText(text)
-    const textWidth = textMetrics.width
     const padding = 500
 
-    // dynamic canvas size for text
-    canvas.width = textWidth + padding
+    // updating canvas dimensions
+    canvas.width = textMetrics.width + padding
     canvas.height = 128
 
+    // draw new text and color
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.font = 'Bold 80px Arial'
-    ctx.fillStyle = '#1a85f0'
+    ctx.fillStyle = color
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText(text, canvas.width / 2, canvas.height / 2)
 
-    const texture = new CanvasTexture(canvas)
-    return {texture, aspectRatio: Number(canvas.width / canvas.height)}
-  }, [text])
+    // TEXTURE UPDATE
+    if (!textureRef.current) {
+      textureRef.current = new CanvasTexture(canvas)
+    } else {
+      // this flag forces Three.js to load the new canvas state to the GPU
+      textureRef.current.needsUpdate = true
+    }
+
+    return {
+      texture: textureRef.current,
+      aspectRatio: canvas.width / canvas.height
+    }
+  }, [text, color, canvas])
+
+  return {texture, aspectRatio}
 }

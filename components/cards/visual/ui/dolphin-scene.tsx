@@ -11,7 +11,7 @@ export const DolphinScene = () => {
         <Dolphin />
       </group>
       <group rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -8]}>
-        <JellyfishModel />
+        <JellyfishModel color={'#0057b7'} text={'cool jellyfish'} />
       </group>
     </group>
   )

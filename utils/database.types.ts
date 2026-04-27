@@ -25,6 +25,8 @@ export type Database = {
           bg_image: string | null
           created_at: string
           id: string
+          jellyfish_color_completed: string
+          jellyfish_color_not_completed: string
           position: string
           selected_visual: string
           team_id: string
@@ -46,6 +48,8 @@ export type Database = {
           bg_image?: string | null
           created_at?: string
           id?: string
+          jellyfish_color_completed?: string
+          jellyfish_color_not_completed?: string
           position: string
           selected_visual?: string
           team_id: string
@@ -67,6 +71,8 @@ export type Database = {
           bg_image?: string | null
           created_at?: string
           id?: string
+          jellyfish_color_completed?: string
+          jellyfish_color_not_completed?: string
           position?: string
           selected_visual?: string
           team_id?: string
