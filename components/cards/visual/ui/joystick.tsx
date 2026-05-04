@@ -21,11 +21,11 @@ const JoystickOuterStyles: CSSProperties = {
   position: 'absolute',
   background: `
     radial-gradient(circle at 50% 50%,
-      transparent 50%,        /* deep empty middle */
-      #141414 52%,            /* sharp inner shadow (cliff) */
-      #2a2a2a 55%,            /* internal slope */
-      #555555 60%,            /* comb (the brightest point that catches the light) */
-      #2e2d2d 85%,            /* external gentle slope */
+      transparent 60%,        /* deep empty middle */
+      #141414 62%,            /* sharp inner shadow (cliff) */
+      #2a2a2a 65%,            /* internal slope */
+      #555555 70%,            /* comb (the brightest point that catches the light) */
+      #2e2d2d 75%,            /* external gentle slope */
       #1a1a1a 100%            /* base */
     )
   `
