@@ -112,7 +112,7 @@ export const OceanGodRays = ({
     [color, intensity]
   )
 
-  const positions: [number, number, number][] = [[0, 44, -5]]
+  const positions: [number, number, number][] = [[0, -220, -5]]
 
   return (
     <group>
