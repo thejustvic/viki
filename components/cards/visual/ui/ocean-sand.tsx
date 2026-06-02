@@ -3,6 +3,7 @@ import {RigidBody} from '@react-three/rapier'
 import {useMemo, useRef} from 'react'
 import {
   Color,
+  DoubleSide,
   IUniform,
   MeshStandardMaterial,
   PlaneGeometry,
@@ -66,6 +67,7 @@ export const OceanSand = () => {
         <CustomShaderMaterial
           ref={materialRef}
           baseMaterial={MeshStandardMaterial}
+          side={DoubleSide}
           uniforms={uniforms}
           vertexShader={oceanSandVertexShader}
           fragmentShader={oceanSandFragmentShader}
