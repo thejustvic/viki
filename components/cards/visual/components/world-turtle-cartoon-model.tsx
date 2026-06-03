@@ -31,12 +31,17 @@ type GLTFResult = GLTF & {
 const topColor = `#0057B7`
 const bottomColor = `#FFDD00`
 
-export const TurtleModel = () => {
+export const WorldTurtleCartoonModel = () => {
   const {scene} = useGLTF('/turtle.glb')
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene])
   const {nodes, materials} = useGraph(clone) as unknown as GLTFResult
   return (
-    <group dispose={null}>
+    <group
+      dispose={null}
+      rotation={[0, 0, -Math.PI / 32]}
+      position={[-30, -150, 0]}
+      scale={90}
+    >
       <group>
         <primitive object={nodes.GLTF_created_0_rootJoint} />
         <skinnedMesh

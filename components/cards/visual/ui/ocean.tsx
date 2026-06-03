@@ -1,4 +1,5 @@
-import {TurtleModel} from '../components/turtle-model'
+import {PondTurtleModel} from '../components/pond-turtle-model'
+import {WorldTurtleModel} from '../components/world-turtle-model'
 import {DolphinScene} from './dolphin-scene'
 import {JellyfishTorus} from './jellyfish-torus'
 import {OceanGodRays} from './ocean-godrays'
@@ -17,13 +18,8 @@ export const Ocean = () => {
         <JellyfishTorus />
       </mesh>
       <OceanSand />
-      <group
-        rotation={[0, 0, -Math.PI / 32]}
-        position={[-30, -150, 0]}
-        scale={90}
-      >
-        <TurtleModel />
-      </group>
+      <PondTurtleModel />
+      <WorldTurtleModel />
     </>
   )
 }
