@@ -18,7 +18,7 @@ export const LoginProviders = observer(() => {
   }, [])
 
   return (
-    <Tabs className="w-[310px] justify-around">
+    <Tabs className="max-w-[310px] justify-around">
       <AuthProvidersTab />
       <AnonymouslyTab />
       <EmailTab />

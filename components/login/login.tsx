@@ -9,7 +9,7 @@ import EmailLoginProvider from './email-login/email-login-provider'
 export const Login = ({cookieAuthView}: {cookieAuthView: AuthView}) => {
   return (
     <Hero>
-      <Hero.Content>
+      <Hero.Content className="p-0">
         <EmailLoginProvider cookieAuthView={cookieAuthView}>
           <CaptchaProvider>
             <LoginProviders />

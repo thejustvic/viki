@@ -9,7 +9,7 @@ import {useEmailLoginStore} from './email-login-store'
 
 const TwLoginCardInner = tw.div<{$rotate: boolean}>`
   rounded-md
-  w-[300px]
+  max-w-[300px]
   duration-700
   bg-base-100
   perspective-distant
