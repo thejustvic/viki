@@ -25,7 +25,10 @@ import {PropsWithChildren} from 'react'
 
 export const metadata: Metadata = {
   title: 'crm',
-  description: 'crm app'
+  description: 'crm app',
+  icons: {
+    icon: '/favicon.svg'
+  }
 }
 
 export default async function RootLayout({children}: PropsWithChildren) {
