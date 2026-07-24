@@ -12,7 +12,7 @@
     </linearGradient>
   </defs>
   <g clip-path="url(#oval-clip)">
-  <rect width="1000%" height="1000%" fill="#809A5B" />
+  <rect width="1000%" height="1000%" fill="#000000" />
   <g>
     <use href="#a" transform="rotate(-90 287.5 127.5)" stroke="#1b5e20"/>
     <use href="#a" transform="rotate(-78.8 296.557 68.867)" stroke="#003b7d"/>
@@ -68,8 +68,8 @@
     <use href="#b" transform="rotate(258.8 284.317 171.405)" stroke="#fd0"/>
   </g>
   <g text-anchor="middle" font-family="Comfortaa, 'Segoe UI', Roboto, sans-serif" fill="url(#c)">
-    <text x="500" y="415" font-size="44" font-weight="bold" letter-spacing="1">BounceSoft</text>
-    <text x="500" y="455" font-size="22" letter-spacing="2">CORPORATION</text>
+    <text x="500" y="425" font-size="54" font-weight="bold" letter-spacing="1">Bounce</text>
+    <text x="500" y="445" font-size="16" letter-spacing="2">SOFT CORPORATION</text>
   </g>
     </g>
 </svg>
