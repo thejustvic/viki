@@ -1,6 +1,7 @@
 import {RapierRigidBody} from '@react-three/rapier'
 import {observer} from 'mobx-react-lite'
 import {useRef} from 'react'
+import {Canopy} from '../canopy/canopy'
 import {useGlobalStore} from '../global-provider/global-store'
 import {BaseCharacter} from './visual/ui/base-character'
 import {BasicScene} from './visual/ui/base-scene'
@@ -16,6 +17,11 @@ export const CardVisual = () => {
   const moveData = useRef<Vector2>({x: 0, y: 0})
   const lookData = useRef<Vector2>({x: 0, y: 0})
   const rigidBodyRef = useRef<RapierRigidBody>(null)
+  const [{selectedVisualMode}] = useGlobalStore()
+
+  if (selectedVisualMode === 'canopy') {
+    return <Canopy />
+  }
 
   return (
     <BasicScene
