@@ -2,7 +2,8 @@
 import {useBoolean} from '@/hooks/use-boolean'
 import {useEffect, useRef, useState} from 'react'
 import tw from '../common/tw-styled-components'
-import {CanopyParams, CanopyScene} from './canopy-scene'
+import {CanopyParams} from './canopy-config'
+import {CanopyScene} from './canopy-scene'
 
 const TwCanopyWrapper = tw.div`
   flex
