@@ -11,18 +11,13 @@ export class CanopyAssetLoader {
     })
   }
 
-  public async loadAssets(
-    isDestroyedCheck: () => boolean
-  ): Promise<Record<string, THREE.Object3D>> {
+  public async loadAssets(): Promise<Record<string, THREE.Object3D>> {
     const [modelsGltf, materialsGltf] = await Promise.all([
       this.loadGLTF(CANOPY_CONFIG.ASSET_PATH_MODELS),
       this.loadGLTF(CANOPY_CONFIG.ASSET_PATH_MATERIALS)
     ])
 
     const templates: Record<string, THREE.Object3D> = {}
-    if (isDestroyedCheck()) {
-      return templates
-    }
 
     const materialsRegistry: Record<string, THREE.MeshStandardMaterial> = {}
     materialsGltf.scene.traverse(child => {

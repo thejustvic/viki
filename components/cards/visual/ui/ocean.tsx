@@ -1,3 +1,4 @@
+import {CanopyCanvas} from '@/components/canopy/canopy'
 import {PondTurtleModel} from '../components/pond-turtle-model'
 import {WorldTurtleModel} from '../components/world-turtle-model'
 import {DolphinScene} from './dolphin-scene'
@@ -18,6 +19,9 @@ export const Ocean = () => {
         <JellyfishTorus />
       </mesh>
       <OceanSand />
+      <group position={[0, 0, 100]}>
+        <CanopyCanvas config={{width: 5, height: 2, depth: 5}} />
+      </group>
       <PondTurtleModel />
       <WorldTurtleModel />
     </>

@@ -6,7 +6,6 @@ import {useCardHandlers} from '../../cards-handlers'
 import {getSearchCard} from '../../get-search-card'
 import {Card} from '../../types'
 import {useCardInfoStore} from '../card-info-store'
-import {VisualContentCanopy} from './visual-content-canopy'
 import {VisualContentSpring} from './visual-content-spring'
 import {VisualContentSummer} from './visual-content-summer'
 import {VisualContentWinter} from './visual-content-winter'
@@ -30,7 +29,6 @@ export const VisualContent = observer(() => {
       <VisualContentWinter />
       <VisualContentSpring />
       <VisualContentSummer />
-      <VisualContentCanopy />
     </TwVisualContent>
   )
 })
