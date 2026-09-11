@@ -138,7 +138,7 @@ export const TechStackCarousel = () => {
   )
 
   return (
-    <div className="overflow-hidden h-[320px]">
+    <div className="h-[320px]">
       <TwTechStack>Project Tech Stack</TwTechStack>
       <TwCarousel>
         <TwScene>
