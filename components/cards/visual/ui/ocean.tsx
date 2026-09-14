@@ -20,7 +20,7 @@ export const Ocean = () => {
       </mesh>
       <OceanSand />
       <group position={[0, 0, 100]}>
-        <CanopyCanvas config={{width: 5, height: 2, depth: 5}} />
+        <CanopyCanvas config={{width: 5, height: 3, depth: 5}} />
       </group>
       <PondTurtleModel />
       <WorldTurtleModel />
