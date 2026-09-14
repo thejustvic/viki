@@ -348,17 +348,27 @@ export class CanopyBuilder {
       const aFront = this.pool.krokvuA[j * 2]
       const aBack = this.pool.krokvuA[j * 2 + 1]
       // ПЕРЕДНЯ ВСТАВКА А: під передній фриз
+      const insufficientLengthDisplacement = 0.05
+      const insufficientLengthScale = 1.2
       if (aFront) {
-        aFront.position.set(posX, krokvuY, halfD + CANOPY_CONFIG.OVERHANG / 2)
+        aFront.position.set(
+          posX,
+          krokvuY,
+          halfD + CANOPY_CONFIG.OVERHANG / 2 + insufficientLengthDisplacement
+        )
         aFront.rotation.set(0, Math.PI / 2, 0)
-        aFront.scale.set(1, 1, 1)
+        aFront.scale.set(insufficientLengthScale, 1, 1)
         aFront.visible = true
       }
       // ЗАДНЯ ВСТАВКА А: під задній фриз
       if (aBack) {
-        aBack.position.set(posX, krokvuY, -halfD - CANOPY_CONFIG.OVERHANG / 2)
+        aBack.position.set(
+          posX,
+          krokvuY,
+          -halfD - CANOPY_CONFIG.OVERHANG / 2 - insufficientLengthDisplacement
+        )
         aBack.rotation.set(0, Math.PI / 2, 0)
-        aBack.scale.set(1, 1, 1)
+        aBack.scale.set(insufficientLengthScale, 1, 1)
         aBack.visible = true
       }
     }
@@ -370,71 +380,77 @@ export class CanopyBuilder {
     // =========================================================================
     const baseL = CANOPY_CONFIG.BASE_MODEL_LEN
     const boardWidth = CANOPY_CONFIG.BOARD_WIDTH // 190 мм чиста ширина дошки вагонки
-    // Розраховуємо повну глибину даху з урахуванням виносів фризів
-    const totalDepthRoof = params.depth + CANOPY_CONFIG.OVERHANG * 2
-    // 1. Рахуємо кількість цілих дошок та залишок
-    // ВИПРАВЛЕННЯ: Округляємо до 4 знаків після коми (до десятої частки міліметра)
-    // Це повністю прибере баг JS з плаваючою крапкою
+
+    // Розраховуємо повну ШИРИНУ даху для визначення кількості дошок
+    const totalWidthRoof = params.width + CANOPY_CONFIG.OVERHANG * 2
+
+    // 1. Рахуємо кількість цілих дошок та залишок по ШИРИНІ (X)
     const totalFullBoards = Math.floor(
-      Number(totalDepthRoof.toFixed(4)) / boardWidth
+      Number(totalWidthRoof.toFixed(4)) / boardWidth
     )
-    // Рахуємо чистий залишок також з округленням
     const remainderWidth = Number(
-      (totalDepthRoof - totalFullBoards * boardWidth).toFixed(4)
+      (totalWidthRoof - totalFullBoards * boardWidth).toFixed(4)
     )
-    // Стартова точка заповнення від крайнього переднього виносу фриза
-    // Додаємо половину глибини紋струкції, щоб виштовхнути масив наперед
-    const startRoofZ =
-      params.depth / 2 + CANOPY_CONFIG.OVERHANG - boardWidth / 2
+
+    // Стартова точка заповнення по осі X (починаємо з лівого краю: -width/2 - overhang)
+    // Додаємо boardWidth / 2, бо опорна точка (pivot) дошки по центру її ширини
+    const startRoofX =
+      -(params.width / 2 + CANOPY_CONFIG.OVERHANG) + boardWidth / 2
+
     // Спочатку виводимо цілі дошки
     let i = 0
     for (; i < totalFullBoards; i++) {
       const board = this.pool.roofBoards[i]
       if (board) {
-        const posZ = startRoofZ - i * boardWidth
-        // 1. Позиція: дошка лежить по центру ширини, на потрібній висоті Y,
-        // і крок за кроком зміщується назад по Z
-        board.position.set(0, roofBoardsY, posZ)
-        // 2. Поворот: розгортаємо дошку на 90 градусів по колу (Math.PI / 2),
-        // щоб вона лягла упоперек навісу (вздовж ширини по X)
-        board.rotation.set(0, Math.PI / 2, 0)
-        // 3. Масштабування: оскільки модель у Blender витягнута по Z,
-        // розтягуємо її довжину строго по Z, щоб вона перекрила всю ширину
+        // Крок за кроком зміщуємося вправо по осі X
+        const posX = startRoofX + i * boardWidth
+
+        // 1. Позиція: дошка лежить по центру глибини (Z = 0), на потрібній висоті Y
+        board.position.set(posX, roofBoardsY, 0)
+
+        // 2. Поворот: 0 (або залишаємо дефолтний), оскільки модель у Blender
+        // вже витягнута по Z. Тепер вона лежить вздовж глибини навісу.
+        board.rotation.set(0, 0, 0)
+
+        // 3. Масштабування: розтягуємо довжину по Z (тепер це GLYBYNA даху)
         board.scale.set(
           1,
           1,
-          (params.width + CANOPY_CONFIG.OVERHANG * 2) / baseL
+          (params.depth + CANOPY_CONFIG.OVERHANG * 2) / baseL
         )
         board.visible = true
       }
     }
-    // 2. Додаємо фінальну дошку (залишок), якщо він є і суттєвий (наприклад, більше 5 мм)
+
+    // 2. Додаємо фінальну дошку (залишок), якщо він є
     if (remainderWidth > 0.005) {
-      const lastBoard = this.pool.roofBoards[i] // Беремо наступну дошку з пулу
+      const lastBoard = this.pool.roofBoards[i]
       if (lastBoard) {
-        // Зсуваємо Z на відстань усіх цілих дошок + половина ширини залишку
-        const posZ =
-          startRoofZ -
-          totalFullBoards * boardWidth -
-          remainderWidth / 2 +
+        // Позиція для залишку на правому краї
+        const posX =
+          startRoofX +
+          totalFullBoards * boardWidth +
+          remainderWidth / 2 -
           boardWidth / 2
-        // Обчислюємо коефіцієнт стиснення по ширині (Blend-модель по осі X)
+
         const widthScale = remainderWidth / boardWidth
-        lastBoard.position.set(0, roofBoardsY, posZ)
-        lastBoard.rotation.set(0, Math.PI / 2, 0)
-        // scale.x стискає дошку, scale.z розтягує довжину
+
+        lastBoard.position.set(posX, roofBoardsY, 0)
+        lastBoard.rotation.set(0, 0, 0)
+
+        // scale.x стискає ширину дошки, scale.z розтягує довжину по глибині даху
         lastBoard.scale.set(
           widthScale,
           1,
-          (params.width + CANOPY_CONFIG.OVERHANG * 2) / baseL
+          (params.depth + CANOPY_CONFIG.OVERHANG * 2) / baseL
         )
         lastBoard.visible = true
       }
     }
-    // БЛОК 3: Ховаємо всі інші невикористані дошки з пулу, які залишилися
-    // (Примітка: цей крок тепер автоматизовано через pool.hideAll() перед оновленням)
+
     return roofBoardsY + 0.01
   }
+
   public buildRoofCoverAndProfile(params: CanopyParams, finalY: number) {
     // =========================================================================
     // 6. ПОКРИТТЯ ДАХУ (Руберойд) ТА ПРОФІЛЬ
