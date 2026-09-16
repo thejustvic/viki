@@ -3,7 +3,7 @@ import {Center, Text3D} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {useEffect, useRef, useState} from 'react'
 import {Mesh} from 'three'
-import {CanopyParams} from './canopy-config'
+import {CANOPY_CONFIG, CanopyParams} from './canopy-config'
 import {CanopyScene} from './canopy-scene'
 
 interface CanopyConfiguratorProps {
@@ -78,6 +78,48 @@ const Loader3D = () => {
             <meshStandardMaterial color="red" />
           </Text3D>
         </Center>
+      </mesh>
+    </group>
+  )
+}
+
+interface CanopyProps {
+  currentDepth?: number
+}
+export const Canopy = ({currentDepth = 10}: CanopyProps) => {
+  // dynamically calculate the Z-position based on currentDepth
+  // when currentDepth = 5  => Z = 102.5 - 0.5 * 5  = 100
+  // when currentDepth = 50 => Z = 102.5 - 0.5 * 50 = 77.5
+  const zValue = 102.5 - 0.5 * currentDepth
+
+  // roof dimensions
+  const width = 5
+  const height = 3
+
+  return (
+    <group position={[0, 0, zValue]}>
+      <CanopyCanvas config={{width, height, depth: currentDepth}} />
+
+      {/* plane for jellyfish */}
+      <mesh
+        position={[0, height, 0]}
+        // rotate it 90 degrees (Math.PI / 2) around the X-axis to lay it horizontally
+        rotation={[-Math.PI / 2, 0, 0]}
+      >
+        {/* plane has only two dimensions */}
+        <planeGeometry
+          args={[
+            width - CANOPY_CONFIG.OVERHANG * 2,
+            currentDepth - CANOPY_CONFIG.OVERHANG * 2
+          ]}
+        />
+
+        <meshBasicMaterial
+          color="#00ffcc"
+          transparent={true}
+          opacity={0.3} // semi-transparent, to see the boundaries
+          side={2} // DoubleSide from three.js (value 2), so that the plane is visible from both sides
+        />
       </mesh>
     </group>
   )
