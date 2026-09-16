@@ -28,6 +28,7 @@ type GLTFResult = GLTF & {
 }
 
 interface JellyfishModelProps {
+  grid?: boolean
   offset?: number
   scale?: number
   text: string
@@ -35,6 +36,7 @@ interface JellyfishModelProps {
 }
 
 export const JellyfishModel = ({
+  grid = false,
   offset = 0,
   scale = 0.01,
   text,
@@ -60,6 +62,9 @@ export const JellyfishModel = ({
   }, [materials, color])
 
   useFrame(state => {
+    if (grid) {
+      return
+    }
     const t = state.clock.getElapsedTime() + offset
 
     // rotation of the entire jellyfish
@@ -127,6 +132,7 @@ export const JellyfishModel = ({
         />
       </group>
       <TextRibbon
+        grid={grid}
         position={[10, -120, 30]} // attached to one of the jellyfish's legs
         text={text}
         color={color}
@@ -136,11 +142,17 @@ export const JellyfishModel = ({
 }
 
 interface TextRibbonProps {
+  grid?: boolean
   text: string
   color: string
   position: [number, number, number]
 }
-export const TextRibbon = ({text, color, position}: TextRibbonProps) => {
+export const TextRibbon = ({
+  grid = false,
+  text,
+  color,
+  position
+}: TextRibbonProps) => {
   const {texture, aspectRatio} = useTextTexture(text, color)
   const materialRef = useRef<ShaderMaterial>(null)
   const meshRef = useRef<Mesh>(null)
@@ -160,6 +172,9 @@ export const TextRibbon = ({text, color, position}: TextRibbonProps) => {
   }, [color, texture, totalLength])
 
   useFrame(({clock}) => {
+    if (grid) {
+      return
+    }
     const t = clock.getElapsedTime()
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = t

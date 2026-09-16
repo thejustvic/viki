@@ -31,7 +31,7 @@ export const JellyfishTorus = observer(() => {
   const [, cardChecklistStore] = useCardChecklistStore()
   const [cardInfoState] = useCardInfoStore()
 
-  const checklist = cardChecklistStore.getAllCheckboxes(id)
+  const checklist = cardChecklistStore.getCheckboxesNotCompleted(id)
   const card = cardInfoState.card.data
 
   const swimmers = useMemo(() => {

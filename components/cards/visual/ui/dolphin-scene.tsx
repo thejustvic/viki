@@ -2,7 +2,6 @@ import {useFrame} from '@react-three/fiber'
 import {useRef} from 'react'
 import {Group, Matrix4, Vector3} from 'three'
 import {DolphinModel} from '../components/dolphin-model'
-import {JellyfishModel} from '../components/jellyfish-model'
 
 export const DolphinScene = () => {
   return (
@@ -10,9 +9,9 @@ export const DolphinScene = () => {
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <Dolphin />
       </group>
-      <group rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -8]}>
+      {/* <group rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -8]}>
         <JellyfishModel color={'#0057b7'} text={'cool jellyfish'} />
-      </group>
+      </group> */}
     </group>
   )
 }

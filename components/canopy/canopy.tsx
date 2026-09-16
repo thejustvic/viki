@@ -3,6 +3,7 @@ import {Center, Text3D} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
 import {useEffect, useRef, useState} from 'react'
 import {Mesh} from 'three'
+import {JellyfishGrid} from '../cards/visual/ui/jellyfish-grid'
 import {CANOPY_CONFIG, CanopyParams} from './canopy-config'
 import {CanopyScene} from './canopy-scene'
 
@@ -94,11 +95,21 @@ export const Canopy = ({currentDepth = 10}: CanopyProps) => {
 
   // roof dimensions
   const width = 5
-  const height = 3
+  const height = 4
+
+  const jellyfishBoundaries = 1.5
 
   return (
     <group position={[0, 0, zValue]}>
       <CanopyCanvas config={{width, height, depth: currentDepth}} />
+
+      {/* a group of jellyfish lifted to roof height */}
+      <group position={[0, height - jellyfishBoundaries, 0]}>
+        <JellyfishGrid
+          width={width - jellyfishBoundaries}
+          depth={currentDepth - jellyfishBoundaries}
+        />
+      </group>
 
       {/* plane for jellyfish */}
       <mesh
@@ -113,11 +124,11 @@ export const Canopy = ({currentDepth = 10}: CanopyProps) => {
             currentDepth - CANOPY_CONFIG.OVERHANG * 2
           ]}
         />
-
+        {/* change opacity to see the plate */}
         <meshBasicMaterial
           color="#00ffcc"
           transparent={true}
-          opacity={0.3} // semi-transparent, to see the boundaries
+          opacity={0} // 0.3 value is semi-transparent, to see the boundaries
           side={2} // DoubleSide from three.js (value 2), so that the plane is visible from both sides
         />
       </mesh>

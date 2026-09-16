@@ -1,7 +1,7 @@
-import {Canopy} from '@/components/canopy/canopy'
 import {PondTurtleModel} from '../components/pond-turtle-model'
 import {WorldTurtleModel} from '../components/world-turtle-model'
 import {DolphinScene} from './dolphin-scene'
+import {CanopyJellyfish} from './jellyfish-grid'
 import {JellyfishTorus} from './jellyfish-torus'
 import {OceanGodRays} from './ocean-godrays'
 import {OceanPlankton} from './ocean-plankton'
@@ -19,7 +19,7 @@ export const Ocean = () => {
         <JellyfishTorus />
       </mesh>
       <OceanSand />
-      <Canopy />
+      <CanopyJellyfish />
       <PondTurtleModel />
       <WorldTurtleModel />
     </>
