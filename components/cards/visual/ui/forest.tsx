@@ -8,35 +8,28 @@ import {
   Vector2
 } from 'three'
 import CustomShaderMaterial from 'three-custom-shader-material'
+import {TreeLindenModel} from '../components/tree-linden-model'
 
 export const Forest = () => {
   const materialRef = useRef(null)
-  const [
-    scatteredLeavesAO,
-    scatteredLeavesDiff,
-    scatteredLeavesDisp,
-    sandNormal,
-    scatteredLeavesRough
-  ] = useLoader(TextureLoader, [
-    '/textures/autumn/scatteredLeaves_ao.jpg',
-    '/textures/autumn/scatteredLeaves_diff.jpg',
-    '/textures/autumn/scatteredLeaves_disp.jpg',
-    '/textures/autumn/scatteredLeaves_nor.jpg',
-    '/textures/autumn/scatteredLeaves_rough.jpg'
-  ])
+  const [groundAO, groundDiff, groundDisp, sandNormal, groundRough] = useLoader(
+    TextureLoader,
+    [
+      '/textures/ground/ground_ao.jpg',
+      '/textures/ground/ground_color.jpg',
+      '/textures/ground/ground_disp.jpg',
+      '/textures/ground/ground_normalGL.jpg',
+      '/textures/ground/ground_rough.jpg'
+    ]
+  )
 
-  const textures = [
-    scatteredLeavesDiff,
-    scatteredLeavesRough,
-    scatteredLeavesDisp,
-    sandNormal
-  ]
+  const textures = [groundDiff, groundRough, groundDisp, sandNormal]
 
   useMemo(() => {
-    scatteredLeavesDiff.colorSpace = 'srgb'
+    groundDiff.colorSpace = 'srgb'
     textures.forEach(t => {
       t.wrapS = t.wrapT = RepeatWrapping
-      t.repeat.set(500, 500)
+      t.repeat.set(256, 256)
     })
   }, [textures])
 
@@ -50,18 +43,22 @@ export const Forest = () => {
           ref={materialRef}
           baseMaterial={MeshStandardMaterial}
           // MeshStandardMaterial props
-          map={scatteredLeavesDiff}
-          roughnessMap={scatteredLeavesRough}
-          roughness={0} // makes the scatteredLeaves full matte
+          map={groundDiff}
+          roughnessMap={groundRough}
+          roughness={0} // makes the ground full matte
           normalMap={sandNormal}
           normalScale={new Vector2(1, 1)} // microrelief strength control
-          displacementMap={scatteredLeavesDisp}
-          displacementScale={0.2} // height of scatteredLeaves mounds (e.g. 20cm)
-          aoMap={scatteredLeavesAO}
-          aoMapIntensity={1.5} // enhances dark areas
+          displacementMap={groundDisp}
+          displacementScale={0.2} // height of ground mounds (e.g. 20cm)
+          aoMap={groundAO}
+          aoMapIntensity={2.5} // enhances dark areas
           color="#e8f8fc"
         />
       </mesh>
+
+      <group position={[0, 0, 100]}>
+        <TreeLindenModel />
+      </group>
     </RigidBody>
   )
 }
