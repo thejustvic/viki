@@ -6,6 +6,7 @@ import {BaseCharacter} from './visual/ui/base-character'
 import {BasicScene} from './visual/ui/base-scene'
 import {Snowfall} from './visual/ui/base-snowfall'
 import {ConeWithSpheres} from './visual/ui/cone'
+import {Forest} from './visual/ui/forest'
 import {Ocean} from './visual/ui/ocean'
 import {Snowland} from './visual/ui/snowland'
 import {Tulip} from './visual/ui/tulip'
@@ -51,7 +52,7 @@ const PhysicsContent = observer(() => {
         </>
       )}
       {selectedVisualMode === 'summer' && <Ocean />}
-      {selectedVisualMode === 'autumn' && <Ocean />}
+      {selectedVisualMode === 'autumn' && <Forest />}
     </>
   )
 })
