@@ -158,6 +158,7 @@ const getAmbientIntensity = (
   visual: CardVisualType[number] | undefined
 ): number => {
   const lightIntensitySummer = 4.0
+  const lightIntensityAutumn = 3.7
   const lightIntensitySpring = 3.5
   const lightIntensityWinter = 3.0
 
@@ -170,6 +171,9 @@ const getAmbientIntensity = (
     }
     case 'summer': {
       return lightIntensitySummer
+    }
+    case 'autumn': {
+      return lightIntensityAutumn
     }
     default: {
       return lightIntensityWinter

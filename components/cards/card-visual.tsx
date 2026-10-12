@@ -51,6 +51,7 @@ const PhysicsContent = observer(() => {
         </>
       )}
       {selectedVisualMode === 'summer' && <Ocean />}
+      {selectedVisualMode === 'autumn' && <Ocean />}
     </>
   )
 })
