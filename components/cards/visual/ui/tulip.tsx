@@ -25,26 +25,26 @@ import {Card, PlayerSizeType} from '../../types'
 import {LawnInstances} from '../components/lawn-instances'
 import {TulipInstances} from '../components/tulip-instances'
 
-interface Point {
+export interface Point {
   x: number
   z: number
 }
 
 export type PositionType = [x: number, y: number, z: number]
 
-const generateNonOverlappingPoints = ({
-  numberOfTulips,
+export const generateNonOverlappingPoints = ({
+  numberOfItems,
   fieldRadius,
   minRequiredDistance
 }: {
-  numberOfTulips: number
+  numberOfItems: number
   fieldRadius: number
   minRequiredDistance: number
 }): Point[] => {
   const points: Point[] = []
   const maxAttempts = 1000 // protection against infinite loop if there is not enough space
 
-  for (let i = 0; i < numberOfTulips; i++) {
+  for (let i = 0; i < numberOfItems; i++) {
     let found = false
     let attempts = 0
 
@@ -172,7 +172,7 @@ const useMainSequence = ({
       })
       if (!notEqualButSameLength) {
         const newData = generateNonOverlappingPoints({
-          numberOfTulips: checklist?.length ?? 0,
+          numberOfItems: checklist?.length ?? 0,
           fieldRadius,
           minRequiredDistance
         })

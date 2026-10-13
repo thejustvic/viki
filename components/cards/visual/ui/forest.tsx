@@ -8,7 +8,7 @@ import {
   Vector2
 } from 'three'
 import CustomShaderMaterial from 'three-custom-shader-material'
-import {TreeLindenModel} from '../components/tree-linden-model'
+import {TreeLindenInstances} from '../components/tree-linden-instances'
 
 export const Forest = () => {
   const materialRef = useRef(null)
@@ -57,7 +57,7 @@ export const Forest = () => {
       </mesh>
 
       <group position={[0, 0, 100]}>
-        <TreeLindenModel />
+        <TreeLindenInstances />
       </group>
     </RigidBody>
   )

@@ -1,410 +1,284 @@
-/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
-import {useCheckboxHandlers} from '@/components/checklist/checkbox/checkbox-handlers'
-import {Checkbox} from '@/components/checklist/types'
-import {useGlobalStore} from '@/components/global-provider/global-store'
-import {Center, Merged, RoundedBox, Text3D, useGLTF} from '@react-three/drei'
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import {useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber'
-import {easing} from 'maath'
-import {observer} from 'mobx-react-lite'
-import {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react'
+import {useEffect, useMemo, useRef, useState} from 'react'
 import {
-  DoubleSide,
-  Shape,
-  type Group,
+  BufferGeometry,
+  Euler,
+  InstancedMesh,
+  Material,
+  Matrix4,
+  Quaternion,
+  Vector3,
   type Mesh,
   type MeshStandardMaterial
 } from 'three'
 import type {GLTF} from 'three-stdlib'
-import {Card, GameModeType} from '../../types'
-import type {PositionType} from '../ui/tulip'
-import {EggsGLTFResult, EggsModel, useEggModels} from './eggs-model'
+import {
+  generateNonOverlappingPoints,
+  Point,
+  type PositionType
+} from '../ui/tulip'
 
 type GLTFResult = GLTF & {
   nodes: {
-    Object_3: Mesh
-    Object_4: Mesh
-    Object_5: Mesh
+    tree001_Material_0: Mesh
+    // Динамічний шаблон для всіх 800 площин
+    [key: `Plane${string}_Material001_0`]: Mesh
   }
   materials: {
-    mFlowerBodyTulip: MeshStandardMaterial
-    mFlowerTulip: MeshStandardMaterial
-    EnvironmentAmbientLight: MeshStandardMaterial
+    Material: MeshStandardMaterial
+    ['Material.001']: MeshStandardMaterial
   }
 }
 
-interface Props {
-  positions: PositionType[]
-  card: Card | null
-  checklist: Checkbox[] | undefined
-  shouldShrink: boolean
-  eggsCount: number
+const calcTreePositions = (newData: Point[]) => {
+  const positions: PositionType[] = []
+
+  newData.forEach(point => {
+    positions.push([point.x, 0, point.z])
+  })
+  return positions
 }
 
-export const TulipInstances = observer(
-  ({positions, checklist, card, shouldShrink, eggsCount}: Props) => {
-    const [state, store] = useGlobalStore()
-    const {nodes, materials} = useGLTF(
-      '/tulip_flower.glb'
-    ) as unknown as GLTFResult
-    const [eggs, setEggs] = useState<boolean[]>(() =>
-      new Array(eggsCount).fill(false)
-    )
+export const TreeLindenInstances = () => {
+  const {nodes, materials} = useGLTF(
+    '/tree_linden.glb'
+  ) as unknown as GLTFResult
 
-    useEffect(() => {
-      const count = eggs.length - eggs.filter(Boolean).length
-      store.setEggsLeftToCollect(count)
-    }, [eggs])
+  const [positions, setPositions] = useState<PositionType[]>()
 
-    const toggleEgg = (index: number) => {
-      setEggs(prev => prev.map((item, i) => (i === index ? !item : item)))
-    }
-
-    const instances = useMemo(
-      () => ({
-        FlowerBody: nodes.Object_3,
-        FlowerTulip: nodes.Object_4,
-        FlowerPot: nodes.Object_5
-      }),
-      [nodes]
-    )
-
-    const eggsModels = useEggModels()
-
-    return (
-      <Merged meshes={instances} frustumCulled={false}>
-        {(models: any) => (
-          <>
-            {positions.map((position, index) => {
-              const eggState = eggs[index]
-              const checkbox = checklist?.[index]
-              const isCompleted = checkbox?.is_completed
-              const text = checkbox?.title ?? ''
-              return (
-                <Tulip
-                  key={index}
-                  position={position}
-                  color={
-                    isCompleted
-                      ? (card?.tulip_color_completed ?? '')
-                      : (card?.tulip_color_not_completed ?? '')
-                  }
-                  plateColor={
-                    isCompleted
-                      ? (card?.tulip_plate_color_completed ?? '')
-                      : (card?.tulip_plate_color_not_completed ?? '')
-                  }
-                  plateTextColor={
-                    isCompleted
-                      ? (card?.tulip_plate_text_color_completed ?? '')
-                      : (card?.tulip_plate_text_color_not_completed ?? '')
-                  }
-                  text={text}
-                  checkbox={checkbox}
-                  materials={materials}
-                  models={models}
-                  shouldShrink={shouldShrink}
-                  eggState={eggState}
-                  toggleEgg={() => toggleEgg(index)}
-                  eggsModels={eggsModels}
-                  gameMode={state.gameMode}
-                />
-              )
-            })}
-          </>
-        )}
-      </Merged>
-    )
-  }
-)
-
-interface TulipProps {
-  gameMode: GameModeType[number]
-  eggState: boolean
-  toggleEgg: () => void
-  eggsModels: EggsGLTFResult
-  position: PositionType
-  materials: {
-    mFlowerBodyTulip: MeshStandardMaterial
-    mFlowerTulip: MeshStandardMaterial
-    EnvironmentAmbientLight: MeshStandardMaterial
-  }
-  models: any
-  shouldShrink: boolean
-  checkbox: Checkbox | undefined
-  color: string
-  plateColor: string
-  plateTextColor: string
-  text: string
-}
-
-const useCustomTulipMaterial = (material: MeshStandardMaterial) => {
-  useLayoutEffect(() => {
-    if (material) {
-      material.alphaMap = material.map // texture is now responsible for transparency of details
-      material.map = null // removing the gradient color map
-
-      // setting the "visual transmission" of color:
-      material.metalness = 0.1 // 0 - not metal
-      material.roughness = 0.5 // 1 - matte (standard for mesh)
-
-      material.needsUpdate = true
-    }
-  }, [material])
-}
-
-const Tulip = observer(
-  ({
-    gameMode,
-    eggState,
-    toggleEgg,
-    eggsModels,
-    position,
-    materials,
-    models,
-    shouldShrink,
-    checkbox,
-    color,
-    plateColor,
-    plateTextColor,
-    text
-  }: TulipProps) => {
-    const [globalState] = useGlobalStore()
-    useCustomTulipMaterial(materials.mFlowerTulip)
-    const {updateCheckboxIsCompleted} = useCheckboxHandlers()
-    const groupRef = useRef<Group>(null)
-    useFrame((_state, delta) => {
-      if (!groupRef.current) {
-        return
-      }
-      const targetScale = shouldShrink ? 0 : 1
-      easing.damp3(
-        groupRef.current.scale,
-        [targetScale, targetScale, targetScale],
-        0.25,
-        delta
-      )
+  useEffect(() => {
+    const newData = generateNonOverlappingPoints({
+      numberOfItems: 20,
+      fieldRadius: 40,
+      minRequiredDistance: 5
     })
+    setPositions(calcTreePositions(newData))
+  }, [])
 
-    return (
-      <group
-        scale={0}
-        ref={groupRef}
-        position={position}
-        onClick={event => {
-          if (globalState.is3DSceneLocked) {
-            return
-          }
-          // prevent click from bleeding through to objects behind
-          event.stopPropagation()
-          if (checkbox) {
-            updateCheckboxIsCompleted(!checkbox.is_completed, checkbox.id)
-          }
-        }}
-      >
-        <models.FlowerBody
-          material={materials.mFlowerBodyTulip}
-          rotation={[-Math.PI / 2, 0, 0]}
-          castShadow
-        />
-        <models.FlowerTulip
-          rotation={[-Math.PI / 2, 0, 0]}
-          material={materials.mFlowerTulip}
-          color={color}
-          castShadow
-        />
-        <TextWithBg
-          text={text}
-          plateTextColor={plateTextColor}
-          plateBgColor={plateColor}
-        />
-        {eggState !== undefined && gameMode === 'egg-collecting' && (
-          <Egg
-            eggState={eggState}
-            toggleEgg={toggleEgg}
-            eggsModels={eggsModels}
+  const leafData = useMemo(() => {
+    return {
+      geometry: nodes.Plane001_Material001_0.geometry,
+      material: materials['Material.001']
+    }
+  }, [nodes, materials])
+
+  return (
+    <>
+      {positions?.map((position, index) => {
+        return (
+          <TreeLindenModel
+            key={index}
+            position={position}
+            materials={materials}
+            leafData={leafData} // дані для нашого інстанс-мешу
+            gltfNodes={nodes} // оригінальний GLTFResult
           />
-        )}
-        {/*
-          <models.FlowerPot // this is the model for a flower pot
-            material={materials.EnvironmentAmbientLight}
-            rotation={[-Math.PI / 2, 0, 0]}
-            castShadow
-          />
-      */}
-      </group>
-    )
-  }
-)
-
-const getRandom = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1)) + min
-
-interface EggProps {
-  eggState: boolean
-  toggleEgg: () => void
-  eggsModels: EggsGLTFResult
+        )
+      })}
+    </>
+  )
 }
 
-const Egg = observer(({eggState, toggleEgg, eggsModels}: EggProps) => {
-  const [globalState] = useGlobalStore()
-  const itemNumber = useMemo(() => getRandom(1, 7), [])
-  const leftPosition: PositionType = [-1.3, 2, 0.7]
-  const rightPosition: PositionType = [1.3, 2, 0.7]
-  const randomPosition = useMemo(
-    () => (Math.random() > 0.5 ? leftPosition : rightPosition),
-    []
-  )
-  const groupRef = useRef<Group>(null)
-  useFrame((_state, delta) => {
-    if (!groupRef.current) {
+interface TreeProps {
+  position: [number, number, number]
+  materials: any
+  leafData: {geometry: BufferGeometry; material: Material}
+  gltfNodes: any // Оригінальні дані для зчитування координат з Blender
+}
+
+export const TreeLindenModel = ({
+  position,
+  materials,
+  leafData,
+  gltfNodes
+}: TreeProps) => {
+  const leavesRef = useRef<InstancedMesh>(null)
+
+  // Збираємо ключі всіх 800 площин
+  const branchKeys = useMemo(() => {
+    return Object.keys(gltfNodes).filter(key => key.startsWith('Plane'))
+  }, [gltfNodes])
+
+  {
+    /**
+    • Хочете розліт у радіусі 1–2 метрів: поставте MAX_DISTANCE_FORCE = 3, а AIR_RESISTANCE = 0.92.
+    • Хочете розліт у радіусі 5–8 метрів: поставте MAX_DISTANCE_FORCE = 10, а AIR_RESISTANCE = 0.98.
+    */
+  }
+  // --- НАЛАШТУВАННЯ ДАЛЬНОСТІ РОЗЛІТАННЯ ---
+  const MIN_DISTANCE_FORCE = 3 // Мінімальна дальність (початкова швидкість)
+  const MAX_DISTANCE_FORCE = 10 // Максимальна дальність (початкова швидкість)
+  const AIR_RESISTANCE = 0.98 // Опір повітря (0.90 — впаде під дерево, 0.99 — полетить дуже далеко)
+
+  // Створюємо масив фізичних даних для кожної гілки
+  const physicsData = useMemo(() => {
+    return branchKeys.map(() => {
+      // Створюємо випадковий кут розлітання (360 градусів)
+      const angle = Math.random() * Math.PI * 2
+      // сила початкового поштовху вбік
+      const force =
+        MIN_DISTANCE_FORCE +
+        Math.random() * (MAX_DISTANCE_FORCE - MIN_DISTANCE_FORCE)
+
+      return {
+        yVelocity: 0, // Початкова вертикальна швидкість
+        xVelocity: Math.cos(angle) * force, // Швидкість розлітання по X
+        zVelocity: Math.sin(angle) * force, // Швидкість розлітання по Z
+        rotVelocity: (Math.random() - 0.5) * 5, // Швидкість обертання в повітрі (швидша)
+        delay: 2 + Math.random() * 3, // Затримка перед опаданням (2-5 сек)
+        isFalling: false // Статус падіння
+      }
+    })
+  }, [branchKeys])
+
+  // Допоміжні об'єкти (щоб не створювати нові в useFrame)
+  const tempMatrix = useMemo(() => new Matrix4(), [])
+  const tempPosition = useMemo(() => new Vector3(), [])
+  const tempRotation = useMemo(() => new Quaternion(), [])
+  const tempScale = useMemo(() => new Vector3(), [])
+
+  const targetRotation = useMemo(() => {
+    return new Quaternion().setFromEuler(new Euler(-Math.PI / 2, 0, 0))
+  }, [])
+
+  useEffect(() => {
+    if (!leavesRef.current) {
       return
     }
-    const targetScale = eggState ? 0 : 0.6
-    easing.damp3(
-      groupRef.current.scale,
-      [targetScale, targetScale, targetScale],
-      0.25,
-      delta
-    )
-  })
-  return (
-    <group
-      ref={groupRef}
-      position={randomPosition}
-      onClick={event => {
-        if (globalState.is3DSceneLocked) {
-          return
-        }
-        // prevent click from bleeding through to objects behind
-        event.stopPropagation()
-        toggleEgg()
-      }}
-    >
-      <EggsModel item={itemNumber} eggs={eggsModels} />
-    </group>
-  )
-})
 
-interface TextWithBgProps {
-  text: string
-  plateTextColor: string
-  plateBgColor: string
-}
+    branchKeys.forEach((key, index) => {
+      const originalMesh = gltfNodes[key]
+      if (originalMesh) {
+        // Складаємо матрицю на основі позиції, повороту та скейлу з Blender
+        tempMatrix.compose(
+          originalMesh.position,
+          originalMesh.quaternion,
+          originalMesh.scale
+        )
+        // Записуємо матрицю для конкретної гілки за її індексом (0-799)
+        leavesRef.current!.setMatrixAt(index, tempMatrix)
+      }
+    })
 
-const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
-  const wrappedText = useMemo(() => wrapText(text, 24), [text])
+    // Повідомляємо Three.js, що матриця оновилася
+    leavesRef.current.instanceMatrix.needsUpdate = true
+  }, [branchKeys, gltfNodes])
 
-  const envelopeShape = useMemo(() => {
-    const shape = new Shape()
-    const width = 4 // width as in RoundedBox
-    const height = 1.2 // valve height (distance from top to spout)
+  // 2. АНІМАЦІЙНИЙ ЦИКЛ ПАДІННЯ (60 FPS)
+  useFrame((state, delta) => {
+    if (!leavesRef.current) {
+      return
+    }
 
-    shape.moveTo(-width / 2, 0) // upper left corner
-    shape.lineTo(width / 2, 0) // upper right corner
-    shape.lineTo(0, -height) // triangle nose (center bottom)
-    shape.lineTo(-width / 2, 0) // closing
-    return shape
-  }, [])
+    const elapsedTime = state.clock.getElapsedTime()
+    let hasUpdates = false
 
-  const heartShape = useMemo(() => {
-    const shape = new Shape()
-    const x = 0,
-      y = 0
-    // draw a heart using Bezier curves
-    shape.moveTo(x, y)
-    shape.bezierCurveTo(x - 0.2, y + 0.2, x - 0.5, y, x, y - 0.5)
-    shape.bezierCurveTo(x + 0.5, y, x + 0.2, y + 0.2, x, y)
-    return shape
-  }, [])
+    branchKeys.forEach((_, index) => {
+      const data = physicsData[index]
 
-  return (
-    <group scale={1} position={[0, 2.5, 2]} rotation={[-Math.PI / 6, 0, 0]}>
-      {/* <Text fontSize={0.3} anchorX="center" anchorY="middle">
-          {wrappedText}
-          <meshStandardMaterial color={plateTextColor} />
-        </Text> */}
-      <Center key={wrappedText}>
-        <Text3D
-          font={'/OpenSans_Regular.json'}
-          size={0.2}
-          height={0.02}
-          bevelEnabled
-          bevelSize={0.01}
-          bevelThickness={0.01}
-          curveSegments={1}
-          bevelSegments={1}
-        >
-          {wrappedText}
-          <meshStandardMaterial color={plateTextColor} />
-        </Text3D>
-      </Center>
-      <RoundedBox args={[4, 2, 0.02]} radius={0.02} position={[0, 0, -0.3]}>
-        <meshStandardMaterial color={plateBgColor} />
-      </RoundedBox>
-      <mesh position={[0, 1, -0.28]}>
-        <shapeGeometry args={[envelopeShape]} />
-        <meshStandardMaterial
-          color={plateBgColor}
-          side={DoubleSide}
-          emissive={plateBgColor}
-          emissiveIntensity={-0.5}
-        />
-      </mesh>
-      <mesh position={[1.5, -0.3, -0.26]} scale={1}>
-        <shapeGeometry args={[heartShape]} />
-        <meshStandardMaterial color="#ff6beb" />
-      </mesh>
-    </group>
-  )
-}
-
-export const wrapText = (str: string, width: number): string => {
-  const words = str.replace(/\n/g, ' ').split(' ')
-  const lines: string[] = []
-  let currentLine = ''
-
-  for (const word of words) {
-    // if the word itself is longer than the limit, we cut it forcibly
-    if (word.length > width) {
-      // add what managed to collect to the current line
-      if (currentLine) {
-        lines.push(currentLine.trim())
+      // Перевіряємо, чи настав час падати для цієї гілочки
+      if (!data.isFalling && elapsedTime > data.delay) {
+        data.isFalling = true
       }
 
-      // split a long word into parts by width
-      const wordChunks = word.match(new RegExp(`.{1,${width}}`, 'g')) ?? []
+      if (data.isFalling) {
+        // Зчитуємо поточну матрицю інстансу
+        leavesRef.current!.getMatrixAt(index, tempMatrix)
+        tempMatrix.decompose(tempPosition, tempRotation, tempScale)
 
-      // add all parts except the last one to separate lines
-      const lastChunk = wordChunks.pop()
-      lines.push(...wordChunks)
-      currentLine = lastChunk + ' ' // the last piece becomes the beginning of a new line
-      continue
+        // Абсолютна земля — це, наприклад, висота 0 на вашій карті.
+        // Оскільки інстанс листя лежить всередині <group position={position}>,
+        // для нього нульовий рівень сцени буде дорівнювати мінус висоті дерева (мінус Y координата дерева).
+        const absoluteGroundY = -position[1] + 5 // [1] — це координата Y вашого дерева на карті
+
+        if (tempPosition.y > absoluteGroundY) {
+          // 1. ГРАВІТАЦІЯ (рух вниз по Y)
+          data.yVelocity += 9.8 * delta * 0.5 // 0.5 — коефіцієнт уповільнення для повітря
+          tempPosition.y -= data.yVelocity * delta
+
+          // 2. РОЗЛІТАННЯ ВБІК (рух по X та Z)
+          tempPosition.x += data.xVelocity * delta
+          tempPosition.z += data.zVelocity * delta
+
+          // Опір повітря: зменшуємо горизонтальну швидкість кожного кадру на пару відсотків
+          // Завдяки цьому листя пролетить 2-4 метри і почне падати майже вертикально
+          data.xVelocity *= Math.pow(AIR_RESISTANCE, delta * 60)
+          data.zVelocity *= Math.pow(AIR_RESISTANCE, delta * 60)
+
+          // 🌪️ Ефект погойдування вітром (синусоїда + обертання)
+          tempPosition.x += Math.sin(elapsedTime * 5 + index) * delta * 0.5
+
+          // Крутимо гілочку в повітрі
+          const deltaRotation = new Quaternion().setFromAxisAngle(
+            new Vector3(0, 1, 0).normalize(),
+            data.rotVelocity * delta
+          )
+          tempRotation.multiply(deltaRotation)
+
+          // 🌟 2. ПЛАВНИЙ ПОВОРОТ ДО ЗЕМЛІ [-Math.PI / 2, 0, 0]
+          // Створюємо ефект похитування за допомогою синусоїди
+          const wobbleAngle = Math.sin(elapsedTime * 10 + index) * 0.2
+          const currentTarget = targetRotation.clone()
+
+          // Додаємо легке коливання в повітрі до цільового кута
+          currentTarget.multiply(
+            new Quaternion().setFromEuler(new Euler(0, wobbleAngle, 0))
+          )
+
+          // Плавно інтерполюємо (slerp) поточний поворот до цільового.
+          // Передаємо швидкість інтерполяції (наприклад, delta * 2, де 2 — швидкість вирівнювання)
+          tempRotation.slerp(currentTarget, delta * 2)
+
+          hasUpdates = true
+        } else {
+          // Якщо впала на землю — зупиняємо її рух точечно
+          tempPosition.y = absoluteGroundY
+          data.xVelocity = 0
+          data.zVelocity = 0
+
+          // Коли торкнулося землі — фіксуємо ідеально рівно [-Math.PI / 2, 0, 0]
+          tempRotation.copy(targetRotation)
+        }
+
+        // Записуємо змінені координати назад в матрицю
+        tempMatrix.compose(tempPosition, tempRotation, tempScale)
+        leavesRef.current!.setMatrixAt(index, tempMatrix)
+      }
+    })
+
+    // Оновлюємо матрицю в WebGL тільки якщо щось рухалось
+    if (hasUpdates) {
+      leavesRef.current.instanceMatrix.needsUpdate = true
     }
+  })
 
-    // check if the word fits in the current line (+1 for a space)
-    if ((currentLine + word).length <= width) {
-      currentLine += word + ' '
-    } else {
-      // if it doesn't fit - close the line and start a new one
-      lines.push(currentLine.trim())
-      currentLine = word + ' '
-    }
-  }
+  return (
+    <group dispose={null}>
+      {/* Головна група дерева на карті */}
+      <group position={position}>
+        {/* Стовбур рендеримо як звичайний mesh (він один, фпс не просяде) */}
+        <mesh
+          geometry={gltfNodes.tree001_Material_0.geometry}
+          material={materials.Material}
+          rotation={[-Math.PI / 2, 0, -1.109]}
+          castShadow
+          receiveShadow
+        />
 
-  if (currentLine) {
-    lines.push(currentLine.trim())
-  }
-
-  // limit to 4 lines with ellipsis
-  if (lines.length > 4) {
-    let lastLine = lines[3]
-    // if the string is too long to add "...", trim it a bit
-    if (lastLine.length > width - 3) {
-      lastLine = lastLine.slice(0, width - 3)
-    }
-    return [...lines.slice(0, 3), lastLine + '...'].join('\n')
-  }
-
-  return lines.join('\n')
+        {/*
+          ЧИСТИЙ INSTANCED MESH НА 800 ОБ'ЄКТІВ:
+          Він з'їдає ВСЬОГО 1 draw call на все дерево і працює супер-швидко!
+        */}
+        <instancedMesh
+          ref={leavesRef}
+          args={[leafData.geometry, leafData.material, branchKeys.length]} // [геометрія, матеріал, 800]
+          castShadow
+          receiveShadow
+        />
+      </group>
+    </group>
+  )
 }
