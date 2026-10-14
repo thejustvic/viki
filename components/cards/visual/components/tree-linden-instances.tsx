@@ -24,7 +24,7 @@ import {
 type GLTFResult = GLTF & {
   nodes: {
     tree001_Material_0: Mesh
-    // Динамічний шаблон для всіх 800 площин
+    // Dynamic template for all 800 planes
     [key: `Plane${string}_Material001_0`]: Mesh
   }
   materials: {
@@ -73,8 +73,8 @@ export const TreeLindenInstances = () => {
             key={index}
             position={position}
             materials={materials}
-            leafData={leafData} // дані для нашого інстанс-мешу
-            gltfNodes={nodes} // оригінальний GLTFResult
+            leafData={leafData} // data for service mesh
+            gltfNodes={nodes} // original GLTFResult
           />
         )
       })}
@@ -86,7 +86,7 @@ interface TreeProps {
   position: [number, number, number]
   materials: any
   leafData: {geometry: BufferGeometry; material: Material}
-  gltfNodes: any // Оригінальні дані для зчитування координат з Blender
+  gltfNodes: any // Raw data for reading coordinates from Blender
 }
 
 export const TreeLindenModel = ({
@@ -97,51 +97,55 @@ export const TreeLindenModel = ({
 }: TreeProps) => {
   const leavesRef = useRef<InstancedMesh>(null)
 
-  // Збираємо ключі всіх 800 площин
+  // collecting the keys for all 800 planes.
   const branchKeys = useMemo(() => {
     return Object.keys(gltfNodes).filter(key => key.startsWith('Plane'))
   }, [gltfNodes])
 
   {
     /**
-    • Хочете розліт у радіусі 1–2 метрів: поставте MAX_DISTANCE_FORCE = 3, а AIR_RESISTANCE = 0.92.
-    • Хочете розліт у радіусі 5–8 метрів: поставте MAX_DISTANCE_FORCE = 10, а AIR_RESISTANCE = 0.98.
+    • If you want a spread within a 1–2 meter radius, set MAX_DISTANCE_FORCE = 3 and AIR_RESISTANCE = 0.92.
+    • If you want a spread with a radius of 5–8 meters, set MAX_DISTANCE_FORCE = 10 and AIR_RESISTANCE = 0.98.
     */
   }
-  // --- НАЛАШТУВАННЯ ДАЛЬНОСТІ РОЗЛІТАННЯ ---
-  const MIN_DISTANCE_FORCE = 3 // Мінімальна дальність (початкова швидкість)
-  const MAX_DISTANCE_FORCE = 10 // Максимальна дальність (початкова швидкість)
-  const AIR_RESISTANCE = 0.98 // Опір повітря (0.90 — впаде під дерево, 0.99 — полетить дуже далеко)
+  // --- SPREAD RANGE ADJUSTMENT ---
+  const MIN_DISTANCE_FORCE = 5 // Minimum range (initial velocity)
+  const MAX_DISTANCE_FORCE = 20 // Maximum range (initial velocity)
+  const AIR_RESISTANCE = 0.98 // Air resistance (0.90 — will fall under the tree, 0.99 — will fly very far)
+  const TARGET_ROTATION = 0.3
+  const ABSOLUTE_GROUND_Y = 0.1
 
-  // Створюємо масив фізичних даних для кожної гілки
+  // create an array of physical data for each branch.
   const physicsData = useMemo(() => {
     return branchKeys.map(() => {
-      // Створюємо випадковий кут розлітання (360 градусів)
+      // create a random dispersion angle (360 degrees).
       const angle = Math.random() * Math.PI * 2
-      // сила початкового поштовху вбік
+      // force of the initial push sideways
       const force =
         MIN_DISTANCE_FORCE +
         Math.random() * (MAX_DISTANCE_FORCE - MIN_DISTANCE_FORCE)
 
       return {
-        yVelocity: 0, // Початкова вертикальна швидкість
-        xVelocity: Math.cos(angle) * force, // Швидкість розлітання по X
-        zVelocity: Math.sin(angle) * force, // Швидкість розлітання по Z
-        rotVelocity: (Math.random() - 0.5) * 5, // Швидкість обертання в повітрі (швидша)
-        delay: 2 + Math.random() * 3, // Затримка перед опаданням (2-5 сек)
-        isFalling: false // Статус падіння
+        yVelocity: 0, // Initial vertical velocity
+        xVelocity: Math.cos(angle) * force, // X-axis propagation speed
+        zVelocity: Math.sin(angle) * force, // Z-expansion velocity
+        rotVelocity: (Math.random() - 0.5) * 5, // Airborne rotation speed (faster)
+        delay: 5, // Delay before dropping (5 sec)
+        isFalling: false // Fall status
       }
     })
   }, [branchKeys])
 
-  // Допоміжні об'єкти (щоб не створювати нові в useFrame)
+  // Auxiliary objects (to avoid creating new ones in useFrame)
   const tempMatrix = useMemo(() => new Matrix4(), [])
   const tempPosition = useMemo(() => new Vector3(), [])
   const tempRotation = useMemo(() => new Quaternion(), [])
   const tempScale = useMemo(() => new Vector3(), [])
 
   const targetRotation = useMemo(() => {
-    return new Quaternion().setFromEuler(new Euler(-Math.PI / 2, 0, 0))
+    return new Quaternion().setFromEuler(
+      new Euler(0, 0, Math.PI / 2 - TARGET_ROTATION)
+    )
   }, [])
 
   useEffect(() => {
@@ -152,22 +156,22 @@ export const TreeLindenModel = ({
     branchKeys.forEach((key, index) => {
       const originalMesh = gltfNodes[key]
       if (originalMesh) {
-        // Складаємо матрицю на основі позиції, повороту та скейлу з Blender
+        // Constructing a matrix based on position, rotation, and scale from Blender.
         tempMatrix.compose(
           originalMesh.position,
           originalMesh.quaternion,
           originalMesh.scale
         )
-        // Записуємо матрицю для конкретної гілки за її індексом (0-799)
+        // write the matrix for a specific branch based on its index (0–799).
         leavesRef.current!.setMatrixAt(index, tempMatrix)
       }
     })
 
-    // Повідомляємо Three.js, що матриця оновилася
+    // inform Three.js that the matrix has been updated.
     leavesRef.current.instanceMatrix.needsUpdate = true
   }, [branchKeys, gltfNodes])
 
-  // 2. АНІМАЦІЙНИЙ ЦИКЛ ПАДІННЯ (60 FPS)
+  // Fall animation cycle (60 fps)
   useFrame((state, delta) => {
     if (!leavesRef.current) {
       return
@@ -179,77 +183,77 @@ export const TreeLindenModel = ({
     branchKeys.forEach((_, index) => {
       const data = physicsData[index]
 
-      // Перевіряємо, чи настав час падати для цієї гілочки
+      // check whether it is time for this small branch to fall.
       if (!data.isFalling && elapsedTime > data.delay) {
         data.isFalling = true
       }
 
       if (data.isFalling) {
-        // Зчитуємо поточну матрицю інстансу
+        // Read the current instance matrix.
         leavesRef.current!.getMatrixAt(index, tempMatrix)
         tempMatrix.decompose(tempPosition, tempRotation, tempScale)
 
-        // Абсолютна земля — це, наприклад, висота 0 на вашій карті.
-        // Оскільки інстанс листя лежить всередині <group position={position}>,
-        // для нього нульовий рівень сцени буде дорівнювати мінус висоті дерева (мінус Y координата дерева).
-        const absoluteGroundY = -position[1] + 5 // [1] — це координата Y вашого дерева на карті
+        // Absolute ground is, for example, elevation 0 on your map.
+        // Since the leaf instance lies inside <group position={position}>,
+        // For it, the zero level of the scene will be equal to the negative of the tree's height (the negative Y-coordinate of the tree).
+        const absoluteGroundY = -position[1] - ABSOLUTE_GROUND_Y // [1] — This is the Y-coordinate of your tree on the map.
 
         if (tempPosition.y > absoluteGroundY) {
-          // 1. ГРАВІТАЦІЯ (рух вниз по Y)
-          data.yVelocity += 9.8 * delta * 0.5 // 0.5 — коефіцієнт уповільнення для повітря
+          // GRAVITY (downward movement along the Y-axis)
+          data.yVelocity += 9.8 * delta * 0.5 // 0.5 — deceleration coefficient for air
           tempPosition.y -= data.yVelocity * delta
 
-          // 2. РОЗЛІТАННЯ ВБІК (рух по X та Z)
+          // Lateral movement (movement along the X and Z axes)
           tempPosition.x += data.xVelocity * delta
           tempPosition.z += data.zVelocity * delta
 
-          // Опір повітря: зменшуємо горизонтальну швидкість кожного кадру на пару відсотків
-          // Завдяки цьому листя пролетить 2-4 метри і почне падати майже вертикально
+          // Air resistance: reduce the horizontal speed of each frame by a couple of percent.
+          // Thanks to this, the leaves will travel X meters and begin to fall almost vertically.
           data.xVelocity *= Math.pow(AIR_RESISTANCE, delta * 60)
           data.zVelocity *= Math.pow(AIR_RESISTANCE, delta * 60)
 
-          // 🌪️ Ефект погойдування вітром (синусоїда + обертання)
+          // Wind-swaying effect (sine wave + rotation)
           tempPosition.x += Math.sin(elapsedTime * 5 + index) * delta * 0.5
 
-          // Крутимо гілочку в повітрі
+          // twirl the twig in the air.
           const deltaRotation = new Quaternion().setFromAxisAngle(
             new Vector3(0, 1, 0).normalize(),
             data.rotVelocity * delta
           )
           tempRotation.multiply(deltaRotation)
 
-          // 🌟 2. ПЛАВНИЙ ПОВОРОТ ДО ЗЕМЛІ [-Math.PI / 2, 0, 0]
-          // Створюємо ефект похитування за допомогою синусоїди
+          // Smooth turn towards the ground [-Math.PI / 2, 0, 0]
+          // Creating a swaying effect using a sine wave.
           const wobbleAngle = Math.sin(elapsedTime * 10 + index) * 0.2
           const currentTarget = targetRotation.clone()
 
-          // Додаємо легке коливання в повітрі до цільового кута
+          // add a slight oscillation in the air to the target angle.
           currentTarget.multiply(
             new Quaternion().setFromEuler(new Euler(0, wobbleAngle, 0))
           )
 
-          // Плавно інтерполюємо (slerp) поточний поворот до цільового.
-          // Передаємо швидкість інтерполяції (наприклад, delta * 2, де 2 — швидкість вирівнювання)
+          // Smoothly interpolate (slerp) the current rotation towards the target rotation.
+          // pass the interpolation speed (for example, delta * 2, where 2 is the alignment speed).
           tempRotation.slerp(currentTarget, delta * 2)
 
           hasUpdates = true
         } else {
-          // Якщо впала на землю — зупиняємо її рух точечно
+          // If it has fallen to the ground, we stop its movement at the specific point of impact.
           tempPosition.y = absoluteGroundY
           data.xVelocity = 0
           data.zVelocity = 0
 
-          // Коли торкнулося землі — фіксуємо ідеально рівно [-Math.PI / 2, 0, 0]
+          // Upon contact with the ground, we lock it in a perfectly level position
           tempRotation.copy(targetRotation)
         }
 
-        // Записуємо змінені координати назад в матрицю
+        // write the modified coordinates back into the matrix.
         tempMatrix.compose(tempPosition, tempRotation, tempScale)
         leavesRef.current!.setMatrixAt(index, tempMatrix)
       }
     })
 
-    // Оновлюємо матрицю в WebGL тільки якщо щось рухалось
+    // update the matrix in WebGL only if something has moved.
     if (hasUpdates) {
       leavesRef.current.instanceMatrix.needsUpdate = true
     }
@@ -257,9 +261,9 @@ export const TreeLindenModel = ({
 
   return (
     <group dispose={null}>
-      {/* Головна група дерева на карті */}
+      {/* Main tree group on the map */}
       <group position={position}>
-        {/* Стовбур рендеримо як звичайний mesh (він один, фпс не просяде) */}
+        {/* render the trunk as a standard mesh */}
         <mesh
           geometry={gltfNodes.tree001_Material_0.geometry}
           material={materials.Material}
@@ -269,14 +273,16 @@ export const TreeLindenModel = ({
         />
 
         {/*
-          ЧИСТИЙ INSTANCED MESH НА 800 ОБ'ЄКТІВ:
-          Він з'їдає ВСЬОГО 1 draw call на все дерево і працює супер-швидко!
+          CLEAN INSTANCED MESH WITH 800 OBJECTS:
+          It uses up just 1 draw call for the entire tree and runs super fast!
         */}
         <instancedMesh
           ref={leavesRef}
-          args={[leafData.geometry, leafData.material, branchKeys.length]} // [геометрія, матеріал, 800]
+          args={[leafData.geometry, leafData.material, branchKeys.length]} // [geometry, material, 800]
           castShadow
           receiveShadow
+          frustumCulled={false}
+          material-color="#fcac65"
         />
       </group>
     </group>
