@@ -202,6 +202,9 @@ export const TreeLindenModel = observer(
     // A ref for recording the exact time when isCompleted became true.
     const fallStartTimeRef = useRef<number | null>(null)
 
+    // A single ref to control the tree's sleep state (true = leaves fly, false = tree sleeps)
+    const isAnimatingRef = useRef<boolean>(false)
+
     // collecting the keys for all 800 planes.
     const branchKeys = useMemo(() => {
       return Object.keys(gltfNodes).filter(key => key.startsWith('Plane'))
@@ -260,19 +263,74 @@ export const TreeLindenModel = observer(
         return
       }
 
+      const localGroundY = -position[1] - ABSOLUTE_GROUND_Y
+
       branchKeys.forEach((key, index) => {
         const originalMesh = gltfNodes[key]
         if (originalMesh) {
+          // If the checkbox is ALREADY selected upon loading, we immediately drop the leaves to the floor.
+          if (isCompleted) {
+            const data = physicsData[index]
+
+            // 1. Copy the starting coordinates from Blender for the simulation.
+            const simPos = originalMesh.position.clone()
+            const simRot = originalMesh.quaternion.clone()
+
+            // Temporary local copies of velocities, to avoid corrupting the original physicsData
+            let simXVel = data.xVelocity
+            let simZVel = data.zVelocity
+            let simYVel = 0
+
+            // Simulation time step (simulating a stable 60 FPS)
+            const simDelta = 1 / 60
+
+            // Set the time for calculating the swaying sine wave (starting point)
+            let simTime = 0
+
+            // 2. simulate the flight step by step until the leaf falls below ground level.
+            while (simPos.y > localGroundY) {
+              simTime += simDelta
+
+              // Downward and sideways movement (an exact replica of useFrame physics)
+              simYVel += 9.8 * simDelta * 0.5
+              simPos.y -= simYVel * simDelta
+              simPos.x += simXVel * simDelta
+              simPos.z += simZVel * simDelta
+
+              // Air resistance
+              simXVel *= Math.pow(AIR_RESISTANCE, simDelta * 60)
+              simZVel *= Math.pow(AIR_RESISTANCE, simDelta * 60)
+
+              // Rocking and smooth angle leveling
+              const wobbleAngle = Math.sin(simTime * 10 + index) * 0.2
+              const currentTarget = targetRotation.clone()
+              currentTarget.multiply(
+                new Quaternion().setFromEuler(new Euler(0, wobbleAngle, 0))
+              )
+              simRot.slerp(currentTarget, simDelta * 2)
+            }
+
+            // 3. Once the sheet reaches the ground, secure it firmly to the floor and apply the final angle.
+            tempPosition.set(simPos.x, localGroundY, simPos.z)
+            tempRotation.copy(targetRotation) // Or simRot, if you want to keep a slight element of randomness regarding the landing angle.
+          } else {
+            // If it hasn't been done, we distribute them onto the branches within the crown, as usual.
+            tempPosition.copy(originalMesh.position)
+            tempRotation.copy(originalMesh.quaternion)
+          }
+
           // Constructing a matrix based on position, rotation, and scale from Blender.
-          tempMatrix.compose(
-            originalMesh.position,
-            originalMesh.quaternion,
-            originalMesh.scale
-          )
+          tempMatrix.compose(tempPosition, tempRotation, originalMesh.scale)
           // write the matrix for a specific branch based on its index (0–799).
           leavesRef.current!.setMatrixAt(index, tempMatrix)
         }
       })
+
+      // If the scene started with the checkbox already checked, we fix the timer,
+      // so that `useFrame` knows it shouldn't animate the fall — it's already on the ground
+      if (isCompleted) {
+        fallStartTimeRef.current = 0 // mark the start, so as to skip the explosion.
+      }
 
       // inform Three.js that the matrix has been updated.
       leavesRef.current.instanceMatrix.needsUpdate = true
@@ -286,6 +344,26 @@ export const TreeLindenModel = observer(
       const elapsedTime = state.clock.getElapsedTime()
       let hasUpdates = false
 
+      // THE MAGIC OF OPTIMIZATION FOR THE FOREST:
+      // If the tree loaded in an already completed state (fallStartTime === 0), it remains motionless.
+      if (isCompleted && fallStartTimeRef.current === 0) {
+        return
+      }
+
+      // THE MAGIC OF OPTIMIZATION FOR THE GREEN FOREST:
+      // If the task is NOT completed, the fall timer is reset, and the tree has finished reassembling —
+      // put it completely to sleep
+      if (
+        !isCompleted &&
+        fallStartTimeRef.current === null &&
+        !isAnimatingRef.current
+      ) {
+        return
+      }
+
+      let activeBranchesCount = 0 // count how many branches are still in the air right now.
+      const absoluteGroundY = -position[1] - ABSOLUTE_GROUND_Y // [1] — This is the Y-coordinate of your tree on the map.
+
       branchKeys.forEach((key, index) => {
         const data = physicsData[index]
         const originalMesh = gltfNodes[key]
@@ -293,28 +371,33 @@ export const TreeLindenModel = observer(
           return
         }
 
-        // read the current matrix of a specific leaf.
-        leavesRef.current!.getMatrixAt(index, tempMatrix)
-        tempMatrix.decompose(tempPosition, tempRotation, tempScale)
-
         if (isCompleted) {
           // ==========================================
           // FALL MODE (isCompleted === true)
           // ==========================================
           if (fallStartTimeRef.current === null) {
             fallStartTimeRef.current = elapsedTime
-            // reset the scattering momentum for each branch before it falls!
-            branchKeys.forEach((_, index) => {
-              const data = physicsData[index]
-              const angle = Math.random() * Math.PI * 2
-              const force =
-                MIN_DISTANCE_FORCE +
-                Math.random() * (MAX_DISTANCE_FORCE - MIN_DISTANCE_FORCE)
+            isAnimatingRef.current = true // Waking up the tree for movement
 
-              data.xVelocity = Math.cos(angle) * force // Reset the X-axis speed to a new random value.
-              data.zVelocity = Math.sin(angle) * force // Reset the Z-axis speed to a new random value.
-              data.yVelocity = 0 // Reducing vertical speed
-            })
+            // reset the scattering momentum for each branch before it falls!
+            // When the outer loop is just beginning
+            // and the processor processes the very first branch (index === 0), the gateway opens.
+            // The inner loop is run only once,
+            // instantly "charging" new random velocities
+            // for all 800 branches of this tree simultaneously.
+            if (index === 0) {
+              branchKeys.forEach((_, index) => {
+                const data = physicsData[index]
+                const angle = Math.random() * Math.PI * 2
+                const force =
+                  MIN_DISTANCE_FORCE +
+                  Math.random() * (MAX_DISTANCE_FORCE - MIN_DISTANCE_FORCE)
+
+                data.xVelocity = Math.cos(angle) * force // Reset the X-axis speed to a new random value.
+                data.zVelocity = Math.sin(angle) * force // Reset the Z-axis speed to a new random value.
+                data.yVelocity = 0 // Reducing vertical speed
+              })
+            }
           }
           const timeSinceTrigger = elapsedTime - fallStartTimeRef.current
 
@@ -323,7 +406,9 @@ export const TreeLindenModel = observer(
           }
 
           if (data.isFalling) {
-            const absoluteGroundY = -position[1] - ABSOLUTE_GROUND_Y // [1] — This is the Y-coordinate of your tree on the map.
+            // read the current matrix of a specific leaf.
+            leavesRef.current!.getMatrixAt(index, tempMatrix)
+            tempMatrix.decompose(tempPosition, tempRotation, tempScale)
 
             if (tempPosition.y > absoluteGroundY) {
               // Downward and sideways movement
@@ -344,22 +429,39 @@ export const TreeLindenModel = observer(
               )
               tempRotation.slerp(currentTarget, delta * 2)
 
+              // write the updated coordinates back into the instance matrix.
+              tempMatrix.compose(tempPosition, tempRotation, tempScale)
+              leavesRef.current!.setMatrixAt(index, tempMatrix)
+
               hasUpdates = true
-            } else {
+              activeBranchesCount++ // This branch is still flying toward the ground.
+            } else if (tempPosition.y !== absoluteGroundY) {
               // Securing to the ground flat against the surface
               tempPosition.y = absoluteGroundY
               data.xVelocity = 0
               data.zVelocity = 0
               tempRotation.copy(targetRotation)
+
+              // write the updated coordinates back into the instance matrix.
+              tempMatrix.compose(tempPosition, tempRotation, tempScale)
+              leavesRef.current!.setMatrixAt(index, tempMatrix)
+
+              hasUpdates = true
             }
           }
         } else {
           // ==========================================
           // COLLECTION MODE (isCompleted === false)
           // ==========================================
-          fallStartTimeRef.current = null
+          if (fallStartTimeRef.current !== null) {
+            fallStartTimeRef.current = null // Reset to null so the tree comes back to life for future clicks.
+            isAnimatingRef.current = true // Waking up the tree for the flight back
+          }
           data.isFalling = false
           data.yVelocity = 0
+
+          leavesRef.current!.getMatrixAt(index, tempMatrix)
+          tempMatrix.decompose(tempPosition, tempRotation, tempScale)
 
           const distanceToOriginal = tempPosition.distanceTo(
             originalMesh.position
@@ -370,18 +472,31 @@ export const TreeLindenModel = observer(
           if (distanceToOriginal > 0.001 || angleToOriginal > 0.001) {
             tempPosition.lerp(originalMesh.position, delta * RETURN_SPEED)
             tempRotation.slerp(originalMesh.quaternion, delta * RETURN_SPEED)
+
+            // write the updated coordinates back into the instance matrix.
+            tempMatrix.compose(tempPosition, tempRotation, tempScale)
+            leavesRef.current!.setMatrixAt(index, tempMatrix)
+
             hasUpdates = true
-          } else {
+            activeBranchesCount++ // This branch still turns back into the crown.
+          } else if (tempPosition.x !== originalMesh.position.x) {
             // Perfect fixation at a specific point with Blender
             tempPosition.copy(originalMesh.position)
             tempRotation.copy(originalMesh.quaternion)
+
+            // write the updated coordinates back into the instance matrix.
+            tempMatrix.compose(tempPosition, tempRotation, tempScale)
+            leavesRef.current!.setMatrixAt(index, tempMatrix)
+
+            hasUpdates = true
           }
         }
-
-        // write the updated coordinates back into the instance matrix.
-        tempMatrix.compose(tempPosition, tempRotation, tempScale)
-        leavesRef.current!.setMatrixAt(index, tempMatrix)
       })
+
+      // If all 800 branches have finished moving (landed or returned), put the tree into a sleep state.
+      if (activeBranchesCount === 0) {
+        isAnimatingRef.current = false
+      }
 
       // update the image in WebGL only if movement has occurred.
       if (hasUpdates) {
