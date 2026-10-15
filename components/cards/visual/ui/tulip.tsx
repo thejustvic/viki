@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable max-lines */
 import tw from '@/components/common/tw-styled-components'
 import {useGlobalStore} from '@/components/global-provider/global-store'
@@ -119,10 +120,11 @@ const getBaseConstants = (checklist: Checkbox[] | undefined) => {
   }
 }
 
-const useMainSequence = ({
+export const useMainSequence = ({
   updatePositions,
   updateShouldShrink,
   updateCardData,
+  calcPositions,
   checklist,
   cardData,
   card,
@@ -145,6 +147,7 @@ const useMainSequence = ({
       checklist: Checkbox[] | undefined
     }>
   >
+  calcPositions: (newData: Point[]) => PositionType[]
 }) => {
   useEffect(() => {
     if (!cardData) {
@@ -231,6 +234,7 @@ export const Tulip = observer(() => {
     updatePositions,
     updateShouldShrink,
     updateCardData,
+    calcPositions,
     checklist,
     cardData,
     card,
