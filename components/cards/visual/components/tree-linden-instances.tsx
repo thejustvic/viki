@@ -26,6 +26,7 @@ import {useCardInfoStore} from '../../card-info/card-info-store'
 import {getSearchCard} from '../../get-search-card'
 import {Card} from '../../types'
 import {Point, useMainSequence, type PositionType} from '../ui/tulip'
+import {TextWithBg} from './tulip-instances'
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -159,6 +160,7 @@ export const TreeLindenInstances = observer(
         {positions?.map((position, index) => {
           const checkbox = checklist?.[index]
           const isCompleted = Boolean(checkbox?.is_completed)
+          const text = checkbox?.title ?? ''
           return (
             <TreeLindenModel
               key={index}
@@ -168,6 +170,7 @@ export const TreeLindenInstances = observer(
               gltfNodes={nodes} // original GLTFResult
               checkbox={checkbox}
               isCompleted={isCompleted}
+              text={text}
             />
           )
         })}
@@ -183,6 +186,7 @@ interface TreeProps {
   gltfNodes: any // Raw data for reading coordinates from Blender
   checkbox: Checkbox | undefined
   isCompleted: boolean
+  text: string
 }
 
 export const TreeLindenModel = observer(
@@ -192,7 +196,8 @@ export const TreeLindenModel = observer(
     leafData,
     gltfNodes,
     checkbox,
-    isCompleted
+    isCompleted,
+    text
   }: TreeProps) => {
     const [globalState] = useGlobalStore()
     const {updateCheckboxIsCompleted} = useCheckboxHandlers()
@@ -540,6 +545,12 @@ export const TreeLindenModel = observer(
             receiveShadow
             frustumCulled={false}
             material-color="#fcac65"
+          />
+          <TextWithBg
+            text={text}
+            plateTextColor={'#3E2723'}
+            plateBgColor={'grey'}
+            tree
           />
         </group>
       </group>

@@ -290,9 +290,15 @@ interface TextWithBgProps {
   text: string
   plateTextColor: string
   plateBgColor: string
+  tree?: boolean
 }
 
-const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
+export const TextWithBg = ({
+  text,
+  plateTextColor,
+  plateBgColor,
+  tree = false
+}: TextWithBgProps) => {
   const wrappedText = useMemo(() => wrapText(text, 24), [text])
 
   const envelopeShape = useMemo(() => {
@@ -319,7 +325,11 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
   }, [])
 
   return (
-    <group scale={1} position={[0, 2.5, 2]} rotation={[-Math.PI / 6, 0, 0]}>
+    <group
+      scale={1}
+      position={tree ? [0, 2.5, 1] : [0, 2.5, 2]}
+      rotation={tree ? [0, 0, 0] : [-Math.PI / 6, 0, 0]}
+    >
       {/* <Text fontSize={0.3} anchorX="center" anchorY="middle">
           {wrappedText}
           <meshStandardMaterial color={plateTextColor} />
@@ -327,11 +337,11 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
       <Center key={wrappedText}>
         <Text3D
           font={'/OpenSans_Regular.json'}
-          size={0.2}
+          size={tree ? 0.1 : 0.2}
           height={0.02}
           bevelEnabled
-          bevelSize={0.01}
-          bevelThickness={0.01}
+          bevelSize={tree ? 0.005 : 0.01}
+          bevelThickness={tree ? 0.005 : 0.01}
           curveSegments={1}
           bevelSegments={1}
         >
@@ -339,22 +349,30 @@ const TextWithBg = ({text, plateTextColor, plateBgColor}: TextWithBgProps) => {
           <meshStandardMaterial color={plateTextColor} />
         </Text3D>
       </Center>
-      <RoundedBox args={[4, 2, 0.02]} radius={0.02} position={[0, 0, -0.3]}>
+      <RoundedBox
+        args={tree ? [2, 1, 0.02] : [4, 2, 0.02]}
+        radius={0.02}
+        position={[0, 0, -0.3]}
+      >
         <meshStandardMaterial color={plateBgColor} />
       </RoundedBox>
-      <mesh position={[0, 1, -0.28]}>
-        <shapeGeometry args={[envelopeShape]} />
-        <meshStandardMaterial
-          color={plateBgColor}
-          side={DoubleSide}
-          emissive={plateBgColor}
-          emissiveIntensity={-0.5}
-        />
-      </mesh>
-      <mesh position={[1.5, -0.3, -0.26]} scale={1}>
-        <shapeGeometry args={[heartShape]} />
-        <meshStandardMaterial color="#ff6beb" />
-      </mesh>
+      {!tree && (
+        <>
+          <mesh position={[0, 1, -0.28]}>
+            <shapeGeometry args={[envelopeShape]} />
+            <meshStandardMaterial
+              color={plateBgColor}
+              side={DoubleSide}
+              emissive={plateBgColor}
+              emissiveIntensity={-0.5}
+            />
+          </mesh>
+          <mesh position={[1.5, -0.3, -0.26]} scale={1}>
+            <shapeGeometry args={[heartShape]} />
+            <meshStandardMaterial color="#ff6beb" />
+          </mesh>
+        </>
+      )}
     </group>
   )
 }
